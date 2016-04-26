@@ -13,6 +13,13 @@ module.exports = {
 		
 
 	},
+		'index': function (req,res){
+		//res locals dura por el tiempo de la vista
+	
+		res.view();
+		
+
+	},
 
 	create: function(req,res,next){
 		User.create(req.allParams(), function userCreated(err,user){
@@ -29,7 +36,7 @@ module.exports = {
 			res.redirect('/');
 		});
 
-	},
+	},	
 
 
 };
