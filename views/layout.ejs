@@ -41,8 +41,12 @@
     <div class="nav-wrapper container">
       <a id="logo-container" href="/" class="brand-logo">Visual Mail</a>
       <ul class="right hide-on-med-and-down">
+        <% if (session.authenticated) {%>
+        <li><form action="/session/logout/" id="my_form"> <input type="hidden" name="_csrf" value="<%= _csrf%>"/> <a href="javascript:{}" onclick="document.getElementById('my_form').submit();" > Logout</a> Logout </form></li>
+        <%} else{%>
         <li><a href="/user/signup/">Sign Up</a></li>
-        <li><a href="/session/login">Login</a></li>
+        <li><a href="/session/login/">Login</a></li>
+        <%}%>
       </ul>
 
 
@@ -115,7 +119,7 @@
         <div class="col l6 s12">
           <h5 class="white-text">Visual Mail</h5>
           <p class="grey-text text-lighten-4">
-            Visual Mail es un proyecto de Memoria de Matías Quinteros, alumno del Departamento de Ingeniería Informática de la Universidad de Santiago
+            Visual Mail es un proyecto de titulación de Matías Quinteros, alumno del Departamento de Ingeniería Informática de la Universidad de Santiago
             de Chile
           </p>
 

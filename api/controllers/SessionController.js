@@ -19,9 +19,9 @@ module.exports = {
 		create: function(req, res , next){
 
 		if(!req.param('email') || !req.param('password')){
-			var usernamepasswordrequired =[{name: 'usernamepasswordrequired', message: 'yo must enter username and password'}] 
+			var usernamepasswordrequired =[{name: 'usernamepasswordrequired', message: 'Debes ingresar contraseña y usuario'}] 
 				req.session.flash={
-			err: errorpass
+			err: usernamepasswordrequired
 		}
 		res.redirect('/session/login');
 		return;
@@ -31,7 +31,7 @@ module.exports = {
 			if(err) return next(err);
 			//if not user is found
 			if(!user){
-				var noaccounterror=[{name: 'noaccount', message: 'The email adress'+req.param('email')+' is not found'}]
+				var noaccounterror=[{name: 'noaccount', message: 'La dirección de correo '+req.param('email')+' No existe'}]
 			req.session.flash={
 				err:noaccounterror
 			}
@@ -42,7 +42,7 @@ module.exports = {
 		//si no hay error compara el password con el guardado
 		bcrypjs.compare(req.param('password'), user.password, function(err,valid){
 			if(!valid){
-				var errorcomp=[{name: 'errorcomp', message: 'password invalido'}]
+				var errorcomp=[{name: 'errorcomp', message: 'password inválido'}]
 				req.session.flash={
 				err:errorcomp
 			}

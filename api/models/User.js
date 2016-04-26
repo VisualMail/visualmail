@@ -18,7 +18,7 @@ attributes: {
 	password:{ type: 'string',required:true},
 	imgurl:{ type:'string'}
 },
-
+	//callback llamado antes de crear el usuario, el password se encripta
  beforeCreate: function(values,next){
   require('bcryptjs').hash(values.password,10, function passwordEncrypted(err,password){ 
     if(err) return next(err);
