@@ -7,12 +7,14 @@
 
 module.exports = {
 
-schema:true,
+schema:true,autoCreatedAt: false,autoUpdatedAt: false,
 attributes: {
-	id:{ type: 'integer', required: true, unique:true, autoIncrement: true},
-	name:{ type: 'string', required:true },
-	owner_id:{ type: 'integer', required:true},
-	
+	name:{ type: 'string', required:false },
+	owner_email:{ type: 'string', required:false},
+	participants:{
+		collection: 'user',
+		via: 'projects'
+	}
 },
 };
 

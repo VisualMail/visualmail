@@ -13,7 +13,7 @@ module.exports = {
 		
 
 	},
-		'index': function (req,res){
+		'view': function (req,res){
 		//res locals dura por el tiempo de la vista
 	
 		res.view();

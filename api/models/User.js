@@ -6,17 +6,23 @@
  */
 
 module.exports = {
-schema:true,
+schema:true,autoCreatedAt: false,autoUpdatedAt: false,
 attributes: {
-	id:{ type: 'integer', required: true, unique:true, autoIncrement: true},
-	firstname:{ type: 'string', required:true },
-	lastname:{ type: 'string', required:true},
+	//id:{ type: 'integer', required: true, unique:true,autoIncrement: true,primaryKey: true,},
+	firstname:{ type: 'string', required:false },
+	lastname:{ type: 'string', required:false},
 	email:{ type: 'string', email:true, required:true, unique:true},
 	pmo:{ type: 'boolean'//,required:true
 	},
-	initials:{ type: 'string',required:true},
+	initials:{ type: 'string',required:false},
 	password:{ type: 'string',required:true},
-	imgurl:{ type:'string'}
+	imgurl:{ type:'string'},
+	projects:{
+		dominant: true,
+		collection: 'project',
+		via:'participants'
+	}
+
 },
 	//callback llamado antes de crear el usuario, el password se encripta
  beforeCreate: function(values,next){

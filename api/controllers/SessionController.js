@@ -52,7 +52,7 @@ module.exports = {
 			//loguea al usuario
 			req.session.authenticated=true;
 			req.session.User= user;
-			res.redirect('user/index/');
+			res.redirect('user/view/');
 		});
 
 	});
