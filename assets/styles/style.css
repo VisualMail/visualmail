@@ -55,3 +55,17 @@ p {
 footer.page-footer {
   margin: 0;
 }
+.carta{
+  max-width: 500px;
+  margin: 10px auto;
+  padding: 10px 20px;
+  background: #f4f7f8;
+  border-radius: 8px;
+}
+.carta form{
+   max-width: 100%;
+}
+.centerme{
+  margin: 0 auto;
+
+}

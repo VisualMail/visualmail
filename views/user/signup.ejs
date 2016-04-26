@@ -1,0 +1,61 @@
+
+  <div class= "container-center">
+  	<br>
+ <div class = "carta">
+    <form class="col s12" action = "/user/create" method = "post">
+<% if(flash && flash.err){ %>
+  <% Object.keys(flash.err).forEach(function(error){ %>
+  <li><%= JSON.stringify(flash.err[error])%></li>
+  <%})%>
+</ul>
+<% } %>
+
+
+ 
+      <div class="row">
+        <div class="input-field col s6">
+          <input  id="firstname" type="text" class="validate" name="firstname">
+          <label for="firstname">Nombre</label>
+        </div>
+      </div>
+       <div class="row">
+        <div class="input-field col s6">
+          <input  id="lastname" type="text" class="validate" name="lastname">
+          <label for="lastname">Apellidos</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field  col s6">
+          <input  id="imgurl" type="text" class="validate" name="imgurl">
+          <label for="imgurl">URL imagen</label>
+        </div>
+      </div>
+    <input type="hidden" id="pmo" type="boolean" name="pmo" value="true"/>
+       <div class="row">
+        <div class="input-field  col s6">
+          <input id="email" type="email" class="validate" name="email">
+          <label for="email">Email</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field  col s6">
+          <input  id="initials" type="text" class="validate" name="initials">
+          <label for="initials">Iniciales</label>
+        </div>
+      </div> 
+      <div class="row">
+        <div class="input-field col s6">
+          <input id="password" type="text" class="validate" name="password">
+          <label for="password">Contraseña</label>
+        </div>
+      </div>
+     
+      <button type="submit" class="waves-effect waves-light btn-large" value="Crear cuenta"> Enviar </button>
+      <input type="hidden" name="_csrf" value="<%= _csrf%>"/>
+    </form>
+  
+  <br>
+  </div>  
+
+  </div>
+   
