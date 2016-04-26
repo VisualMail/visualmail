@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html ng-app>
   <head>
-    <title><%=typeof title == 'undefined' ? 'New Sails App' : title%></title>
+    <title><%=typeof title == 'undefined' ? 'Visual Mail' : title%></title>
 
     <!-- Viewport mobile tag for sensible mobile support -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+
 
 
     <!--
@@ -27,13 +29,34 @@
             + Import stylesheets from other directories
             + Use a different or additional preprocessor, like SASS, SCSS or Stylus
     -->
-
+   
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
     <!--STYLES-->
     <link rel="stylesheet" href="/styles/importer.css">
+    <link rel="stylesheet" href="/styles/materialize.css">
+    <link rel="stylesheet" href="/styles/style.css">
     <!--STYLES END-->
   </head>
+ <nav class="white" role="navigation">
+    <div class="nav-wrapper container">
+      <a id="logo-container" href="#" class="brand-logo">Visual Mail</a>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="#">Sign Up</a></li>
+        <li><a href="#">Login</a></li>
+      </ul>
+
+
+      <ul id="nav-mobile" class="side-nav">
+        <li><a href="#">Navbar Link</a></li>
+      </ul>
+      <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+    </div>
+  </nav>
 
   <body>
+
+
+    
     <%- body %>
 
 
@@ -86,9 +109,12 @@
           + Use a different preprocessor, like TypeScript
 
     -->
-
     <!--SCRIPTS-->
     <script src="/js/dependencies/sails.io.js"></script>
+    <script src="/js/dependencies/angular/angular.min.js"></script>
+    <script src="/js/dependencies/jquery/jquery.js"></script>
+    <script src="/js/materialize.min.js"></script>
+    <script src="/js/init.js"></script>
     <!--SCRIPTS END-->
   </body>
 </html>
