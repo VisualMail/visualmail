@@ -3,6 +3,7 @@
   	<br>
  <div class = "carta">
     <form class="col s12" action = "/user/create" method = "post">
+      <ul>  
 <% if(flash && flash.err){ %>
   <% Object.keys(flash.err).forEach(function(error){ %>
   <li><%= JSON.stringify(flash.err[error])%></li>

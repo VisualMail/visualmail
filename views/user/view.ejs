@@ -1,3 +1,29 @@
-<h1>
-	Soy la página de inicio para usuarios logueados
+<script>
+var myjson;
+$.getJSON("http://localhost:1337/user", function(json){
+    myjson = json;
+    console.log(myjson);
+});
+
+</script>
+	
+	<div class = "carta">
+	<form class="col s6" action = "/project/create/" method = "post">
+
+	
+	<h5> Crear proyectos</h5>
+ 	<h6> Hola <%= session.User.id%> </h6>
+
+       <div class="row">
+        <div class="input-field  col s6">
+          <input id="name" type="text" class="validate" name="name">
+          <label for="name">Nombre del proyecto</label>
+        </div>
+        <input type="hidden" name="owner_email" value="<%= session.User.email %>"/>
+      </div>    
+      <button type="submit" class="waves-effect waves-light btn" value="Crear cuenta"> Enviar </button>
+      <input type="hidden" name="_csrf" value="<%= _csrf%>"/>
+    </form>
+</div>
+
 </h1>

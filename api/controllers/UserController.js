@@ -13,13 +13,25 @@ module.exports = {
 		
 
 	},
-		'view': function (req,res){
-		//res locals dura por el tiempo de la vista
-	
-		res.view();
-		
+
+
+	view: function(req,res,next){
+
+
+		User.findOne(req.param('id')).populate('projects').exec(function (err,user){
+
+			if(err) return next(err);
+			if(!user) return next();
+			console.log(user.email);
+			console.log('hola');
+			var project = user.projects;
+			console.log(user);
+			res.view({user:user});
+		});
 
 	},
+
+
 
 	create: function(req,res,next){
 		User.create(req.allParams(), function userCreated(err,user){
