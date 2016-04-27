@@ -9,8 +9,14 @@
           <h5 class="header col s12 light"> Gestiona tus proyectos de forma ágil</h5>
         </div>
         <div class="row center">
-          <a href="http://materializecss.com/getting-started.html" id="download-button" class="btn-large waves-effect waves-light teal lighten-1">
+           <% if (session.authenticated) {%>
+          <a href="/user/view/<%=session.User.id%>" id="download-button" class="btn-large waves-effect waves-light teal lighten-1">
             Comienza</a>
+           <%} else{%>
+          <a href="/session/login/" id="download-button" class="btn-large waves-effect waves-light teal lighten-1">
+            Comienza
+          </a>
+             <%}%>
         </div>
         <br><br>
 

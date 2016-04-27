@@ -22,11 +22,10 @@ module.exports = {
 
 			if(err) return next(err);
 			if(!user) return next();
-			console.log(user.email);
-			console.log('hola');
-			var project = user.projects;
-			console.log(user);
-			res.view({user:user});
+			
+	
+
+			return res.view({user:user});
 		});
 
 	},

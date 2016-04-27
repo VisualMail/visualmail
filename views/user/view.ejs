@@ -1,29 +1,40 @@
-<script>
-var myjson;
-$.getJSON("http://localhost:1337/user", function(json){
-    myjson = json;
-    console.log(myjson);
-});
-
-</script>
-	
-	<div class = "carta">
+<div class = "carta container">
 	<form class="col s6" action = "/project/create/" method = "post">
 
 	
-	<h5> Crear proyectos</h5>
- 	<h6> Hola <%= session.User.id%> </h6>
-
+	<h5> Crear proyectos </h5>
        <div class="row">
         <div class="input-field  col s6">
           <input id="name" type="text" class="validate" name="name">
           <label for="name">Nombre del proyecto</label>
         </div>
         <input type="hidden" name="owner_email" value="<%= session.User.email %>"/>
+        <input type="hidden" name="participants" value="<%= user.id %>"/>
       </div>    
       <button type="submit" class="waves-effect waves-light btn" value="Crear cuenta"> Enviar </button>
       <input type="hidden" name="_csrf" value="<%= _csrf%>"/>
     </form>
 </div>
 
+<div class = "carta ">
+  <h5>Mis proyectos</h5>
+    <table>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+    
+
+    </tr>
+    <% _.each(user.projects, function(projects){%>
+   <tr data-id="<%=projects.id %>" data-model="projects">
+      <td> <%= projects.id %> </td>
+      <td> <%= projects.name %> </td>
+      <td> <%= projects.owner_email %> </td>
+      <td><a href="/project/edit/<%=projects.id%>" class = "waves-effect waves-light btn"> Administrar</a></td>
+      </tr>
+    
+      <% })%>
+  </table>
+
+</div>
 </h1>
