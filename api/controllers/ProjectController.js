@@ -24,7 +24,7 @@ Project.create(req.allParams(), function ProjectCreated(err,user){
 
 
 edit: function(req,res,next){
-		Project.findOne(req.param('id'), function foundProject(err,project){
+		Project.findOne(req.param('id')).populate('participants').exec(function(err,project){
 			if(err) return next(err);
 			if(!project) return next();
 			return res.view({
@@ -37,7 +37,11 @@ edit: function(req,res,next){
 	add_user: function(req,res,next){
 		var user_id_found;
 		User.findOneByEmail(req.param('email')).exec( function(err,user){
-			if(err) return next(err);
+			if(err){
+				console.log('usuario no existe');
+				req.session.flash = { err:err}
+				return redirect('/');
+			} 
 			console.log(user.email);
 			user_id_found = user.id;
 
@@ -56,5 +60,6 @@ edit: function(req,res,next){
 		});
 		
 	},
+
 };
 

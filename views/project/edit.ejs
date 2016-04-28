@@ -3,7 +3,7 @@
 
 
  <div class = "carta">
-  <h3> Projecto: <%= project.name%> </h3>
+  <h5> Projecto: <%= project.name%> </h3>
     <!--<h1> Hola soy el <%= project.id%></h1>
     <h1> HOla soy el usuario <%=session.User.id%></h1>-->
     <form class="col s12" action = "/project/add_user/<%=project.id%>" method = "post">    
@@ -16,15 +16,37 @@
          
           <input id="id_project" name= "id_project" type="hidden" class="validate" value="<%=project.id%>">
           <input id="user_id" name= "user_id" type="hidden" class="validate" value="<%=session.User.id%>">
-      <button type="submit" class="waves-effect waves-light btn-large" value="Crear cuenta"> Enviar </button>
+      <button type="submit" class="waves-effect waves-light btn-large" value="Crear cuenta"> Añadir Usuario </button>
       <input type="hidden" name="_csrf" value="<%= _csrf%>"/>
     </form>
   
   <br>
   </div>  
 
-  <div clas="carta">
+  <div class="carta">
+    <h5> Participantes del projecto</h3>
+
+      <table class="striped">
+        <thead> 
+    <tr>
+      <th data-field="nombre">Nombre </th>
+      <th data-field="apellidos">Apellidos </th>
+      <th data-field="correo">Correo </th>
+
+
+    </tr>
+        </thead> 
+
+    <% _.each(project.participants, function(participants){%>
+   <tr data-id="<%=participants.id %>" data-model="participants">
+      <td> <%= participants.firstame %> </td>
+      <td> <%= participants.lastname %> </td>
+      <td> <%= participants.email %> </td>
+     
+      </tr>
     
+      <% })%>
+  </table>
 
   </div>
 
