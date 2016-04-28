@@ -39,7 +39,11 @@
   </head>
  <nav class="white" role="navigation">
     <div class="nav-wrapper container">
-      <a id="logo-container" href="/" class="brand-logo">Visual Mail</a>
+       <% if (session.authenticated) {%>
+      <a id="logo-container" href="/user/view/<%=session.User.id%>" class="brand-logo">Visual Mail</a>
+      <%} else{%>
+       <a id="logo-container" href="/" class="brand-logo">Visual Mail</a>
+      <%}%>
       <ul class="right hide-on-med-and-down">
         <% if (session.authenticated) {%>
         <li><form action="/session/logout/" id="my_form"> <input type="hidden" name="_csrf" value="<%= _csrf%>"/> <a href="javascript:{}" onclick="document.getElementById('my_form').submit();" > Logout</a> Logout </form></li>

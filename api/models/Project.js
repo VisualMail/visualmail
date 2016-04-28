@@ -9,8 +9,8 @@ module.exports = {
 
 schema:true,autoCreatedAt: false,autoUpdatedAt: false,
 attributes: {
-	name:{ type: 'string', required:false },
-	owner_email:{ type: 'string', required:false},
+	name:{ type: 'string', required:true },
+	owner_email:{ type: 'string', required:true},
 	participants:{
 		dominant: false,
 		collection: 'user',

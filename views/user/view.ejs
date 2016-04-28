@@ -20,16 +20,16 @@
   <h5>Mis proyectos</h5>
     <table>
     <tr>
-      <th>ID</th>
-      <th>Name</th>
+      
+      <th>Nombre del proyecto</th>
+      
     
 
     </tr>
     <% _.each(user.projects, function(projects){%>
    <tr data-id="<%=projects.id %>" data-model="projects">
-      <td> <%= projects.id %> </td>
+
       <td> <%= projects.name %> </td>
-      <td> <%= projects.owner_email %> </td>
       <td><a href="/project/edit/<%=projects.id%>" class = "waves-effect waves-light btn"> Administrar</a></td>
       </tr>
     
