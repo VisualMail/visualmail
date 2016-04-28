@@ -13,10 +13,10 @@ Project.create(req.allParams(), function ProjectCreated(err,user){
 				//req.session dura el tiempo de la sesion hasta que el browser cierra
 				req.session.flash = { err:err}
 				console.log(err);
-			return res.redirect('/user/signup');
+				return res.redirect('/user/signup');
 			}
-			
-			res.redirect('user/view/');
+			req.session.flash={};
+			res.redirect('user/view/'+req.session.User.id);
 		});
 
 	},	
@@ -36,28 +36,49 @@ edit: function(req,res,next){
 	//la segunda es realizar el update
 	add_user: function(req,res,next){
 		var user_id_found;
-		User.findOneByEmail(req.param('email')).exec( function(err,user){
+		var flag= false;
+		//console.log(req.param('email'));
+		User.findOneByEmail(req.param('email'), function foundUser(err,user){
 			if(err){
-				console.log('usuario no existe');
 				req.session.flash = { err:err}
-				return redirect('/');
+				return next(err);
 			} 
+			if(!user){
+				//console.log('usuario aqui no existe');
+
+
+		var userdontexist =[{name: 'userdontexist', message: 'El usuario no existe'}] 
+				req.session.flash={
+			err: userdontexist
+		}
+				 res.redirect('/project/edit/'+req.param('project_id'));
+				 return;
+			}
+			else{
 			console.log(user.email);
 			user_id_found = user.id;
+			flag=true;
+			}
+			
 
 		});
-
-		Project.findOne(req.param('id')).exec( function(err, project){
-			console.log(req.param('id'));
-			console.log('hola: '+user_id_found);
+		
+		if(flag==true){
+			console.log('no debio llegar aca');
+			Project.findOne(req.param('id')).exec( function(err, project){
+			//console.log(req.param('id'));
+			//console.log('hola: '+user_id_found);
 			if(err){
 				return next(err);
 			}
 			project.participants.add(user_id_found);
 			project.save(function(err) {});
+			req.session.flash={};
 			res.redirect('user/view/'+req.param('user_id'));
 
 		});
+		}
+
 		
 	},
 
