@@ -12,6 +12,7 @@ attributes: {
 	name:{ type: 'string', required:false },
 	owner_email:{ type: 'string', required:false},
 	participants:{
+		dominant: false,
 		collection: 'user',
 		via: 'projects'
 	}

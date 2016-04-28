@@ -17,7 +17,6 @@ module.exports = {
 		res.view('session/login');
 	},
 		create: function(req, res , next){
-
 		if(!req.param('email') || !req.param('password')){
 			var usernamepasswordrequired =[{name: 'usernamepasswordrequired', message: 'Debes ingresar contraseña y usuario'}] 
 				req.session.flash={

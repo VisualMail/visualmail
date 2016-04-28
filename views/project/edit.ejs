@@ -1,0 +1,26 @@
+
+
+
+
+ <div class = "carta">
+    <h1> Hola soy el <%= project.id%></h1>
+    <h1> HOla soy el usuario <%=session.User.id%></h1>
+    <form class="col s12" action = "/project/add_user/<%=project.id%>" method = "post">    
+          <input id="participants" name= "participants" type="hidden" class="validate" value="57202d1ee902142a2b2c8ed6">
+          <input id="id_project" name= "id_project" type="hidden" class="validate" value="<%=project.id%>">
+          <input id="user_id" name= "user_id" type="hidden" class="validate" value="<%=session.User.id%>">
+      <button type="submit" class="waves-effect waves-light btn-large" value="Crear cuenta"> Enviar </button>
+      <input type="hidden" name="_csrf" value="<%= _csrf%>"/>
+    </form>
+  
+  <br>
+  </div>  
+
+
+
+
+
+
+
+
+
