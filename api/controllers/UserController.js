@@ -50,5 +50,37 @@ module.exports = {
 	},	
 
 
+
+		edit: function(req,res,next){
+		User.findOne(req.param('id'), function foundUSer(err,user){
+			if(err) return next(err);
+			if(!user) return next();
+			res.view({
+				user:user
+			});
+
+		});
+	},
+	//la segunda es realizar el update
+	update_data: function(req,res,next){
+		console.log('asas');
+		User.update({id:req.param('id')}, {firstname:req.param('firstname')},{lastname:req.param('lastname')},{initials:req.param('initials')},{imgurl:req.param('imgurl'),pmo:req.param('pmo')}).exec(function(err){
+			if(err){
+				req.session.flash = { err:err}
+				return res.redirect('/user/edit/'+ req.param('id'));
+			}
+			res.redirect('user/view/'+req.param('id'));
+		});
+	},
+		update: function(req,res,next){
+		User.update({id:req.param('id')}, {password:req.param('password')}).exec(function userUpdatedPass(err){
+			if(err){
+				req.session.flash = { err:err}
+				return res.redirect('/user/edit/'+ req.param('id'));
+			}
+			res.redirect('user/view/'+req.param('id'));
+		});
+	},
+
 };
 
