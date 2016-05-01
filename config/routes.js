@@ -35,6 +35,7 @@ module.exports.routes = {
   '/': {
     view: 'static/homepage'
   },
+  '/email': 'EmailController.sendEmail'
 
   /***************************************************************************
   *                                                                          *
