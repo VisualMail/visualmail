@@ -62,7 +62,7 @@ module.exports = function Email(sails) {
       __configKey__: {
         service: 'Gmail',
         auth: {
-          user: 'mattsnake91@gmail.com',
+          user: 'noreply.visualmail@gmail.com',
           pass: ''
         },
          transporter: {
@@ -70,14 +70,14 @@ module.exports = function Email(sails) {
             port: 465,
             secure: true,
             auth: {
-                user: 'mattsnake91@gmail.com',
-                pass: ''
+                user: 'noreply.visualmail@gmail.com',
+                pass: 'visualmail2016'
             },
            // tls: {rejectUnauthorized: false},
             //debug:true          
         },
         templateDir: path.resolve(sails.config.appPath, 'views/emailTemplates'),
-        from: 'noreply@hydra.com',
+        from: 'noreply@visualmail.com',
         testMode: false
       }
     },

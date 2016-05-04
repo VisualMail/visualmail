@@ -56,10 +56,10 @@ footer.page-footer {
   margin: 0;
 }
 .carta{
-  max-width: 650px;
-  margin: 10px auto;
+  max-width: 500px;
+  margin: 50px auto;
   padding: 10px 20px;
-  border: 2px solid #009688;
+  border: 2px solid #C8E6C9;
 /*background: #009688;*/
   /*box-shadow: 0px 0px 1px 1px rgba(0,0,0,0.75);*/
   border-radius: 8px;
