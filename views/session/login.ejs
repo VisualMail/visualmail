@@ -1,13 +1,27 @@
 
     <!--STYLES-->
+    <link rel="stylesheet" href="/styles/importer.css">
+    <link rel="stylesheet" href="/styles/materialize.css">
+    <link rel="stylesheet" href="/styles/style.css">
     <!--STYLES END-->
     <!--SCRIPTS-->
+    <script src="/js/dependencies/sails.io.js"></script>
+    <script src="/js/dependencies/angular/angular.min.js"></script>
+    <script src="/js/dependencies/jquery/jquery.js"></script>
+    <script src="/js/materialize.min.js"></script>
+    <script src="/js/init.js"></script>
     <!--SCRIPTS END-->
 
 <div class= "row" id="login-form">
 
       
-
+<% if(flash && flash.err){ %>
+ -<ul>
+ -  <% Object.keys(flash.err).forEach(function(error){ %>
+ -  <li><%= JSON.stringify(flash.err[error])%></li>
+ -  <%})%>
+ -</ul>
+ -<% } %>
    <div class=" z-depth-4 card-panel col s4 offset-s4 ">
      <form action="/session/create" class ="login-form" method="post">
 
