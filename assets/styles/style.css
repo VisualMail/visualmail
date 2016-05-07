@@ -59,10 +59,10 @@ footer.page-footer {
   max-width: 500px;
   margin: 50px auto;
   padding: 10px 20px;
-  border: 2px solid #C8E6C9;
-/*background: #009688;*/
+  /*border: 2px solid #C8E6C9;*/
+  /*background: #e8f5e9;*/
   /*box-shadow: 0px 0px 1px 1px rgba(0,0,0,0.75);*/
-  border-radius: 8px;
+  /*border-radius: 8px;*/
 }
 .carta form{
    max-width: 100%;
@@ -75,4 +75,16 @@ footer.page-footer {
 .dos{
   color: #000;
   width: 50px!important;
+}
+.primario{
+  background: #dcedc8  ;
+
+}
+.secundario{
+  background: #cddc39 ;
+
+}
+.terciario{
+  background: #827717 ;
+
 }

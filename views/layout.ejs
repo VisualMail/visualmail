@@ -38,12 +38,17 @@
     <!--STYLES END-->
   </head>
  <nav class="green darken-2" role="navigation">
-    <div class="nav-wrapper  container">
-       <% if (session.authenticated) {%>
-      <a id="logo-container" href="/user/view/<%=session.User.id%>" class="brand-logo">Visual Mail</a>
+    <div class="nav-fixed  container">
+         
+      <% if (session.authenticated) {%>
+      <a href="/user/view/<%=session.User.id%>"  class="brand-logo"><img src="/images/iconosmall2.png" height="50" weight="50"></a>
       <%} else{%>
-       <a  id="logo-container" href="/" class="brand-logo white-text">Visual Mail</a>
+       <a href="/" class=" brand-logo "><img src="/images/iconosmall2.png"  alt=""></a>
       <%}%>
+    
+       
+ 
+    
       <ul class="right hide-on-med-and-down ">
         <% if (session.authenticated) {%>
         <li><form action="/session/logout/" id="my_form"> <input type="hidden" name="_csrf" value="<%= _csrf%>"/> <a href="javascript:{}" onclick="document.getElementById('my_form').submit();" > Cerrar sesión</a> </form></li>
@@ -128,10 +133,7 @@
     <script src="/js/materialize.min.js"></script>
     <script src="/js/init.js"></script>
     <!--SCRIPTS END-->
-
-
-  </body>
-    <footer class="page-footer green darken-2">
+ <footer class="page-footer green darken-2">
     <div class="container">
     
         <div class="container">
@@ -145,10 +147,15 @@
 
 
     </div>
+
+
     <div class="footer-copyright">
       <div class="container">
        <a class="brown-text text-lighten-3" href="/">Visual Mail 2016</a>
       </div>
     </div>
   </footer>
+
+  </body>
+   
 </html>
