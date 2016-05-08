@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app>
+<html ng-app="app">
   <head>
     <title><%=typeof title == 'undefined' ? 'Visual Mail' : title%></title>
 
@@ -36,14 +36,26 @@
     <link rel="stylesheet" href="/styles/materialize.css">
     <link rel="stylesheet" href="/styles/style.css">
     <!--STYLES END-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+    <!--SCRIPTS-->
+    <script src="/js/dependencies/sails.io.js"></script>
+    <script src="/js/dependencies/angular/angular.min.js"></script>
+    <script src="/js/dependencies/angular/angular-messages.js"></script>
+    <script src="/js/dependencies/jquery/jquery.js"></script>
+    <script src="/js/materialize.min.js"></script>
+    <script src="/js/init.js"></script>
+    <!--SCRIPTS END-->
+
+
   </head>
  <nav class="green darken-2" role="navigation">
-    <div class="nav-fixed  container">
+    <div class="nav-wrapper  container">
          
       <% if (session.authenticated) {%>
-      <a href="/user/view/<%=session.User.id%>"  class="brand-logo"><img src="/images/iconosmall2.png" height="50" weight="50"></a>
+      <a href="/user/view/<%=session.User.id%>"  class="brand-logo col s2"><img src="/images/iconosmall2.png" ></a>
       <%} else{%>
-       <a href="/" class=" brand-logo "><img src="/images/iconosmall2.png"  alt=""></a>
+       <a href="/" class=" brand-logo "><img src="/images/iconosmall2.png"   alt=""></a>
       <%}%>
     
        
@@ -124,15 +136,12 @@
     -->
    
 
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet">
-    <!--SCRIPTS-->
-    <script src="/js/dependencies/sails.io.js"></script>
-    <script src="/js/dependencies/angular/angular.min.js"></script>
-    <script src="/js/dependencies/jquery/jquery.js"></script>
-    <script src="/js/materialize.min.js"></script>
-    <script src="/js/init.js"></script>
-    <!--SCRIPTS END-->
+
+
+
+
+
+    <!-- FOOTER -->
  <footer class="page-footer green darken-2">
     <div class="container">
     
