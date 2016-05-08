@@ -1,16 +1,19 @@
-  <!-- ANGULAR -->
+  <!-- ANGULAR 
 
 <script>
 
-  var app = angular.module('app', ['ngMessages']);
+  var app = angular.module('app', []);
 
-  app.controller('LoginCtrl',function LoginCTrl(){
+  app.controller('LoginCtrl',['$scope',function($scope){
+    $scope.correo='';
 
-    
-  });
+  }]);
 
 </script>
-<div class= "row " id="login-form">
+-->
+
+
+<div class= "row " id="login-form" >
    <div class=" z-depth-4 card-panel col s4 offset-s4 ">
      <form name="loginform" action="/session/create" class ="login-form" method="post">
 
@@ -24,12 +27,13 @@
          <div class="input-field col s7 offset-s1">
            <i class= "light-green-text small material-icons prefix">
              person_pin</i>
-           <input type="text" name="micorreo" id="email" ng-model="correo" ng-minlenght="5">
+           <input type="email" name="email" id="email" validate>
            <label for="email" class="center-align"> Email</label>
          </div>
+         <!--
          <div class="input-field col s4 centerme" >
            <div class="light-green-text"> Formato inválido</div>
-         </div>
+         </div>-->
        </div>
 
        <div class="row ">
