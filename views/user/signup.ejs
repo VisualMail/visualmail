@@ -1,8 +1,41 @@
 
 
-   <div class= "row " id="signup-form" >
+<script>
+  $(document).ready(function(){
+    $('.tooltipped').tooltip({delay: 50});
+  });
+
+   var $toastContent = $('<span class="  color_acentuado-text"> Ocurrió un error </span>');
+  
+   app.controller('signupctrl',['$scope',function($scope){
+    $scope.password="hola";
+    $scope.cpassword="";
+    $scope.validatepass=false;
+    if($scope.password==$scope.cpassword)
+      $scope.validatepass=true;
+    else
+      $scope.validatepass=false;
+    $scope.verificarform= function(value1,value2,value3){
+      if(value1=='true')
+        return true;
+    }
+   }]);
+   
+</script>
+<!--
+<style type="text/css">
+  .css-form input.ng-invalid.ng-touched {
+    background-color: #ff8a80;
+    color:#212121;
+  }
+</style>-->
+
+   <div class= "row " id="signup"  ng-controller="signupctrl" >
+    esto es: {{validatepass}}
+    {{password }} y {{cpassword}} 
+    verficiar form: {{verificarform}}
    <div class=" z-depth-4 card-panel col s4 offset-s4 ">
-     <form name="signupform" action="/user/create" class ="signup-form" method="post">
+     <form class="css-form" name="signupform" action="/user/create" method="post" novalidate>
 
 
        <div class="row margin">
@@ -11,21 +44,35 @@
 
          <div class= "row ">
          <div class="input-field col s7 offset-s1">
-           <input  id="firstname" type="text" class="validate" name="firstname">
+          
+           <input id="firstname" type="text"  name="firstname" ng-model="firstname" ng-minlength="3" ng-maxlength="15" ng-required="true" >
           <label for="firstname"   >Nombre</label>
          </div>
+          <div ng-messages="signupform.firstname.$error" role="alert" class="col s4 centerme red-text" >
+            <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
+            <div ng-message="minlength">Mínimo 3 caracteres</div> 
+            <div ng-message ="maxlength">Nombre muy largo</div>
+            <div ng-show="signupform.firstname.$valid"><i class="small material-icons light-green-text">done</i></div>
+         </div>
+        
    </div>
    
     <div class= "row ">
          <div class="input-field col s7 offset-s1">
-          <input  id="lastname" type="text" class="validate" name="lastname">
+          <input  id="lastname" type="text"  name="lastname" ng-model="lastname" ng-minlength="5" ng-maxlength="30" ng-required="true">
           <label for="lastname"   >Apellidos</label>
+         </div>
+        <div ng-messages="signupform.lastname.$error" role="alert" class="col s4 centerme red-text" >
+             <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
+            <div ng-message="minlength">Mínimo 5 caracteres</div> 
+            <div ng-message ="maxlength">Apellido muy largo</div>
+            <div ng-show="signupform.lastname.$valid"><i class="small material-icons light-green-text">done</i></div>
          </div>
             </div>
    
              <div class= "row ">
          <div class="input-field col s7 offset-s1">
-           <input  id="imgurl" type="text" class="validate" name="imgurl">
+           <input  id="imgurl" type="text" name="imgurl">
           <label for="imgurl" >URL imagen</label>
          </div>
             </div>
@@ -33,44 +80,66 @@
          <input type="hidden" id="pmo" type="boolean" name="pmo" value="true"/>
              <div class= "row ">
          <div class="input-field col s7 offset-s1">
-               <input id="email" type="email" class="validate" name="email" placeholder="hola@hila.cl">
+               <input id="email" type="email"  name="email" ng-model="email" placeholder="hola@visualmail.com" ng-required="true" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/">
           <label for="email"  >Email</label>
+          </div>
+       <div ng-messages="signupform.email.$error" role="alert" class="col s4 centerme red-text" >
+            <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
+            <div ng-message="email">Formato no válido</div>
+            <div ng-message="pattern">Formato no válido</div>
+            <div ng-show="signupform.email.$valid"><i class="small material-icons light-green-text">done</i></div>
          </div>
+
             </div>
    
              <div class= "row ">
          <div class="input-field col s7 offset-s1">
-               <input  id="initials" type="text" class="validate" name="initials">
+               <input  id="initials" type="text"  name="initials" ng-model="initials" ng-minlength="3" ng-maxlength="3" ng-required="true">
           <label for="initials"   >Iniciales</label>
          </div>
+         
+        <div ng-messages="signupform.initials.$error" role="alert" class="col s4 centerme red-text" >
+            <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
+            <div ng-message="minlength">3 caracteres</div> 
+            <div ng-message ="maxlength">No pueden ser más de 3 caracteres</div>
+            <div ng-show="signupform.initials.$valid"><i class="small material-icons light-green-text">done</i></div>
+        </div>
             </div>
-   
+          <div class= "row ">
+         <div class="input-field col s7 offset-s1">
+               <input  id="rut" type="text"  name="rut">
+          <label for="rut"   >Rut</label>
+         </div>
+            </div>
              <div class= "row ">
          <div class="input-field col s7 offset-s1">
-               <input id="password" type="password" class="validate" name="password">
+               <input id="password" type="password"  name="password" ng-model="password" required>
           <label for="password"  >Contraseña</label>
          </div>
            </div>
-   
+          <div class="row ">
+         <div class="input-field col s7 offset-s1">
+           <input type="password" name="confirmpassword" id="confirmpassword" ng-model="cpassword" required>
+           <label for="confirmpassword" >Confirmar Contraseña</label>
+         </div>
+       </div>
 
 
 
  
        <div class="row  container"> 
-          <button type="submit" class="waves-effect waves-light btn-large light-green col s6" value="Crear cuenta">  Crear cuenta</button>
+          <a type="submit"  class="waves-effect waves-light btn-large light-green col s6" value="Crear cuenta">  Crear cuenta</a>
           <input type="hidden" name="_csrf" value="<%= _csrf%>"/>
-       </div>
-
-             <div class ="row">
-          <div class="col s7 offset-s1">
+             
+          <div class="col s6">
             <% if(flash && flash.err){ %>
-              <h6 class="red-text"> Ocurrió un error </h6>
-            <!--
+              <!--<h6 class="red-text"> Ocurrió un error </h6>
+            
               <% Object.keys(flash.err).forEach(function(error){ %>
               <li><%= JSON.stringify(flash.err[error])%></li>
               <%})%>
             -->
-          
+             <script>Materialize.toast($toastContent, 5000);</script>
           <% } %>
 
         </div>

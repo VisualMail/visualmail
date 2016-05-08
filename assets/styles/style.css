@@ -71,20 +71,32 @@ footer.page-footer {
  margin: 30px auto;
 
 }
+.centerlogin{
+ margin: 40px auto;
 
+}
 .dos{
   color: #000;
   width: 50px!important;
 }
-.primario{
-  background: #dcedc8  ;
+.color_primario{
+  background: #388E3C  ;
 
 }
-.secundario{
-  background: #cddc39 ;
+.color_secundario{
+  background: #388E3C ;
 
 }
-.terciario{
-  background: #827717 ;
+.color_terciario{
+  background: #C8E6C9 ;
+
+}
+.color_acentuado{
+  background: #8BC34A;
+}
+.border_red{
+      border-bottom: 1px solid #b71c1c ;
+     box-shadow: 0 1px 0 0 #000;
+
 
 }
