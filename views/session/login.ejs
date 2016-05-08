@@ -21,6 +21,9 @@
        <div class="row ">
       
         <img class="col s6 offset-s3"src="/images/iconobigsinfondo.png" alt="">
+       <div class ="row col s6 offset-s3">
+          <h4 class="center light-green-text"> Visual Mail</h4>
+       </div>
        </div>
 
        <div class= "row ">
@@ -28,7 +31,7 @@
            <i class= "light-green-text small material-icons prefix">
              person_pin</i>
            <input type="email" name="email" id="email" validate>
-           <label for="email" class="center-align"> Email</label>
+           <label for="email" > Email</label>
          </div>
          <!--
          <div class="input-field col s4 centerme" >
@@ -40,12 +43,12 @@
          <div class="input-field col s7 offset-s1">
            <i class="light-green-text small material-icons prefix"> lock</i>
            <input type="password" name="password" id="password">
-           <label for="password" class="center-align">Contraseña</label>
+           <label for="password" >Contraseña</label>
          </div>
        </div>
  
        <div class="row  container"> 
-          <button type="submit" class="waves-effect waves-light btn-large light-green col s6" value="Crear cuenta"> Iniciar Sesión </button>
+          <button type="submit" class="waves-effect waves-light btn-large light-green col s6" > Iniciar Sesión </button>
           <input type="hidden" name="_csrf" value="<%= _csrf%>"/>
        </div>
              <div class ="row">
@@ -66,7 +69,7 @@
 
 
        <div class="row ">
-         <div class="col s6"><a href="/" class="light-green-text"> Registrate</a></div>
+         <div class="col s6"><a href="/user/signup" class="light-green-text"> Registrate</a></div>
          <div class="col s6 "><a href="/" class="light-green-text"> ¿Olvido la contraseña?</a></div>
        </div>
 
