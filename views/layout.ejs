@@ -42,13 +42,53 @@
     <script src="/js/dependencies/sails.io.js"></script>
     <script src="/js/dependencies/angular/angular.min.js"></script>
     <script src="/js/dependencies/angular/angular-messages.js"></script>
+    <script src="/js/dependencies/angular/angular-compare.js"></script>
+    <script src="/js/dependencies/angular/angular-rut-validator.js"></script>
     <script src="/js/dependencies/jquery/jquery.js"></script>
     <script src="/js/materialize.min.js"></script>
     <script src="/js/init.js"></script>
     <!--SCRIPTS END-->
 
 <script>
-   var app= angular.module('app',['ngMessages']);
+var compareTo = function() {
+    return {
+        require: "ngModel",
+        scope: {
+            otherModelValue: "=compareTo"
+        },
+        link: function(scope, element, attributes, ngModel) {
+
+            ngModel.$validators.compareTo = function(modelValue) {
+                return modelValue == scope.otherModelValue;
+            };
+
+            scope.$watch("otherModelValue", function() {
+                ngModel.$validate();
+            });
+        }
+    };
+};
+
+   var app= angular.module('app',['ngMessages','gp.rutValidator']).directive('capitalize', function() {
+    return {
+      require: 'ngModel',
+      link: function(scope, element, attrs, modelCtrl) {
+        var capitalize = function(inputValue) {
+          if (inputValue == undefined) inputValue = '';
+          var capitalized = inputValue.toUpperCase();
+          if (capitalized !== inputValue) {
+            modelCtrl.$setViewValue(capitalized);
+            modelCtrl.$render();
+          }
+          return capitalized;
+        }
+        modelCtrl.$parsers.push(capitalize);
+        capitalize(scope[attrs.ngModel]); // capitalize initial value
+      }
+    };
+  }).directive("compareTo", compareTo);
+   ;
+
 </script>
   </head>
  <nav class="green darken-2" role="navigation">

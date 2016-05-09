@@ -1,24 +1,21 @@
-  <!-- ANGULAR 
+
 
 <script>
 
-  var app = angular.module('app', []);
+
 
   app.controller('LoginCtrl',['$scope',function($scope){
-    $scope.correo='';
-
   }]);
 
 </script>
--->
 
 <script>
    var $toastContent = $('<span class="  color_acentuado-text">Credenciales inválidas</span>');
 
 </script>
-<div class= "row " id="login-form" >
+<div class= "row " ng-controller="LoginCtrl" >
    <div class=" z-depth-4 card-panel col s4 offset-s4 ">
-     <form name="loginform" action="/session/create" class ="login-form" method="post">
+     <form name="loginform" action="/session/create" class ="login-form" method="post" novalidate>
 
 
        <div class="row ">
@@ -33,8 +30,13 @@
          <div class="input-field col s7 offset-s1">
            <i class= "light-green-text small material-icons prefix">
              person_pin</i>
-           <input type="email" name="email" id="email" validate>
+           <input type="email" name="email" id="email" ng-model="email" placeholder="hola@visualmail.com" 
+           ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/">
            <label for="email" > Email</label>
+         </div>
+         <div ng-messages="loginform.email.$error" role="alert" class="col s4 centerme red-text" >
+            <div ng-message="email">Formato no válido</div>
+            <div ng-message="pattern">Formato no válido</div>
          </div>
          <!--
          <div class="input-field col s4 centerme" >
@@ -49,8 +51,7 @@
            <label for="password" >Contraseña</label>
          </div>
        </div>
-      
-
+    
        <div class="row  container"> 
           <button type="submit" class="waves-effect waves-light btn-large light-green col s6" > Iniciar Sesión </button>
           <input type="hidden" name="_csrf" value="<%= _csrf%>"/>

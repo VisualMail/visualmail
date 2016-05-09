@@ -30,6 +30,10 @@ var jsFilesToInject = [
 
   // Dependencies like jQuery, or Angular are brought in here
   'js/dependencies/angular/angular.min.js',
+  'js/dependencies/angular/angular-messages.js',
+
+
+
   'js/dependencies/**/*.js',
   'js/materialize.min.js',
 

@@ -4685,7 +4685,7 @@ small {
     max-width: 86%;
   }
 }
-
+/*Marcador*/
 .toast {
   border-radius: 2px;
   top: 0;
@@ -4698,11 +4698,11 @@ small {
   min-height: 48px;
   line-height: 1.5em;
   word-break: break-all;
-  background-color: #323232;
+  background-color: #388E3C;
   padding: 10px 25px;
   font-size: 1.1rem;
   font-weight: 300;
-  color: #fff;
+  color: #ffffff;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;

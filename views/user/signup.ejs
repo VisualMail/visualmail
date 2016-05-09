@@ -1,24 +1,13 @@
 
 
 <script>
+var $toastContent = $('<span class="  color_acentuado-text">Ocurrió un error, el correo existe</span>');
   $(document).ready(function(){
     $('.tooltipped').tooltip({delay: 50});
   });
 
-   var $toastContent = $('<span class="  color_acentuado-text"> Ocurrió un error </span>');
-  
    app.controller('signupctrl',['$scope',function($scope){
-    $scope.password="hola";
-    $scope.cpassword="";
-    $scope.validatepass=false;
-    if($scope.password==$scope.cpassword)
-      $scope.validatepass=true;
-    else
-      $scope.validatepass=false;
-    $scope.verificarform= function(value1,value2,value3){
-      if(value1=='true')
-        return true;
-    }
+
    }]);
    
 </script>
@@ -27,15 +16,14 @@
   .css-form input.ng-invalid.ng-touched {
     background-color: #ff8a80;
     color:#212121;
+    class="css-form"
   }
 </style>-->
 
+
    <div class= "row " id="signup"  ng-controller="signupctrl" >
-    esto es: {{validatepass}}
-    {{password }} y {{cpassword}} 
-    verficiar form: {{verificarform}}
    <div class=" z-depth-4 card-panel col s4 offset-s4 ">
-     <form class="css-form" name="signupform" action="/user/create" method="post" novalidate>
+     <form  name="signupform" action="/user/create" method="post" novalidate>
 
 
        <div class="row margin">
@@ -72,8 +60,9 @@
    
              <div class= "row ">
          <div class="input-field col s7 offset-s1">
-           <input  id="imgurl" type="text" name="imgurl">
+           <input  id="imgurl" type="text" name="imgurl" placeholder="http://">
           <label for="imgurl" >URL imagen</label>
+          <!-- pattern="https?://.+"-->
          </div>
             </div>
    
@@ -94,41 +83,67 @@
    
              <div class= "row ">
          <div class="input-field col s7 offset-s1">
-               <input  id="initials" type="text"  name="initials" ng-model="initials" ng-minlength="3" ng-maxlength="3" ng-required="true">
+               <input  id="initials" type="text"  name="initials" ng-model="initials" ng-minlength="3" ng-maxlength="3" ng-required="true" capitalize>
           <label for="initials"   >Iniciales</label>
          </div>
          
         <div ng-messages="signupform.initials.$error" role="alert" class="col s4 centerme red-text" >
             <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
             <div ng-message="minlength">3 caracteres</div> 
-            <div ng-message ="maxlength">No pueden ser más de 3 caracteres</div>
+            <div ng-message ="maxlength">No pueden ser más de 3 carácteres</div>
             <div ng-show="signupform.initials.$valid"><i class="small material-icons light-green-text">done</i></div>
         </div>
             </div>
+
+
           <div class= "row ">
          <div class="input-field col s7 offset-s1">
-               <input  id="rut" type="text"  name="rut">
-          <label for="rut"   >Rut</label>
+               <input  id="rut" type="text"  name="rut"  ng-model="rut" ng-required="true"  ng-pattern="/^0*(\d{1,3}(\.?\d{3})*)\-?([\dkK])$/" gp-rut-validator ng-model-options="{ updateOn: 'blur' }" placeholder="Rut sin guión ni puntos"> 
+          <label for="rut">Rut</label>
          </div>
+          <div ng-messages="signupform.rut.$error" role="alert" class="col s4 centerme red-text" >
+            <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
+            <div ng-message="pattern">Formato no válido</div>
+            <div ng-message="rutInvalid">Rut inválido</div>
+            <div ng-show="signupform.rut.$valid"><i class="small material-icons light-green-text">done</i></div>
+          </div>
             </div>
+
+
+
              <div class= "row ">
-         <div class="input-field col s7 offset-s1">
-               <input id="password" type="password"  name="password" ng-model="password" required>
+         <div class="input-field col s7 offset-s1 ">
+          <input class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="valor alfanúmerico, mínimo ingrese 1 minúscula, mayúscula y número"
+
+          id="password" type="password"  name="password" ng-model="password" ng-required="true" ng-pattern="/(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z])/" ng-minlength="8" ng-maxlength="20" >
           <label for="password"  >Contraseña</label>
          </div>
+      <div ng-messages="signupform.password.$error" role="alert" class="col s4 centerme red-text" >
+              <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
+            <div ng-message="pattern">Formato no válido</div>
+            <div ng-message="minlength">Mínimo 8 caracteres</div> 
+            <div ng-message ="maxlength">Contraseña muy larga</div>
+            <div ng-show="signupform.password.$valid"><i class="small material-icons light-green-text">done</i></div>
+          </div>
+
            </div>
           <div class="row ">
          <div class="input-field col s7 offset-s1">
-           <input type="password" name="confirmpassword" id="confirmpassword" ng-model="cpassword" required>
+           <input type="password" name="confirmpassword" id="confirmpassword" ng-model="confirmpassword" ng-required="true" compare-to="password">
            <label for="confirmpassword" >Confirmar Contraseña</label>
          </div>
+           <div ng-messages="signupform.confirmpassword.$error" role="alert" class="col s4 centerme red-text" >
+              <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
+              <div ng-message="compareTo"> La contraseña no coincide</div>
+            <div ng-show="signupform.confirmpassword.$valid"><i class="small material-icons light-green-text">done</i></div>
+          </div>
        </div>
 
-
-
- 
        <div class="row  container"> 
-          <a type="submit"  class="waves-effect waves-light btn-large light-green col s6" value="Crear cuenta">  Crear cuenta</a>
+          <button type="submit"  
+            ng-show="signupform.$valid"
+          class="waves-effect waves-light btn-large light-green col s6" value="Crear cuenta">  Crear cuenta</button>
+          
           <input type="hidden" name="_csrf" value="<%= _csrf%>"/>
              
           <div class="col s6">
