@@ -6,7 +6,9 @@
     $('.modal-trigger').leanModal('modal_nuevo_proyecto');
   });
          
-
+ io.socket.get('/users/getall', function (resData) {
+  resData;
+});
  app.controller('viewCtrl',['$scope',function($scope){
     $scope.email = usuario.email;
    }]);
