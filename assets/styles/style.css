@@ -67,6 +67,10 @@ footer.page-footer {
 .carta form{
    max-width: 100%;
 }
+.principalproject{
+  padding: 10px 20px;
+   margin: 10px auto;
+}
 .centerme{
  margin: 30px auto;
 
@@ -104,3 +108,18 @@ footer.page-footer {
 .backdrop{
        background-color: #388E3C;
      }
+
+.contenedor_proyect{
+  padding: 50px;
+  /*border: 2px solid #C8E6C9;*/
+}
+.scroll{
+  overflow-y: auto; height:300px; 
+
+}
+.boxer {
+    top: 0;
+    left: 0;
+    padding-bottom: 100px;
+    height: 100%;
+}

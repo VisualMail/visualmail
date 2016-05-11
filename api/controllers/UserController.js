@@ -61,6 +61,14 @@ module.exports = {
 
 		});
 	},
+
+
+	getAll: function(req,res){
+		User.find().exec(function(err,user){
+			if(err) return next(err);
+			return res.json({user:user});
+		});
+	},
 	//la segunda es realizar el update
 	update_data: function(req,res,next){
 		console.log('asas');
