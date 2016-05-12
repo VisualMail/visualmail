@@ -63,10 +63,24 @@ module.exports = {
 	},
 
 
-	getAll: function(req,res){
-		User.find().exec(function(err,user){
+	getAllEmail: function(req,res){
+		var myQuery= User.find();
+		var sortString='email ASC';
+		myQuery.sort('email ASC');
+
+		myQuery.exec(function(err,user){
 			if(err) return next(err);
-			return res.json({user:user});
+			var arr=[];
+			//console.log(user);
+			var i=0;
+			_.each(user,function(key,value){
+				if(user[i].email!=req.session.User.email)
+					user[i].firstname=user[i].firstname+' '+user[i].lastname;
+					arr.push(_.pick(key,'email','firstname'));
+				i=i+1;
+			});
+			//console.log(arr);
+			return res.json({arr:arr});
 		});
 	},
 	//la segunda es realizar el update

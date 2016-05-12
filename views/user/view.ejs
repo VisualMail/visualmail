@@ -1,14 +1,15 @@
 <script>
-  var usuario = <%- JSON.stringify(user) %>
-
+ 
+    var usuario = <%- JSON.stringify(user) %>
  $(document).ready(function(){
     // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
     $('.modal-trigger').leanModal('modal_nuevo_proyecto');
+     
+
+    
   });
          
- io.socket.get('/users/getall', function (resData) {
-  resData;
-});
+
  app.controller('viewCtrl',['$scope',function($scope){
     $scope.email = usuario.email;
    }]);
