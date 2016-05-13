@@ -35,8 +35,10 @@ module.exports.routes = {
   '/': {
     view: 'static/homepage'
   },
-  '/email': 'EmailController.sendEmail'
+  '/email': 'EmailController.sendEmail',
+  'post /project/add_user': 'ProjectController.add_user',
 
+  
   /***************************************************************************
   *                                                                          *
   * Custom routes here...                                                    *

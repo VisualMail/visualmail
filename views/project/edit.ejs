@@ -2,6 +2,9 @@
 
 <script>
 
+
+
+
 var REGEX_EMAIL = '([a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@' +
                   '(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)';
 
@@ -12,8 +15,22 @@ $http.get('http://localhost:1337/user/getAllEmail/')
   .then(function(result) {
     $scope.usuarios = result.data;
     });
-
+var id= '<%=project.id%>';
+$scope.project_id = new String(id);
+console.log(id);
 $scope.inputdatos = '';
+
+$scope.sendData = function(){
+  $scope.jsonvalue = {
+  "project_id": id, 
+  "emails": $scope.inputdatos
+  };
+
+  console.log($scope.jsonvalue);
+  io.socket.post('project/add_user/', {data : $scope.jsonvalue});
+}
+
+
 $scope.myConfig = {
   create: false,
   persist:false,
@@ -84,7 +101,8 @@ render: {
 
  <div class = "carta" ng-controller="projectedit">
   <selectize config='myConfig' options='usuarios.arr' ng-model="inputdatos"></selectize>
-  
+  asdsadsadas {{project_id}}
+   <button type="submit" class="waves-effect waves-light btn-large" ng-click="sendData()"> Enviar </button>
  <p>
       <b>ngModel2:</b>
       <pre>{{inputdatos |json}}</pre>

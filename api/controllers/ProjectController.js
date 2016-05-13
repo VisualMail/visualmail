@@ -35,6 +35,9 @@ edit: function(req,res,next){
 	},
 	//la segunda es realizar el update
 	add_user: function(req,res,next){
+		console.log('hola mundo');
+
+		/*
 		var user_id_found;
 		var flag= false;
 		//console.log(req.param('email'));
@@ -79,7 +82,7 @@ edit: function(req,res,next){
 		});
 		}
 
-		
+		*/
 	},
 
 };
