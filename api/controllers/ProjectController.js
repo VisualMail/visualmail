@@ -36,7 +36,9 @@ edit: function(req,res,next){
 	//la segunda es realizar el update
 	add_user: function(req,res,next){
 		console.log('hola mundo');
-
+		console.log(req.param('id'));
+		console.log(req.param('email'));
+		return res.redirect('/user/');
 		/*
 		var user_id_found;
 		var flag= false;

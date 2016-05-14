@@ -11,23 +11,42 @@ var REGEX_EMAIL = '([a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+/=?^_`{|}~
 
 app.controller('projectedit',function($scope,$http,$timeout){
 $scope.usuarios = [];
-$http.get('http://localhost:1337/user/getAllEmail/')
+$http.get('/user/getAllEmail/')
   .then(function(result) {
     $scope.usuarios = result.data;
     });
+
+
+    $http.get('/csrfToken')
+      .success(function (token) {
+        $scope.csrfToken = token._csrf;
+    });
+
 var id= '<%=project.id%>';
 $scope.project_id = new String(id);
 console.log(id);
 $scope.inputdatos = '';
-
 $scope.sendData = function(){
   $scope.jsonvalue = {
   "project_id": id, 
   "emails": $scope.inputdatos
   };
+$http.defaults.withCredentials = true;
+$http({
+        method: 'POST',
+        url: '/project/add_user',
+        headers: {'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': $scope.csrfToken 
+        },
 
-  console.log($scope.jsonvalue);
-  io.socket.post('project/add_user/', {data : $scope.jsonvalue});
+        data: {
+          email: $scope.inputdatos,
+          id: $scope.project_id
+        }
+
+    }).success(function (data) {
+        location.reload();
+    });
 }
 
 
