@@ -67,22 +67,54 @@ module.exports = {
 		var myQuery= User.find();
 		var sortString='email ASC';
 		myQuery.sort('email ASC');
-
 		myQuery.exec(function(err,user){
 			if(err) return next(err);
 			var arr=[];
 			//console.log(user);
 			var i=0;
 			_.each(user,function(key,value){
-				if(user[i].email!=req.session.User.email)
-					user[i].firstname=user[i].firstname+' '+user[i].lastname;
-					arr.push(_.pick(key,'email','firstname'));
+				if(user[i].email!=req.session.User.email){
+						user[i].firstname=user[i].firstname+' '+user[i].lastname;
+						arr.push(_.pick(key,'id','email','firstname'));
+				}
+				
 				i=i+1;
 			});
 			//console.log(arr);
 			return res.json({arr:arr});
 		});
 	},
+
+	/*
+	myQuery.exec(function(err,user){
+			if(err) return next(err);
+			var arr=[];
+			//console.log(user);
+			var projectos_email=Project.findOne(req.param('id')).populate('participants');
+			console.log("yes");
+			projectos_email.exec(function(err,project){
+				if(err) return next(err);
+				console.log(project);
+				console.log(user[0].email);
+				var i=0;
+				_.each(user,function(key,value){
+					//
+					if(user[i].email!=req.session.User.email){
+					for(var j=0;j<project.participants.length;j++){
+						if(user[i].email!=project.participants.email[j]){
+							user[i].firstname=user[i].firstname+' '+user[i].lastname;
+							arr.push(_.pick(key,'email','firstname'));
+							
+						}
+					}
+				i=i+1;
+				}
+		
+					
+			});//fin each
+
+
+	*/
 	//la segunda es realizar el update
 	update_data: function(req,res,next){
 		console.log('asas');

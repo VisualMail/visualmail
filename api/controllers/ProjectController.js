@@ -36,8 +36,18 @@ edit: function(req,res,next){
 	//la segunda es realizar el update
 	add_user: function(req,res,next){
 		console.log('hola mundo');
-		console.log(req.param('id'));
-		console.log(req.param('email'));
+		//console.log(req.param('id'));
+		//console.log(req.param('email'));
+		var emails = req.param('email');
+		
+		Project.findOne(req.param('id')).exec( function(err, project){
+			//console.log(project);
+			for(var i=0; i<emails.length;i++ ){
+			project.participants.add(emails[i]);
+			project.save(function(err) {});
+		}
+		});
+
 		return res.redirect('/user/');
 		/*
 		var user_id_found;

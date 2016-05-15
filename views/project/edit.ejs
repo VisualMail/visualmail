@@ -8,12 +8,36 @@
 var REGEX_EMAIL = '([a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@' +
                   '(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)';
 
-
 app.controller('projectedit',function($scope,$http,$timeout){
 $scope.usuarios = [];
-$http.get('/user/getAllEmail/')
+var id= '<%=project.id%>';
+$scope.project_id = new String(id);
+
+$http({
+    url:'/user/getAllEmail/',
+    method: 'GET',
+    params: {id: $scope.project_id}
+  })
+
   .then(function(result) {
-    $scope.usuarios = result.data;
+    $scope.usuarios = [];
+    $scope.copy =  <%- JSON.stringify(project.participants) %>
+    for(i in result.data.arr){
+      var bandera=0;
+      for(j in $scope.copy){
+        //console.log($scope.copy[j].email);
+        if(result.data.arr[i].email==$scope.copy[j].email){
+          bandera=1;
+          break;
+        }
+      }
+    if(bandera==0){
+      $scope.usuarios.push(result.data.arr[i]);
+    }
+    }
+
+
+
     });
 
 
@@ -22,15 +46,10 @@ $http.get('/user/getAllEmail/')
         $scope.csrfToken = token._csrf;
     });
 
-var id= '<%=project.id%>';
-$scope.project_id = new String(id);
-console.log(id);
+
 $scope.inputdatos = '';
 $scope.sendData = function(){
-  $scope.jsonvalue = {
-  "project_id": id, 
-  "emails": $scope.inputdatos
-  };
+
 $http.defaults.withCredentials = true;
 $http({
         method: 'POST',
@@ -53,7 +72,7 @@ $http({
 $scope.myConfig = {
   create: false,
   persist:false,
-  valueField: 'email',
+  valueField: 'id',
   labelField: 'firstname',
   delimiter: '|',
   placeholder: 'Seleccione un correo',
@@ -94,9 +113,8 @@ render: {
 
   onInitialize: function(selectize){
     // receives the selectize object as an argument
-      console.log('Initialized',selectize);
-  },
-  maxItems: 5
+    //console.log('Initialized',selectize);
+  }
 };
 
 
@@ -119,14 +137,13 @@ render: {
 
 
  <div class = "carta" ng-controller="projectedit">
-  <selectize config='myConfig' options='usuarios.arr' ng-model="inputdatos"></selectize>
+  <selectize config='myConfig' options='usuarios' ng-model="inputdatos"></selectize>
   asdsadsadas {{project_id}}
    <button type="submit" class="waves-effect waves-light btn-large" ng-click="sendData()"> Enviar </button>
  <p>
       <b>ngModel2:</b>
       <pre>{{inputdatos |json}}</pre>
     </p>
-    
 
 
   <h5> Projecto: <%= project.name%> </h3>
