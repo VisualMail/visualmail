@@ -25,7 +25,7 @@ getOne: function(req,res,next){
 	Project.findOne(req.param('id')).populate('participants').exec(function(err,project){
 		if(err) return next(err);
 		if(!project) return next();
-		
+		//console.log(project);
 		return res.json({project:project});
 	});
 	
@@ -43,7 +43,7 @@ edit: function(req,res,next){
 	},
 	//la segunda es realizar el update
 	add_user: function(req,res,next){
-		console.log('hola mundo');
+		//console.log('hola mundo');
 		//console.log(req.param('id'));
 		//console.log(req.param('email'));
 		var emails = req.param('email');

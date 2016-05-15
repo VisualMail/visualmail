@@ -3,24 +3,33 @@ angular.module('app.projectedit',['ngMessages','gp.rutValidator','selectize'])
 var REGEX_EMAIL = '([a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@' +
                   '(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)';
 $scope.usuarios = [];
-var id= '<%=project.id%>';
 $scope.project_id = new String(id);
+$scope.misparticipantes;
+
 
 $http({
     url:'/user/getAllEmail/',
     method: 'GET',
-    params: {id: $scope.project_id}
+    params: {id: id}
   })
 
   .then(function(result) {
+    $http({
+    url:'/project/getOne/',
+    method: 'GET',
+    params: {id: id}
+  }).then(function(getOne){
+    
+    //console.log(value);
     $scope.usuarios = [];
-    $scope.copy =  JSON.stringify('<%=project.participants%>');
+    $scope.misparticipantes = getOne.data.project.participants;
+    //console.log(value);
 
     for(i in result.data.arr){
       var bandera=0;
-      for(j in $scope.copy){
+      for(j in $scope.misparticipantes){
         //console.log($scope.copy[j].email);
-        if(result.data.arr[i].email==$scope.copy[j].email){
+        if(result.data.arr[i].email==$scope.misparticipantes[j].email){
           bandera=1;
           break;
         }
@@ -29,6 +38,9 @@ $http({
       $scope.usuarios.push(result.data.arr[i]);
     }
     }
+
+  });
+
 
 
 
