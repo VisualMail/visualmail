@@ -37,6 +37,7 @@ module.exports.routes = {
   },
   '/email': 'EmailController.sendEmail',
   'post /project/add_user': 'ProjectController.add_user',
+  'post /project/getOne': 'ProjectController.getOne',
 
   
   /***************************************************************************

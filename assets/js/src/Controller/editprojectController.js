@@ -1,4 +1,3 @@
-<script>
 angular.module('app.projectedit',['ngMessages','gp.rutValidator','selectize'])
 .controller('projectedit',function($scope,$http,$timeout){
 var REGEX_EMAIL = '([a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@' +
@@ -15,7 +14,7 @@ $http({
 
   .then(function(result) {
     $scope.usuarios = [];
-    $scope.copy =  <%-JSON.stringify(project.participants)%>;
+    $scope.copy =  JSON.stringify('<%=project.participants%>');
 
     for(i in result.data.arr){
       var bandera=0;
@@ -114,113 +113,3 @@ render: {
 
 
 });
-
-</script>
-
- <nav container>
-    <div class="nav-wrapper green darken-2 border_estilo ">
-      <div class="col s12">
-        <a href="/user/view/<%=session.User.id%>" class="breadcrumb">Mis proyectos</a>
-        <a href="/project/edit/<%=project.id%>" class="breadcrumb">Projecto: <%= project.name%></a>        
-      </div>
-    </div>
-  </nav>
-
-<div id="vistaprincipal" class="boxer">
-  <h3 class="principalproject green-text"> Agregar usuarios al projecto</h3>
-  <div class="container">
-    
-
-    
-  </div>
-  <div class="container divider"></div>
-  <div class="container">
-    
-  </div>
-
-</div>
-
-
-
-
- <div class = "carta" ng-controller="projectedit">
-  <selectize config='myConfig' options='usuarios' ng-model="inputdatos"></selectize>
-  asdsadsadas {{project_id}}
-   <button type="submit" class="waves-effect waves-light btn-large" ng-click="sendData()"> Enviar </button>
- <p>
-      <b>ngModel2:</b>
-      <pre>{{inputdatos |json}}</pre>
-    </p>
-
-
-  <h5> Projecto: <%= project.name%> </h3>
-    <!--<h1> Hola soy el <%= project.id%></h1>
-    <h1> HOla soy el usuario <%=session.User.id%></h1>-->
-    <% if(flash && flash.err){ %>
-<ul>
-  <% Object.keys(flash.err).forEach(function(error){ %>
-  <li><%= JSON.stringify(flash.err[error])%></li>
-  <%})%>
-</ul>
-<% } %>
-
-            
-
-    <form class="col s12" action = "/project/add_user/<%=project.id%>" method = "post">    
-           <div class="row">
-        <div class="input-field  col s6">
-          <input id="email"  type="email" class="validate" name="email">
-          <label for="email">Email Usuario</label>
-        </div>
-      </div>
-         
-          <input id="id_project" name= "id_project" type="hidden" class="validate" value="<%=project.id%>">
-          <input id="user_id" name= "user_id" type="hidden" class="validate" value="<%=session.User.id%>">
-          <input id="project_id" name= "project_id" type="hidden" class="validate" value="<%=project.id%>">
-      <button type="submit" class="waves-effect waves-light btn-large" value="Crear cuenta"> Añadir Usuario </button>
-      <input type="hidden" name="_csrf" value="<%= _csrf%>"/>
-    </form>
-  
-  <br>
-  </div>  
-
-  <div class="carta">
-    <h5> Participantes del projecto</h3>
-
-      <table class="striped">
-        <thead> 
-    <tr>
-      <th data-field="nombre">Nombre </th>
-      <th data-field="apellidos">Apellidos </th>
-      <th data-field="correo">Correo </th>
-
-
-    </tr>
-        </thead> 
-
-    <% _.each(project.participants, function(participants){%>
-   <tr data-id="<%=participants.id %>" data-model="participants">
-      <td> <%= participants.firstame %> </td>
-      <td> <%= participants.lastname %> </td>
-      <td> <%= participants.email %> </td>
-     
-      </tr>
-    
-      <% })%>
-  </table>
-
-
-
-
-
-
-  </div>
-
-
-
-
-
-
-
-
-

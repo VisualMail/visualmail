@@ -21,7 +21,15 @@ Project.create(req.allParams(), function ProjectCreated(err,user){
 
 	},	
 
-
+getOne: function(req,res,next){
+	Project.findOne(req.param('id')).populate('participants').exec(function(err,project){
+		if(err) return next(err);
+		if(!project) return next();
+		
+		return res.json({project:project});
+	});
+	
+},
 
 edit: function(req,res,next){
 		Project.findOne(req.param('id')).populate('participants').exec(function(err,project){

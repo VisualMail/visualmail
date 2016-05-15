@@ -1,6 +1,6 @@
 <script>
  
-    var usuario = <%- JSON.stringify(user) %>
+
  $(document).ready(function(){
     // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
     $('.modal-trigger').leanModal('modal_nuevo_proyecto');
@@ -8,11 +8,7 @@
 
     
   });
-         
-
- app.controller('viewCtrl',['$scope',function($scope){
-    $scope.email = usuario.email;
-   }]);
+    //var usuario = <%- JSON.stringify(user) %>
 
 
 </script>
@@ -20,7 +16,7 @@
 
 <div id="vistaprincipal" class="boxer">
   <h3 class="principalproject green-text"> Mis proyectos</h3>
-  <div class="container " >
+  <div class="container">
     <div class=" ">
     <div class="row scroll" >
 
@@ -83,28 +79,5 @@
     </div>
     </form>
   </div>
-<!--
-<div class = "carta container" ng-controller="viewCtrl">
-	<form class="col s6" action = "/project/create/" method = "post">
-hOLA: {{email}}
-	
-	<h5> Crear proyectos </h5>
-       <div class="row">
-        <div class="input-field  col s6">
-          <input id="name" type="text" class="validate" name="name">
-          <label for="name">Nombre del proyecto</label>
-        </div>
-        <input type="hidden" name="owner_email" value="<%= session.User.email %>"/>
-        <input type="hidden" name="participants" value="<%= user.id %>"/>
-      </div>    
-      <button type="submit" class="waves-effect waves-light btn" value="Crear cuenta"> Enviar </button>
-      <input type="hidden" name="_csrf" value="<%= _csrf%>"/>
-    </form>
-</div>
--->
 
-<!-- 
-<div class ="carta">
-  <a href="/user/edit/<%=user.id%>" class="waves-effect waves-light btn"> Cambiar contraseña</a>
-</div>
-</h1>-->
+
