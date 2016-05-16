@@ -1,6 +1,16 @@
 <script>
   var id= '<%=project.id%>';
 
+var $mensaje1 = $('<span class="  color_acentuado-text"> Se agregó el nuevo usuario al proyecto</span>');
+  $(document).ready(function(){
+    $('.tooltipped').tooltip({delay: 50});
+  });
+  var $mensaje2 = $('<span class="  color_acentuado-text"> Se agregaron los nuevos usuarios al proyecto</span>');
+  $(document).ready(function(){
+    $('.tooltipped').tooltip({delay: 50});
+  });
+   
+
 </script>
  <nav container>
     <div class="nav-wrapper green darken-2 border_estilo ">
@@ -11,95 +21,58 @@
     </div>
   </nav>
 
-<div id="vistaprincipal" class="boxer">
+<div id="vistaprincipal" class="boxer" ng-controller="projectedit">
   <h3 class="principalproject green-text"> Agregar usuarios al projecto</h3>
   <div class="container">
-    
+   
+    <div class= "row" >
+      <div class= "col s8">
+        <selectize config='myConfig' options='usuarios' ng-model="inputdatos"></selectize>
+      </div>
+      <div class="col s4">
+           <button type="submit" class="waves-effect waves-light  light-green  btn-large" ng-click="sendData()"> Enviar </button>
+      </div>
+    </div>
+   
+    </div>
+    <div class="carta">
+        <div class="container divider"></div>
+    </div>
+  
+  <h3 class="principalproject green-text"> Participantes</h3>
+  
+  <div class="container">
+          <table class="striped">
+        <thead> 
+    <tr>
+      <th data-field="nombre">Nombre </th>
+      <th data-field="correo">Correo </th>
+      
+
+    </tr>
+        </thead> 
 
     
+   <tr ng-repeat="x in misparticipantes" ng-model="misparticipantes">
+      
+      <td> {{ x.firstname }} {{ x.lastname }}</td>
+      
+      <td> {{ x.email  }}</td>
+      
+      </tr>
+    
+      
+  </table>
   </div>
-  <div class="container divider"></div>
-  <div class="container">
     
   </div>
+  
 
 </div>
 
 
 
 
- <div class = "carta" ng-controller="projectedit">
-  <selectize config='myConfig' options='usuarios' ng-model="inputdatos"></selectize>
-  asdsadsadas {{project_id}}
-   <button type="submit" class="waves-effect waves-light btn-large" ng-click="sendData()"> Enviar </button>
- <p>
-      <b>ngModel2:</b>
-      <pre>{{inputdatos |json}}</pre>
-    </p>
-
-
-  <h5> Projecto: <%= project.name%> </h3>
-    <!--<h1> Hola soy el <%= project.id%></h1>
-    <h1> HOla soy el usuario <%=session.User.id%></h1>-->
-    <% if(flash && flash.err){ %>
-<ul>
-  <% Object.keys(flash.err).forEach(function(error){ %>
-  <li><%= JSON.stringify(flash.err[error])%></li>
-  <%})%>
-</ul>
-<% } %>
-
-            
-
-    <form class="col s12" action = "/project/add_user/<%=project.id%>" method = "post">    
-           <div class="row">
-        <div class="input-field  col s6">
-          <input id="email"  type="email" class="validate" name="email">
-          <label for="email">Email Usuario</label>
-        </div>
-      </div>
-         
-          <input id="id_project" name= "id_project" type="hidden" class="validate" value="<%=project.id%>">
-          <input id="user_id" name= "user_id" type="hidden" class="validate" value="<%=session.User.id%>">
-          <input id="project_id" name= "project_id" type="hidden" class="validate" value="<%=project.id%>">
-      <button type="submit" class="waves-effect waves-light btn-large" value="Crear cuenta"> Añadir Usuario </button>
-      <input type="hidden" name="_csrf" value="<%= _csrf%>"/>
-    </form>
-  
-  <br>
-  </div>  
-
-  <div class="carta">
-    <h5> Participantes del projecto</h3>
-
-      <table class="striped">
-        <thead> 
-    <tr>
-      <th data-field="nombre">Nombre </th>
-      <th data-field="apellidos">Apellidos </th>
-      <th data-field="correo">Correo </th>
-
-
-    </tr>
-        </thead> 
-
-    <% _.each(project.participants, function(participants){%>
-   <tr data-id="<%=participants.id %>" data-model="participants">
-      <td> <%= participants.firstname %> </td>
-      <td> <%= participants.lastname %> </td>
-      <td> <%= participants.email %> </td>
-     
-      </tr>
-    
-      <% })%>
-  </table>
-
-
-
-
-
-
-  </div>
 
 
 

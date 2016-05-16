@@ -5,7 +5,7 @@ var REGEX_EMAIL = '([a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+/=?^_`{|}~
 $scope.usuarios = [];
 $scope.project_id = new String(id);
 $scope.misparticipantes;
-
+$scope.todos=[];
 
 $http({
     url:'/user/getAllEmail/',
@@ -19,7 +19,7 @@ $http({
     method: 'GET',
     params: {id: id}
   }).then(function(getOne){
-    
+    $scope.todos=result.data.arr;
     //console.log(value);
     $scope.usuarios = [];
     $scope.misparticipantes = getOne.data.project.participants;
@@ -70,7 +70,43 @@ $http({
         }
 
     }).success(function (data) {
-        location.reload();
+        //location.reload();
+        
+        //console.log($scope.todos);
+        //console.log('siguiente');
+        //console.log($scope.inputdatos);
+        
+        for(var i=0;i<$scope.inputdatos.length;i++){
+          var bandera =0;
+          var position=0;
+
+          for(var j=0;j<$scope.usuarios.length;j++){
+            if($scope.inputdatos[i]==$scope.usuarios[j].id){
+              bandera=1;
+              position=j;
+            
+              break;
+            }
+          }
+          if(bandera==1){
+            //console.log(position);
+            //console.log($scope.usuarios);
+            $scope.misparticipantes.push($scope.usuarios[position]);
+            $scope.usuarios.splice(position,1);
+
+
+          }
+        }
+
+        //aqui mensaje
+        if($scope.inputdatos.length==1){
+          Materialize.toast($mensaje1, 5000);
+        }
+        else if($scope.inputdatos.length>=2){
+          Materialize.toast($mensaje2, 5000);
+        }
+        $scope.selectize.clear();
+        $scope.selectize.refreshItems();
     });
 }
 
@@ -120,6 +156,7 @@ render: {
   onInitialize: function(selectize){
     // receives the selectize object as an argument
     //console.log('Initialized',selectize);
+    $scope.selectize=selectize;
   }
 };
 
