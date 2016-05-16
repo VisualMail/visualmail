@@ -80,18 +80,23 @@ module.exports = {
 
 sendEmail: function(req,res){
 		console.log(req.param('email'));
+		console.log('empezando');
 		User.findOneByEmail(req.param('email')).exec(function(err,user){
-			if(err) return next(err);
+			if(err) {
+				console.log('error1');
+				return res.json({opcion:'false'});}
 			//if not user is found
 			if(!user){
+				console.log('error2');
 				var noaccounterror=[{name: 'noaccount', message: 'La dirección de correo '+req.param('email')+' No existe'}]
 				req.session.flash={
 				err:noaccounterror
 
 			}
-			return next(err);
+			return res.json({opcion:'false'});
 		}
 		//si el usuario existe se envia el correo
+		console.log('enviando');
 		sails.hooks.email.send(
 		  "welcomeEmail",
 		  {
@@ -109,15 +114,35 @@ sendEmail: function(req,res){
 		)	
 
 
-			return res.json({user:user});
+			return res.json({opcion:'true'});
 		});
 		
 
 	},
 
 	'actualizarpass':function(req,res){
+		console.log(req.param('password'));
+		var nuevo;
+		require('bcryptjs').hash(req.param('password'),10, function passwordEncrypted(err,password){ 
+    		if(err) return res.json({opcion:'false'});
+    		nuevo = password;
+    		console.log(nuevo);
+    		User.update({id:req.param('id')}, {password:nuevo}).exec(function userUpdatedPass(err){
+			if(err){
+				req.session.flash = { err:err}
+				return res.json({opcion:'false'});
+			}
+			else{
+			return res.json({opcion:'true'});	
+			}
+			
+		});
 
 
+
+  		});
+		
+		//buscar usuario y updatearlo
 	},
 	'verficar_clave':function(req,res){
 		console.log(req.param('clave'));
@@ -125,7 +150,7 @@ sendEmail: function(req,res){
 		my_query.exec(function(err,user){
 			if(err) {
 				console.log("clave no aceptada");
-				return next(err);
+				res.json({opcion:'false'});
 			}
 			//if not user is found
 			if(!user){

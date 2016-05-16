@@ -37,5 +37,36 @@ $http({
     });
 }
 
+$scope.actualizar_pass = function(){
+    $http.defaults.withCredentials = true;
+$http({
+        method: 'POST',
+        url: '/session/actualizarpass',
+        headers: {'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': $scope.csrfToken 
+        },
+
+        data: {
+          password: $scope.password,
+          id: $scope.clave,
+        }
+
+    }).success(function (data) {
+       console.log('fin');
+      
+       if(data.opcion=='true'){
+        Materialize.toast($mensaje3, 5000);
+        $scope.confirmacion=true;
+       $scope.mostrarpost=false;
+       $scope.mostrar = false;
+        }
+        else{
+            //error
+        Materialize.toast($mensaje4, 5000);
+        }
+
+
+    });
+}
 
 });

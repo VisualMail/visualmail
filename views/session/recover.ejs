@@ -4,6 +4,8 @@
     $('.tooltipped').tooltip({delay: 50});
   });
   var $mensaje2 = $('<span class="  color_acentuado-text"> La clave ingresada no es válida</span>');
+  var $mensaje3 = $('<span class="  color_acentuado-text"> Su contraseña ha sido actualizada</span>');
+  var $mensaje4 = $('<span class="  color_acentuado-text"> Ocurrió un error</span>');
   $(document).ready(function(){
     $('.tooltipped').tooltip({delay: 50});
   });
@@ -21,7 +23,7 @@
        </div>
        </div>
 
-    <div ng-show="false">
+    <div ng-show="mostrar">
        <div class= "row ">
 
          <div class="input-field col s10 offset-s1">
@@ -39,7 +41,7 @@
        </div>
     </div>
 
-    <div ng-show="true" class="">
+    <div ng-show="mostrarpost" class="">
  
     
     <form  name="passrecoverform"  novalidate>
@@ -72,7 +74,7 @@
        </div>
 
       <div class="row  container"> 
-          <button type="submit" class="waves-effect waves-light btn-large light-green col s8 " ng-click="sendData()" > Actualizar clave </button>
+          <button type="submit" class="waves-effect waves-light btn-large light-green col s8 " ng-click="actualizar_pass()" > Actualizar clave </button>
       </div>
 
 

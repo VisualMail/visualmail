@@ -136,5 +136,41 @@ module.exports = {
 		});
 	},
 
+
+
+
+	'actualizarpass':function(req,res){
+		console.log(req.param('password'));
+		var nuevo;
+		require('bcryptjs').hash(req.param('password'),10, function passwordEncrypted(err,password){ 
+    		if(err) return res.json({opcion:'false'});
+    		nuevo = password;
+    		console.log(nuevo);
+    		User.update({id:req.param('id')}, {password:nuevo}).exec(function userUpdatedPass(err){
+			if(err){
+				req.session.flash = { err:err}
+				return res.json({opcion:'false'});
+			}
+			if(!user){
+				return res.json({opcion:'false'});
+			}
+			else{
+			return res.json({opcion:'true'});	
+			}
+			
+		});
+
+
+
+  		});
+		
+		//buscar usuario y updatearlo
+	},
+
+
+
+
+
+
 };
 

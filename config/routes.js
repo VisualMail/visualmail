@@ -41,7 +41,7 @@ module.exports.routes = {
   'post /session/sendEmail': 'SessionController.sendEmail',
   'post /session/actualizarpass': 'SessionController.actualizarpass', 
   'post /session/verficar_clave': 'SessionController.verficar_clave', 
-  
+  'post /session/actualizarpass': 'SessionController.actualizarpass', 
   /***************************************************************************
   *                                                                          *
   * Custom routes here...                                                    *

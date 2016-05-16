@@ -15,7 +15,7 @@ angular.module('app.RecoverPassCtrl',['ngMessages','gp.rutValidator','selectize'
 		$http.defaults.withCredentials = true;
 $http({
         method: 'POST',
-        url: '/session/actualizarpass',
+        url: '/session/sendEmail',
         headers: {'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': $scope.csrfToken 
         },
