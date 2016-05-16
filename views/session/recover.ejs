@@ -4,7 +4,9 @@
     $('.tooltipped').tooltip({delay: 50});
   });
   var $mensaje2 = $('<span class="  color_acentuado-text"> La clave ingresada no es válida</span>');
-
+  $(document).ready(function(){
+    $('.tooltipped').tooltip({delay: 50});
+  });
 
 </script>
 
@@ -19,7 +21,7 @@
        </div>
        </div>
 
-    <div ng-show="mostrar">
+    <div ng-show="false">
        <div class= "row ">
 
          <div class="input-field col s10 offset-s1">
@@ -37,13 +39,54 @@
        </div>
     </div>
 
-    <div ng-show="mostrarpost" class="row container">
-      <h6 class="center green-text"> Se ha enviado un correo a la dirección:{{email}}</h6>
-        <a href="/" class="waves-effect waves-light btn-large light-green col s6 offset-s3"> Volver</a>
+    <div ng-show="true" class="">
+ 
+    
+    <form  name="passrecoverform"  novalidate>
+    <div class= "row tooltipped" data-position="top" data-delay="50" data-tooltip="valor alfanúmerico, mínimo ingrese 1 minúscula, mayúscula y número">
+         <div class="input-field col s7 offset-s1 ">
+          <input 
+
+          id="password" type="password"  name="password" ng-model="password" ng-required="true" ng-pattern="/(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z])/" ng-minlength="8" ng-maxlength="20" >
+          <label for="password"  >Ingrese su nueva contraseña</label>
+         </div>
+      <div ng-messages="passrecoverform.password.$error" role="alert" class="col s4 centerme red-text" >
+              <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
+            <div ng-message="pattern">Formato no válido</div>
+            <div ng-message="minlength">Mínimo 8 caracteres</div> 
+            <div ng-message ="maxlength">Contraseña muy larga</div>
+            <div ng-show="passrecoverform.password.$valid"><i class="small material-icons light-green-text">done</i></div>
+          </div>
+
+           </div>
+          <div class="row ">
+         <div class="input-field col s7 offset-s1">
+           <input type="password" name="confirmpassword" id="confirmpassword" ng-model="confirmpassword" ng-required="true" compare-to="password">
+           <label for="confirmpassword" >Confirmar Contraseña</label>
+         </div>
+           <div ng-messages="passrecoverform.confirmpassword.$error" role="alert" class="col s4 centerme red-text" >
+              <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
+              <div ng-message="compareTo"> La contraseña no coincide</div>
+            <div ng-show="passrecoverform.confirmpassword.$valid"><i class="small material-icons light-green-text">done</i></div>
+          </div>
+       </div>
+
+      <div class="row  container"> 
+          <button type="submit" class="waves-effect waves-light btn-large light-green col s8 " ng-click="sendData()" > Actualizar clave </button>
+      </div>
+
+
+
+
+
+    </form>
     </div>
     
-            <% if(flash && flash.err){ %>
-            <script>Materialize.toast($toastContent, 5000);</script>
-          <% } %>
+    <div ng-show="confirmacion" class="row container">
+      <h6 class="center green-text"> Se ha actualizado su nueva contraseña</h6>
+        <a href="/session/login" class="waves-effect waves-light btn-large light-green col s8 "> Iniciar seśión</a>
+    </div>
+
+
     </div>
 </div>

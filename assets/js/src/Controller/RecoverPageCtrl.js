@@ -3,6 +3,7 @@ angular.module('app.RecoverPageCtrl',['ngMessages','gp.rutValidator','selectize'
 	$scope.clave='';
 	$scope.mostrar=true;
 	$scope.mostrarpost=false;
+    $scope.confirmacion=false;
 
 	    $http.get('/csrfToken')
       .success(function (token) {
