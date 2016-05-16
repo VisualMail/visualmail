@@ -28,14 +28,15 @@ module.exports.policies = {
   '*': 'flash',
      user:{
     'signup': "flash",
-    create: "flash",
-    edit: "flash",
-    '*': "sessionAuth"
+     create: "flash",
+     edit: "flash",
+     view: "flash",
+     '*': "sessionAuth"
    },
     project:{
-      'add_user': "flash",
-      'create': "flash",
-      'edit': "flash",
+      add_user: "flash",
+      create: "flash",
+      edit: "flash",
       '*': "sessionAuth"
     }
   // '*': true,

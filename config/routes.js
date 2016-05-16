@@ -33,12 +33,14 @@ module.exports.routes = {
   ***************************************************************************/
 
   '/': {
-    view: 'static/homepage'
+    view: 'static/homepage',
   },
   '/email': 'EmailController.sendEmail',
   'post /project/add_user': 'ProjectController.add_user',
   'post /project/getOne': 'ProjectController.getOne',
-
+  'post /session/sendEmail': 'SessionController.sendEmail',
+  'post /session/actualizarpass': 'SessionController.actualizarpass', 
+  'post /session/verficar_clave': 'SessionController.verficar_clave', 
   
   /***************************************************************************
   *                                                                          *
