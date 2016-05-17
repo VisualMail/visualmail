@@ -61,8 +61,22 @@
     <script src="/js/src/Controller/editprojectController.js"></script>
     <script src="/js/src/Controller/signupController.js"></script>
     <!--SCRIPTS END-->
+<script>
+  
+  $('.dropdown-button').dropdown({
+      inDuration: 300,
+      outDuration: 225,
+      constrain_width: true, // Does not change width of dropdown to that of the activator
+      hover: false, // Activate on hover
+      gutter: 0, // Spacing from edge
+      belowOrigin: true, // Displays dropdown below the button
+      alignment: 'right' // Displays dropdown with edge aligned to the left of button
+    }
+  );
 
+</script>
   </head>
+
     <% if (session.authenticated) {%>
  <div class="green darken-2 navbar-fixed">  
     <div class="row navbar-wrapper ">
@@ -71,33 +85,49 @@
       </div>
       <div class="col s9">
         
-          <div class="col s1 offset-s5">
-                  <br>
-                   <a href="/"><i class= "right light-green-text small material-icons prefix">
-             live_help</i></a>
-             <br>
+          <div class="row col s1 offset-s5">
+        
           </div>
           <div class="col s6 ">
-          <div class ="col s8 offset-s2 card-panel   green darken-2 z-depth-1"> 
-          <div class="col s6 offset-s1 container">
-
-             <h6 class="white-text align-text"><span>Bienvenido: <br><%= session.User.firstname%></h6></span>
+            <div class="col s1">
+              <br>
+              <a href="/"><i class= "right light-green-text small material-icons prefix">
+             live_help</i></a>
+            </div>
+          <div href='#' data-activates='dropdown1' class ="col s8  card-panel   green darken-2 z-depth-1 dropdown-button" data-belowOrigin="true"> 
+          <div class="col s7  container">
+             <h6 class="white-text align-text"><span>Bienvenido: <%= session.User.firstname%></h6></span>
           </div>     
           <div class= "col s3 offset-s1">
             <img src="/images/profile.jpg" alt="" class="circle responsive-img" >
           </div>
           
+          
                  
             </div>
-            
-          </div>
-      
+         
+          </div><!--card panel -->
+          
        
      </div> <!--   <a class="white-text" href="/session/logout/"> Cerrar sesión</a>-->
 
   </div>
   </div>
    
+    <!-- Dropdown Structure -->
+  
+  <ul id='dropdown1' class='dropdown-content'>
+     <li class="divider green darken-4"></li>
+     <li class="green darken-2 white-text"> <a class="white-text" href="/user/view/<%=session.User.id%>">Mis Proyectos</a> </li>
+     
+   
+    <li class="green darken-2 white-text "> <a class="white-text" href="#!">Editar perfil</a> </li>
+  
+     <li class="divider green darken-4"></li>
+    <li class="green darken-2 white-text"><a class="white-text" href="/session/logout/"> Cerrar sesión</a></li>
+  </ul>  
+
+
 
     <%} else{%>
     <nav class="navbar-fixed green darken-2">
@@ -117,6 +147,8 @@
 
     
     <%- body %>
+
+
 
 
     <!-- FOOTER -->

@@ -10,14 +10,14 @@ var $mensaje1 = $('<span class="  color_acentuado-text"> Se agregó el nuevo usu
    
 
 </script>
- <nav class="navbar-fixed  z-depth-2">
+ <div class="z-depth-2">
     <div class="nav-wrapper green darken-2 border_estilo ">
       <div class="col s12">
         <a href="/user/view/<%=session.User.id%>" class="breadcrumb">Mis proyectos</a>
         <a href="/project/edit/<%=project.id%>" class="breadcrumb">Projecto: <%= project.name%></a>        
       </div>
     </div>
-  </nav>
+  </div>
 
 <div id="vistaprincipal" class="boxer" ng-controller="projectedit">
   <h3 class="principalproject green-text"> Agregar usuarios al projecto</h3>
