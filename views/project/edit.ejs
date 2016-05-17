@@ -10,7 +10,7 @@ var $mensaje1 = $('<span class="  color_acentuado-text"> Se agregó el nuevo usu
    
 
 </script>
- <nav container>
+ <nav class="navbar-fixed  z-depth-2">
     <div class="nav-wrapper green darken-2 border_estilo ">
       <div class="col s12">
         <a href="/user/view/<%=session.User.id%>" class="breadcrumb">Mis proyectos</a>
@@ -39,7 +39,7 @@ var $mensaje1 = $('<span class="  color_acentuado-text"> Se agregó el nuevo usu
   
   <h3 class="principalproject green-text"> Participantes</h3>
   
-  <div class="container">
+  <div class="container scroll_table">
           <table class="striped">
         <thead> 
     <tr>
@@ -55,7 +55,8 @@ var $mensaje1 = $('<span class="  color_acentuado-text"> Se agregó el nuevo usu
 
     
    <tr ng-repeat="x in misparticipantes" ng-model="misparticipantes">
-      <td></td>
+      <td >  <img src="/images/profile.jpg" alt="" class="circle " height ="40px" weight="40px"></div>
+      </td>
       <td>   <i class= "light-green-text small material-icons prefix" ng-if="owner_email==x.email">
              done</i>
              

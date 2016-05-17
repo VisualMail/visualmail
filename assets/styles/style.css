@@ -122,6 +122,10 @@ footer.page-footer {
   overflow-y: auto; height:300px; 
 
 }
+.scroll_table{
+  overflow-y: auto; height:500px; 
+
+}
 .boxer {
     top: 0;
     left: 0;
@@ -133,4 +137,16 @@ footer.page-footer {
   border-top: 2px solid #1b5e20;
   /*border-radius: 8px;*/
   box-shadow: 0px 0px  rgba(0,0,0,0.75);
+}
+
+.contenedor_navegador{
+  padding-bottom: 150px;
+  margin: 10px auto;
+}
+
+.centrame {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
 }
