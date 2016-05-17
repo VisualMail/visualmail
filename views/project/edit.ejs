@@ -1,6 +1,7 @@
+ <% if (session.authenticated) {%>
 <script>
   var id= '<%=project.id%>';
-  var own_email = '<%= session.User.email%>'
+  var own_email = '<%= project.owner_email%>'
 var $mensaje1 = $('<span class="  color_acentuado-text"> Se agregó el nuevo usuario al proyecto</span>');
   $(document).ready(function(){
     $('.tooltipped').tooltip({delay: 50});
@@ -10,6 +11,8 @@ var $mensaje1 = $('<span class="  color_acentuado-text"> Se agregó el nuevo usu
    
 
 </script>
+
+
  <div class="z-depth-2">
     <div class="nav-wrapper green darken-2 border_estilo ">
       <div class="col s12">
@@ -39,8 +42,8 @@ var $mensaje1 = $('<span class="  color_acentuado-text"> Se agregó el nuevo usu
   
   <h3 class="principalproject green-text"> Participantes</h3>
   
-  <div class="container scroll_table">
-          <table class="striped">
+  <div class="container ">
+          <table class="striped ">
         <thead> 
     <tr>
       <th> Imagen</th>
@@ -53,7 +56,7 @@ var $mensaje1 = $('<span class="  color_acentuado-text"> Se agregó el nuevo usu
     </tr>
         </thead> 
 
-    
+  
    <tr ng-repeat="x in misparticipantes" ng-model="misparticipantes">
       <td >  <img src="/images/profile.jpg" alt="" class="circle " height ="40px" weight="40px"></div>
       </td>
@@ -66,6 +69,7 @@ var $mensaje1 = $('<span class="  color_acentuado-text"> Se agregó el nuevo usu
       <td> {{ x.email  }}</td>
       <td> </td>
       </tr>
+
     
       
   </table>
@@ -76,7 +80,7 @@ var $mensaje1 = $('<span class="  color_acentuado-text"> Se agregó el nuevo usu
 
 </div>
 
-
+<%}%>
 
 
 

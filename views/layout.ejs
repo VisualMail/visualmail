@@ -58,6 +58,7 @@
     <script src="/js/src/Controller/LoginController.js"></script>
     <script src="/js/src/Controller/RecoverPageCtrl.js"></script>
     <script src="/js/src/Controller/RecoverPassController.js"></script>
+    <script src="/js/src/Controller/editUserController.js"></script>
     <script src="/js/src/Controller/editprojectController.js"></script>
     <script src="/js/src/Controller/signupController.js"></script>
     <!--SCRIPTS END-->
@@ -121,7 +122,7 @@
      <li class="green darken-2 white-text"> <a class="white-text" href="/user/view/<%=session.User.id%>">Mis Proyectos</a> </li>
      
    
-    <li class="green darken-2 white-text "> <a class="white-text" href="#!">Editar perfil</a> </li>
+    <li class="green darken-2 white-text "> <a class="white-text" href="/user/edit/<%=session.User.id%>">Editar perfil</a> </li>
   
      <li class="divider green darken-4"></li>
     <li class="green darken-2 white-text"><a class="white-text" href="/session/logout/"> Cerrar sesión</a></li>

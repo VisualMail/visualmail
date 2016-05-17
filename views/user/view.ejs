@@ -24,14 +24,25 @@
   <br>
 
   <% _.each(user.projects, function(projects){%>
-  <a data-id="<%=projects.id %>" data-model="projects" href="/project/edit/<%=projects.id%>">
+  
+    <%if(projects.owner_email==session.User.email){%>
+    <a data-id="<%=projects.id %>" data-model="projects" href="/project/edit/<%=projects.id%>">
+       <div class="col s3" >
+      <div class="card blue z-depth-2"> 
+        <div class="card-content white-text" > <%= projects.name %> (Mio) </div>
+      </div>
+    </div>
+     </a>
+    <%}else{%>
+    <a data-id="<%=projects.id %>" data-model="projects" href="/project/edit/<%=projects.id%>">
     <div class="col s3" >
       <div class="card green z-depth-2"> 
         <div class="card-content white-text" > <%= projects.name %> </div>
       </div>
     </div>
-    
-  </a>
+     </a>
+    <%}%>
+ 
   <% })%>
  </div>
  </div>
