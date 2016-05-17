@@ -1,6 +1,6 @@
 <script>
   var id= '<%=project.id%>';
-
+  var own_email = '<%= session.User.email%>'
 var $mensaje1 = $('<span class="  color_acentuado-text"> Se agregó el nuevo usuario al proyecto</span>');
   $(document).ready(function(){
     $('.tooltipped').tooltip({delay: 50});
@@ -43,8 +43,11 @@ var $mensaje1 = $('<span class="  color_acentuado-text"> Se agregó el nuevo usu
           <table class="striped">
         <thead> 
     <tr>
+      <th> Imagen</th>
+      <th data-field="owner"> PMO</th>
       <th data-field="nombre">Nombre </th>
       <th data-field="correo">Correo </th>
+      <th data-field="rut"> Rut </th>
       
 
     </tr>
@@ -52,11 +55,15 @@ var $mensaje1 = $('<span class="  color_acentuado-text"> Se agregó el nuevo usu
 
     
    <tr ng-repeat="x in misparticipantes" ng-model="misparticipantes">
-      
+      <td></td>
+      <td>   <i class= "light-green-text small material-icons prefix" ng-if="owner_email==x.email">
+             done</i>
+             
+      </td>      
       <td> {{ x.firstname }} {{ x.lastname }}</td>
       
       <td> {{ x.email  }}</td>
-      
+      <td> </td>
       </tr>
     
       

@@ -4,6 +4,7 @@ var REGEX_EMAIL = '([a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+/=?^_`{|}~
                   '(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)';
 $scope.usuarios = [];
 $scope.project_id = new String(id);
+$scope.owner_email = new String(own_email);
 $scope.misparticipantes;
 $scope.todos=[];
 
@@ -91,7 +92,7 @@ $http({
           if(bandera==1){
             //console.log(position);
             //console.log($scope.usuarios);
-            $scope.misparticipantes.push($scope.usuarios[position]);
+            $scope.misparticipantes.splice(0,0,$scope.usuarios[position]);
             $scope.usuarios.splice(position,1);
 
 
@@ -108,6 +109,8 @@ $http({
         $scope.selectize.clear();
         $scope.selectize.refreshItems();
     });
+
+
 }
 
 
