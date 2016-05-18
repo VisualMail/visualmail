@@ -11,18 +11,11 @@ $scope.imgurl ='';
 $scope.initials ='';
 $scope.password ='';
 $scope.confirmpassword ='';
-if($scope.lastname==null)
-	console.log('si es nulo');
-if($scope.lastname=='')
-	console.log('largo cero');
 
 
 
 $scope.actualizar_campos= function(){
-console.log($scope.firstname);
-console.log($scope.lastname);
-console.log($scope.imgurl);
-console.log($scope.initials);
+
 
 $http.defaults.withCredentials = true;
 	$http({
@@ -42,10 +35,12 @@ $http.defaults.withCredentials = true;
         }
 
     }).success(function (data) {
-       console.log('fin');
+ 
       
        if(data.opcion=='true'){
-        Materialize.toast($mensaje1, 5000);
+        location.reload(true);
+        //Materialize.toast($mensaje1, 5000);
+
         }
         else{
         Materialize.toast($mensaje2, 5000);
@@ -57,7 +52,7 @@ $http.defaults.withCredentials = true;
 
 $scope.actualizar_password = function(){
 	
-	console.log($scope.password);
+	//console.log($scope.password);
 	$http.defaults.withCredentials = true;
 	$http({
         method: 'POST',
@@ -72,15 +67,16 @@ $scope.actualizar_password = function(){
         }
 
     }).success(function (data) {
-       console.log('fin');
+       //console.log('fin');
       
        if(data.opcion=='true'){
+       	
         Materialize.toast($mensaje3, 5000);
+
         }
         else{
         Materialize.toast($mensaje4, 5000);
         }
-
 
     });
 

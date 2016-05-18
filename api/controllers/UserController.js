@@ -118,19 +118,35 @@ module.exports = {
 		
 			if(err){
 				
-				req.session.flash = { err:err}
+				req.session.flash={};
 				return res.json({opcion:'false'});
+				
 			}
 			else{
-				
+				if(nombre!=''){
+					req.session.User.firstname=nombre;
+				}
+				if(apellido!=''){
+					req.session.User.lastname=apellido;
+				}
+				if(imagenurl!=''){
+					req.session.User.imgurl=imagenurl;
+				}
+				if(iniciales!=''){
+					req.session.User.initials=iniciales;
+				}
+				req.session.flash = { err:'Se han actualizado los cambios'};
 				return res.json({opcion:'true'});
+				
 			}
 			
 		});
 			
 		}
 		else{
+				req.session.flash={};
 			return res.json({opcion:'false'});
+		
 		}	
 	},
 
