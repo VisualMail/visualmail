@@ -109,15 +109,15 @@ var $toastContent = $('<span class="  color_acentuado-text">Ocurrió un error, e
 
              <div class= "row ">
          <div class="input-field col s7 offset-s1 ">
-          <input class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="valor alfanúmerico, mínimo ingrese 1 minúscula, mayúscula y número"
+          <input class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="valor alfanúmerico, mínimo ingrese 6 carácteres"
 
-          id="password" type="password"  name="password" ng-model="password" ng-required="true" ng-pattern="/(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z])/" ng-minlength="8" ng-maxlength="20" >
+          id="password" type="password"  name="password" ng-model="password" ng-required="true" ng-pattern="/^[a-zA-Z0-9]*$/" ng-minlength="6" ng-maxlength="20" >
           <label for="password"  >Contraseña</label>
          </div>
       <div ng-messages="signupform.password.$error" role="alert" class="col s4 centerme red-text" >
               <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
             <div ng-message="pattern">Formato no válido</div>
-            <div ng-message="minlength">Mínimo 8 caracteres</div> 
+            <div ng-message="minlength">Mínimo 6 caracteres</div> 
             <div ng-message ="maxlength">Contraseña muy larga</div>
             <div ng-show="signupform.password.$valid"><i class="small material-icons light-green-text">done</i></div>
           </div>

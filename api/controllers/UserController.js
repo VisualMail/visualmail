@@ -75,7 +75,7 @@ module.exports = {
 			_.each(user,function(key,value){
 				if(user[i].email!=req.session.User.email){
 						user[i].firstname=user[i].firstname+' '+user[i].lastname;
-						arr.push(_.pick(key,'id','email','firstname'));
+						arr.push(_.pick(key,'id','email','firstname','rut','imgurl','pmo'));
 				}
 				
 				i=i+1;

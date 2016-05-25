@@ -15,6 +15,7 @@
 
         <% if(flash && flash.err){ %>
              <script>Materialize.toast($mensaje1, 5000);</script>
+             <%- flash={}%>
           <% } %>
 <div id="vistaprincipal" class="boxer" ng-controller="editUserCtrl">
   
@@ -106,15 +107,15 @@
 
     <div class= "row col s12">
          <div class="input-field col s7 offset-s1 ">
-          <input class="tooltipped" data-position="top" data-delay="50" data-tooltip="valor alfanúmerico, mínimo ingrese 1 minúscula, mayúscula y número"
+          <input class="tooltipped" data-position="top" data-delay="50" data-tooltip="valor alfanúmerico, mínimo ingrese 6 carácteres"
 
-          id="password" type="password"  name="password" ng-model="password" ng-required="true" ng-pattern="/(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z])/" ng-minlength="8" ng-maxlength="20" >
+          id="password" type="password"  name="password" ng-model="password" ng-required="true" ng-pattern="/^[a-zA-Z0-9]*$/" ng-minlength="6" ng-maxlength="20" >
           <label for="password"  >Contraseña</label>
          </div>
       <div ng-messages="update_password.password.$error" role="alert" class="col s4 centerme red-text" >
               <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
             <div ng-message="pattern">Formato no válido</div>
-            <div ng-message="minlength">Mínimo 8 caracteres</div> 
+            <div ng-message="minlength">Mínimo 6 caracteres</div> 
             <div ng-message ="maxlength">Contraseña muy larga</div>
             <div ng-show="update_password.password.$valid"><i class="small material-icons light-green-text">done</i></div>
           </div>

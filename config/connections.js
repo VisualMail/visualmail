@@ -62,7 +62,7 @@ module.exports.connections = {
      port: 27017,
      user: '', //optional
      password: '', //optional
-     database: 'VisualMail' //optional
+     database: 'VisualMail_2' //optional
    },
 
   /***************************************************************************

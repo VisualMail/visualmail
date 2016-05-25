@@ -121,7 +121,7 @@ $scope.myConfig = {
   labelField: 'firstname',
   delimiter: '|',
   placeholder: 'Seleccione un correo',
-  searchField: ['firstname','email'],
+  searchField: ['firstname','email','rut'],
 
     createFilter: function(input) {
         var match, regex;

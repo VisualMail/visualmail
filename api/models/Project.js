@@ -7,10 +7,13 @@
 
 module.exports = {
 
-schema:true,autoCreatedAt: false,autoUpdatedAt: false,
+schema:true,autoCreatedAt: true,autoUpdatedAt: true,
 attributes: {
 	name:{ type: 'string', required:true },
 	owner_email:{ type: 'string', required:true},
+	created_date:{type:'date'},
+	finish_date:{type: 'date'},
+	pmo_email:{type:'string'},
 	participants:{
 		dominant: false,
 		collection: 'user',

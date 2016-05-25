@@ -17,6 +17,7 @@ attributes: {
 	initials:{ type: 'string',required:false},
 	password:{ type: 'string',required:true},
 	imgurl:{ type:'string'},
+	rut:{type:'string'},
 	projects:{
 		dominant: true,
 		collection: 'project',
