@@ -91,23 +91,34 @@ $('.button-collapse').sideNav({
 
 
 
- <ul id="slide-out" class="side-nav">
-      <li><a href="#!">First Sidebar Link</a></li>
-      <li><a href="#!">Second Sidebar Link</a></li>
-    </ul>
-
 
 
 
     <% if (session.authenticated) {%>
+    <!-- SIDENAV -->
+  
+   <ul id="slide-out" class="side-nav green darken-2">
+    <li  class="green darken-2 row"> 
+      
+          <div class="col s4 offset-s4">
+            <br><img src="<%=session.User.imgurl%>" alt="" class="circle responsive-img" > </div> 
+<li class="center"> <span class="white-text "> <%= session.User.firstname %> <%= session.User.lastname%></span></li>
+    </li>
+        <li>  <div class="divider black"></div> </li>
+        <li class="green darken-2">
+          <a class="white-text" href="/user/view/<%=session.User.id%>">Home</a>
+        </li>
+        <li class="green darken-2"> <a class="white-text" href="/session/logout/"> Cerrar sesión</a> </li>
+      </ul>
 
-
+<!--NAV BAR -->
 
  <div class="green darken-2 navbar-fixed">  
     <div class="row navbar-wrapper ">
       <div class="col s2">
         <div class ="col s1">
-        <a href="#" data-activates="slide-out" class="button-collapse"> <i class="medium material-icons white-text">view_headline</i></a> 
+          <br>
+        <a href="#" data-activates="slide-out" class="button-collapse"> <i class="small material-icons light-green-text">view_headline</i></a> 
         </div>
          <!--<a href="/user/view/<%=session.User.id%>"  class=" responsive-img brand-logo "><img src="/images/iconosmall2.png" ></a>-->
       </div>
@@ -116,7 +127,7 @@ $('.button-collapse').sideNav({
           <div class="row col s6">
         
           </div>
-          <div class="row col s6">
+          <div class="row col s6 container">
             <div class="row col s4">
               <div class="col s6 offset-s6">
                  <br>
@@ -125,12 +136,14 @@ $('.button-collapse').sideNav({
               </div>
              
             </div>
-          <div href='#' data-activates='dropdown1' class ="row col s8 card-panel   green darken-2 z-depth-1 dropdown-button" data-belowOrigin="true"> 
-          <div class="col s8  container">
-             <h6 class="white-text align-text"><span>Bienvenido: <%= session.User.firstname%></h6></span>
+          <div href='#' data-activates='dropdown1' class ="row col s8 card-panel green darken-2 z-depth-1 dropdown-button" data-belowOrigin="true"> 
+          <div class="col s8  ">
+             <h6 class="white-text align-text"><span>Bienvenido : <%=session.User.firstname%></h6></span>
           </div>     
-          <div class= "col s3 offset-s1">
-            <img src="<%=session.User.imgurl%>" alt="" class="circle responsive-img" >
+          <div class= " col s2 offset-s2">
+        
+              <img src="<%=session.User.imgurl%>" alt="" class="circle" height="45px" weight="45px" >
+            
           </div>
           
           
