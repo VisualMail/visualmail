@@ -150,3 +150,13 @@ footer.page-footer {
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
 }
+
+
+
+.scrollactivos{
+  overflow-y: auto; height:450px; 
+}
+.scrollparticipo{
+  overflow-y: auto; height:220px; 
+
+}

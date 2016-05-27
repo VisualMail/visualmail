@@ -60,7 +60,7 @@ footer.page-footer {
   margin: 10px auto;
   padding: 10px 20px;
   border: 2px solid #009688;
-/*background: #009688;*/
+background: #009688;
   /*box-shadow: 0px 0px 1px 1px rgba(0,0,0,0.75);*/
   border-radius: 8px;
 }
@@ -75,4 +75,23 @@ footer.page-footer {
 .dos{
   color: #000;
   width: 50px!important;
+}
+
+.scrollactivos{
+  overflow-y: auto; height:500px; 
+  background: #009688;
+}
+.scrollparticipo{
+  overflow-y: auto; height:250px; 
+
+}
+.scrollcrear{
+  overflow-y: auto; height:200px; 
+
+}
+
+.example{
+  background: #009688;
+   border: 2px solid #009688;
+     max-width: 650px;
 }

@@ -15,7 +15,7 @@
 
         <% if(flash && flash.err){ %>
              <script>Materialize.toast($mensaje1, 5000);</script>
-             <%- flash={}%>
+             <% flash={}%>
           <% } %>
 <div id="vistaprincipal" class="boxer" ng-controller="editUserCtrl">
   
@@ -58,7 +58,7 @@
 
         <div class= "row col s12 ">
          <div class="input-field col s7 offset-s1">
-           <input  id="imgurl" type="text" name="imgurl" placeholder="http://">
+           <input ng-model="imgurl" id="imgurl" type="text" name="imgurl" placeholder="http://">
           <label for="imgurl" >URL imagen</label>
           <!-- pattern="https?://.+"-->
          </div>

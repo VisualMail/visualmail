@@ -14,45 +14,52 @@
 </script>
 
 
-<div id="vistaprincipal" >
-  <h3 class="principalproject green-text"> Mis proyectos</h3>
-  <div class="container">
-    <div class="card-panel  z-depth-1 ">
-    <div class="row scroll" >
-  <br>
-
-  <% _.each(user.projects, function(projects){%>
-  
-    <%if(projects.owner_email==session.User.email){%>
-    <a data-id="<%=projects.id %>" data-model="projects" href="/project/edit/<%=projects.id%>">
-       <div class="col s3" >
-      <div class="card blue z-depth-2"> 
-        <div class="card-content white-text" > <%= projects.name %> (Mio) </div>
-      </div>
-    </div>
-     </a>
-    <%}else{%>
-    <a data-id="<%=projects.id %>" data-model="projects" href="/project/edit/<%=projects.id%>">
-    <div class="col s3" >
-      <div class="card green z-depth-2"> 
-        <div class="card-content white-text" > <%= projects.name %> </div>
-      </div>
-    </div>
-     </a>
-    <%}%>
- 
-  <% })%>
- </div>
- </div>
- 
-<br>
-<div class="divider"></div>
-<br>
 <div>
+  <div class=" principalproject green-text">
+    <h3> Mis proyectos</h3>
+  </div>
+  <div class="row">
+     
+      <div class="row col s5 offset-s1">
+    <h6 class="green-text"> Mis proyectos activos</h6>
+    <div class="card-panel scrollactivos">
+      <% _.each(user.projects, function(projects){%>
+     <%if(projects.owner_email==session.User.email){%>
+        <a data-id="<%=projects.id %>" data-model="projects" href="/project/edit/<%=projects.id%>">
+          <div class="col s6" >
+            <div class="card green z-depth-2"> 
+              <div class="card-content white-text" > <%= projects.name %>  </div>
+            </div>
+          </div>
+        </a>
+       <%}%>
+      <% })%>
+    </div>
+  </div>
+  <div class="row col s5">
+      <h6 class="green-text"> Proyectos en los que participo</h6>
+    <div id="participo" class="row card-panel scrollparticipo">
+          
+    <% _.each(user.projects, function(projects){%>
+      <%if(projects.owner_email!=session.User.email){%>
+    <a data-id="<%=projects.id %>" data-model="projects" href="/project/edit/<%=projects.id%>">
+       <div class="col s6" >
+      <div class="card  green lighten-2 z-depth-2"> 
+        <div class="card-content white-text" > <%= projects.name %>  </div>
+      </div>
+    </div>
+     </a>
+      <%}%>
+    <% })%>
+              
+              
+
+    </div>
+    <div id="crear" class="row card-panel">
   <a class="modal-trigger"href="#modal_nuevo_proyecto">
     <div class="" >
       <div class="row">
-      <div class= "col s3">
+      <div class= "col s6">
          <div class="card  grey z-depth-2"> 
         <div class="card-content black-text" > Crear nuevo Projecto </div>
       </div>
@@ -61,11 +68,14 @@
     </div>
     
   </a>
-   </div>
-
     </div>
 
+  </div>
+    
+
+  </div>
 </div>
+
 
 
   <!-- Modal Structure -->
