@@ -1,7 +1,8 @@
 
 <script>
   var id= '<%=project.id%>';
-  var own_email = '<%= project.owner_email%>'
+  var email_user = '<%= session.User.email%>';
+  var own_email = '<%= project.owner_email%>';
 var $mensaje1 = $('<span class="  color_acentuado-text"> Se agregó el nuevo usuario al proyecto</span>');
   $(document).ready(function(){
     $('.tooltipped').tooltip({delay: 50});
@@ -13,16 +14,19 @@ var $mensaje1 = $('<span class="  color_acentuado-text"> Se agregó el nuevo usu
 </script>
 
 
- <div class="z-depth-2">
-    <div class="nav-wrapper green darken-2 border_estilo ">
-      <div class="col s12">
-        <a href="/user/view/<%=session.User.id%>" class="breadcrumb">Mis proyectos</a>
-        <a href="/project/edit/<%=project.id%>" class="breadcrumb">Projecto: <%= project.name%></a>        
-      </div>
+
+
+  <div class="">
+    <div class="col s12">
+      <ul class="tabs">
+        <li class="tab col s6"><a class="active" href="#editarparticipantes">Participantes</a></li>
+        <li class="tab col s6"><a class="active" href="#test2">Diálogo</li>
+      </ul>
     </div>
   </div>
 
-<div id="vistaprincipal"  ng-controller="projectedit">
+
+<div id="editarparticipantes"  ng-controller="projectedit">
   <h3 class="principalproject green-text"> Agregar usuarios al projecto</h3>
   <div class="container">
    
@@ -46,12 +50,12 @@ var $mensaje1 = $('<span class="  color_acentuado-text"> Se agregó el nuevo usu
           <table class="striped ">
         <thead> 
     <tr>
-      <th> Imagen</th>
-      <th data-field="owner"> PMO</th>
-      <th data-field="nombre">Nombre </th>
-      <th data-field="correo">Correo </th>
-      <th data-field="rut"> Rut </th>
-      
+      <th class="light-green-text" > </th>
+     
+      <th data-field="nombre" class="light-green-text">Nombre </th>
+      <th data-field="correo" class="light-green-text">Correo </th>
+      <th data-field="rut" class="light-green-text"> Rut </th>
+       <th data-field="owner" class="light-green-text"> PMO</th>
 
     </tr>
         </thead> 
@@ -60,14 +64,14 @@ var $mensaje1 = $('<span class="  color_acentuado-text"> Se agregó el nuevo usu
    <tr ng-repeat="x in misparticipantes" ng-model="misparticipantes">
       <td >  <img ng-src="{{x.imgurl}}" alt="" class="circle " height ="40px" weight="40px"></div>
       </td>
-      <td>   <i class= "light-green-text small material-icons prefix" ng-if="owner_email==x.email">
-             done</i>
-             
-      </td>      
-      <td> {{ x.firstname }} {{ x.lastname }}</td>
+    
+      <td class="light-green-text"> {{ x.firstname }} {{ x.lastname }}</td>
       
-      <td> {{ x.email  }}</td>
-      <td> {{x.rut}} </td>
+      <td class="light-green-text"> {{ x.email  }}</td>
+      <td class="light-green-text"> {{x.rut}} </td>
+      <td>   <i class= "green-text small material-icons prefix" ng-if="owner_email==x.email">done</i>
+             
+      </td>  
       </tr>
 
     
