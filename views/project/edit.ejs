@@ -3,90 +3,97 @@
   var id= '<%=project.id%>';
   var email_user = '<%= session.User.email%>';
   var own_email = '<%= project.owner_email%>';
-var $mensaje1 = $('<span class="  color_acentuado-text"> Se agregó el nuevo usuario al proyecto</span>');
+  var $mensaje1 = $('<span class="  color_acentuado-text"> Se agregó el nuevo usuario al proyecto</span>');
   $(document).ready(function(){
     $('.tooltipped').tooltip({delay: 50});
+     $('.modal-trigger').leanModal();
   });
   var $mensaje2 = $('<span class="  color_acentuado-text"> Se agregaron los nuevos usuarios al proyecto</span>');
-
-   
-
 </script>
 
 
+<div class="row grey lighten-1">
+  <a class="col s6 waves-effect waves-light btn modal-trigger grey lighten-1"href="#participantes">
+   Participantes
+  </a>
+  <a class="col s6 waves-effect waves-light btn modal-trigger grey lighten-1"href="#kanban">
+   Kanban
+  </a>
+  
+</div>
 
 
-  <div class="">
-    <div class="col s12">
-      <ul class="tabs">
-        <li class="tab col s6"><a class="active" href="#editarparticipantes">Participantes</a></li>
-        <li class="tab col s6"><a class="active" href="#test2">Diálogo</li>
-      </ul>
-    </div>
+<div class="principalproject" id="contenedor principal">
+  <div class="contenedor_dialogo card">
+  
   </div>
-
-
-<div id="editarparticipantes"  ng-controller="projectedit">
-  <h3 class="principalproject green-text"> Agregar usuarios al projecto</h3>
-  <div class="container">
-   
-    <div class= "row" >
-      <div class= "col s8">
-        <selectize config='myConfig' options='usuarios' ng-model="inputdatos"></selectize>
-      </div>
-      <div class="col s4">
-           <button type="submit" class="waves-effect waves-light  light-green  btn-large" ng-click="sendData()"> Enviar </button>
-      </div>
-    </div>
-   
-    </div>
-    <div class="carta">
-        <div class="container divider"></div>
-    </div>
-  
-  <h3 class="principalproject green-text"> Participantes</h3>
-  
-  <div class="container ">
-          <table class="striped ">
-        <thead> 
-    <tr>
-      <th class="light-green-text" > </th>
-     
-      <th data-field="nombre" class="light-green-text">Nombre </th>
-      <th data-field="correo" class="light-green-text">Correo </th>
-      <th data-field="rut" class="light-green-text"> Rut </th>
-       <th data-field="owner" class="light-green-text"> PMO</th>
-
-    </tr>
-        </thead> 
-
-  
-   <tr ng-repeat="x in misparticipantes" ng-model="misparticipantes">
-      <td >  <img ng-src="{{x.imgurl}}" alt="" class="circle " height ="40px" weight="40px"></div>
-      </td>
-    
-      <td class="light-green-text"> {{ x.firstname }} {{ x.lastname }}</td>
-      
-      <td class="light-green-text"> {{ x.email  }}</td>
-      <td class="light-green-text"> {{x.rut}} </td>
-      <td>   <i class= "green-text small material-icons prefix" ng-if="owner_email==x.email">done</i>
-             
-      </td>  
-      </tr>
-
-    
-      
-  </table>
-  </div>
-    
-  </div>
-  
-
 </div>
 
 
 
 
+
+
+
+
+
+<div id="kanban" class="modal bottom-sheet" ng-controller="projectedit">
+  <div class="modal-content">
+    Hola soy el kanban
+  </div>
+</div>
+
+<!-- Modal participantes-->
+<div id="participantes" class="modal bottom-sheet" ng-controller="projectedit">
+  <div class="modal-content">
+  <!-- Modal Content-->
+  <div class="row">
+    <div class="row col s8">
+          <!-- Tabla -->
+      <div class="" id="tabla_participantes">
+        <table class="striped  responsive-table">
+          <thead> 
+            <tr>
+              <th class="light-green-text" > </th>
+              <th data-field="nombre" class="light-green-text">Nombre </th>
+              <th data-field="correo" class="light-green-text">Correo </th>
+              <th data-field="rut" class="light-green-text"> Rut </th>
+              <th data-field="owner" class="light-green-text"> PMO</th>
+              <th data-field="encargado" class="light-green-text"> Encargado</th>
+              <th data-field="owner" class="light-green-text"> Rol</th>
+            </tr>
+          </thead> 
+          <tbody>
+            <tr ng-repeat="x in misparticipantes" ng-model="misparticipantes">
+              <td >  <img ng-src="{{x.imgurl}}" alt="" class="circle " height ="40px" weight="40px"></div>
+              </td>
+              <td class="light-green-text"> {{ x.firstname }} {{ x.lastname }}</td>
+              <td class="light-green-text"> {{ x.email  }}</td>
+              <td class="light-green-text"> {{x.rut}} </td>
+              <td>   <i class= "green-text small material-icons prefix" ng-if="owner_email==x.email">done</i></td>  
+              <td><i class= "green-text small material-icons prefix" ng-if="owner_email==x.email">done</i></td>
+              <td class="light-green-text">Desarrollador Front end</td>
+            </tr>  
+          </tbody>
+      </table>
+      </div>
+      <!-- Tabla -->  
+    </div>
+    <div class="row col s4">
+      <!-- Selectize -->
+          <div class= "row ">
+            <selectize config='myConfig' options='usuarios' ng-model="inputdatos"></selectize>
+          </div>
+          <div class="row col s5">
+               <button type="submit" class="waves-effect waves-light  light-green  btn-large" ng-click="sendData()"> Agregar usuarios </button>
+          </div>
+     
+        
+         <!-- Selectize -->
+    </div>
+  </div>
+
+</div>
 
 
 

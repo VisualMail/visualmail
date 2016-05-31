@@ -74,7 +74,10 @@ footer.page-footer {
 }
 .principalproject{
   padding: 10px 20px;
-   margin: 10px auto;
+  margin: 10px auto;
+}
+.contenedor_dialogo{
+  height:500px;
 }
 .centerme{
  margin: 30px auto;
@@ -158,5 +161,9 @@ footer.page-footer {
 }
 .scrollparticipo{
   overflow-y: auto; height:220px; 
+
+}
+.scrolltablaparticipantes{
+  overflow-y: auto; height:100px; 
 
 }
