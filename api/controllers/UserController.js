@@ -19,12 +19,8 @@ module.exports = {
 
 
 		User.findOne(req.param('id')).populate('projects').exec(function (err,user){
-
 			if(err) return next(err);
 			if(!user) return next();
-			
-	
-
 			return res.view({user:user});
 		});
 

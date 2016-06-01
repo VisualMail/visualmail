@@ -4,17 +4,15 @@
  $(document).ready(function(){
     // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
     $('.modal-trigger').leanModal('modal_nuevo_proyecto');
-     
-
     
   });
-    //var usuario = <%- JSON.stringify(user) %>
-
+  
+var usuario = <%- JSON.stringify(user) %>
 
 </script>
 
 
-<div>
+<div ng-controller="createProjectCtrl">
   <div class=" principalproject green-text">
     <h3> Mis proyectos</h3>
   </div>

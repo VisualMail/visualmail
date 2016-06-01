@@ -10,10 +10,10 @@ module.exports = {
 schema:true,autoCreatedAt: true,autoUpdatedAt: true,
 attributes: {
 	name:{ type: 'string', required:true },
-	owner_email:{ type: 'string', required:true},
+	owner_email:{ type: 'string', required:true},//encargado
 	created_date:{type:'date'},
 	finish_date:{type: 'date'},
-	pmo_email:{type:'string'},
+	pmo_email:{type:'string'},//indica quien es el pmo del proyecto
 	participants:{
 		dominant: false,
 		collection: 'user',

@@ -57,52 +57,6 @@ edit: function(req,res,next){
 		});
 
 		return res.redirect('/user/');
-		/*
-		var user_id_found;
-		var flag= false;
-		//console.log(req.param('email'));
-		User.findOneByEmail(req.param('email'), function foundUser(err,user){
-			if(err){
-				req.session.flash = { err:err}
-				return next(err);
-			} 
-			if(!user){
-				//console.log('usuario aqui no existe');
-
-
-		var userdontexist =[{name: 'userdontexist', message: 'El usuario no existe'}] 
-				req.session.flash={
-			err: userdontexist
-		}
-				 res.redirect('/project/edit/'+req.param('project_id'));
-				 return;
-			}
-			else{
-			console.log(user.email);
-			user_id_found = user.id;
-			flag=true;
-			}
-			
-
-		});
-		
-		if(flag==true){
-			console.log('no debio llegar aca');
-			Project.findOne(req.param('id')).exec( function(err, project){
-			//console.log(req.param('id'));
-			//console.log('hola: '+user_id_found);
-			if(err){
-				return next(err);
-			}
-			project.participants.add(user_id_found);
-			project.save(function(err) {});
-			req.session.flash={};
-			res.redirect('user/view/'+req.param('user_id'));
-
-		});
-		}
-
-		*/
 	},
 
 };

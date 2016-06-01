@@ -1,6 +1,6 @@
  angular.module('app',['ngMessages','gp.rutValidator','selectize',
   'app.projectedit','app.signupctrl','app.LoginCtrl','app.RecoverPassCtrl','app.RecoverPageCtrl',
-  'app.editUserCtrl'])
+  'app.editUserCtrl','app.createProjectCtrl'])
  .directive('capitalize', function() {
     return {
       require: 'ngModel',
