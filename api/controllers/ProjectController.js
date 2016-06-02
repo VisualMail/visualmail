@@ -7,16 +7,20 @@
 
 module.exports = {
 
+	
 create: function(req,res,next){
 Project.create(req.allParams(), function ProjectCreated(err,user){
+	var data=req.allParams();
 			if(err) {
 				//req.session dura el tiempo de la sesion hasta que el browser cierra
 				req.session.flash = { err:err}
 				console.log(err);
-				return res.redirect('/user/signup');
+				return  res.json({project:'false'});
 			}
+			
 			req.session.flash={};
-			res.redirect('user/view/'+req.session.User.id);
+		
+			return res.json({project:user});
 		});
 
 	},	

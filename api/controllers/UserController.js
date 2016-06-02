@@ -25,7 +25,13 @@ module.exports = {
 		});
 
 	},
-
+	getAllProjects: function(req,res){
+		User.findOne(req.param('id')).populate('projects').exec(function (err,user){
+			if(err)  return res.json({opcion:'false'});
+			if(!user)  return res.json({opcion:'false'});
+			return res.json({user:user});
+		});
+	},
 
 
 	create: function(req,res,next){

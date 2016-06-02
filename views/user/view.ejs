@@ -7,65 +7,88 @@
     
   });
   
-var usuario = <%- JSON.stringify(user) %>
-
+var id = '<%=session.User.id%>';
+var email='<%=session.User.email%>';
+var $mensaje1 = $('<span class="  color_acentuado-text"> Se ha creado el nuevo proyecto</span>');
+var $mensaje2 = $('<span class="  color_acentuado-text"> El nombre del proyecto ya existe, no se ha creado el nuevo proyecto </span>');
+var $mensaje3 = $('<span class="  color_acentuado-text"> Ocurrió un error al guardar el archivo </span>');
 </script>
 
-
 <div ng-controller="createProjectCtrl">
+  
   <div class=" principalproject green-text">
-    <h3> Mis proyectos</h3>
+
+    <h5> Mis proyectos</h5>
   </div>
   <div class="row">
      
       <div class="row col s5 offset-s1">
     <h6 class="green-text"> Mis proyectos activos</h6>
     <div class="card-panel scrollactivos">
-      <% _.each(user.projects, function(projects){%>
-     <%if(projects.owner_email==session.User.email){%>
-        <a data-id="<%=projects.id %>" data-model="projects" href="/project/edit/<%=projects.id%>">
+      <div ng-repeat="x in miusuario" ng-model="miusuario">
+        <a ng-href="/project/edit/{{x.id}}" ng-if="x.owner_email==mi_email">
           <div class="col s6" >
             <div class="card green z-depth-2"> 
-              <div class="card-content white-text" > <%= projects.name %>  </div>
+              <div class="card-content white-text" > {{x.name}}  </div>
             </div>
           </div>
         </a>
-       <%}%>
-      <% })%>
+      </div>
     </div>
   </div>
   <div class="row col s5">
       <h6 class="green-text"> Proyectos en los que participo</h6>
-    <div id="participo" class="row card-panel scrollparticipo">
-          
-    <% _.each(user.projects, function(projects){%>
-      <%if(projects.owner_email!=session.User.email){%>
-    <a data-id="<%=projects.id %>" data-model="projects" href="/project/edit/<%=projects.id%>">
-       <div class="col s6" >
-      <div class="card  green lighten-2 z-depth-2"> 
-        <div class="card-content white-text" > <%= projects.name %>  </div>
+   <div id="participo" class="row card-panel scrollparticipo">
+      <div ng-repeat="x in miusuario" ng-model="miusuario">
+        <a ng-href="/project/edit/{{x.id}}" ng-if="x.owner_email!=mi_email">
+          <div class="col s6" >
+            <div class="card  light-green lighten z-depth-2"> 
+              <div class="card-content white-text" > {{x.name}}  </div>
+            </div>
+          </div>
+        </a>
       </div>
     </div>
-     </a>
-      <%}%>
-    <% })%>
-              
-              
 
-    </div>
     <div id="crear" class="row card-panel">
-  <a class="modal-trigger"href="#modal_nuevo_proyecto">
-    <div class="" >
-      <div class="row">
-      <div class= "col s6">
-         <div class="card  grey z-depth-2"> 
+
+  
+           <h6 class="green-text"> Crear un nuevo proyecto</h6>
+      
+      <div class="">
+      <form name="crearproyectoform" novalidate>
+        
+          <div class="col s4">
+            <input id="name_project" type="text"  name="name_project" ng-model="name_project" ng-minlength="3" ng-maxlength="25" ng-required="true" >
+            <label for="name_project"   >Nombre del projecto</label> 
+          </div>
+          <div ng-messages="crearproyectoform.name_project.$error" role="alert" class="col s2 centerme red-text" >
+            <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
+            <div ng-message="minlength">Mínimo 3 caracteres</div> 
+            <div ng-message ="maxlength">Nombre muy largo</div>
+            <div ng-show="crearproyectoform.name_project.$valid"><i class="small material-icons light-green-text">done</i></div>
+          </div>
+       
+   
+          <div class="col s4">
+             <input type="date" class="datepicker" name="finishdate" ng-model="finish_date" ng-required="true">
+              <label for="finishdate"   >Fecha límite del proyecto</label> 
+          </div>
+           <div ng-messages="crearproyectoform.finishdate.$error" role="alert" class="col s2 centerme red-text" >
+            <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
+            <div ng-show="crearproyectoform.finishdate.$valid"><i class="small material-icons light-green-text">done</i></div>
+          </div>
+      
+      </form>
+      <div class= "row col s6">
+         <div class="card  grey z-depth-2 waves-effect waves" ng-show="crearproyectoform.$valid" ng-click="crearProyecto()"> 
         <div class="card-content black-text" > Crear nuevo Projecto </div>
       </div>
       </div>
     </div>
-    </div>
+
     
-  </a>
+
     </div>
 
   </div>
@@ -77,20 +100,39 @@ var usuario = <%- JSON.stringify(user) %>
 
 
   <!-- Modal Structure -->
-  <div id="modal_nuevo_proyecto" class="modal modal-fixed-footer">
-    <form action = "/project/create/" method = "post">
+  <div id="modal_nuevo_proyecto" class="modal modal-fixed-footer" ng-controller="createProjectCtrl">
+    <form name="crearproyectoform" novalidate>
     <div class="modal-content">
-      <h4>Crear proyectos </h4>
+      <h4 class="light-green-text">Crear un nuevo proyecto </h4>
       <div class= "container">
-        <input id="name" type="text" class="col s6 offset-s1" name="name">
-        <label for="name">Nombre del proyecto</label>
-        <input type="hidden" name="owner_email" value="<%= session.User.email %>"/>
-        <input type="hidden" name="participants" value="<%= user.id %>"/>
-        <input type="hidden" name="_csrf" value="<%= _csrf%>"/>
+        <div class="row">
+          <div class="col s8">
+            <input id="name_project" type="text"  name="name_project" ng-model="name_project" ng-minlength="3" ng-maxlength="25" ng-required="true" >
+            <label for="name_project"   >Nombre del projecto</label> 
+          </div>
+          <div ng-messages="crearproyectoform.name_project.$error" role="alert" class="col s4 centerme red-text" >
+            <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
+            <div ng-message="minlength">Mínimo 3 caracteres</div> 
+            <div ng-message ="maxlength">Nombre muy largo</div>
+            <div ng-show="crearproyectoform.name_project.$valid"><i class="small material-icons light-green-text">done</i></div>
+          </div>
+        </div> 
+        <div class="row">
+          <div class="col s8">
+             <input type="date" class="datepicker" name="finishdate" ng-model="finish_date" ng-required="true">
+              <label for="finishdate"   >Fecha límite del proyecto</label> 
+          </div>
+           <div ng-messages="crearproyectoform.finishdate.$error" role="alert" class="col s4 centerme red-text" >
+            <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
+            <div ng-show="crearproyectoform.finishdate.$valid"><i class="small material-icons light-green-text">done</i></div>
+          </div>
+        </div> 
+       
+
       </div>
     </div>
     <div class="modal-footer">
-       <button type="submit" class="modal-action modal-close waves-effect waves-green btn-flat ">Aceptar</button>
+       <button type="submit" class="modal-action modal-close waves-effect waves-green btn-flat" ng-show="crearproyectoform.$valid" ng-click="crearProyecto()">Aceptar</button>
       <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Cancelar</a>
       
     </div>
@@ -98,3 +140,5 @@ var usuario = <%- JSON.stringify(user) %>
   </div>
 
 
+         
+       
