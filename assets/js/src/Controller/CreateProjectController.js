@@ -51,9 +51,27 @@
  				Materialize.toast($mensaje3, 5000);
 			}
 			else{
-	
-				$scope.miusuario.splice(0,0,data.project);
-			 	Materialize.toast($mensaje1, 5000);
+	     //entonces se crea el dialogo
+          $http({
+            method: 'POST',
+            url: '/dialogo/create/',
+            headers: {'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': $scope.csrfToken 
+          },
+          data: {
+            project: data.project.id,
+            name: 'inicio del nuevo projecto '+data.project.name,
+            root: true,
+          }
+
+      }).success(function (data_dialogo) {
+        //aca van if si falla
+        if(data_dialogo.dialogo=='false')
+          console.log('error de algun tipo');
+        $scope.miusuario.splice(0,0,data.project);
+        Materialize.toast($mensaje1, 5000);
+      });
+
 			}
 		
 	    });

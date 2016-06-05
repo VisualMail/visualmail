@@ -7,7 +7,7 @@
 
 module.exports = {
 	
-
+	//crea un dialogo inicial
 	create: function(req,res,next){
 		
 		Dialogo.create(req.allParams(), function dialogoCreated(err,dialogo){
@@ -15,11 +15,13 @@ module.exports = {
 				
 				req.session.flash = { err:err}
 				console.log(err);
-				res.redirect('/project/edit/'+req.param('project_id'));
+				return res.json({dialogo:'false'});
 			}
+			if(!dialogo)
+				return res.json({dialogo:'false'});
 		
 			req.session.flash={};
-			res.redirect('/project/edit/'+req.param('project_id'));
+			return res.json({dialogo:dialogo});
 		});
 
 	},

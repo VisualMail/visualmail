@@ -17,6 +17,11 @@ attributes: {
 		dominant: false,
 		collection: 'user',
 		via: 'projects'
+	},
+	dialogos:{
+		collection:'dialogo',
+		via:'project'
+
 	}
 },
 };
