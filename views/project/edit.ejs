@@ -25,7 +25,31 @@
 
 <div class="principalproject" id="contenedor principal">
   <div class="contenedor_dialogo card">
-  
+  <form action="/dialogo/create/" method="post" novalidate class="row">
+    para crear root
+    <input type="text" name="name">
+    <label for="name"> Nombre del dialogo</label>
+    <input type="hidden" value="true" name="root">
+    <input type="hidden" name="project_id" value="<%=project.id%>">
+    <input type="hidden" name="_csrf" value="<%=_csrf%>">
+    <button type="submit">
+      Enviar 
+    </button>
+  </form>
+
+OTra form
+  <form action="/dialogo/add_dialogo/" method="post" novalidate class="row">
+    para unir 
+    
+    <input type="hidden"  name="id_dialogo" value="575369ca4c523eb71c453348">
+    <input type="hidden" name="id_nuevo" value="575369d04c523eb71c453349">
+    <input type="hidden" name="_csrf" value="<%=_csrf%>">
+    <button type="submit">
+      Enviar union
+    </button>
+  </form>
+
+
   </div>
 </div>
 

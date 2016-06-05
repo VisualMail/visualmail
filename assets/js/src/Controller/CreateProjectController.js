@@ -16,7 +16,7 @@
     params: {id: id}
   	}).then(function(result) {
   		$scope.miusuario= result.data.user.projects;
-  		console.log($scope.miusuario);
+  		
   	});
 
 
@@ -25,7 +25,7 @@
   		//se revisa si el nombre existe
   		$scope.bandera=false;
   		for(var i=0;i<$scope.miusuario.length;i++){
-  			if($scope.miusuario[i].name==$scope.name_project && $scope.miusuario[i].owner_email==$scope.mi_email){
+  			if($scope.miusuario[i].name.toLowerCase()==$scope.name_project.toLowerCase() && $scope.miusuario[i].owner_email==$scope.mi_email){
   				$scope.bandera=true;
   				break;
   			}	

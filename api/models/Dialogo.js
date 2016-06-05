@@ -6,14 +6,16 @@
  */
 
 module.exports = {
-
+schema:true,
   attributes: {
   	name:{type:'string'},
   	root:{type:'boolean',required:true},
-  	id_projecto:{type:'int'},
+  	id_projecto:{type:'string'},
+  	position:{type:'array'},
   	child:{
-  		collection:'dialogo'
+  		collection:'dialogo',
   	}
+
   }
 };
 
