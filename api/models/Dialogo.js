@@ -14,7 +14,7 @@ schema:true,
   	id_projecto:{type:'string'},
   	position:{type:'array'},
   	child:{
-  		collection:'dialogo',
+  		type:'json'
   	},
   	project:{
   		model:'Project',

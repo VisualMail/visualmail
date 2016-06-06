@@ -20,7 +20,9 @@
   	});
 
 
-
+/*
+NO OLVIDAR ARREGLAR ESTA FUNCION DEACUERDO A FALLAS EN LOS POST
+*/
   	$scope.crearProyecto= function(){
   		//se revisa si el nombre existe
   		$scope.bandera=false;
@@ -62,6 +64,7 @@
             project: data.project.id,
             name: 'inicio del nuevo projecto '+data.project.name,
             root: true,
+            child:[]
           }
 
       }).success(function (data_dialogo) {

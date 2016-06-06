@@ -41,11 +41,21 @@ OTra form
   <form action="/dialogo/add_dialogo/" method="post" novalidate class="row">
     para unir 
     
-    <input type="hidden"  name="id_dialogo" value="5753bed18f7d89371752f516">
-    <input type="hidden" name="id_nuevo" value="5753bfaf8f7d89371752f518">
+    <input type="hidden"  name="id_dialogo" value="5753bf818f7d89371752f517">
+    <input type="hidden" name="id_nuevo" value="5753bfb58f7d89371752f519">
     <input type="hidden" name="_csrf" value="<%=_csrf%>">
     <button type="submit">
       Enviar union
+    </button>
+  </form>
+  nuevo form
+    <form action="/dialogo/buscar/" method="post" novalidate class="row">
+   ultimo
+
+    <input type="hidden" name="_csrf" value="<%=_csrf%>">
+      <input type="hidden" name="project_id" value="<%=project.id%>">
+    <button type="submit">
+      ultimo union
     </button>
   </form>
 
