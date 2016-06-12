@@ -13,7 +13,7 @@ schema:true,
   	root:{type:'boolean',required:true},
   	id_projecto:{type:'string'},
   	position:{type:'array'},
-  	child:{
+  	children:{
   		type:'json'
   	},
   	project:{

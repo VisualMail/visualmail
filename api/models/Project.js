@@ -21,7 +21,6 @@ attributes: {
 	dialogos:{
 		collection:'dialogo',
 		via:'project'
-
 	}
 },
 };

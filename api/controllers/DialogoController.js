@@ -31,7 +31,7 @@ module.exports = {
 		console.log('llegue aqui');
 		id_nuevo=req.param('id_nuevo');
 		
-		Dialogo.findOne(req.param('id_dialogo')).populate('child').exec( function(err, dialog){
+		Dialogo.findOne(req.param('id_dialogo')).populate('children').exec( function(err, dialog){
 			//console.log(project);
 			if(err){
 				console.log(err);
@@ -40,7 +40,7 @@ module.exports = {
 				console.log('no encontrado id');
 			}
 			else{
-				dialog.child.add(id_nuevo);
+				dialog.children.add(id_nuevo);
 				dialog.save(function(err) {});	
 			}
 
@@ -64,31 +64,31 @@ module.exports = {
 					
 					if(contador==position.length){
 						console.log('entre solo al final');
-						var jsonstring = {'name':'hola:dentro de la recursion'+dialog.child.length,'root':false,'child':[]}
-						dialog.child[0]=jsonstring;
+						var jsonstring = {'name':'hola:dentro de la recursion'+dialog.children.length,'root':false,'children':[]}
+						dialog.children[0]=jsonstring;
 						
-						//console.log(dialog.child[1]);
+						//console.log(dialog.children[1]);
 						return;
 					}
 					else{
-						console.log('dialogo es:'+dialog.child[position[contador]].name);
-						busco(dialog.child[position[contador]],position,contador+1);
+						console.log('dialogo es:'+dialog.children[position[contador]].name);
+						busco(dialog.children[position[contador]],position,contador+1);
 					}
 				}
 				//si esta vacio el nodo
-				//var jsonstring = {'name':'hola:ultima '+dialog.child.length,'root':false,'child':[]}
-				//console.log('el tamano es:'+dialog.child.length);
+				//var jsonstring = {'name':'hola:ultima '+dialog.children.length,'root':false,'children':[]}
+				//console.log('el tamano es:'+dialog.children.length);
 					var contador=0;
 					var position = [1,1,0];
 					busco(dialog,position,contador);
-					console.log(dialog.child[1].child[1].child[0]);
+					console.log(dialog.children[1].children[1].children[0]);
 					//var puntero =dialog;
-					console.log(dialog.child[1].child[1].child[0].child[0]);
+					console.log(dialog.children[1].children[1].children[0].children[0]);
 					//console.log('ahorafor');
 				
 					//otra forma
 
-				//dialog.child[1].child[1].child[0]=jsonstring;
+				//dialog.children[1].children[1].children[0]=jsonstring;
 
 				dialog.save(function(err) {});	
 				return res.redirect('/dialogo/');

@@ -24,6 +24,14 @@ Project.create(req.allParams(), function ProjectCreated(err,user){
 		});
 
 	},	
+getDialogos: function(req,res,next){
+	Project.findOne(req.param('id')).populate('dialogos').exec(function(err,project){
+		if(err) return next(err);
+		if(!project) return next();
+		//console.log(project);
+		return res.json(project.dialogos[0]);
+	});
+},
 
 getOne: function(req,res,next){
 	Project.findOne(req.param('id')).populate('participants').exec(function(err,project){
@@ -50,11 +58,12 @@ edit: function(req,res,next){
 		//console.log('hola mundo');
 		//console.log(req.param('id'));
 		//console.log(req.param('email'));
+		//NO confundir, emails variable en un inicio solicitaba emails , pero realmente se piden los id
 		var emails = req.param('email');
 		
 		Project.findOne(req.param('id')).exec( function(err, project){
 			//console.log(project);
-			for(var i=0; i<emails.length;i++ ){
+			for(var i=0; i<emails.length;i++ ){//por cada id añadelo al proyecto.
 			project.participants.add(emails[i]);
 			project.save(function(err) {});
 		}

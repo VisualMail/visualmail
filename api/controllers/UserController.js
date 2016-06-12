@@ -46,7 +46,7 @@ module.exports = {
 			req.session.flash={};
 			req.session.authenticated=true;
 			req.session.User=user;
-			res.redirect('/');
+			res.redirect('/user/view/'+user.id);
 		});
 
 	},	
