@@ -53,14 +53,11 @@ module.exports = {
 
 
 
-		edit: function(req,res,next){
-		User.findOne(req.param('id'), function foundUSer(err,user){
+	edit: function(req,res,next){
+		User.findOne(req.param('id')).populate('projects').exec(function (err,user){
 			if(err) return next(err);
 			if(!user) return next();
-			res.view({
-				user:user
-			});
-
+			return res.view();
 		});
 	},
 
@@ -87,6 +84,15 @@ module.exports = {
 		});
 	},
 
+	findOneUser: function(req,res,next){
+		User.findOne(req.param('id')).populate('projects').exec(function (err,user){
+			if(err) return res.json({user:'false'});
+			if(!user) return res.json({user:'false'});
+			return res.json({user:user});
+		});
+
+
+	},
 	actualizardatos: function(req,res,next){
 		var nombre=req.param('firstname');
 		var apellido=req.param('lastname');

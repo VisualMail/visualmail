@@ -9,12 +9,12 @@ module.exports = {
 schema:true,autoCreatedAt: false,autoUpdatedAt: false,
 attributes: {
 	//id:{ type: 'integer', required: true, unique:true,autoIncrement: true,primaryKey: true,},
-	firstname:{ type: 'string', required:false },
-	lastname:{ type: 'string', required:false},
+	firstname:{ type: 'string', required:true },
+	lastname:{ type: 'string', required:true},
 	email:{ type: 'string', email:true, required:true, unique:true},
 	pmo:{ type: 'boolean'//,required:true
 	},
-	initials:{ type: 'string',required:false},
+	initials:{ type: 'string',required:true},
 	password:{ type: 'string',required:true},
 	imgurl:{ type:'string'},
 	rut:{type:'string'},
@@ -22,8 +22,11 @@ attributes: {
 		dominant: true,
 		collection: 'project',
 		via:'participants'
+	},
+	mensajes:{
+		collection:'mensaje',
+		via:'usuario'
 	}
-
 },
 	//callback llamado antes de crear el usuario, el password se encripta
  beforeCreate: function(values,next){

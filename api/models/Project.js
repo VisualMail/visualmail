@@ -21,7 +21,11 @@ attributes: {
 	dialogos:{
 		collection:'dialogo',
 		via:'project'
+	},
+	roles:{
+		type:'json'
 	}
+
 },
 };
 
