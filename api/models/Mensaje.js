@@ -15,7 +15,7 @@ module.exports = {
   		model: 'Dialogo'
   	},
   	siguiente:{
-  		model:'Mensaje'
+  		collection:'Mensaje'
   	},
   	usuario:{
   		model:'User'

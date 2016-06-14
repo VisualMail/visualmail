@@ -7,6 +7,7 @@ $scope.project_id = new String(id);
 $scope.owner_email = new String(own_email);
 $scope.misparticipantes;
 $scope.todos=[];
+$scope.mensajes_proyectos;
 
 $http({
     url:'/user/getAllEmail/',
@@ -41,10 +42,6 @@ $http({
     }
 
   });
-
-
-
-
     });
 
 

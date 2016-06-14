@@ -12,122 +12,137 @@
 </script>
 
 
-<div class="row grey lighten-1">
-  <a class="col s6 waves-effect waves-light btn modal-trigger grey lighten-1"href="#participantes">
-   Participantes
-  </a>
-  <a class="col s6 waves-effect waves-light btn modal-trigger grey lighten-1"href="#kanban">
-   Kanban
-  </a>
-  
-</div>
-
-
-<div class="principalproject" id="contenedor principal">
-  <div class="contenedor_dialogo card">
-  <form action="/dialogo/create/" method="post" novalidate class="row">
-    para crear root
-    <input type="text" name="name">
-    <label for="name"> Nombre del dialogo</label>
-    <input type="hidden" value="true" name="root">
-    <input type="hidden" name="project_id" value="<%=project.id%>">
-    <input type="hidden" name="_csrf" value="<%=_csrf%>">
-    <button type="submit">
-      Enviar 
-    </button>
-  </form>
-
-OTra form
-  <form action="/dialogo/add_dialogo/" method="post" novalidate class="row">
-    para unir 
-    
-    <input type="hidden"  name="id_dialogo" value="5753bf818f7d89371752f517">
-    <input type="hidden" name="id_nuevo" value="5753bfb58f7d89371752f519">
-    <input type="hidden" name="_csrf" value="<%=_csrf%>">
-    <button type="submit">
-      Enviar union
-    </button>
-  </form>
-  nuevo form
-    <form action="/dialogo/buscar/" method="post" novalidate class="row">
-   ultimo
-
-    <input type="hidden" name="_csrf" value="<%=_csrf%>">
-      <input type="hidden" name="project_id" value="<%=project.id%>">
-    <button type="submit">
-      ultimo union
-    </button>
-  </form>
-
-
-  </div>
-</div>
-
-
-
-
-
-
-
-
-
-<div id="kanban" class="modal bottom-sheet" ng-controller="projectedit">
-  <div class="modal-content">
-    Hola soy el kanban
-  </div>
-</div>
-
-<!-- Modal participantes-->
-<div id="participantes" class="modal bottom-sheet" ng-controller="projectedit">
-  <div class="modal-content">
-  <!-- Modal Content-->
-  <div class="row">
-    <div class="row col s8">
-          <!-- Tabla -->
-      <div class="" id="tabla_participantes">
-        <table class="striped  responsive-table">
-          <thead> 
-            <tr>
-              <th class="light-green-text" > </th>
-              <th data-field="nombre" class="light-green-text">Nombre </th>
-              <th data-field="correo" class="light-green-text">Correo </th>
-              <th data-field="rut" class="light-green-text"> Rut </th>
-              <th data-field="owner" class="light-green-text"> PMO</th>
-              <th data-field="encargado" class="light-green-text"> Encargado</th>
-              <th data-field="owner" class="light-green-text"> Rol</th>
-            </tr>
-          </thead> 
-          <tbody>
-            <tr ng-repeat="x in misparticipantes" ng-model="misparticipantes">
-              <td >  <img ng-src="{{x.imgurl}}" alt="" class="circle " height ="40px" weight="40px"></div>
-              </td>
-              <td class="light-green-text"> {{ x.firstname }} {{ x.lastname }}</td>
-              <td class="light-green-text"> {{ x.email  }}</td>
-              <td class="light-green-text"> {{x.rut}} </td>
-              <td>   <i class= "green-text small material-icons prefix" ng-if="owner_email==x.email">done</i></td>  
-              <td><i class= "green-text small material-icons prefix" ng-if="owner_email==x.email">done</i></td>
-              <td class="light-green-text">Desarrollador Front end</td>
-            </tr>  
-          </tbody>
-      </table>
-      </div>
-      <!-- Tabla -->  
+  <div class="row" ng-controller="projectedit">
+    <div class="col s12">
+      <ul class="tabs">
+        <li class="tab col s3"><a class="active" href="#participantes">Participantes</a></li>
+        <li class="tab col s3"><a  href="#dialogo">Diálogo</a></li>
+        <li class="tab col s3 "><a href="#mensajes"> Mensajes</a></li>
+        <li class="tab col s3 "><a href="#kanban"> Kanban</a></li>
+      </ul>
     </div>
-    <div class="row col s4">
-      <!-- Selectize -->
-          <div class= "row ">
-            <selectize config='myConfig' options='usuarios' ng-model="inputdatos"></selectize>
+   <!-- Inicio TABS-->
+    <div id="participantes" class="col s12">
+      <div class="row container">
+        <br>
+        <%if(session.User.email==project.owner_email){%>
+          <div class="row col s12">
+            <h6 class="green-text"> Eres el encargado del proyecto puedes editar tu proyecto <a href="#"> aquí</a></h6>
           </div>
-          <div class="row col s5">
-               <button type="submit" class="waves-effect waves-light  light-green  btn-large" ng-click="sendData()"> Agregar usuarios </button>
+          <div class="row col s12">
+            <!-- Selectize -->
+                <div class= "row col s6">
+                  <selectize config='myConfig' options='usuarios' ng-model="inputdatos"></selectize>
+                </div>
+                <div class="row col s4">
+                     <button type="submit" class="waves-effect waves-light  light-green  btn-large" ng-click="sendData()"> Agregar usuarios </button>
+                </div>
+
+               <!-- Selectize -->
           </div>
-     
+        <%}%>
+          <div class="col s12">
+            <div class="col s1 ">
+              <br>
+              <i class="material-icons light-green-text prefix">search</i>
+            </div>
+            <div class="col s4 input-field">
+              <input type="search" ng-model="busqueda" id="search" >
+              <label for="search" class="green-text"> Buscar participante</label>
+            </div>
+          </div>
+          <div class=" col s12">
+                <!-- Tabla -->
+            <div class="" id="tabla_participantes">
+              <table class="striped  responsive-table">
+                <thead> 
+                  <tr>
+                    <th class="light-green-text" > </th>
+                    <th data-field="nombre" class="light-green-text">Nombre </th>
+                    <th data-field="correo" class="light-green-text">Correo </th>
+                    <th data-field="rut" class="light-green-text"> Rut </th>
+                    <th data-field="owner" class="light-green-text"> PMO</th>
+                    <th data-field="encargado" class="light-green-text"> Encargado</th>
+                    <th data-field="owner" class="light-green-text"> Rol</th>
+                  </tr>
+                </thead> 
+                <tbody>
+                  <tr ng-repeat="x in misparticipantes | filter:busqueda" ng-model="misparticipantes">
+                    <td >  <img ng-src="{{x.imgurl}}" alt="" class="circle " height ="40px" weight="40px"></div>
+                    </td>
+                    <td class="light-green-text"> {{ x.firstname }} {{ x.lastname }}</td>
+                    <td class="light-green-text"> {{ x.email  }}</td>
+                    <td class="light-green-text"> {{x.rut}} </td>
+                    <td>   <i class= "green-text small material-icons prefix" ng-if="owner_email==x.email">done</i></td>  
+                    <td><i class= "green-text small material-icons prefix" ng-if="owner_email==x.email">done</i></td>
+                    <td class="light-green-text">Desarrollador Front end</td>
+                  </tr>  
+                </tbody>
+            </table>
+            </div>
+            <!-- Tabla -->  
+          </div>
+        </div>
         
-         <!-- Selectize -->
-    </div>
-  </div>
 
-</div>
+    </div><!-- FIN TAB -->
+
+    <div id="dialogo" class="col s12">
+       <div class="principalproject" id="contenedor principal">
+        <div class="contenedor_dialogo card">
+          Soy los dialogos
+          <!--
+        <form action="/dialogo/create/" method="post" novalidate class="row">
+          para crear root
+          <input type="text" name="name">
+          <label for="name"> Nombre del dialogo</label>
+          <input type="hidden" value="true" name="root">
+          <input type="hidden" name="project_id" value="<%=project.id%>">
+          <input type="hidden" name="_csrf" value="<%=_csrf%>">
+          <button type="submit">
+            Enviar 
+          </button>
+        </form>
+
+      OTra form
+        <form action="/dialogo/add_dialogo/" method="post" novalidate class="row">
+          para unir 
+          
+          <input type="hidden"  name="id_dialogo" value="5753bf818f7d89371752f517">
+          <input type="hidden" name="id_nuevo" value="5753bfb58f7d89371752f519">
+          <input type="hidden" name="_csrf" value="<%=_csrf%>">
+          <button type="submit">
+            Enviar union
+          </button>
+        </form>
+        nuevo form
+          <form action="/dialogo/buscar/" method="post" novalidate class="row">
+         ultimo
+
+          <input type="hidden" name="_csrf" value="<%=_csrf%>">
+            <input type="hidden" name="project_id" value="<%=project.id%>">
+          <button type="submit">
+            ultimo union
+          </button>
+        </form>
+      -->
+        </div>
+      </div>
+    </div><!-- FIN TAB -->
+
+    <div id="mensajes" class="col s12">Soy los mensajes
+
+    </div><!-- FIN TAB -->
+
+    <div id="kanban" class="col s12">Soy el kanban
+    </div><!-- FIN TAB -->
+  </div><!-- FIN CONTENEDOR DIV -->
+
+
+
+
+
+
 
 
 
