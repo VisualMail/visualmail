@@ -89,6 +89,7 @@ NO OLVIDAR ARREGLAR ESTA FUNCION DEACUERDO A FALLAS EN LOS POST
           },
           data: {
            text: data_dialogo.dialogo.name,
+           project_id:data.project.id,
            tipo: '',
            position: [0],
            dialogos: data_dialogo.dialogo.id,

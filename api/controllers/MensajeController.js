@@ -25,6 +25,26 @@ module.exports = {
 	},
 	//GET para encontrar todos los mensajes del proyecto
 
+	getMessages: function(req,res,next){
+		console.log('here');
+		Mensaje.find({project_id:req.param('id')}).populate('usuario').exec( function(err, mensaje){
+			if(err){
+
+			}
+			if(!mensaje){
+
+			}
+			else{
+				req.session.flash={};
+				console.log('encontrado');
+				return res.json({mensaje:mensaje});
+			}
+
+
+		});
+
+	}
+
 
 };
 

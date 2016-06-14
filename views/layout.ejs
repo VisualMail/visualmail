@@ -107,7 +107,7 @@ $('.button-collapse').sideNav({
     </li>
         <li>  <div class="divider black"></div> </li>
         <li class="green darken-2">
-          <a class="white-text" href="/user/view/<%=session.User.id%>">Home</a>
+          <a class="white-text" href="/user/view/<%=session.User.id%>">  Mis Proyectos</a>
         </li>
         <li class="green darken-2"> <a class="white-text" href="/session/logout/"> Cerrar sesión</a> </li>
       </ul>
@@ -116,14 +116,18 @@ $('.button-collapse').sideNav({
 
  <div class="green darken-2 navbar-fixed">  
     <div class="row">
-      <div class=" col s2">
+      <div class=" col s3">
         <div class ="col s1">
           <br>
         <a href="#" data-activates="slide-out" class="button-collapse"> <i class="small material-icons light-green-text">view_headline</i></a> 
         </div>
+        <div class ="col s1 offset-s1">
+          <br>
+        <a href="/user/view/<%=session.User.id%>" class="button"> <i class="small material-icons light-green-text">home</i></a> 
+        </div>
          <!--<a href="/user/view/<%=session.User.id%>"  class=" responsive-img brand-logo "><img src="/images/iconosmall2.png" ></a>-->
       </div><!-- icono sidenav-->
-      <div class="col s10">
+      <div class="col s9">
         
           <div class="row col s6">
             <div>

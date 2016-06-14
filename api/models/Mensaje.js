@@ -11,6 +11,7 @@ module.exports = {
   	text:{type:'string'},
   	tipo:{type:'string'},
   	position:{type:'array'},
+    project_id:{type:'string'},
   	dialogos:{
   		model: 'Dialogo'
   	},

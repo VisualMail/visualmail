@@ -99,6 +99,25 @@ module.exports = {
 	
 		});
 	},
+	getMessages: function(req,res,next){
+		console.log('here');
+		Dialogo.findOne(req.param('id')).populate('mensajes').exec( function(err, dialogo){
+			if(err){
+
+			}
+			if(!dialogo){
+
+			}
+			else{
+				req.session.flash={};
+				console.log('encontrado');
+				return res.json({dialogo:dialogo});
+			}
+
+
+		});
+
+	}
 
 };
 

@@ -8,7 +8,8 @@ $scope.owner_email = new String(own_email);
 $scope.misparticipantes;
 $scope.todos=[];
 $scope.mensajes_proyectos;
-
+$scope.miproyecto;
+$scope.mesajes;
 $http({
     url:'/user/getAllEmail/',
     method: 'GET',
@@ -24,6 +25,7 @@ $http({
     $scope.todos=result.data.arr;
     //console.log(value);
     $scope.usuarios = [];
+    $scope.miproyecto= getOne.data.project;
     $scope.misparticipantes = getOne.data.project.participants;
     //console.log(value);
 
@@ -41,7 +43,20 @@ $http({
     }
     }
 
-  });
+  }).then(function(getMessages){
+    console.log($scope.miproyecto.dialogos[0].id);
+
+    $http({
+        url:'/mensaje/getMessages/',
+        method: 'GET',
+        params: {id: $scope.miproyecto.id}
+      }).then(function(resultado){
+        $scope.mensajes = resultado.data.mensaje;
+        
+      });
+
+
+      });
     });
 
 
