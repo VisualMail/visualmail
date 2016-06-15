@@ -8,14 +8,16 @@
 module.exports = {
 
   attributes: {
-  	text:{type:'string'},
+  	name:{type:'string'},
   	tipo:{type:'string'},
   	position:{type:'array'},
     project_id:{type:'string'},
+    numero_hijos:{type:'integer'},
+    root:{type:'boolean'},
   	dialogos:{
   		model: 'Dialogo'
   	},
-  	siguiente:{
+  	children:{
   		collection:'Mensaje'
   	},
   	usuario:{

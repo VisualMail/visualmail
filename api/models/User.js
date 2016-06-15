@@ -12,8 +12,7 @@ attributes: {
 	firstname:{ type: 'string', required:true },
 	lastname:{ type: 'string', required:true},
 	email:{ type: 'string', email:true, required:true, unique:true},
-	pmo:{ type: 'boolean'//,required:true
-	},
+	
 	initials:{ type: 'string',required:true},
 	password:{ type: 'string',required:true},
 	imgurl:{ type:'string'},

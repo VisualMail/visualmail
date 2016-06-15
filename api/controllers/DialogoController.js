@@ -48,11 +48,17 @@ module.exports = {
 
 		return res.redirect('/dialogo/');
 	},
-
-	buscar: function(req,res,next){
+	//luego de que se crea el mensaje se debe agregar el dialogo
+	update_dialogo: function(req,res,next){
 		console.log('estoy cambiando');
-		var query= Dialogo.findOne('5755d8a06f9032531c1b68cc').exec( function(err, dialog){
-			//console.log(dialog);
+		console.log(req.param('id'));
+		var mensaje =req.param('mensaje');
+		mensaje["children"]=[];
+		delete mensaje.project_id;
+		delete mensaje.dialogos;
+		console.log(mensaje);
+		Dialogo.findOne(req.param('id')).exec( function(err, dialog){
+			console.log(dialog);
 			if(err){
 				console.log(err);
 			}
@@ -60,30 +66,36 @@ module.exports = {
 				console.log('no encontrado id');
 			}
 			else{
+				console.log('pillado');
 				function busco(dialog,position,contador){
-					
-					if(contador==position.length){
-						console.log('entre solo al final');
-						var jsonstring = {'name':'hola:dentro de la recursion'+dialog.children.length,'root':false,'children':[]}
-						dialog.children[0]=jsonstring;
+					console.log('ejecutando');
+					console.log('largo es'+largo);
+					console.log('largo es'+contador);
+					if(contador==largo-1){
+						console.log('imprimiendo');
+						dialog.children[dialog.children.length]=mensaje;
 						
-						//console.log(dialog.children[1]);
+						//console.log(dialog.children[dialog.children.length-1]);
 						return;
 					}
 					else{
-						console.log('dialogo es:'+dialog.children[position[contador]].name);
-						busco(dialog.children[position[contador]],position,contador+1);
+						console.log('ejecute esto');
+						//console.log('dialogo es:'+dialog.children[position[contador]].name);
+						busco(dialog.children[position[contador]],position,contador+1,largo);
 					}
 				}
 				//si esta vacio el nodo
 				//var jsonstring = {'name':'hola:ultima '+dialog.children.length,'root':false,'children':[]}
 				//console.log('el tamano es:'+dialog.children.length);
+					console.log('ejecute esto otro'+mensaje.position.length);
 					var contador=0;
-					var position = [1,1,0];
-					busco(dialog,position,contador);
-					console.log(dialog.children[1].children[1].children[0]);
+					var position = mensaje.position;
+					var largo =mensaje.position.length-1;
+					console.log('largo es'+largo);
+					busco(dialog,position,contador,largo);
+					//console.log(dialog.children[1].children[1].children[0]);
 					//var puntero =dialog;
-					console.log(dialog.children[1].children[1].children[0].children[0]);
+					//console.log(dialog.children[1].children[1].children[0].children[0]);
 					//console.log('ahorafor');
 				
 					//otra forma
@@ -91,7 +103,7 @@ module.exports = {
 				//dialog.children[1].children[1].children[0]=jsonstring;
 
 				dialog.save(function(err) {});	
-				return res.redirect('/dialogo/');
+				return res.json({dialog:dialog});
 				
 		
 			}

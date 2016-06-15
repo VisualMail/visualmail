@@ -10,6 +10,17 @@ $scope.todos=[];
 $scope.mensajes_proyectos;
 $scope.miproyecto;
 $scope.mesajes;
+$scope.miusuario;
+$scope.userid = miid;
+$http({
+    url:'/user/findUserOnly/',
+    method: 'GET',
+    params: {id: $scope.userid}
+  }).then(function(result){
+    $scope.miusuario = result.data.user;
+  });
+
+
 $http({
     url:'/user/getAllEmail/',
     method: 'GET',
@@ -27,7 +38,7 @@ $http({
     $scope.usuarios = [];
     $scope.miproyecto= getOne.data.project;
     $scope.misparticipantes = getOne.data.project.participants;
-    //console.log(value);
+    //console.log($scope.miproyecto);
 
     for(i in result.data.arr){
       var bandera=0;
@@ -44,13 +55,14 @@ $http({
     }
 
   }).then(function(getMessages){
-    console.log($scope.miproyecto.dialogos[0].id);
+    //console.log($scope.miproyecto.dialogos[0].id);
 
     $http({
         url:'/mensaje/getMessages/',
         method: 'GET',
         params: {id: $scope.miproyecto.id}
       }).then(function(resultado){
+        //console.log(resultado.data.mensaje);
         $scope.mensajes = resultado.data.mensaje;
         
       });
@@ -82,13 +94,7 @@ $http({
           id: $scope.project_id
         }
 
-    }).success(function (data) {
-        //location.reload();
-        
-        //console.log($scope.todos);
-        //console.log('siguiente');
-        //console.log($scope.inputdatos);
-        
+    }).success(function (data) {      
         for(var i=0;i<$scope.inputdatos.length;i++){
           var bandera =0;
           var position=0;
@@ -125,6 +131,108 @@ $http({
 
 }
 
+//primero crear el mensaje
+//luego unir los dos mensajes
+//recibir como entrada el mensaje y guardarlo en dialogo
+$scope.respuesta; //debe ser quien guarda el modelo de mi respuesta
+$scope.tiposeleccionado;//indica cual es el tipo seleccionado del mensaje
+$scope.idmensajepadre;//corresponde al id del mensaje que se va a responder
+$scope.tiposeleccionado='duda'; //CAMBIAR
+$scope.sendMessage = function(){
+$http.defaults.withCredentials = true;
+$scope.position=[];
+for(var i=0;i<$scope.seleccionado.position.length;i++){
+  $scope.position.push($scope.seleccionado.position[i]);
+}
+//console.log($scope.seleccionado.numero_hijos);
+//nuevo scope position a ingresar
+$scope.position.push($scope.seleccionado.numero_hijos);
+console.log($scope.position);
+$http({
+        method: 'POST',
+        url: '/mensaje/create',
+        headers: {'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': $scope.csrfToken 
+        },
+        data: {
+          dialogos: $scope.miproyecto.dialogos[0].id,
+          usuario: $scope.miusuario.id,
+          project_id:$scope.miproyecto.id,
+          name:$scope.respuesta,
+          tipo:$scope.tiposeleccionado,
+          position:$scope.position,
+          root:false,
+          numero_hijos:0,
+        }
+
+    }).success(function (data) {
+      //retorna el mensaje recien creado
+
+      if(data.mensaje=='false'){
+
+      }
+      else{ //else 1
+        //llamar a nuevo post
+        $scope.temporaldata=data.mensaje;
+        $http({
+        method: 'POST',
+        url: '/mensaje/unir',
+        headers: {'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': $scope.csrfToken 
+        },
+        data: {
+          id:$scope.idmensajepadre,
+          idunion:data.mensaje.id
+        }
+
+        }).success(function (datamensaje) {
+          //se hizo correctamente la union
+          //se actualiza el dato
+          for(var i=0;i<$scope.mensajes.length;i++){
+            if($scope.mensajes[i].id==datamensaje.mensaje.id){
+              $scope.mensajes[i].numero_hijos=datamensaje.mensaje.numero_hijos;
+              //console.log('nuevo numero de hijos'+$scope.mensajes[i].numero_hijos);
+              break;
+            }
+
+          }
+          //console.log(datamensaje.mensaje);
+          //console.log(datamensaje.mensaje);
+          
+          $scope.temporaldata["usuario"]=$scope.miusuario;
+          $scope.mensajes.push($scope.temporaldata);
+          //buscar padremensaje y añadir hijos
+
+          if(datamensaje.mensaje=='false'){
+
+          }
+          else{//ahora se agrega en el dialogo
+            console.log($scope.miproyecto.dialogos[0].id);
+            $http({
+              method: 'POST',
+              url: '/dialogo/update_dialogo',
+              headers: {'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': $scope.csrfToken 
+              },
+              data: {
+                id:$scope.miproyecto.dialogos[0].id,//corresponde al id del dialogo a buscar
+                mensaje:$scope.temporaldata,
+              }
+            }).success(function (datadialogoupdate) {
+                //console.log('termino');
+                location.reload(true);
+                });
+          }//fin else 2
+        });
+
+      
+      }//fin else 1
+    });
+
+}
+$scope.seleccionar = function(value){
+$scope.seleccionado =value;
+}
 
 $scope.myConfig = {
   create: false,
@@ -132,7 +240,7 @@ $scope.myConfig = {
   valueField: 'id',
   labelField: 'firstname',
   delimiter: '|',
-  placeholder: 'Seleccione un correo',
+  placeholder: 'Seleccione un participante por nombre, rut o correo',
   searchField: ['firstname','email','rut'],
 
     createFilter: function(input) {

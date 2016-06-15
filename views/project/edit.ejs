@@ -2,6 +2,7 @@
 <script>
   var id= '<%=project.id%>';
   var email_user = '<%= session.User.email%>';
+  var miid='<%=session.User.id%>'
   var own_email = '<%= project.owner_email%>';
   var $mensaje1 = $('<span class="  color_acentuado-text"> Se agregó el nuevo usuario al proyecto</span>');
   $(document).ready(function(){
@@ -16,8 +17,8 @@
     <div class="col s12">
       <ul class="tabs">
         <li class="tab col s3"><a  href="#participantes">Participantes</a></li>
-        <li class="tab col s3"><a  class="active" href="#dialogo">Diálogo</a></li>
-        <li class="tab col s3 "><a href="#mensajes"> Mensajes</a></li>
+        <li class="tab col s3"><a   href="#dialogo">Diálogo</a></li>
+        <li class="tab col s3 "><a class="active" href="#mensajes"> Mensajes</a></li>
         <li class="tab col s3 "><a href="#kanban"> Kanban</a></li>
       </ul>
     </div>
@@ -31,7 +32,7 @@
           </div>
           <div class="row col s12">
             <!-- Selectize -->
-                <div class= "row col s6">
+                <div class= "row col s8">
                   <selectize config='myConfig' options='usuarios' ng-model="inputdatos"></selectize>
                 </div>
                 <div class="row col s4">
@@ -181,22 +182,27 @@
 
     </div><!-- FIN TAB -->
 
-    <div id="mensajes" class="col s12">Soy los mensajes
-
-
-    <form action="/mensaje/create/" method="post" novalidate class="row">
-          para crear root
-          <input type="text" name="name">
-          <label for="text"> Nombre del dialogo</label>
-          <input type="hidden" value="" name="position">
-          <input type="text" name="siguiente" >
-          <label for="siguiente"> id del siguiente</label>
-          <input type="hidden" name="tipo" value="duda">
-          <input type="hidden" name="usuario" value="<%=session.User.id%>">
-          <input type="hidden" name="project_id" value="<%=project.id%>">
-          <input type="hidden" name="_csrf" value="<%=_csrf%>">
+    <div id="mensajes" class="col s12">
+    <div class="row col s12" ng-repeat="x in mensajes">
+      <div class="row col s4 ">
+        <div class="card green">
+          <span>  {{x.id}} : {{x.name}} </span>
+           <button  ng-click="seleccionar(x)" type="submit">
+            Enviar 
+          </button>
+        </div>
+      </div>
+    </div>
+  aca va el seleccionado {{seleccionado}}
+    <form novalidate class="row">
+          para crear mensaje de respuesta
+          <input type="text" name="name" ng-model="respuesta">
+          <label for="name"> Nombre del dialogo</label>
+          <input type="text" name="padre" ng-model="idmensajepadre" >
+          <label for="padre"> id del padre</label>
+          <input type="hidden" name="tipo" value="duda" ng-model="tiposeleccionado">
           
-          <button type="submit">
+          <button  ng-click="sendMessage()" type="submit">
             Enviar 
           </button>
         </form>

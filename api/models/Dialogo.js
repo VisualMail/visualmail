@@ -9,8 +9,6 @@ module.exports = {
 schema:true,
   attributes: {
   	name:{type:'string'},
-  	text:{type:'string'},
-  	position:{type:'array'},
   	children:{
   		type:'json'
   	},

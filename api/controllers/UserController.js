@@ -88,7 +88,24 @@ module.exports = {
 		User.findOne(req.param('id')).populate('projects').exec(function (err,user){
 			if(err) return res.json({user:'false'});
 			if(!user) return res.json({user:'false'});
-			return res.json({user:user});
+			else{
+				delete user.password;
+				return res.json({user:user});
+			}
+			
+		});
+
+
+	},
+	findUserOnly: function(req,res,next){
+		User.findOne(req.param('id')).exec(function (err,user){
+			if(err) return res.json({user:'false'});
+			if(!user) return res.json({user:'false'});
+			else{
+				delete user.password;
+				return res.json({user:user});
+			}
+			
 		});
 
 

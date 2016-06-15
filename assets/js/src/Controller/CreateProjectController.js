@@ -68,9 +68,7 @@ NO OLVIDAR ARREGLAR ESTA FUNCION DEACUERDO A FALLAS EN LOS POST
             project: data.project.id,
             name: 'inicio del nuevo projecto '+data.project.name,
             root: true,
-            children:[],
-          
-        
+            children:[],       
           }
 
       }).success(function (data_dialogo) {
@@ -88,11 +86,13 @@ NO OLVIDAR ARREGLAR ESTA FUNCION DEACUERDO A FALLAS EN LOS POST
               'X-CSRF-TOKEN': $scope.csrfToken 
           },
           data: {
-           text: data_dialogo.dialogo.name,
+           name: data_dialogo.dialogo.name,
            project_id:data.project.id,
            tipo: '',
            position: [0],
+           numero_hijos:0,
            dialogos: data_dialogo.dialogo.id,
+           root:true,
            usuario: $scope.mi_id 
           }
 
