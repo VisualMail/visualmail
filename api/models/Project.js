@@ -24,6 +24,10 @@ attributes: {
 	},
 	roles:{
 		type:'json'
+	},
+	kanban:{
+		collection:'kanban',
+		via:'project'
 	}
 
 },

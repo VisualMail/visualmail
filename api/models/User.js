@@ -25,6 +25,10 @@ attributes: {
 	mensajes:{
 		collection:'mensaje',
 		via:'usuario'
+	},
+	tareas:{
+		collection:'tarea',
+		via:'usuario'
 	}
 },
 	//callback llamado antes de crear el usuario, el password se encripta

@@ -6,7 +6,7 @@
  */
 //Corresponde al modelo para el nodo principal root de los dialogos, mantiene en un json cuales son los valores que le siguen
 module.exports = {
-schema:true,
+schema:true,autoCreatedAt: true,autoUpdatedAt: true,
   attributes: {
   	name:{type:'string'},
   	children:{
