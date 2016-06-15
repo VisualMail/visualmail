@@ -102,8 +102,29 @@ NO OLVIDAR ARREGLAR ESTA FUNCION DEACUERDO A FALLAS EN LOS POST
           console.log('fallo comunicación con el servidor');
         }
         else{
+          $http({
+            method: 'POST',
+            url: '/kanban/create/',
+            headers: {'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': $scope.csrfToken 
+          },
+          data: {
+           project_id:data.project.id,
+           project: data.project.id,
+          }
+
+      }).success(function (datakanban) {
+        if(datakanban.kanban=='false'){
+
+        }
+        else{
           $scope.miusuario.splice(0,0,data.project);
           Materialize.toast($mensaje1, 5000); 
+        }
+      });
+
+
+       
         }
         });
         }

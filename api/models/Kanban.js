@@ -15,7 +15,7 @@ module.exports = {
   	project_id:{
   		type:'string'
   	},
-  	mensajes:{
+  	tareas:{
   		collection:'tarea',
   		via:'kanban'
   	}
