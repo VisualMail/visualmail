@@ -17,7 +17,7 @@ schema:true,autoCreatedAt: true,autoUpdatedAt: true,
   		model:'kanban'
   	},
     drag:{type:'boolean'},
-    datosusuario:{type:{'json'}}//guarda el id, nombre, iniciales y nombre
+    datosusuario:{type:'json'}//guarda el id, nombre, iniciales y nombre
   }
 };
 

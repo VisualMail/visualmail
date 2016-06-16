@@ -23,7 +23,7 @@ module.exports = {
   	usuario:{
   		model:'User'
   	},
-    datosusuario:{type:{'json'}}//guarda el id, nombre, iniciales y nombre
+    datosusuario:{type:'json'}//guarda el id, nombre, iniciales y nombre
 
   }
 };
