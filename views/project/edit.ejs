@@ -294,18 +294,41 @@
   <!-- MODALES-->
     <div id="modal1" class="modal modal-fixed-footer">
     <div class="modal-content">
-      <h4 class="green-text"> Modal Header</h4>
-      <form  novalidate>
-        <input type="text" name="nuevatarea" ng-model="nuevatarea">
-        <label for="nuevatarea"></label>
-        <input type="text" name="usuario">
-        <label for="usuario"></label>
-        <input type="hidden" ng-value="nueva" ng-model="tipo">
+      <h4 class="green-text"> Crear una nueva Tarea</h4>
+      <form  novalidate name="creartareaform">
+        <div class="col s12">
+          <div class="row">
+            <div class="col s1">
+                <br><i class="small material-icons green-text">mode_edit</i>
+            </div>
+            <div class= "col s6 input-field">
+              <input type="text" name="nuevatarea" class="materialize-textarea" length="70" ng-model="nuevatarea" ng-minlength="3" ng-maxlength="70" ng-required="true">
+              <label for="nuevatarea"> Tarea</label>
+            </div>
+          <div ng-messages="creartareaform.nuevatarea.$error" role="alert" class="col s4 centerme red-text" >
+            <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
+            <div ng-message="minlength">Mínimo 3 caracteres</div> 
+            <div ng-message ="maxlength">Tarea demasiada larga</div>
+            <div ng-show="creartareaform.nuevatarea.$valid"><i class="small material-icons light-green-text">done</i></div>
+         </div>
+          </div>
+          <div class="row">
+             <div class="col s1">
+               <br><i class="small material-icons green-text">search</i>
+             </div>
+             <div class="col s8">
+               <selectize config='myConfig2' options='misparticipantes' ng-model="inputdatos2"></selectize>
+             </div>
+          </div>
+        </div>
       </form>
     </div>
  
     <div class="modal-footer">
-      <a href="#!" ng-click="creartarea()" class="modal-action modal-close waves-effect waves-green btn-flat ">Agree</a></div>
+       <a href="#!" ng-click="creartarea()" class="modal-action modal-close waves-effect waves-green btn-flat ">Aceptar</a>
+      <a href="#!" ng-click="creartarea()" class="modal-action modal-close waves-effect waves-green btn-flat ">Cancelar</a>
+     
+    </div>
     </div>
   </div>
 

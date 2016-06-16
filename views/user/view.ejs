@@ -38,8 +38,8 @@ var $mensaje3 = $('<span class="  color_acentuado-text"> Ocurrió un error al gu
       </div>
       <div ng-repeat="x in miusuario | filter:busqueda" ng-model="miusuario">
         <a ng-href="/project/edit/{{x.id}}" ng-if="x.owner_email==mi_email">
-          <div class="col s6" >
-            <div class="card green z-depth-2"> 
+          <div class="col s6 " >
+            <div class="card green hoverable "> 
               <div class="card-content white-text" > {{x.name}}  </div>
             </div>
           </div>

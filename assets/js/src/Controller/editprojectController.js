@@ -12,7 +12,7 @@ $scope.miproyecto;
 $scope.mesajes;
 $scope.miusuario;
 $scope.userid = miid;
-
+$scope.getselectedtask;
 
 
   $scope.list4 = [];
@@ -99,7 +99,6 @@ $http({
 
 
       }).then(function(getKanban){//Se obtiene el kanban
-        console.log('el id del kanban es:'+$scope.miproyecto.kanban[0].id);
           $http({
               url:'/kanban/getKanban/',
               method: 'GET',
@@ -332,8 +331,78 @@ render: {
     // receives the selectize object as an argument
     //console.log('Initialized',selectize);
     $scope.selectize=selectize;
+  },
+  onItemRemove: function(value){
+    $scope.usuarios.splice(0,0,value);
+    console.log(value.name);
+    $scope.selectize.refreshItems();
   }
 };
+
+
+$scope.inputdatos2;
+$scope.myConfig2 = {
+  create: false,
+  persist:false,
+  maxItems:1,
+  valueField: 'id',
+  labelField: 'firstname',
+  delimiter: '|',
+  placeholder: 'Hacer responsable',
+  searchField: ['firstname','email','rut'],
+
+    createFilter: function(input) {
+        var match, regex;
+
+        // email@address.com
+        regex = new RegExp('^' + REGEX_EMAIL + '$', 'i');
+        match = input.match(regex);
+        if (match) return !this.options.hasOwnProperty(match[0]);
+
+        // name <email@address.com>
+        regex = new RegExp('^([^<]*)\<' + REGEX_EMAIL + '\>$', 'i');
+        match = input.match(regex);
+        if (match) return !this.options.hasOwnProperty(match[2]);
+
+        return false;
+    },
+render: {
+        item: function(item, escape) {
+            return '<div>' +
+                (item.firstname ? '<span class="name">' + escape(item.firstname+' , ') + '</span>' : '') +
+                (item.email ? '<span class="email">' + escape(item.email) + '</span>' : '') +
+            '</div>';
+        },
+        option: function(item, escape) {
+            var label = item.firstname || item.email;
+            var caption = item.firstname ? item.email : null;
+            return '<div>' +
+                '<span class="label">' + escape(label+' , ') + '</span>' +
+                (caption ? '<span class="caption">' + escape(caption) + '</span>' : '') +
+            '</div>';
+        }
+    },
+  onInitialize: function(selectize){
+    // receives the selectize object as an argument
+    //console.log('Initialized',selectize);
+    $scope.selectize=selectize;
+  },
+  onItemRemove: function(value){
+    $scope.misparticipantes.splice(0,0,value);
+    $scope.getselectedtask={};
+    $scope.selectize.refreshItems();
+  },
+  onItemAdd: function(value,item){
+    $scope.getselectedtask=item;
+    console.log(value);
+  },
+  onDropdownOpen: function(dropdown){
+    $scope.selectize.clear();
+    $scope.selectize.refreshItems();
+
+  }
+  }
+
 
 
 });

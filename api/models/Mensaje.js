@@ -8,7 +8,7 @@
 module.exports = {
   schema:true,autoCreatedAt: true,autoUpdatedAt: true,
   attributes: {
-  	name:{type:'string'},
+  	title:{type:'string'},
   	tipo:{type:'string'},
   	position:{type:'array'},
     project_id:{type:'string'},
@@ -22,7 +22,9 @@ module.exports = {
   	},
   	usuario:{
   		model:'User'
-  	}
+  	},
+    datosusuario:{type:{'json'}}//guarda el id, nombre, iniciales y nombre
+
   }
 };
 
