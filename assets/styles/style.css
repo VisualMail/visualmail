@@ -177,6 +177,7 @@ footer.page-footer {
   height:100px;
   width:250px;
   margin:15px; 
+  border-bottom-right-radius: 2em;
 }
 
 

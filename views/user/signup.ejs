@@ -94,12 +94,11 @@ var $toastContent = $('<span class="  color_acentuado-text">Ocurrió un error, e
 
           <div class= "row ">
          <div class="input-field col s7 offset-s1">
-               <input  id="rut" type="text"  name="rut"  ng-model="rut" ng-required="true"  ng-pattern="/^0*(\d{1,3}(\.?\d{3})*)\-?([\dkK])$/" gp-rut-validator ng-model-options="{ updateOn: 'blur' }" placeholder="Rut sin guión ni puntos"> 
+               <input  id="rut" type="text"  name="rut"  ng-model="rut" ng-required="true"   gp-rut-validator placeholder="Rut"> 
           <label for="rut">Rut</label>
          </div>
           <div ng-messages="signupform.rut.$error" role="alert" class="col s4 centerme red-text" >
             <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
-            <div ng-message="pattern">Formato no válido</div>
             <div ng-message="rutInvalid">Rut inválido</div>
             <div ng-show="signupform.rut.$valid"><i class="small material-icons light-green-text">done</i></div>
           </div>
