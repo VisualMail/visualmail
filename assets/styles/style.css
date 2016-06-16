@@ -96,7 +96,7 @@ footer.page-footer {
 
 }
 .color_secundario{
-  background: #388E3C ;
+  background: #4CAF50 ;
 
 }
 .color_terciario{
@@ -154,6 +154,30 @@ footer.page-footer {
     transform: translateX(-50%) translateY(-50%);
 }
 
+.contenedorkanban{
+  border: 2px solid #C8E6C9; 
+  overflow-y: auto;
+  height:1%;
+  height:510px; 
+
+   
+}
+.contenedorkanbanheader{
+  background: #C8E6C9;
+  color:#4CAF50;
+
+
+  
+}
+.textito{
+  word-wrap: break-word;
+}
+.conheight{
+  text-overflow-y:auto;
+  height:100px;
+  width:250px;
+  margin:15px; 
+}
 
 
 .scrollactivos{
@@ -166,4 +190,20 @@ footer.page-footer {
 .scrolltablaparticipantes{
   overflow-y: auto; height:100px; 
 
+}
+
+.kanbanred{
+  background: #F44336;
+}
+.kanbancyan{
+  background: #00BCD4 ;
+}
+.kanbanblue{
+  background: #3F51B5;
+}
+.kanbanorange{
+  background: #FF9800 ;
+}
+.kanbanyellow{
+  background: #FFEB3B;
 }

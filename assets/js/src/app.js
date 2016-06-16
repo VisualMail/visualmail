@@ -1,4 +1,4 @@
- angular.module('app',['ngMessages','gp.rutValidator','selectize',
+ angular.module('app',['ngMessages','gp.rutValidator','selectize','ngDragDrop',
   'app.projectedit','app.signupctrl','app.LoginCtrl','app.RecoverPassCtrl','app.RecoverPageCtrl',
   'app.editUserCtrl','app.createProjectCtrl'])
  .directive('capitalize', function() {

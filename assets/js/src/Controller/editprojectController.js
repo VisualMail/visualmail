@@ -1,4 +1,4 @@
-angular.module('app.projectedit',['ngMessages','gp.rutValidator','selectize'])
+angular.module('app.projectedit',['ngMessages','gp.rutValidator','selectize','ngDragDrop'])
 .controller('projectedit',function($scope,$http,$timeout){
 var REGEX_EMAIL = '([a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@' +
                   '(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)';
@@ -12,6 +12,30 @@ $scope.miproyecto;
 $scope.mesajes;
 $scope.miusuario;
 $scope.userid = miid;
+
+
+
+  $scope.list4 = [];
+  $scope.list1 = [{ 'title': 'Item 1', 'drag': true }];
+  $scope.list3 = [];  
+  $scope.list2 = [
+    { 'title': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', 'drag': true },
+    { 'title': 'Item 2', 'drag': true },
+    { 'title': 'Item 3', 'drag': true },
+    { 'title': 'Item 4', 'drag': true },
+    { 'title': 'Item 5', 'drag': true },
+    { 'title': 'Item 6', 'drag': true },
+    { 'title': 'Item 7', 'drag': true },
+    { 'title': 'Item 8', 'drag': true }
+  ];
+
+
+
+
+
+
+
+ $scope.names = ["Emil", "Tobias", "Linus"];
 $http({
     url:'/user/findUserOnly/',
     method: 'GET',
