@@ -111,6 +111,7 @@ NO OLVIDAR ARREGLAR ESTA FUNCION DEACUERDO A FALLAS EN LOS POST
           data: {
            project_id:data.project.id,
            project: data.project.id,
+           name: 'kanban: '+data.project.name,
           }
 
       }).success(function (datakanban) {

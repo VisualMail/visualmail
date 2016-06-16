@@ -30,12 +30,18 @@ $scope.userid = miid;
   ];
 
 
+$scope.creartarea= function(){
+  $scope.list1.splice(0,0,{'title':$scope.nuevatarea,'drag':true});
+}
 
+//aqui lelgan las tareas del kanban
+$scope.tipokanban=['new','doing','testing','done'];
 
+    $http.get('/csrfToken')
+      .success(function (token) {
+        $scope.csrfToken = token._csrf;
+    });
 
-
-
- $scope.names = ["Emil", "Tobias", "Linus"];
 $http({
     url:'/user/findUserOnly/',
     method: 'GET',
@@ -62,7 +68,7 @@ $http({
     $scope.usuarios = [];
     $scope.miproyecto= getOne.data.project;
     $scope.misparticipantes = getOne.data.project.participants;
-    //console.log($scope.miproyecto);
+    console.log($scope.miproyecto);
 
     for(i in result.data.arr){
       var bandera=0;
@@ -92,14 +98,36 @@ $http({
       });
 
 
+      }).then(function(getKanban){//Se obtiene el kanban
+        console.log('el id del kanban es:'+$scope.miproyecto.kanban[0].id);
+          $http({
+              url:'/kanban/getKanban/',
+              method: 'GET',
+              params: {id:$scope.miproyecto.kanban[0].id}
+            }).then(function(datakanban){
+              if(datakanban.data.kanban=='false'){
+              }
+              for(var i=0;i<datakanban.data.kanban.tareas.length;i++){
+                if(datakanban.data.kanban.tareas[i].tipo==$scope.tipokanban[0]){
+                  $scope.list1.splice=(0,0,datakanban.data.kanban.tareas[i]);
+                }
+                if(datakanban.data.kanban.tareas[i].tipo==$scope.tipokanban[1]){
+                  $scope.list2.splice=(0,0,datakanban.data.kanban.tareas[i]);
+                }
+                if(datakanban.data.kanban.tareas[i].tipo==$scope.tipokanban[2]){
+                  $scope.list3.splice=(0,0,datakanban.data.kanban.tareas[i]);
+                }
+                if(datakanban.data.kanban.tareas[i].tipo==$scope.tipokanban[3]){
+                  $scope.list4.splice=(0,0,datakanban.data.kanban.tareas[i]);
+                }
+              }
+            });
+
       });
     });
 
 
-    $http.get('/csrfToken')
-      .success(function (token) {
-        $scope.csrfToken = token._csrf;
-    });
+
 
 
 $scope.inputdatos = '';

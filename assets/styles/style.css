@@ -176,8 +176,8 @@ footer.page-footer {
   text-overflow-y:auto;
   height:100px;
   width:250px;
-  margin:15px; 
-  border-bottom-right-radius: 2em;
+  margin:10px; 
+  border-radius: 8px;
 }
 
 
@@ -206,5 +206,6 @@ footer.page-footer {
   background: #FF9800 ;
 }
 .kanbanyellow{
-  background: #FFEB3B;
+  /*background: #FFEB3B;*/
+  background:#B6B6B6;
 }

@@ -34,7 +34,7 @@ getDialogos: function(req,res,next){
 },
 
 getOne: function(req,res,next){
-	Project.findOne(req.param('id')).populate('participants').populate('dialogos').exec(function(err,project){
+	Project.findOne(req.param('id')).populate('participants').populate('dialogos').populate('kanban').exec(function(err,project){
 		if(err) return next(err);
 		if(!project) return next();
 		//console.log(project);

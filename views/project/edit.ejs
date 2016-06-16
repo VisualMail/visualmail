@@ -83,7 +83,7 @@
             </table>
             </div>
 
-            asasas
+            
                <select ng-model="selectedName" ng-options="x for x in names">
 </select>
         </select>
@@ -226,7 +226,7 @@
       <br>
       
           <div id="new" class="col s3 ">
-               <div class=" col s12 contenedorkanbanheader"><div class="col s11"> NUEVA</div> <div class="col s1"><a href=""> <i class="material-icons light-green-text prefix">add_circle</i></a></div></div>
+               <div class=" col s12 contenedorkanbanheader"><div class="col s10"> NUEVA</div> <div class="col s1"><a class="modal-trigger " href="#modal1"> <i class="material-icons light-green-text prefix">add_circle</i></a></div></div>
                <div class="col s12 contenedorkanbanheader"> <div class="col s1"><br><i class="material-icons light-green-text prefix">search</i></div><div class="col 11"><input type="text" ng-model="filtro1"></div></div>
             <div class=" col s12 contenedorkanban" data-drop="true" ng-model='list1' data-jqyoui-options="optionsList1" jqyoui-droppable="{multiple:true}">
               
@@ -289,6 +289,26 @@
             </div>
           </div>
     </div><!-- FIN TAB -->
+
+
+  <!-- MODALES-->
+    <div id="modal1" class="modal modal-fixed-footer">
+    <div class="modal-content">
+      <h4 class="green-text"> Modal Header</h4>
+      <form  novalidate>
+        <input type="text" name="nuevatarea" ng-model="nuevatarea">
+        <label for="nuevatarea"></label>
+        <input type="text" name="usuario">
+        <label for="usuario"></label>
+        <input type="hidden" ng-value="nueva" ng-model="tipo">
+      </form>
+    </div>
+ 
+    <div class="modal-footer">
+      <a href="#!" ng-click="creartarea()" class="modal-action modal-close waves-effect waves-green btn-flat ">Agree</a></div>
+    </div>
+  </div>
+
   </div><!-- FIN CONTENEDOR DIV -->
 
 

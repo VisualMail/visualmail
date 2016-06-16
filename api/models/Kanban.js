@@ -9,8 +9,7 @@ module.exports = {
   schema:true,autoCreatedAt: true,autoUpdatedAt: true,
   attributes: {
   	project:{
-  		model:'project',
-  		unique: true
+  		model:'project'
   	},
   	project_id:{
   		type:'string'
@@ -18,7 +17,8 @@ module.exports = {
   	tareas:{
   		collection:'tarea',
   		via:'kanban'
-  	}
+  	},
+    name:{type:'string'},
 
   }
 };

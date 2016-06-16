@@ -15,7 +15,8 @@ schema:true,autoCreatedAt: true,autoUpdatedAt: true,
   	tipotarea:{type:'string'},//doing.done,testing,new
   	kanban:{
   		model:'kanban'
-  	}
+  	},
+    drag:{type:'boolean'},
   }
 };
 
