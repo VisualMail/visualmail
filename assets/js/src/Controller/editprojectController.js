@@ -12,30 +12,127 @@ $scope.miproyecto;
 $scope.mesajes;
 $scope.miusuario;
 $scope.userid = miid;
-$scope.getselectedtask;
-
-
+$scope.getselectedtask='';
+$scope.inputdatos2;
+$scope.selectedusuariotask={};
+$scope.tipokanban=['new','doing','testing','done'];
+$scope.largos=[];
   $scope.list4 = [];
-  $scope.list1 = [{ 'title': 'Item 1', 'drag': true }];
+  $scope.list1 = [];
   $scope.list3 = [];  
-  $scope.list2 = [
-    { 'title': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', 'drag': true },
-    { 'title': 'Item 2', 'drag': true },
-    { 'title': 'Item 3', 'drag': true },
-    { 'title': 'Item 4', 'drag': true },
-    { 'title': 'Item 5', 'drag': true },
-    { 'title': 'Item 6', 'drag': true },
-    { 'title': 'Item 7', 'drag': true },
-    { 'title': 'Item 8', 'drag': true }
-  ];
-
+  $scope.list2 = [];
+$scope.nuevatarea;
 
 $scope.creartarea= function(){
-  $scope.list1.splice(0,0,{'title':$scope.nuevatarea,'drag':true});
-}
+    
+  //$scope.list1.splice(0,0,{'title':$scope.nuevatarea,'drag':true});
+  for(var i=0;i<$scope.misparticipantes.length;i++){
+    if($scope.misparticipantes[i].id==$scope.getselectedtask){
+      $scope.selectedusuariotask= $scope.misparticipantes[i];
+      break;
+    }
+  }
+  //console.log('aca');
+  //console.log($scope.selectedusuariotask);
+  
+  //$scope.json.push($scope.selectedusuariotask);
+  delete $scope.selectedusuariotask.$$hashKey;
+  delete $scope.selectedusuariotask.$order;
+  delete $scope.selectedusuariotask.password;
 
+        $http({
+        method: 'POST',
+        url: '/tarea/create',
+        headers: {'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': $scope.csrfToken 
+        },
+        data: {
+          id:$scope.idmensajepadre,
+          drag:true,
+          datosusuario: $scope.selectedusuariotask,
+          tipo:'new',
+          kanban: $scope.miproyecto.kanban[0].id,
+          usuario:$scope.selectedusuariotask.id,
+          title:$scope.nuevatarea
+        }
+
+        }).success(function (datatarea){
+          
+          $scope.list1.splice(0,0,datatarea.tarea);
+        });
+
+
+}
+$scope.onDrop= function(evt,ui){
+  console.log('he aqui el drop manda el post');
+    //console.log($scope.list1);
+    var obj = ui.draggable.scope().dndDragItem;
+
+    //console.log(obj);
+    //determinar cual cambio
+    var dragged=-1;
+    var dropped=-1;
+    //detrminar cual fue draggeado y cual dropped
+    if($scope.largos[0]!=$scope.list1.length){
+      if($scope.largos[0]<$scope.list1.length){
+        dragged=0;
+      }
+      if($scope.largos[0]>$scope.list1.length){
+        dropped=0;
+      }
+    }
+  if($scope.largos[1]!=$scope.list2.length){
+      if($scope.largos[1]<$scope.list2.length){
+        dragged=1;
+      }
+      if($scope.largos[1]>$scope.list2.length){
+        dropped=1;
+      }
+    }
+    if($scope.largos[2]!=$scope.list3.length){
+      if($scope.largos[2]<$scope.list3.length){
+        dragged=2;
+      }
+      if($scope.largos[2]>$scope.list3.length){
+        dropped=2;
+      }
+    }
+    if($scope.largos[3]!=$scope.list4.length){
+      if($scope.largos[3]<$scope.list4.length){
+        dragged=3;
+      }
+      if($scope.largos[3]>$scope.list4.length){
+        dropped=3;
+      }
+    }
+    console.log(dropped);
+    console.log(dragged);
+    console.log($scope.tipokanban[dragged]);
+
+    console.log(obj);
+    $http({
+        method: 'POST',
+        url: '/tarea/updateTipo',
+        headers: {'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': $scope.csrfToken 
+        },
+
+        data: {
+          nuevotipo: $scope.tipokanban[dragged],
+          id: obj.id
+        }
+
+    }).success(function (datakanbanupdate){
+      console.log('cambiado');
+      console.log(datakanbanupdate);
+    });
+
+
+    //es 1 post 
+    
+}
 //aqui lelgan las tareas del kanban
-$scope.tipokanban=['new','doing','testing','done'];
+
 
     $http.get('/csrfToken')
       .success(function (token) {
@@ -68,7 +165,7 @@ $http({
     $scope.usuarios = [];
     $scope.miproyecto= getOne.data.project;
     $scope.misparticipantes = getOne.data.project.participants;
-    console.log($scope.miproyecto);
+    //console.log($scope.miproyecto);
 
     for(i in result.data.arr){
       var bandera=0;
@@ -105,21 +202,28 @@ $http({
               params: {id:$scope.miproyecto.kanban[0].id}
             }).then(function(datakanban){
               if(datakanban.data.kanban=='false'){
+               
               }
+
               for(var i=0;i<datakanban.data.kanban.tareas.length;i++){
+
                 if(datakanban.data.kanban.tareas[i].tipo==$scope.tipokanban[0]){
-                  $scope.list1.splice=(0,0,datakanban.data.kanban.tareas[i]);
+                  $scope.list1.splice(0,0,datakanban.data.kanban.tareas[i]);
                 }
                 if(datakanban.data.kanban.tareas[i].tipo==$scope.tipokanban[1]){
-                  $scope.list2.splice=(0,0,datakanban.data.kanban.tareas[i]);
+                  $scope.list2.splice(0,0,datakanban.data.kanban.tareas[i]);
                 }
                 if(datakanban.data.kanban.tareas[i].tipo==$scope.tipokanban[2]){
-                  $scope.list3.splice=(0,0,datakanban.data.kanban.tareas[i]);
+                  $scope.list3.splice(0,0,datakanban.data.kanban.tareas[i]);
                 }
                 if(datakanban.data.kanban.tareas[i].tipo==$scope.tipokanban[3]){
-                  $scope.list4.splice=(0,0,datakanban.data.kanban.tareas[i]);
+                  $scope.list4.splice(0,0,datakanban.data.kanban.tareas[i]);
                 }
               }
+              $scope.largos[0]= $scope.list1.length;
+              $scope.largos[1]=$scope.list2.length;
+              $scope.largos[2]=$scope.list3.length;
+              $scope.largos[3]=$scope.list4.length;
             });
 
       });
@@ -340,7 +444,7 @@ render: {
 };
 
 
-$scope.inputdatos2;
+
 $scope.myConfig2 = {
   create: false,
   persist:false,
@@ -389,12 +493,13 @@ render: {
   },
   onItemRemove: function(value){
     $scope.misparticipantes.splice(0,0,value);
-    $scope.getselectedtask={};
+    $scope.getselectedtask='';
+    $scope.selectedusuariotask={};
     $scope.selectize.refreshItems();
   },
   onItemAdd: function(value,item){
-    $scope.getselectedtask=item;
-    console.log(value);
+    $scope.getselectedtask=value;
+    console.log($scope.getselectedtask);
   },
   onDropdownOpen: function(dropdown){
     $scope.selectize.clear();

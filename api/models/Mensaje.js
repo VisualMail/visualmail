@@ -8,7 +8,7 @@
 module.exports = {
   schema:true,autoCreatedAt: true,autoUpdatedAt: true,
   attributes: {
-  	title:{type:'string'},
+  	name:{type:'string'},
   	tipo:{type:'string'},
   	position:{type:'array'},
     project_id:{type:'string'},

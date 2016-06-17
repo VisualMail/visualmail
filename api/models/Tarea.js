@@ -11,8 +11,8 @@ schema:true,autoCreatedAt: true,autoUpdatedAt: true,
   	usuario:{
   		model:'User'
   	},
-  	name:{type:'string'},
-  	tipotarea:{type:'string'},//doing.done,testing,new
+  	title:{type:'string'},
+  	tipo:{type:'string'},//doing.done,testing,new
   	kanban:{
   		model:'kanban'
   	},

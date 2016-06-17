@@ -225,15 +225,15 @@
     <div id="kanban" class="col s12" ng-cloak>
       <br>
       
-          <div id="new" class="col s3 ">
+          <div class="col s3 ">
                <div class=" col s12 contenedorkanbanheader"><div class="col s10"> NUEVA</div> <div class="col s1"><a class="modal-trigger " href="#modal1"> <i class="material-icons light-green-text prefix">add_circle</i></a></div></div>
                <div class="col s12 contenedorkanbanheader"> <div class="col s1"><br><i class="material-icons light-green-text prefix">search</i></div><div class="col 11"><input type="text" ng-model="filtro1"></div></div>
-            <div class=" col s12 contenedorkanban" data-drop="true" ng-model='list1' data-jqyoui-options="optionsList1" jqyoui-droppable="{multiple:true}">
+            <div id="new"  class=" col s12 contenedorkanban" data-drop="true" ng-model='list1' data-jqyoui-options="optionsList1" jqyoui-droppable="{multiple:true, onDrop:'onDrop'}">
               
               <div class =" kanbanyellow conheight hoverable" ng-repeat="item in list1 | filter:filtro1" ng-show="item.title" data-drag="{{item.drag}}" data-jqyoui-options="{helper: 'clone'}" ng-model="list1" jqyoui-draggable="{index: {{$index}},animate:true}"> 
                 <div class="row">
-                <div class=" col s3 "> <br><img class="circle responsive-img" src="<%=session.User.imgurl%>"></div>
-                <div class="col s9 textito"> <h6>{{item.title}}</h6> </div>
+                <div class=" col s3 "> <br><img class="circle responsive-img" ng-src="{{item.datosusuario.imgurl}}"></div>
+                <div class="col s9 textito"> <h6>{{item.title}} </h6> </div>
                 </div>
        
               </div>
@@ -241,10 +241,10 @@
             </div>
           </div>
 
-          <div id="doing" class=" col s3 ">
+          <div class=" col s3 ">
    <div class=" col s12 contenedorkanbanheader">HACIENDO</div>
-   <div class="col s12 contenedorkanbanheader"> <div class="col s1"><br><i class="material-icons light-green-text prefix">search</i></div><div class="col 11"><input type="text" ng-model="filtro2"></div></div>
-      <div class=" col s12 contenedorkanban" data-drop="true" ng-model='list2' data-jqyoui-options="optionsList2" jqyoui-droppable="{multiple:true}">
+   <div class="col s12 contenedorkanbanheader"> <div class="col s1"><br><i class="material-icons light-green-text prefix">search</i></div><div id="doing"  class="col 11"><input type="text" ng-model="filtro2"></div></div>
+      <div class=" col s12 contenedorkanban" data-drop="true" ng-model='list2' data-jqyoui-options="optionsList2" jqyoui-droppable="{multiple:true, onDrop:'onDrop'}">
               
               <div class =" kanbanyellow conheight hoverable" ng-repeat="item in list2 | filter:filtro2" ng-show="item.title" data-drag="{{item.drag}}" data-jqyoui-options="{helper: 'clone'}" ng-model="list2" jqyoui-draggable="{index: {{$index}},animate:true}"> 
                 <div class="row">
@@ -257,10 +257,10 @@
             </div>
           </div>
 
-          <div id="testing" class="col s3 ">
+          <div class="col s3 ">
              <div class=" col s12 contenedorkanbanheader">EN PRUEBAS</div>
              <div class="col s12 contenedorkanbanheader"> <div class="col s1"><br><i class="material-icons light-green-text prefix">search</i></div><div class="col 11"><input type="text" ng-model="filtro3"></div></div>
-              <div class=" col s12 contenedorkanban" data-drop="true" ng-model='list3' data-jqyoui-options="optionsList3" jqyoui-droppable="{multiple:true}">
+              <div id="testing"  class=" col s12 contenedorkanban" data-drop="true" ng-model='list3' data-jqyoui-options="optionsList3" jqyoui-droppable="{multiple:true, onDrop:'onDrop'}">
               
               <div class =" kanbanyellow conheight hoverable" ng-repeat="item in list3 | filter:filtro3" ng-show="item.title" data-drag="{{item.drag}}" data-jqyoui-options="{helper: 'clone'}" ng-model="list3" jqyoui-draggable="{index: {{$index}},animate:true}"> 
                 <div class="row">
@@ -273,10 +273,10 @@
             </div> 
           </div>
 
-          <div id="done" class="col s3 ">
+          <div  class="col s3 ">
             <div class=" col s12 contenedorkanbanheader">TERMINADA</div>
             <div class="col s12 contenedorkanbanheader"> <div class="col s1"><br><i class="material-icons light-green-text prefix">search</i></div><div class="col 11"><input type="text" ng-model="filtro4"></div></div>
-              <div class=" col s12 contenedorkanban" data-drop="true" ng-model='list4' data-jqyoui-options="optionsList4" jqyoui-droppable="{multiple:true}">
+              <div id="done" class=" col s12 contenedorkanban" data-drop="true" ng-model='list4' data-jqyoui-options="optionsList4" jqyoui-droppable="{multiple:true, onDrop:'onDrop'}">
               
               <div class =" kanbanyellow conheight hoverable" ng-repeat="item in list4 |filter:filtro4" ng-show="item.title" data-drag="{{item.drag}}" data-jqyoui-options="{helper: 'clone'}" ng-model="list4" jqyoui-draggable="{index: {{$index}},animate:true}"> 
                 <div class="row">
@@ -326,7 +326,7 @@
  
     <div class="modal-footer">
        <a href="#!" ng-click="creartarea()" class="modal-action modal-close waves-effect waves-green btn-flat ">Aceptar</a>
-      <a href="#!" ng-click="creartarea()" class="modal-action modal-close waves-effect waves-green btn-flat ">Cancelar</a>
+      <a href="#!" ng-click="" class="modal-action modal-close waves-effect waves-green btn-flat ">Cancelar</a>
      
     </div>
     </div>
