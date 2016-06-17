@@ -21,6 +21,10 @@ $scope.largos=[];
   $scope.list1 = [];
   $scope.list3 = [];  
   $scope.list2 = [];
+  $scope.filtro1;
+  $scope.filtro2;
+  $scope.filtro3;
+  $scope.filtro4;
 $scope.nuevatarea;
 
 $scope.creartarea= function(){
@@ -57,8 +61,14 @@ $scope.creartarea= function(){
         }
 
         }).success(function (datatarea){
+           if(datatarea.tarea=='false'){
+             Materialize.toast($mensaje5, 2000);
+            }
+          else{
+            $scope.list1.splice(0,0,datatarea.tarea);
+            Materialize.toast($mensaje6, 2000);
+           }
           
-          $scope.list1.splice(0,0,datatarea.tarea);
         });
 
 
@@ -105,11 +115,11 @@ $scope.onDrop= function(evt,ui){
         dropped=3;
       }
     }
-    console.log(dropped);
-    console.log(dragged);
-    console.log($scope.tipokanban[dragged]);
+    //console.log(dropped);
+    //console.log(dragged);
+    //console.log($scope.tipokanban[dragged]);
 
-    console.log(obj);
+    //console.log(obj);
     $http({
         method: 'POST',
         url: '/tarea/updateTipo',
@@ -123,8 +133,12 @@ $scope.onDrop= function(evt,ui){
         }
 
     }).success(function (datakanbanupdate){
-      console.log('cambiado');
-      console.log(datakanbanupdate);
+      if(datakanbanupdate.tarea=='false'){
+         Materialize.toast($mensaje5, 2000);
+      }
+      else{
+         //Materialize.toast($mensaje4, 2000);
+      }
     });
 
 
@@ -274,10 +288,10 @@ $http({
 
         //aqui mensaje
         if($scope.inputdatos.length==1){
-          Materialize.toast($mensaje1, 5000);
+          Materialize.toast($mensaje1, 500);
         }
         else if($scope.inputdatos.length>=2){
-          Materialize.toast($mensaje2, 5000);
+          Materialize.toast($mensaje2, 2000);
         }
         $scope.selectize.clear();
         $scope.selectize.refreshItems();
@@ -438,7 +452,6 @@ render: {
   },
   onItemRemove: function(value){
     $scope.usuarios.splice(0,0,value);
-    console.log(value.name);
     $scope.selectize.refreshItems();
   }
 };

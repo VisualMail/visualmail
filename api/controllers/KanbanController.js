@@ -17,7 +17,7 @@ module.exports = {
 			if(!kanban)
 				return res.json({kanban:'false'});
 			else{
-				console.log('creado'+kanban.id);
+				
 				req.session.flash={};
 				return res.json({kanban:kanban});
 

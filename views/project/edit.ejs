@@ -10,6 +10,9 @@
      $('.modal-trigger').leanModal();
   });
   var $mensaje2 = $('<span class="  color_acentuado-text"> Se agregaron los nuevos usuarios al proyecto</span>');
+  var $mensaje4 = $('<span class="  color_acentuado-text"> Se han actualizado los cambios</span>');
+  var $mensaje5 = $('<span class="  color_acentuado-text"> Ocurrió un error</span>');
+  var $mensaje6 = $('<span class="  color_acentuado-text"> Se ha creado la nueva tarea</span>');
 </script>
 
 
@@ -248,7 +251,7 @@
               
               <div class =" kanbanyellow conheight hoverable" ng-repeat="item in list2 | filter:filtro2" ng-show="item.title" data-drag="{{item.drag}}" data-jqyoui-options="{helper: 'clone'}" ng-model="list2" jqyoui-draggable="{index: {{$index}},animate:true}"> 
                 <div class="row">
-                <div class=" col s3 "> <br><img class="circle responsive-img" src="<%=session.User.imgurl%>"></div>
+                <div class=" col s3 "> <br><img class="circle responsive-img" ng-src="{{item.datosusuario.imgurl}}"></div>
                 <div class="col s9 textito"> <h6>{{item.title}}</h6> </div>
                 </div>
        
@@ -264,7 +267,7 @@
               
               <div class =" kanbanyellow conheight hoverable" ng-repeat="item in list3 | filter:filtro3" ng-show="item.title" data-drag="{{item.drag}}" data-jqyoui-options="{helper: 'clone'}" ng-model="list3" jqyoui-draggable="{index: {{$index}},animate:true}"> 
                 <div class="row">
-                <div class=" col s3 "> <br><img class="circle responsive-img" src="<%=session.User.imgurl%>"></div>
+                <div class=" col s3 "> <br><img class="circle responsive-img" ng-src="{{item.datosusuario.imgurl}}"></div>
                 <div class="col s9 textito"> <h6>{{item.title}}</h6> </div>
                 </div>
        
@@ -280,7 +283,7 @@
               
               <div class =" kanbanyellow conheight hoverable" ng-repeat="item in list4 |filter:filtro4" ng-show="item.title" data-drag="{{item.drag}}" data-jqyoui-options="{helper: 'clone'}" ng-model="list4" jqyoui-draggable="{index: {{$index}},animate:true}"> 
                 <div class="row">
-                <div class=" col s3 "> <br><img class="circle responsive-img" src="<%=session.User.imgurl%>"></div>
+                <div class=" col s3 "> <br><img class="circle responsive-img" ng-src="{{item.datosusuario.imgurl}}"></div>
                 <div class="col s9 textito"> <h6>{{item.title}}</h6> </div>
                 </div>
        
