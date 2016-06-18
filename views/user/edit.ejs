@@ -31,7 +31,7 @@
       
         <div class= " col s12">
          <div class="input-field col s7 offset-s1">
-           <input id="firstname" type="text"  name="firstname" ng-model="firstname" ng-minlength="3" ng-maxlength="15" ng-pattern="/^[a-zA-Z]+$/" length="3">
+           <input id="firstname" type="text"  name="firstname" ng-model="firstname" ng-minlength="3" ng-maxlength="15" ng-pattern="/^[a-zA-Z\s]*$/">
           <label for="firstname"   >Nombre</label>
          </div>
           <div ng-messages="update_campos.firstname.$error" role="alert" class="col s4 centerme red-text" >
@@ -44,7 +44,7 @@
 
         <div class= " col s12">
          <div class="input-field col s7 offset-s1">
-          <input  id="lastname" type="text"  name="lastname" ng-model="lastname" ng-minlength="5" ng-maxlength="30" ng-pattern="/^[a-zA-Z]+$/">
+          <input  id="lastname" type="text"  name="lastname" ng-model="lastname" ng-minlength="5" ng-maxlength="30" ng-pattern="/^[a-zA-Z\s]*$/">
           <label for="lastname"   >Apellidos</label>
          </div>
         <div ng-messages="update_campos.lastname.$error" role="alert" class="col s4 centerme red-text" >
