@@ -3,69 +3,41 @@
   'use strict';
 
   angular
-    .module('gp.rutValidator', []);
-  /*
-    Filtro que verifica la validez de formato de un rut dado
-  */
-  angular
-    .module('gp.rutValidator')
-    .filter('rutCheckFormat', checkFormatFilter);
-
-  function checkFormatFilter(){
-    return function (rut){
-      var regexFormatosValidos = (/^(\d{7,8}\-(\d|k))$|^(\d{1,2}\.\d{3}\.\d{3}\-(\d|k){1})$|^(\d{8,9})$/i);
-
-      return (typeof rut === 'string') && regexFormatosValidos.test(rut);
+    .module('gp.rutValidator', ['ngMessages'])
+    .directive('gpRutValidator', directive);
+  
+  directive.$inject = ['$compile'];
+  function directive($compile){
+    var ddo = {
+      restrict: 'A',
+      require: 'ngModel',
+      link: linkFn
     };
-  }
+    return ddo;
+    
+    function linkFn(scope, element, attrs, ngModel){
+      ngModel.$validators.rutInvalid = function(rut) {
+        if(rut){
+          return verificadorDeRut(rut);
+        }
+      };
+    }
+    
+    function verificadorDeRut(rut){
+       
+      /* 
+         Vamos a prevenir que la función sea invocada si se reciben datos que no sean de tipo string o que contengan un número
+         de dígitos que no valga la pena que verifiquemos. 
+         La expresión regular busca si se entrega una cantidad de digitos entre 1 y 7, cantidad que no es suficiente
+         para poder ser dividida en 2 partes para poder verificar el digito verificador. Una explicación más detallada y paso
+         a paso de la expresión regular en este link -> https://regex101.com/r/gY1cP9/2
+      */
 
-  /*
-    Filtro que formatea el rut a un formato válido
-  */
-  angular
-    .module('gp.rutValidator')
-    .filter('rutFormat', rutFormatter);
-
-  function rutFormatter(){
-    return function (rut){
+      //FALTA REGEXP QUE COMPARE QUE TENGA UN FORMATO VÁLIDO, POR EJEMPLO QUE NO SEA 1.6299.22-2-8
+      if(typeof rut !== 'string' || (/\b(\d{1,7}|[a-z]+)\b/i).test(rut)) return false;
       
-      if(!rut) return '';
-      
-      rut = rut.match(/[0-9Kk]+/g).join('');
-        
-      return rut.slice(0,-1).replace((/[0-9](?=(?:[0-9]{3})+(?![0-9]))/g), '$&.') + '-' + rut.slice(-1).toLowerCase();
-    };
-  }
-
-  angular
-    .module('gp.rutValidator')
-    .filter('rutCleanFormat', cleanFormatFilter);
-
-  function cleanFormatFilter(){
-    return function (rut){
-      return rut? rut.match(/[0-9Kk]+/g).join('')
-                : '';
-    };
-  }
-
-  /*
-    Filtro que verifica el digito verificador de un rut dado
-  */
-  angular
-    .module('gp.rutValidator')
-    .filter('rutVerifier', rutVerifierFilter);
-
-  rutVerifierFilter.$inject = ['rutCheckFormatFilter', 'rutCleanFormatFilter'];
-
-  function rutVerifierFilter(rutCheckFormatFilter, rutCleanFormatFilter){
-    return function(rut){
-      
-      //Quitamos espacios en blanco en caso de traer
-      rut = rut.trim();
-      //Verificamos si el rut dado tiene un formato válido
-      if(!rutCheckFormatFilter(rut)) return false;
       //Extraemos solo lo que necesitamos del rut, los números y el digito verificador
-      rut = rutCleanFormatFilter(rut);
+      rut = rut.match(/[0-9Kk]+/g).join('');
 
       /*
         Definimos una variable que irá aumentando en cada vuelta del ciclo
@@ -97,7 +69,7 @@
       */
       while(l--){
         suma += +rut[l]*factor;
-        factor = factor === 7 ? 2
+        factor = factor === 7 ? 2 
                               : ++factor;
       }
       //si 11 menos el modulo de la suma obtenida es 11, digito verificador es 0, si 
@@ -106,57 +78,8 @@
                                                 : ( digitoCalculado === 10? 'k' : digitoCalculado);
       //convertimos en string el digito calculado y retornamos el resultado de la comparación con el digito verificador
       return (''+digitoCalculado) === digitoOriginal;
-    };
-  }
-
- /*
-    DIRECTIVA VALIDADOR DE RUT:
-
-    Genera errores de la librería ng-messages
-
-  */
-  angular
-    .module('gp.rutValidator')
-    .directive('gpRutValidator', directive);
-  
-  directive.$inject = ['$filter'];
-  
-  function directive($filter){
-    var ddo = {
-      restrict: 'A',
-      require: 'ngModel',
-      link: linkFn
-    };
-    return ddo;
-    
-    function linkFn(scope, element, attrs, ngModel){
-      
-      //restringe que se ingresen elementos no válidos
-      var regexValidKeys = (/[\d\.\-k]/i);
-      
-      element.bind('keypress', function(e){
-        
-        var key = String.fromCharCode(e.keyCode);
-        
-        if (!regexValidKeys.test(key)) {
-          e.preventDefault();
-          return false;
-        }
-
-      });
-
-      //validación se debe realizar al quitar el foco del input
-      element.bind('focusout', function(){
-        
-        var rut = ngModel.$viewValue;
-        
-        ngModel.$setValidity('rutInvalid', rut? $filter('rutVerifier')(rut) : true);
-        
-        scope.$apply();
-
-      });
-
     }
+
   }
 
 })(window, angular);

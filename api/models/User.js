@@ -11,7 +11,7 @@ attributes: {
 	//id:{ type: 'integer', required: true, unique:true,autoIncrement: true,primaryKey: true,},
 	firstname:{ type: 'string', required:true },
 	lastname:{ type: 'string', required:true},
-	email:{ type: 'string', email:true, required:true, unique:true},
+	email:{ type: 'email', email:true, required:true, unique:true},
 	
 	initials:{ type: 'string',required:true},
 	password:{ type: 'string',required:true},

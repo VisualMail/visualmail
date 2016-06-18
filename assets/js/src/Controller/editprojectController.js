@@ -17,14 +17,14 @@ $scope.inputdatos2;
 $scope.selectedusuariotask={};
 $scope.tipokanban=['new','doing','testing','done'];
 $scope.largos=[];
-  $scope.list4 = [];
-  $scope.list1 = [];
-  $scope.list3 = [];  
-  $scope.list2 = [];
-  $scope.filtro1;
-  $scope.filtro2;
-  $scope.filtro3;
-  $scope.filtro4;
+$scope.list4 = [];
+$scope.list1 = [];
+$scope.list3 = [];  
+$scope.list2 = [];
+$scope.filtro1;
+$scope.filtro2;
+$scope.filtro3;
+$scope.filtro4;
 $scope.nuevatarea;
 
 $scope.creartarea= function(){
@@ -74,7 +74,7 @@ $scope.creartarea= function(){
 
 }
 $scope.onDrop= function(evt,ui){
-  console.log('he aqui el drop manda el post');
+  //console.log('he aqui el drop manda el post');
     //console.log($scope.list1);
     var obj = ui.draggable.scope().dndDragItem;
 
@@ -135,6 +135,11 @@ $scope.onDrop= function(evt,ui){
     }).success(function (datakanbanupdate){
       if(datakanbanupdate.tarea=='false'){
          Materialize.toast($mensaje5, 2000);
+         $scope.filtro1='';
+         c
+         $scope.filtro2='';
+         $scope.filtro3='';
+         $scope.filtro4='';
       }
       else{
          //Materialize.toast($mensaje4, 2000);

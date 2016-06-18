@@ -6,7 +6,7 @@
 
     var $mensaje1 = $('<span class="  color_acentuado-text"> Se actualizaron los campos seleccionados</span>');
 
-    var $mensaje2 = $('<span class="  color_acentuado-text"> Ocurrió un error con los campos ingresados </span>');
+    var $mensaje2 = $('<span class="  color_acentuado-text"> Campo(s) mal ingresado(s) </span>');
 
     var $mensaje3 = $('<span class="  color_acentuado-text"> Se actualizó su nueva contraseña</span>');
 
@@ -20,43 +20,42 @@
 <div id="vistaprincipal" class="boxer" ng-controller="editUserCtrl">
   
   <div class=" container">
-    <br>
-    <div class="card-panel" id="contenedor_form">
+    <div class="row card-panel" id="contenedor_form">
     <form name="update_campos" novalidate>
-      <div class="row col">
-        <div class="row col s12">
+      
+        <div class=" s12">
           <div class="col s8 offset-s1 ">
             <h3 class=" green-text"> Actualizar campos</h3>
             <h6 class="green-text "> Los campos nulos no se actualizarán. </h6>
-          </div>
-        </div>
-        <div class= "row col s12">
+          </div> </div>
+      
+        <div class= " col s12">
          <div class="input-field col s7 offset-s1">
-          
-           <input id="firstname" type="text"  name="firstname" ng-model="firstname" ng-minlength="3" ng-maxlength="15" >
+           <input id="firstname" type="text"  name="firstname" ng-model="firstname" ng-minlength="3" ng-maxlength="15" ng-pattern="/^[a-zA-Z]+$/" length="3">
           <label for="firstname"   >Nombre</label>
          </div>
           <div ng-messages="update_campos.firstname.$error" role="alert" class="col s4 centerme red-text" >
             <div ng-message="minlength">Mínimo 3 caracteres</div> 
             <div ng-message ="maxlength">Nombre muy largo</div>
+            <div ng-message ="pattern"> Formato no válido</div>
+            
+         </div>
+        </div>
+
+        <div class= " col s12">
+         <div class="input-field col s7 offset-s1">
+          <input  id="lastname" type="text"  name="lastname" ng-model="lastname" ng-minlength="5" ng-maxlength="30" ng-pattern="/^[a-zA-Z]+$/">
+          <label for="lastname"   >Apellidos</label>
+         </div>
+        <div ng-messages="update_campos.lastname.$error" role="alert" class="col s4 centerme red-text" >
+            <div ng-message="minlength">Mínimo 5 caracteres</div> 
+            <div ng-message ="maxlength">Apellido muy largo</div>
+            <div ng-message ="pattern"> Formato no válido</div>
            
          </div>
         </div>
 
-        <div class= "row col s12">
-         <div class="input-field col s7 offset-s1">
-          <input  id="lastname" type="text"  name="lastname" ng-model="lastname" ng-minlength="5" ng-maxlength="30">
-          <label for="lastname"   >Apellidos</label>
-         </div>
-        <div ng-messages="update_campos.lastname.$error" role="alert" class="col s4 centerme red-text" >
-            
-            <div ng-message="minlength">Mínimo 5 caracteres</div> 
-            <div ng-message ="maxlength">Apellido muy largo</div>
-     
-         </div>
-        </div>
-
-        <div class= "row col s12 ">
+        <div class= " col s12 ">
          <div class="input-field col s7 offset-s1">
            <input ng-model="imgurl" id="imgurl" type="text" name="imgurl" placeholder="http://">
           <label for="imgurl" >URL imagen</label>
@@ -65,20 +64,20 @@
         </div>
 
 
-             <div class= "row col s12">
-         <div class="input-field col s7 offset-s1">
-               <input  id="initials" type="text"  name="initials" ng-model="initials" ng-minlength="3" ng-maxlength="3" capitalize>
+             <div class= "row col s12 ">
+         <div class="input-field col s7 offset-s1 tooltipped" data-position="top" data-delay="50" data-tooltip="Ingrese 3 caracteres con las iniciales de su nombre">
+               <input  id="initials" type="text"  name="initials" ng-model="initials" ng-minlength="3" ng-maxlength="3" capitalize ng-pattern="/^[a-zA-Z]+$/" ng-required>
           <label for="initials"   >Iniciales</label>
          </div>
-         
         <div ng-messages="update_campos.initials.$error" role="alert" class="col s4 centerme red-text" >
-            
             <div ng-message="minlength">3 caracteres</div> 
             <div ng-message ="maxlength">No pueden ser más de 3 carácteres</div>
-
+             <div ng-message="pattern">Formato no válido</div>
+            
         </div>
             </div>
-     <div class="row col s12">
+
+     <div class=" col s12">
           <div class="col s8 offset-s1">
                 <button type="submit" ng-click="actualizar_campos()" ng-show="update_campos.$valid"
                   class="waves-effect waves-light btn-large light-green col s6">  Actualizar campos</button>
@@ -88,26 +87,23 @@
 
 
 
-      </div>
+     
     </form>
-    </div>
-  </div>
- 
-  <div class="container">
-    <div class="card-panel">
-    <form name="update_password" novalidate>
-       <div class= "row ">
 
-        <div class="row col s12">
+
+    <form name="update_password" novalidate>
+      
+
+        <div class="col s12">
           <div class="col s8 offset-s1 ">
             <h3 class=" green-text"> Cambiar contraseña</h3>
             <h6 class="green-text "> Ingrese la nueva contraseña. </h6>
           </div>
         </div>
 
-    <div class= "row col s12">
+    <div class= " col s12">
          <div class="input-field col s7 offset-s1 ">
-          <input class="tooltipped" data-position="top" data-delay="50" data-tooltip="valor alfanúmerico, mínimo ingrese 6 carácteres"
+          <input class="tooltipped" data-position="top" data-delay="50" data-tooltip="Ingrese un valor alfanúmerico, mínimo 6 carácteres"
 
           id="password" type="password"  name="password" ng-model="password" ng-required="true" ng-pattern="/^[a-zA-Z0-9]*$/" ng-minlength="6" ng-maxlength="20" >
           <label for="password"  >Contraseña</label>
@@ -121,7 +117,7 @@
           </div>
            </div>
            
-          <div class="row col s12 ">
+          <div class="col s12 ">
          <div class="input-field col s7 offset-s1">
            <input type="password" name="confirmpassword" id="confirmpassword" ng-model="confirmpassword" ng-required="true" compare-to="password">
            <label for="confirmpassword" >Confirmar Contraseña</label>
@@ -132,7 +128,7 @@
             <div ng-show="update_password.confirmpassword.$valid"><i class="small material-icons light-green-text">done</i></div>
           </div>
        </div>
-        <div class="row col s12">
+        <div class=" col s12">
           <div class="col s8 offset-s1">
                 <button type="submit"  ng-click="actualizar_password()" ng-show="update_password.$valid"
                   class="waves-effect waves-light btn-large light-green col s6">  Actualizar contraseña</button>
