@@ -51,13 +51,12 @@ $scope.creartarea= function(){
                 'X-CSRF-TOKEN': $scope.csrfToken 
         },
         data: {
-          id:$scope.idmensajepadre,
           drag:true,
-          datosusuario: $scope.selectedusuariotask,
           tipo:'new',
           kanban: $scope.miproyecto.kanban[0].id,
           usuario:$scope.selectedusuariotask.id,
-          title:$scope.nuevatarea
+          title:$scope.nuevatarea,
+          project_id:$scope.miproyecto.id
         }
 
         }).success(function (datatarea){
@@ -65,6 +64,7 @@ $scope.creartarea= function(){
              Materialize.toast($mensaje5, 2000);
             }
           else{
+            datatarea.tarea["usuario"]=$scope.selectedusuariotask;
             $scope.list1.splice(0,0,datatarea.tarea);
             Materialize.toast($mensaje6, 2000);
            }
@@ -213,7 +213,7 @@ $http({
         console.log($scope.mensajes);
         for(var i=0;i<$scope.mensajes.length;i++){
           for(var j=0;j<$scope.misparticipantes.length;j++){
-           
+
           }
         }
       });
@@ -221,27 +221,29 @@ $http({
 
       }).then(function(getKanban){//Se obtiene el kanban
           $http({
-              url:'/kanban/getKanban/',
+              url:'/tarea/getTareas/',
               method: 'GET',
-              params: {id:$scope.miproyecto.kanban[0].id}
-            }).then(function(datakanban){
-              if(datakanban.data.kanban=='false'){
+              params: {id:$scope.miproyecto.id}
+            }).then(function(datatarea){
+              console.log('tarea');
+              console.log(datatarea);
+              if(datatarea.data.tarea=='false'){
                
               }
 
-              for(var i=0;i<datakanban.data.kanban.tareas.length;i++){
+              for(var i=0;i<datatarea.data.tarea.length;i++){
 
-                if(datakanban.data.kanban.tareas[i].tipo==$scope.tipokanban[0]){
-                  $scope.list1.splice(0,0,datakanban.data.kanban.tareas[i]);
+                if(datatarea.data.tarea[i].tipo==$scope.tipokanban[0]){
+                  $scope.list1.splice(0,0,datatarea.data.tarea[i]);
                 }
-                if(datakanban.data.kanban.tareas[i].tipo==$scope.tipokanban[1]){
-                  $scope.list2.splice(0,0,datakanban.data.kanban.tareas[i]);
+                if(datatarea.data.tarea[i].tipo==$scope.tipokanban[1]){
+                  $scope.list2.splice(0,0,datatarea.data.tarea[i]);
                 }
-                if(datakanban.data.kanban.tareas[i].tipo==$scope.tipokanban[2]){
-                  $scope.list3.splice(0,0,datakanban.data.kanban.tareas[i]);
+                if(datatarea.data.tarea[i].tipo==$scope.tipokanban[2]){
+                  $scope.list3.splice(0,0,datatarea.data.tarea[i]);
                 }
-                if(datakanban.data.kanban.tareas[i].tipo==$scope.tipokanban[3]){
-                  $scope.list4.splice(0,0,datakanban.data.kanban.tareas[i]);
+                if(datatarea.data.tarea[i].tipo==$scope.tipokanban[3]){
+                  $scope.list4.splice(0,0,datatarea.data.tarea[i]);
                 }
               }
               $scope.largos[0]= $scope.list1.length;

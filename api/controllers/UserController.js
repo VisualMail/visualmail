@@ -21,7 +21,11 @@ module.exports = {
 		User.findOne(req.param('id')).populate('projects').exec(function (err,user){
 			if(err) return next(err);
 			if(!user) return next();
-			return res.view({user:user});
+			else{
+				delete user.password;
+				return res.view({user:user});
+			}
+			
 		});
 
 	},
@@ -29,7 +33,10 @@ module.exports = {
 		User.findOne(req.param('id')).populate('projects').exec(function (err,user){
 			if(err)  return res.json({opcion:'false'});
 			if(!user)  return res.json({opcion:'false'});
-			return res.json({user:user});
+			else{
+				delete user.password;
+				return res.json({user:user});
+			}
 		});
 	},
 
@@ -57,7 +64,11 @@ module.exports = {
 		User.findOne(req.param('id')).populate('projects').exec(function (err,user){
 			if(err) return next(err);
 			if(!user) return next();
-			return res.view();
+			else{
+				
+				return res.view();
+			}
+			
 		});
 	},
 
