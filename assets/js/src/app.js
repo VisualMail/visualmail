@@ -1,5 +1,5 @@
  angular.module('app',['ngMessages','gp.rutValidator','selectize','ngDragDrop',
-  'app.projectedit','app.signupctrl','app.LoginCtrl','app.RecoverPassCtrl','app.RecoverPageCtrl',
+  'app.projectedit','app.signupctrl','app.LoginCtrl','app.RecoverPassCtrl','app.RecoverPageCtrl','ui.materialize',
   'app.editUserCtrl','app.createProjectCtrl'])
  .directive('capitalize', function() {
     return {

@@ -8,6 +8,7 @@
   $(document).ready(function(){
     $('.tooltipped').tooltip({delay: 50});
      $('.modal-trigger').leanModal();
+
   });
   var $mensaje2 = $('<span class="  color_acentuado-text"> Se agregaron los nuevos usuarios al proyecto</span>');
   var $mensaje4 = $('<span class="  color_acentuado-text"> Se han actualizado los cambios</span>');
@@ -219,7 +220,7 @@
             
             </div>
             <div class="row col s1 "><br>
-              <a  ng-click="seleccionar(x)" type="submit" class="btn-floating waves-effect waves-light  light-green"><i class="small material-icons ">reply</i> </a>
+              <a  modal ng-click="seleccionar(x)" href="#modal2" class="btn-floating waves-effect waves-light light-green modal-trigger"><i class="small material-icons ">reply</i> </a>
             </div>
           </div>
       </div><!--fin ng-if-->
@@ -237,17 +238,26 @@
             
             </div>
             <div class="row col s1 "><br>
-              <a  ng-click="seleccionar(x)" type="submit" class="btn-floating waves-effect waves-light  light-green"><i class="small material-icons ">reply</i> </a>
+              <a modal  ng-click="seleccionar(x)" href="#modal2" class="btn-floating waves-effect waves-light  light-green modal-trigger"><i class="small material-icons ">reply</i> </a>
             </div>
           </div>
       </div><!--fin ng-if-->
 
- 
 
     </div><!-- fin ng-repeat-->
 
 
 
+   <div id="modal2" class="modal bottom-sheet">
+    <div class="modal-content">
+      <h4>Modal Header</h4>
+      <p>A bunch of text</p>
+      {{seleccionado}}
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
+    </div>
+  </div>
 
 
 

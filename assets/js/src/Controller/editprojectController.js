@@ -1,4 +1,4 @@
-angular.module('app.projectedit',['ngMessages','gp.rutValidator','selectize','ngDragDrop','luegg.directives'])
+angular.module('app.projectedit',['ngMessages','gp.rutValidator','selectize','ngDragDrop','luegg.directives','ui.materialize'])
 .controller('projectedit',function($scope,$http,$timeout){
 var REGEX_EMAIL = '([a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@' +
                   '(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)';
@@ -27,7 +27,10 @@ $scope.filtro3;
 $scope.filtro4;
 $scope.nuevatarea;
 $scope.booleanocss=false;
-
+  $scope.select = {
+            value: "Option1",
+            choices: ["Option1", "I'm an option", "This is materialize", "No, this is Patrick."]
+        };
 $scope.creartarea= function(){
     
   //$scope.list1.splice(0,0,{'title':$scope.nuevatarea,'drag':true});
