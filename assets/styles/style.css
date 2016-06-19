@@ -292,9 +292,9 @@ top: 28px;
 .conscroll{
   height:450px; 
   overflow-y: auto;
- padding-right:15px;
+ padding-right:10px;
  overflow-x:hidden;
- margin-right:20px;
+ margin-right:1220px;
 }
 .margenimg{
   padding-top: 5px;
