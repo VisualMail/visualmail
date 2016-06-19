@@ -210,7 +210,12 @@ $http({
       }).then(function(resultado){
         //console.log(resultado.data.mensaje);
         $scope.mensajes = resultado.data.mensaje;
-        
+        console.log($scope.mensajes);
+        for(var i=0;i<$scope.mensajes.length;i++){
+          for(var j=0;j<$scope.misparticipantes.length;j++){
+           
+          }
+        }
       });
 
 
