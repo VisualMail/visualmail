@@ -173,11 +173,12 @@ footer.page-footer {
   word-wrap: break-word;
 }
 .conheight{
-  text-overflow-y:auto;
+  text-overflow-y:scroll;
   height:100px;
   width:250px;
   margin:10px; 
   border-radius: 8px;
+  /*position : relative; bottom:0;*/
 }
 
 
@@ -208,4 +209,93 @@ footer.page-footer {
 .kanbanyellow{
   /*background: #B6B6B6;*/
   background:#FFEB3B;
+}
+
+.bubble 
+{
+position: relative;
+background: #4CAF50;
+-webkit-border-radius: 10px;
+-moz-border-radius: 10px;
+border-radius: 10px;
+border: #388E3C solid 2px;
+}
+
+.bubble:after 
+{
+content: '';
+position: absolute;
+border-style: solid;
+border-width: 8px 16px 8px 0;
+border-color: transparent #4CAF50;
+display: block;
+width: 0;
+z-index: 1;
+left: -16px;
+top: 29px;
+}
+
+.bubble:before 
+{
+content: '';
+position: absolute;
+border-style: solid;
+border-width: 9px 17px 9px 0;
+border-color: transparent #388E3C;
+display: block;
+width: 0;
+z-index: 0;
+left: -19px;
+top: 28px;
+}
+
+
+
+.bubble2 
+{
+position: relative;
+
+background: #4CAF50;
+-webkit-border-radius: 10px;
+-moz-border-radius: 10px;
+border-radius: 10px;
+border: #388E3C solid 2px;
+}
+
+.bubble2:after 
+{
+content: '';
+position: absolute;
+border-style: solid;
+border-width: 8px 0 8px 16px;
+border-color: transparent #4CAF50;
+display: block;
+width: 0;
+z-index: 1;
+right: -16px;
+top: 29px;
+}
+
+.bubble2:before 
+{
+content: '';
+position: absolute;
+border-style: solid;
+border-width: 9px 0 9px 17px;
+border-color: transparent #388E3C;
+display: block;
+width: 0;
+z-index: 0;
+right: -19px;
+top: 28px;
+}
+.conscroll{
+  height:450px; 
+  overflow-y: auto;
+ padding-right:15px;
+ overflow-x:hidden;
+ margin-right:20px;
+}
+.margenimg{
+  padding-top: 5px;
 }

@@ -66,7 +66,7 @@ module.exports = {
 			if(!user) return next();
 			else{
 				
-				return res.view();
+				return res.view(user);
 			}
 			
 		});

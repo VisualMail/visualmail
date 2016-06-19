@@ -26,6 +26,7 @@ $scope.filtro2;
 $scope.filtro3;
 $scope.filtro4;
 $scope.nuevatarea;
+$scope.booleanocss=false;
 
 $scope.creartarea= function(){
     
@@ -64,6 +65,7 @@ $scope.creartarea= function(){
              Materialize.toast($mensaje5, 2000);
             }
           else{
+            
             datatarea.tarea["usuario"]=$scope.selectedusuariotask;
             $scope.list1.splice(0,0,datatarea.tarea);
             Materialize.toast($mensaje6, 2000);
@@ -212,9 +214,8 @@ $http({
         $scope.mensajes = resultado.data.mensaje;
         console.log($scope.mensajes);
         for(var i=0;i<$scope.mensajes.length;i++){
-          for(var j=0;j<$scope.misparticipantes.length;j++){
-
-          }
+          $scope.mensajes[i]["cssvalue"]= !$scope.booleanocss;
+          $scope.booleanocss=!$scope.booleanocss;
         }
       });
 
