@@ -19,4 +19,4 @@
       }
     };
   }).directive("compareTo", compareTo);
-   ;
+   

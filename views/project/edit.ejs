@@ -116,8 +116,9 @@
               stroke-width: 1.5px; 
             }
             </style> 
-            <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+
             <script type="text/javascript"> 
+
             var width = 1000; 
             var height = 600; 
             var cluster = d3.layout.cluster()    
@@ -193,17 +194,18 @@
 
     </div><!-- FIN TAB -->
 <div id="mensajes" class="" >
+
   <div class="col s12 ">
-    <br>
-    <br>
-    <br>Buscar los elementos dialogicos por persona
-    <br>
-    <br>
+    <div class="col s6 ">
+       <div class="col s1"><br><i class=" material-icons light-green-text">search</i></div>
+        <div class="col s6 input-field"><input type="text" name="busqueda" ng-model="busquedamensaje">
+    <label for="busqueda"> Buscar mensaje</label></div></div>
+
   </div>
   <br>
-    <div  class=" col s12 conscroll "scroll-glue  scroll-glue-right>
+    <div  class=" col s11 conscroll "scroll-glue  scroll-glue-right>
  <br>
-    <div class="row " ng-repeat="x in mensajes" > 
+    <div class="row " ng-repeat="x in mensajes | filter:busquedamensaje" > 
       <div ng-if="x.cssvalue">
           <div class="col s8 offset-s4 bubble2">
             <div class="row col s11">
@@ -265,6 +267,11 @@
         </form>
 -->
 
+
+
+
+
+<!-- Modal Structure -->
 
 
 
