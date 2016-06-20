@@ -27,10 +27,7 @@ $scope.filtro3;
 $scope.filtro4;
 $scope.nuevatarea;
 $scope.booleanocss=false;
-  $scope.select = {
-            value: "Option1",
-            choices: ["Option1", "I'm an option", "This is materialize", "No, this is Patrick."]
-        };
+$scope.inputdialogo='';
 $scope.creartarea= function(){
     
   //$scope.list1.splice(0,0,{'title':$scope.nuevatarea,'drag':true});
@@ -64,6 +61,7 @@ $scope.creartarea= function(){
         }
 
         }).success(function (datatarea){
+          $scope.nuevatarea='';
            if(datatarea.tarea=='false'){
              Materialize.toast($mensaje5, 2000);
             }
@@ -323,6 +321,14 @@ $scope.respuesta; //debe ser quien guarda el modelo de mi respuesta
 $scope.tiposeleccionado;//indica cual es el tipo seleccionado del mensaje
 $scope.idmensajepadre;//corresponde al id del mensaje que se va a responder
 $scope.tiposeleccionado='duda'; //CAMBIAR
+
+$scope.tiposdialogo=[
+{id:0, title:'Duda o Alternativa'},
+{id:1, title:'Normas comunes'},
+{id:2, title:'Compromiso individual'},
+{id:3, title:'Acuerdos de Coordinación'},
+{id:4, title:'Desacuerdo o Brecha'}];
+
 $scope.sendMessage = function(){
 $http.defaults.withCredentials = true;
 $scope.position=[];
@@ -332,7 +338,9 @@ for(var i=0;i<$scope.seleccionado.position.length;i++){
 //console.log($scope.seleccionado.numero_hijos);
 //nuevo scope position a ingresar
 $scope.position.push($scope.seleccionado.numero_hijos);
-console.log($scope.position);
+
+console.log($scope.respuesta);
+
 $http({
         method: 'POST',
         url: '/mensaje/create',
@@ -366,7 +374,7 @@ $http({
                 'X-CSRF-TOKEN': $scope.csrfToken 
         },
         data: {
-          id:$scope.idmensajepadre,
+          id:$scope.seleccionado.id,
           idunion:data.mensaje.id
         }
 
@@ -537,6 +545,40 @@ render: {
   }
   }
 
+
+
+
+$scope.myConfig3 = {
+  create: false,
+  persist:false,
+  maxItems:1,
+  valueField: 'title',
+  labelField: 'title',
+  delimiter: '|',
+  placeholder: 'Tipo de elemento del diálogo',
+  searchField: ['title'],
+
+  onInitialize: function(selectize){
+    // receives the selectize object as an argument
+    //console.log('Initialized',selectize);
+    $scope.selectize=selectize;
+  },
+  onDropdownOpen: function(dropdown){
+    $scope.selectize.clear();
+    $scope.selectize.refreshItems();
+
+  },
+  onItemRemove: function(value){
+    $scope.tiposdialogo.splice(0,0,value);
+    $scope.tiposeleccionado='';
+    $scope.selectize.refreshItems();
+  },
+  onItemAdd: function(value,item){
+    $scope.tiposeleccionado=value;
+    console.log($scope.tiposeleccionado);
+  },
+
+  }
 
 
 });

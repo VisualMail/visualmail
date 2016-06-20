@@ -24,14 +24,14 @@
     <form name="update_campos" novalidate>
       
         <div class=" s12">
-          <div class="col s8 offset-s1 ">
-            <h3 class=" green-text"> Actualizar campos</h3>
-            <h6 class="green-text "> Los campos nulos no se actualizarán. </h6>
-          </div> </div>
+          <div class="col s11 offset-s1  ">
+            <h3 class=" green-text"> Actualizar campos</h3></div> 
+            <div class="col s11 offset-s1">  <h6 class="green-text "> Los campos nulos no se actualizarán. </h6></div>
+          </div>
       
         <div class= " col s12">
          <div class="input-field col s7 offset-s1">
-           <input id="firstname" type="text"  name="firstname" ng-model="firstname" ng-minlength="3" ng-maxlength="15" ng-pattern="/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u">
+           <input id="firstname" type="text"  name="firstname" ng-model="firstname" ng-minlength="3" ng-maxlength="15" ng-pattern="/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u" placeholder="<%=session.User.firstname%>">
           <label for="firstname"   >Nombre</label>
          </div>
           <div ng-messages="update_campos.firstname.$error" role="alert" class="col s4 centerme red-text" >
@@ -44,7 +44,7 @@
 
         <div class= " col s12">
          <div class="input-field col s7 offset-s1">
-          <input  id="lastname" type="text"  name="lastname" ng-model="lastname" ng-minlength="5" ng-maxlength="30" ng-pattern="/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u">
+          <input  id="lastname" type="text"  name="lastname" ng-model="lastname" ng-minlength="5" ng-maxlength="30" ng-pattern="/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u" placeholder="<%=session.User.lastname%>">
           <label for="lastname"   >Apellidos</label>
          </div>
         <div ng-messages="update_campos.lastname.$error" role="alert" class="col s4 centerme red-text" >
@@ -57,16 +57,16 @@
 
         <div class= " col s12 ">
          <div class="input-field col s7 offset-s1">
-           <input ng-model="imgurl" id="imgurl" type="text" name="imgurl" placeholder="http://">
+           <input ng-model="imgurl" id="imgurl" type="text" name="imgurl" placeholder="<%=session.User.imgurl%>">
           <label for="imgurl" >URL imagen</label>
           <!-- pattern="https?://.+"-->
          </div>
         </div>
 
 
-             <div class= "row col s12 ">
-         <div class="input-field col s7 offset-s1 tooltipped" data-position="top" data-delay="50" data-tooltip="Ingrese 3 caracteres con las iniciales de su nombre">
-               <input  id="initials" type="text"  name="initials" ng-model="initials" ng-minlength="3" ng-maxlength="3" capitalize ng-pattern="/^[a-zA-Z]+$/" ng-required>
+             <div class= " col s12 ">
+         <div class="input-field col s7 offset-s1 ">
+               <input  id="initials" type="text" class="tooltipped" name="initials" ng-model="initials" ng-minlength="3" ng-maxlength="3" capitalize ng-pattern="/^[a-zA-Z]+$/" ng-required placeholder="<%=session.User.initials%>"  data-position="right" data-delay="50" data-tooltip="Ingrese 3 caracteres con las iniciales de su nombre">
           <label for="initials"   >Iniciales</label>
          </div>
         <div ng-messages="update_campos.initials.$error" role="alert" class="col s4 centerme red-text" >
@@ -78,11 +78,16 @@
             </div>
 
      <div class=" col s12">
-          <div class="col s8 offset-s1">
-                <button type="submit" ng-click="actualizar_campos()" ng-show="update_campos.$valid"
-                  class="waves-effect waves-light btn-large light-green col s6">  Actualizar campos</button>
+         
+          <div class="col s3 offset-s1">
+                <a type="submit" ng-click="actualizar_campos()" ng-show="update_campos.$valid"
+                  class="waves-effect waves-light btn-large light-green ">  Actualizar </a>
           </div>
-          
+            <div class="col s1 offset-s1">
+                <a type="submit" href="/user/view/<%=session.User.id%>/" 
+                  class="waves-effect waves-light btn-large green lighten-3">  Cancelar</a>
+          </div>
+       
         </div>
 
 
@@ -129,9 +134,13 @@
           </div>
        </div>
         <div class=" col s12">
-          <div class="col s8 offset-s1">
-                <button type="submit"  ng-click="actualizar_password()" ng-show="update_password.$valid"
-                  class="waves-effect waves-light btn-large light-green col s6">  Actualizar contraseña</button>
+          <div class="col s3 offset-s1">
+                <a type="submit"  ng-click="actualizar_password()" ng-show="update_password.$valid"
+                  class="waves-effect waves-light btn-large light-green">  Actualizar contraseña</a>
+          </div>
+          <div class="col s1 offset-s1">
+          <a type="submit" href="/user/view/<%=session.User.id%>/" 
+                  class="waves-effect waves-light btn-large green lighten-3">  Cancelar</a>
           </div>
           
         </div>

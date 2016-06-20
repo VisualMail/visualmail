@@ -23,8 +23,8 @@
     <div class="col s12">
       <ul class="tabs">
         <li class="tab col s3"><a  href="#participantes">Participantes</a></li>
-        <li class="tab col s3"><a   href="#dialogo">Diálogo</a></li>
-        <li class="tab col s3 "><a   class="active" href="#mensajes"> Mensajes</a></li>
+        <li class="tab col s3"><a    href="#dialogo">Diálogo</a></li>
+        <li class="tab col s3 "><a  class="active"  href="#mensajes"> Mensajes</a></li>
         <li class="tab col s3 "><a href="#kanban"> Kanban</a></li>
       </ul>
     </div>
@@ -90,9 +90,7 @@
             </div>
 
             
-               <select ng-model="selectedName" ng-options="x for x in names">
-</select>
-        </select>
+
             <!-- Tabla -->  
           </div>
         </div>
@@ -102,21 +100,7 @@
 
     <div id="dialogo" class="col s12">
 
-          <style>
-            .node circle {     
-              fill: #fff;    
-              stroke: steelblue;    
-              stroke-width: 1.5px; 
-            } 
-            .node {    
-              font: 20px sans-serif; 
-            } 
-            .link {    
-              fill: none;    
-              stroke: #ccc;    
-              stroke-width: 1.5px; 
-            }
-            </style> 
+      
 
             <script type="text/javascript"> 
 
@@ -130,7 +114,17 @@
                .attr("width",width)    
                .attr("height",height)    
                .append("g")    
-               .attr("transform","translate(100,0)"); 
+               .attr("transform","translate(90,30)"); 
+
+  var line = svg.append("line")
+                                 .attr("x1", 0)
+                                 .attr("y1", 1)
+                                 .attr("x2", 0)
+                                 .attr("y2", 1000)   
+                                 .attr("stroke-width", 2)
+                                 .attr("style", "stroke: #ddd; fill:none;stroke-dasharray: 10 5")
+                                  .attr("stroke", "#ddd");
+       
             d3.json("http://localhost:1337/project/getDialogos/<%=project.id%>", function(error, root){    
                var nodes = cluster.nodes(root);    
                var links = cluster.links(nodes);    
@@ -209,17 +203,21 @@
     <div class="row " ng-repeat="x in mensajes | filter:busquedamensaje" > 
       <div ng-if="x.cssvalue">
           <div class="col s8 offset-s4 bubble2">
-            <div class="row col s11">
+            <div class="col s12">
+              <h6>{{x.createdAt}}</h6>
+            </div>
+            <div class=" col s11">
               <div class=" col s2">
                 <div class="col s12"><img ng-src="{{x.usuario.imgurl}}" alt=""  class="circle responsive-img"></div>
-                <div class="col s12 offset-s1"><span class="white-text center"> {{x.usuario.firstname}}</span> </div>
+                <div class="col s12 offset-s1"><span class="white-text center"> {{x.usuario.initials}}</span> </div>
               </div>
               <div class=" col s10 ">
-                <span class="white-text"> {{x.id}} : {{x.name}}</span>
+                <div class="col s12"><span class="white-text"> {{x.tipo}}</span></div>
+                <div class="col s12"><span class=""> {{x.name}}</span></div>
               </div>
             
             </div>
-            <div class="row col s1 "><br>
+            <div class=" col s1 "><br>
               <a  modal ng-click="seleccionar(x)" href="#modal2" class="btn-floating waves-effect waves-light light-green modal-trigger"><i class="small material-icons ">reply</i> </a>
             </div>
           </div>
@@ -227,17 +225,22 @@
       
       <div ng-if="x.cssvalue==false">
           <div class=" col s8 offset-s1 bubble">
-            <div class="row col s11">
+            <div class="col s12">
+              <h6>{{x.createdAt}}</h6>
+            </div>
+            <div class="col s11">
               <div class=" col s2">
                 <div class="col s12"><img ng-src="{{x.usuario.imgurl}}" alt=""  class="circle responsive-img"></div>
-                <div class="col s12 offset-s1"><span class="white-text center"> {{x.usuario.firstname}}</span> </div>
+                <div class="col s12 offset-s1"><span class="white-text center"> {{x.usuario.initials}}</span> </div>
               </div>
               <div class=" col s10">
-               <span class="white-text"> {{x.id}} : {{x.name}}</span>
+                <div class="col s12"><span class="white-text"> {{x.tipo}}</span></div>
+                <div class="col s12"><span class=""> {{x.name}}</span></div>
+               
               </div>
             
             </div>
-            <div class="row col s1 "><br>
+            <div class="col s1 "><br>
               <a modal  ng-click="seleccionar(x)" href="#modal2" class="btn-floating waves-effect waves-light  light-green modal-trigger"><i class="small material-icons ">reply</i> </a>
             </div>
           </div>
@@ -250,16 +253,60 @@
 
    <div id="modal2" class="modal bottom-sheet">
     <div class="modal-content">
-      <h4>Modal Header</h4>
-      <p>A bunch of text</p>
-      {{seleccionado}}
+      <div class="col s12">
+        <div class="col s6 ">  <h6>{{seleccionado.createdAt}}</h6></div>
+         <div class="col s2 offset-s4 ">  <a class="btn-flat green white-text" ng-click="sendMessage()" ng-show="formmensaje.$valid"> Responder</a></div> 
+      </div>
+     
+    <div class="row">
+      <div class="col s6 card heightmodal2">
+        <div class="col s12">
+          <div class="col s2"> <img ng-src="{{seleccionado.usuario.imgurl}}" class="responsive-img circle"></div>
+          <div class="col s6"> <h6>{{seleccionado.usuario.firstname}} ({{seleccionado.usuario.initials}}) Dijo:</h6></div>
+        </div>
+          <div class="col s12">
+            <p>{{seleccionado.name}}</p>
+          </div>
+          
+       
+      </div>
+
+      <div class=" col s6 card heightmodal2" ng-cloak >
+         <div class="col s12">
+          <div class="col s2"> <img ng-src="{{seleccionado.usuario.imgurl}}" class="responsive-img circle"></div>
+          <div class="col s4"> <p>{{seleccionado.usuario.name}}({{seleccionado.usuario.initials}}) </p></div>
+          <div class="col s6"> <selectize config='myConfig3' options='tiposdialogo' ng-model="inputdialogo"></selectize></div>
+        </div>
+        <div class="col s12  ">
+          
+            <form name="formmensaje" novalidate>
+            <div class="input-field col s12">
+            <textarea id="textarea1" class="materialize-textarea" ng-model="respuesta" ng-minlength="5" ng-maxlength="500" ng-required="true"></textarea>
+            <label for="textarea1">Ingrese una respuesta</label>
+            </div>
+         
+
+         <div class="col s12">
+
+          <div ng-messages="formmensaje.respuesta.$error" role="alert" class="red-text" >
+            <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
+            <div ng-message="minlength">Mínimo 5 caracteres</div> 
+            <div ng-message ="maxlength">Respuesta muy larga</div>
+            <div ng-show="formmensaje.respuesta.$valid"><i class="small material-icons light-green-text">done</i></div>
+          </div>
+         </div>
+         
+          </form>
+        
+      
     </div>
-    <div class="modal-footer">
-      <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
+
     </div>
+
+
   </div>
-
-
+  </div>
+  </div>
 
 <!--
   aca va el seleccionado {{seleccionado}}
@@ -296,7 +343,7 @@
                <div class="col s12 contenedorkanbanheader"> <div class="col s1"><br><i class="material-icons light-green-text prefix">search</i></div><div class="col 11"><input type="text" ng-model="filtro1"></div></div>
             <div id="new"  class=" col s12 contenedorkanban" data-drop="true" ng-model='list1' data-jqyoui-options="optionsList1" jqyoui-droppable="{multiple:true, onDrop:'onDrop'}">
               
-              <div id="kanban1" class =" kanbanyellow conheight hoverable" ng-repeat="item in list1 | filter:filtro1" ng-show="item.title" data-drag="{{item.drag}}" data-jqyoui-options="{helper: 'clone'}" ng-model="list1" jqyoui-draggable="{index: {{$index}},animate:true}"> 
+              <div id="kanban1" class =" row kanbanyellow conheight hoverable" ng-repeat="item in list1 | filter:filtro1" ng-show="item.title" data-drag="{{item.drag}}" data-jqyoui-options="{helper: 'clone'}" ng-model="list1" jqyoui-draggable="{index: {{$index}},animate:true}"> 
                 <div class="row">
                 <div class=" col s3 "> <br><img class="circle responsive-img" ng-src="{{item.usuario.imgurl}}"></div>
                 <div class="col s9 textito"> <h6>{{item.title}} </h6> </div>
@@ -368,7 +415,7 @@
                 <br><i class="small material-icons green-text">mode_edit</i>
             </div>
             <div class= "col s6 input-field">
-              <input type="text" name="nuevatarea" class="materialize-textarea" length="70" ng-model="nuevatarea" ng-minlength="3" ng-maxlength="70" ng-required="true">
+              <input type="text" name="nuevatarea" class="input-area" length="70" ng-model="nuevatarea" ng-minlength="3" ng-maxlength="70" ng-required="true">
               <label for="nuevatarea"> Tarea</label>
             </div>
           <div ng-messages="creartareaform.nuevatarea.$error" role="alert" class="col s4 centerme red-text" >
@@ -391,7 +438,7 @@
     </div>
  
     <div class="modal-footer">
-       <a href="#!" ng-click="creartarea()" class="modal-action modal-close waves-effect waves-green btn-flat ">Aceptar</a>
+       <a href="#!" ng-click="creartarea()" class="modal-action modal-close waves-effect waves-green btn-flat " ng-show="creartareaform.$valid">Aceptar</a>
       <a href="#!" ng-click="" class="modal-action modal-close waves-effect waves-green btn-flat ">Cancelar</a>
      
     </div>

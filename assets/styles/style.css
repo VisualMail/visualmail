@@ -90,7 +90,7 @@ footer.page-footer {
 .dos{
   color: #000;
   width: 50px!important;
-}
+}/*border: 2px solid #C8E6C9;*/
 .color_primario{
   background: #388E3C  ;
 
@@ -180,7 +180,11 @@ footer.page-footer {
   border-radius: 8px;
   /*position : relative; bottom:0;*/
 }
-
+.heightmodal2{
+    height:200px;
+    overflow-y:auto;
+    overflow-x:hidden;
+}
 
 .scrollactivos{
   overflow-y: auto; height:510px; 
@@ -298,4 +302,63 @@ top: 28px;
 }
 .margenimg{
   padding-top: 5px;
+}
+
+
+.node circle {
+  fill: #fff;
+  stroke: black;
+  stroke-width: 1.5px;
+  transform: scale(1, 1);
+}
+
+.node {
+  font: 10px sans-serif;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
+
+
+.linkFocus {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 4.5px;
+}
+svg .focus  {
+ color:black;
+   background: #cff; border: 1px dashed black;
+   fill:red xlink:href="#heart"
+}
+
+.node2 rect {
+  cursor: pointer;
+  fill: #fff;
+  fill-opacity: .5;
+  stroke: #3182bd;
+  stroke-width: 1.5px;
+}
+
+.node2 text {
+  font: 10px sans-serif;
+  pointer-events: none;
+}
+
+path.link {
+  fill: none;
+  stroke: #9ecae1;
+  stroke-width: 1.5px;
+}
+
+.cajita
+{
+     display:inline-block;
+}
+
+.onlyborder{
+border: 2px solid #388E3C;
+padding-right: 10px;
 }
