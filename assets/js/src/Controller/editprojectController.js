@@ -217,6 +217,7 @@ $http({
         console.log($scope.mensajes);
         for(var i=0;i<$scope.mensajes.length;i++){
           $scope.mensajes[i]["cssvalue"]= !$scope.booleanocss;
+         
           $scope.booleanocss=!$scope.booleanocss;
         }
       });

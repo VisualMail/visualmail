@@ -125,7 +125,7 @@
                                  .attr("style", "stroke: #ddd; fill:none;stroke-dasharray: 10 5")
                                   .attr("stroke", "#ddd");
        
-            d3.json("http://localhost:1337/project/getDialogos/<%=project.id%>", function(error, root){    
+            d3.json("http://visualmail.herokuapp.com/project/getDialogos/<%=project.id%>", function(error, root){    
                var nodes = cluster.nodes(root);    
                var links = cluster.links(nodes);    
                var link = svg.selectAll(".link")       
@@ -198,13 +198,14 @@
 
   </div>
   <br>
-    <div  class=" col s11 conscroll "scroll-glue  scroll-glue-right>
+  <!-- scroll-glue-right-->
+    <div  class=" col s11 conscroll "scroll-glue  >
  <br>
     <div class="row " ng-repeat="x in mensajes | filter:busquedamensaje" > 
       <div ng-if="x.cssvalue">
           <div class="col s8 offset-s4 bubble2">
             <div class="col s12">
-              <h6>{{x.createdAt}}</h6>
+              <h6>{{x.createdAt | date:'M/d/yyyy HH:mm:ss'}}</h6>
             </div>
             <div class=" col s11">
               <div class=" col s2">
@@ -213,7 +214,7 @@
               </div>
               <div class=" col s10 ">
                 <div class="col s12"><span class="white-text"> {{x.tipo}}</span></div>
-                <div class="col s12"><span class=""> {{x.name}}</span></div>
+                <div class="col s12"><h6 class=""> {{x.name}}</h6></div>
               </div>
             
             </div>
@@ -226,7 +227,7 @@
       <div ng-if="x.cssvalue==false">
           <div class=" col s8 offset-s1 bubble">
             <div class="col s12">
-              <h6>{{x.createdAt}}</h6>
+              <h6>{{x.createdAt | date:'M/d/yyyy HH:mm:ss'}}</h6>
             </div>
             <div class="col s11">
               <div class=" col s2">
@@ -235,7 +236,7 @@
               </div>
               <div class=" col s10">
                 <div class="col s12"><span class="white-text"> {{x.tipo}}</span></div>
-                <div class="col s12"><span class=""> {{x.name}}</span></div>
+                <div class="col s12"><h6 class=""> {{x.name}}</h6></div>
                
               </div>
             
@@ -254,8 +255,8 @@
    <div id="modal2" class="modal bottom-sheet">
     <div class="modal-content">
       <div class="col s12">
-        <div class="col s6 ">  <h6>{{seleccionado.createdAt}}</h6></div>
-         <div class="col s2 offset-s4 ">  <a class="btn-flat green white-text" ng-click="sendMessage()" ng-disabled="isDisabled" ng-show="formmensaje.$valid"> Responder</a></div> 
+        <div class="col s6 ">  <h6>{{seleccionado.createdAt | date:'M/d/yyyy HH:mm:ss'}}</h6></div>
+         <div class="col s2 offset-s4 ">  <button class="btn-flat green white-text" ng-click="sendMessage()" ng-disabled="isDisabled" ng-show="formmensaje.$valid"> Responder</button></div> 
       </div>
      
     <div class="row">
@@ -264,8 +265,8 @@
           <div class="col s2"> <img ng-src="{{seleccionado.usuario.imgurl}}" class="responsive-img circle"></div>
           <div class="col s6"> <h6>{{seleccionado.usuario.firstname}} ({{seleccionado.usuario.initials}}) Dijo:</h6></div>
         </div>
-          <div class="col s12">
-            <p>{{seleccionado.name}}</p>
+          <div class="col s12 ">
+            <h6 class="">{{seleccionado.name}}</h6>
           </div>
           
        
@@ -415,7 +416,7 @@
                 <br><i class="small material-icons green-text">mode_edit</i>
             </div>
             <div class= "col s6 input-field">
-              <input type="text" name="nuevatarea" class="input-area" length="70" ng-model="nuevatarea" ng-minlength="3" ng-maxlength="70" ng-required="true">
+              <input type="text" name="nuevatarea" class="input-area" length="130" ng-model="nuevatarea" ng-minlength="3" ng-maxlength="130" ng-required="true">
               <label for="nuevatarea"> Tarea</label>
             </div>
           <div ng-messages="creartareaform.nuevatarea.$error" role="alert" class="col s4 centerme red-text" >
