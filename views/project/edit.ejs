@@ -125,7 +125,7 @@
                                  .attr("style", "stroke: #ddd; fill:none;stroke-dasharray: 10 5")
                                   .attr("stroke", "#ddd");
        
-            d3.json("http://visualmail.herokuapp.com/project/getDialogos/<%=project.id%>", function(error, root){    
+            d3.json("http://localhost:1337/project/getDialogos/<%=project.id%>", function(error, root){    
                var nodes = cluster.nodes(root);    
                var links = cluster.links(nodes);    
                var link = svg.selectAll(".link")       
@@ -255,7 +255,7 @@
     <div class="modal-content">
       <div class="col s12">
         <div class="col s6 ">  <h6>{{seleccionado.createdAt}}</h6></div>
-         <div class="col s2 offset-s4 ">  <a class="btn-flat green white-text" ng-click="sendMessage()" ng-show="formmensaje.$valid"> Responder</a></div> 
+         <div class="col s2 offset-s4 ">  <a class="btn-flat green white-text" ng-click="sendMessage()" ng-disabled="isDisabled" ng-show="formmensaje.$valid"> Responder</a></div> 
       </div>
      
     <div class="row">
@@ -273,8 +273,8 @@
 
       <div class=" col s6 card heightmodal2" ng-cloak >
          <div class="col s12">
-          <div class="col s2"> <img ng-src="{{seleccionado.usuario.imgurl}}" class="responsive-img circle"></div>
-          <div class="col s4"> <p>{{seleccionado.usuario.name}}({{seleccionado.usuario.initials}}) </p></div>
+          <div class="col s2"> <img ng-src="{{miusuario.imgurl}}" class="responsive-img circle"></div>
+          <div class="col s4"> <p>{{miusuario.firstname}}({{miusuario.initials}}) </p></div>
           <div class="col s6"> <selectize config='myConfig3' options='tiposdialogo' ng-model="inputdialogo"></selectize></div>
         </div>
         <div class="col s12  ">

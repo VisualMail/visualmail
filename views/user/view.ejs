@@ -4,7 +4,10 @@
  $(document).ready(function(){
     // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
     $('.modal-trigger').leanModal('modal_nuevo_proyecto');
-    
+      $('.datepicker').pickadate({
+    selectMonths: true, // Creates a dropdown to control month
+    selectYears: 15 // Creates a dropdown of 15 years to control year
+  });
   });
   
 var id = '<%=session.User.id%>';
@@ -92,7 +95,7 @@ var $mensaje3 = $('<span class="  color_acentuado-text"> Ocurrió un error al gu
        
    
           <div class="col s4">
-             <input type="date" class="datepicker" name="finishdate" ng-model="finish_date" ng-required="true">
+             <input type="text" class="datepicker" name="finishdate" ng-model="finish_date" ng-required="true">
               <label for="finishdate"   >Fecha límite del proyecto</label> 
           </div>
            <div ng-messages="crearproyectoform.finishdate.$error" role="alert" class="col s2 centerme red-text" >

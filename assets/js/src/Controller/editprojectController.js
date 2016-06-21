@@ -28,6 +28,7 @@ $scope.filtro4;
 $scope.nuevatarea;
 $scope.booleanocss=false;
 $scope.inputdialogo='';
+$scope.isDisabled=false;
 $scope.creartarea= function(){
     
   //$scope.list1.splice(0,0,{'title':$scope.nuevatarea,'drag':true});
@@ -320,7 +321,7 @@ $http({
 $scope.respuesta; //debe ser quien guarda el modelo de mi respuesta
 $scope.tiposeleccionado;//indica cual es el tipo seleccionado del mensaje
 $scope.idmensajepadre;//corresponde al id del mensaje que se va a responder
-$scope.tiposeleccionado='duda'; //CAMBIAR
+$scope.tiposeleccionado=''; //CAMBIAR
 
 $scope.tiposdialogo=[
 {id:0, title:'Duda o Alternativa'},
@@ -330,6 +331,7 @@ $scope.tiposdialogo=[
 {id:4, title:'Desacuerdo o Brecha'}];
 
 $scope.sendMessage = function(){
+  $scope.isDisabled=true;
 $http.defaults.withCredentials = true;
 $scope.position=[];
 for(var i=0;i<$scope.seleccionado.position.length;i++){
@@ -413,6 +415,8 @@ $http({
               }
             }).success(function (datadialogoupdate) {
                 //console.log('termino');
+                $scope.respuesta='';
+
                 location.reload(true);
                 });
           }//fin else 2
