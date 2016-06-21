@@ -13,9 +13,14 @@
       </div>
     </div>
     <div class="row center">
+          <% if (!session.authenticated) {%>
     <div class="col s12">  <a href="/user/signup/" id="download-button" class="btn-large waves-effect light-green white-text ">
             Registrate</a></div>
     <div class="col s12"> <span class="green-text">o Inicia sesión</span><a href="/session/login"> aquí </a></div>
+    <%} else{%>
+     <div class="col s12">  <a href="/user/view/<%=session.User.id%>" id="download-button" class="btn-large waves-effect light-green white-text ">
+            Mis proyectos</a></div>
+    <% }%>
   </div>
   </div>
 </div>

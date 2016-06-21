@@ -1,5 +1,5 @@
 angular.module('app.RecoverPageCtrl',['ngMessages','gp.rutValidator','selectize'])
-.controller('RecoverPageCtrl',function($scope,$http,$timeout){
+.controller('RecoverPageCtrl',["$scope", "$http", "$timeout", function($scope,$http,$timeout){
 	$scope.clave='';
 	$scope.mostrar=true;
 	$scope.mostrarpost=false;
@@ -69,4 +69,4 @@ $http({
     });
 }
 
-});
+}]);

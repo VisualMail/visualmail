@@ -1,5 +1,5 @@
 angular.module('app.editUserCtrl',['ngMessages','gp.rutValidator','selectize'])
-.controller('editUserCtrl',function($scope,$http,$timeout){
+.controller('editUserCtrl',["$scope", "$http", "$timeout", function($scope,$http,$timeout){
     $http.get('/csrfToken')
       .success(function (token) {
         $scope.csrfToken = token._csrf;
@@ -83,4 +83,4 @@ $scope.actualizar_password = function(){
 
 	
 }
-});
+}]);
