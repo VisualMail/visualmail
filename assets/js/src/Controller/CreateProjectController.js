@@ -1,5 +1,5 @@
    angular.module('app.createProjectCtrl',['ngMessages','gp.rutValidator','selectize'])
-   .controller('createProjectCtrl',function($scope,$http,$timeout){
+   .controller('createProjectCtrl',["$scope", "$http", "$timeout", function($scope,$http,$timeout){
 
 	$scope.mi_id = new String(id);
 	$scope.mi_email=new String(email);
@@ -146,4 +146,4 @@ NO OLVIDAR ARREGLAR ESTA FUNCION DEACUERDO A FALLAS EN LOS POST
 
 
 
-   });
+   }]);

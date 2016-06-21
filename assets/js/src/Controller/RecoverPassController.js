@@ -1,5 +1,5 @@
 angular.module('app.RecoverPassCtrl',['ngMessages','gp.rutValidator','selectize'])
-.controller('RecoverPassCtrl',function($scope,$http,$timeout){
+.controller('RecoverPassCtrl',["$scope", "$http", "$timeout", function($scope,$http,$timeout){
 	
 
 	$scope.email='';
@@ -42,4 +42,4 @@ $http({
 	}//fin senddata
 
 
-  });
+  }]);

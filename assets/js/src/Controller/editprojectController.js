@@ -1,5 +1,5 @@
 angular.module('app.projectedit',['ngMessages','gp.rutValidator','selectize','ngDragDrop','luegg.directives','ui.materialize'])
-.controller('projectedit',function($scope,$http,$timeout){
+.controller('projectedit',["$scope", "$http", "$timeout", function($scope,$http,$timeout){
 var REGEX_EMAIL = '([a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@' +
                   '(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)';
 $scope.usuarios = [];
@@ -581,4 +581,4 @@ $scope.myConfig3 = {
   }
 
 
-});
+}]);
