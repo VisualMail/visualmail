@@ -77,6 +77,67 @@ else{
 
 }
 
+
+//seleccionado
+$scope.creartareaconmensaje= function(){
+    
+  //$scope.list1.splice(0,0,{'title':$scope.nuevatarea,'drag':true});
+  for(var i=0;i<$scope.misparticipantes.length;i++){
+    if($scope.misparticipantes[i].id==$scope.getselectedtask){
+      $scope.selectedusuariotask= $scope.misparticipantes[i];
+      break;
+    }
+  }
+  //console.log('aca');
+  //console.log($scope.selectedusuariotask);
+  
+  //$scope.json.push($scope.selectedusuariotask);
+  delete $scope.selectedusuariotask.$$hashKey;
+  delete $scope.selectedusuariotask.$order;
+  delete $scope.selectedusuariotask.password;
+  $scope.associated;
+  $scope.element=$scope.seleccionado.tipo;
+
+
+        $http({
+        method: 'POST',
+        url: '/tarea/create',
+        headers: {'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': $scope.csrfToken 
+        },
+        data: {
+          drag:true,
+          tipo:'new',
+          kanban: $scope.miproyecto.kanban[0].id,
+          usuario:$scope.selectedusuariotask.id,
+          title:$scope.nuevatarea,
+          project_id:$scope.miproyecto.id,
+          associated:true,
+          element:   $scope.element,
+          mensaje: $scope.seleccionado.id
+        }
+
+        }).success(function (datatarea){
+          $scope.nuevatarea='';
+           if(datatarea.tarea=='false'){
+             Materialize.toast($mensaje5, 2000);
+            }
+          else{
+            console.log(datatarea.tarea.associated)
+            datatarea.tarea["usuario"]=$scope.selectedusuariotask;
+            $scope.list1.splice(0,0,datatarea.tarea);
+            Materialize.toast($mensaje6, 2000);
+           }
+          
+        });
+
+
+}
+
+
+
+
+
 $scope.creartarea= function(){
     
   //$scope.list1.splice(0,0,{'title':$scope.nuevatarea,'drag':true});
