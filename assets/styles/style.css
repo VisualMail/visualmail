@@ -174,9 +174,9 @@ footer.page-footer {
 }
 .conheight{
   text-overflow-y:scroll;
-  height:100px;
+  height:130px;
   width:250px;
-  margin:10px; 
+  margin:10px;  
   border-radius: 8px;
   /*position : relative; bottom:0;*/
 }
@@ -362,3 +362,34 @@ path.link {
 border: 2px solid #388E3C;
 padding-right: 10px;
 }
+
+
+
+
+.kanbanbubble 
+{
+position: relative;
+width: 250px;
+height: 170px;
+padding: 0px;
+background: #FFEB3B;
+-webkit-border-radius: 6px;
+-moz-border-radius: 6px;
+border-radius: 6px;
+ margin:10px;  
+}
+
+.kanbanbubble:after 
+{
+content: '';
+position: absolute;
+border-style: solid;
+border-width: 0px 0px 0;
+border-color: #FFEB3B transparent;
+display: block;
+width: 0;
+z-index: 1;
+bottom: -0px;
+left: 8px;
+}
+

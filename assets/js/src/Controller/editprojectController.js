@@ -29,6 +29,54 @@ $scope.nuevatarea;
 $scope.booleanocss=false;
 $scope.inputdialogo='';
 $scope.isDisabled=false;
+$scope.finish_date_project='';
+$scope.name_project='';
+$scope.editproject = function(){
+  console.log('estoy enviando');
+  console.log($scope.finish_date_project);
+  console.log($scope.name_project);
+if($scope.name_project=='' && ( $scope.finish_date_project=='' ||$scope.finish_date_project==null)){
+  console.log('nulos');
+}
+else{
+    if($scope.name_project=='')
+    $scope.name_project= $scope.miproyecto.name;
+  
+  if(( $scope.finish_date_project=='' ||$scope.finish_date_project==null))
+    $scope.finish_date_project=$scope.miproyecto.finish_date;
+
+
+    $http({
+        method: 'POST',
+        url: '/project/editarproyecto',
+        headers: {'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': $scope.csrfToken 
+        },
+        data: {
+          id:$scope.miproyecto.id,
+          name:  $scope.name_project,
+          finish_date: $scope.finish_date_project
+        }
+
+        }).success(function (datanew){
+           if(datanew.project=='false'){
+               Materialize.toast($mensaje5, 2000);
+           }
+           else{
+
+            Materialize.toast($mensaje4, 1000);
+            $scope.miproyecto.name= datanew.project.name;
+            $scope.miproyecto.finish_date=datanew.project.finish_date;
+            $scope.name_project='';
+            $scope.finish_date_project='';
+           }
+        });
+}
+
+
+
+}
+
 $scope.creartarea= function(){
     
   //$scope.list1.splice(0,0,{'title':$scope.nuevatarea,'drag':true});
@@ -585,5 +633,35 @@ $scope.myConfig3 = {
 
   }
 
-
+var currentTime = new Date();
+$scope.currentTime = currentTime;
+$scope.month = [ 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre' ];
+$scope.monthShort = [ 'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic' ];
+$scope.weekdaysFull = [ 'Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado' ];
+$scope.weekdaysLetter = [ 'D', 'L', 'M', 'X', 'J', 'V', 'S' ];
+$scope.disable = [false, 1, 7];
+$scope.today = 'Hoy';
+$scope.clear = 'Limpiar';
+$scope.close = 'Cerrar';
+var days = 15;
+$scope.minDate = (new Date($scope.currentTime.getTime() - ( 1000 * 60 * 60 *24 * days ))).toISOString();
+$scope.maxDate = (new Date($scope.currentTime.getTime() + ( 1000 * 60 * 60 *24 * days ))).toISOString();
+$scope.onStart = function () {
+    console.log('onStart');
+};
+$scope.onRender = function () {
+    console.log('onRender');
+};
+$scope.onOpen = function () {
+    console.log('onOpen');
+};
+$scope.onClose = function () {
+    console.log('onClose');
+};
+$scope.onSet = function () {
+    console.log('onSet');
+};
+$scope.onStop = function () {
+    console.log('onStop');
+};
 }]);

@@ -66,7 +66,7 @@ NO OLVIDAR ARREGLAR ESTA FUNCION DEACUERDO A FALLAS EN LOS POST
           },
           data: {
             project: data.project.id,
-            name: 'inicio del nuevo projecto '+data.project.name,
+            name: 'inicio del nuevo proyecto '+data.project.name,
             root: true,
             children:[],       
           }
