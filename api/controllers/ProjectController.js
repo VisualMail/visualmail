@@ -53,6 +53,23 @@ edit: function(req,res,next){
 
 		});
 	},
+
+
+editarproyecto: function(req,res,next){
+		Project.findOne(req.param('id')).populate('participants').exec(function(err,project){
+			if(err) return res.json({project:'false'});
+			if(!project) return res.json({project:'false'});
+			else{
+				console.log('si');
+				project.name= req.param('name');
+				project.finish_date = req.param('finish_date');
+				project.save(function(err) {});
+				return res.json({project:project});
+			}
+		});
+	},
+
+
 	//la segunda es realizar el update
 	add_user: function(req,res,next){
 		//console.log('hola mundo');

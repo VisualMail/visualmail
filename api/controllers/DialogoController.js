@@ -67,12 +67,13 @@ module.exports = {
 			}
 			else{
 				console.log('pillado');
-				function busco(dialog,position,contador){
+				function busco(dialog,position,contador,largo){
 					console.log('ejecutando');
-					console.log('largo es'+largo);
+					//console.log('largo es'+largo);
 					console.log('largo es'+contador);
-					if(contador==largo-1){
-						console.log('imprimiendo');
+					if(contador==largo){
+						console.log('imprimiendo'+dialog.children[position[contador]]);
+						console.log('imprimiendo2: '+dialog.children.length);
 						dialog.children[dialog.children.length]=mensaje;
 						
 						//console.log(dialog.children[dialog.children.length-1]);
@@ -80,7 +81,7 @@ module.exports = {
 					}
 					else{
 						console.log('ejecute esto');
-						//console.log('dialogo es:'+dialog.children[position[contador]].name);
+						console.log('dialogo es:'+dialog.children[position[contador]].name);
 						busco(dialog.children[position[contador]],position,contador+1,largo);
 					}
 				}
@@ -88,7 +89,7 @@ module.exports = {
 				//var jsonstring = {'name':'hola:ultima '+dialog.children.length,'root':false,'children':[]}
 				//console.log('el tamano es:'+dialog.children.length);
 					console.log('ejecute esto otro'+mensaje.position.length);
-					var contador=0;
+					var contador=1;
 					var position = mensaje.position;
 					var largo =mensaje.position.length-1;
 					console.log('largo es'+largo);

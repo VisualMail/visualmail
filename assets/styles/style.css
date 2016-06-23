@@ -155,9 +155,8 @@ footer.page-footer {
 }
 
 .contenedorkanban{
-  border: 2px solid #C8E6C9; 
+  border: 3px solid #C8E6C9; 
   overflow-y: auto;
-  height:1%;
   height:510px; 
 
    
@@ -169,14 +168,15 @@ footer.page-footer {
 
   
 }
+
 .textito{
   word-wrap: break-word;
 }
 .conheight{
   text-overflow-y:scroll;
-  height:100px;
+  height:130px;
   width:250px;
-  margin:10px; 
+  margin:10px;  
   border-radius: 8px;
   /*position : relative; bottom:0;*/
 }
@@ -258,7 +258,6 @@ top: 28px;
 .bubble2 
 {
 position: relative;
-
 background: #4CAF50;
 -webkit-border-radius: 10px;
 -moz-border-radius: 10px;
@@ -362,3 +361,34 @@ path.link {
 border: 2px solid #388E3C;
 padding-right: 10px;
 }
+
+
+
+
+.kanbanbubble 
+{
+
+position: relative;
+width: 250px;
+padding: 0px;
+background: #FFEB3B;
+-webkit-border-radius: 6px;
+-moz-border-radius: 6px;
+border-radius: 6px;
+ margin:10px;  
+}
+
+.kanbanbubble:after 
+{
+content: '';
+position: absolute;
+border-style: solid;
+border-width: 0px 0px 0;
+border-color: #FFEB3B transparent;
+display: block;
+width: 0;
+z-index: 1;
+bottom: -0px;
+left: 8px;
+}
+

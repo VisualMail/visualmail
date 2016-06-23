@@ -23,6 +23,10 @@ module.exports = {
   	usuario:{
   		model:'User'
   	},
+    tareas:{
+      collection:'tarea',
+      via:'mensaje'
+    },
 
   }
 };

@@ -41,7 +41,7 @@ module.exports = {
 
 
 	getTareas: function(req,res,next){
-			Tarea.find({project_id:req.param('id')}).populate('usuario').exec( function(err, tarea){
+			Tarea.find({project_id:req.param('id')}).populate('usuario').populate('mensaje').exec( function(err, tarea){
 			if(err){
 				req.session.flash = { err:err}
 				return res.json({tarea:'false'});

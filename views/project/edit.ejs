@@ -15,6 +15,10 @@
   var $mensaje5 = $('<span class="  color_acentuado-text"> Ocurrió un error</span>');
   var $mensaje6 = $('<span class="  color_acentuado-text"> Se ha creado la nueva tarea</span>');
 
+      $('.datepicker').pickadate({
+    selectMonths: true, // Creates a dropdown to control month
+    selectYears: 15 // Creates a dropdown of 15 years to control year
+  });
 
 </script>
 
@@ -22,7 +26,7 @@
   <div class="row" ng-controller="projectedit">
     <div class="col s12">
       <ul class="tabs">
-        <li class="tab col s3"><a  href="#participantes">Participantes</a></li>
+        <li class="tab col s3"><a  href="#participantes">Proyecto {{miproyecto.name}}</a></li>
         <li class="tab col s3"><a    href="#dialogo">Diálogo</a></li>
         <li class="tab col s3 "><a  class="active"  href="#mensajes"> Mensajes</a></li>
         <li class="tab col s3 "><a href="#kanban"> Kanban</a></li>
@@ -35,8 +39,13 @@
      
         <%if(session.User.email==project.owner_email){%>
           <div class="row col s12">
-            <h6 class="green-text"> Estas a cargo del proyecto, puedes editarlo  <a href="#"> aquí</a></h6>
+            <h6 class="green-text"> Estas a cargo del proyecto, puedes editarlo  <a href="#modaleditproject" ng-click="" class="modal-trigger"> aquí</a></h6>
           </div>
+
+          
+
+
+
           <div class="row col s12">
             <!-- Selectize -->
                 <div class= "row col s8">
@@ -67,6 +76,7 @@
                   <tr>
                     <th class="light-green-text" > </th>
                     <th data-field="nombre" class="light-green-text">Nombre </th>
+                    <th data-field="initials" class="light-green-text">Iniciales </th>
                     <th data-field="correo" class="light-green-text">Correo </th>
                     <th data-field="rut" class="light-green-text"> Rut </th>
                     <th data-field="owner" class="light-green-text"> PMO</th>
@@ -79,6 +89,7 @@
                     <td >  <img ng-src="{{x.imgurl}}" alt="" class="circle " height ="40px" weight="40px"></div>
                     </td>
                     <td class="light-green-text"> {{ x.firstname }} {{ x.lastname }}</td>
+                     <td class="light-green-text"> {{ x.initials }} </td>
                     <td class="light-green-text"> {{ x.email  }}</td>
                     <td class="light-green-text"> {{x.rut}} </td>
                     <td>   <i class= "green-text small material-icons prefix" ng-if="owner_email==x.email">done</i></td>  
@@ -125,7 +136,7 @@
                                  .attr("style", "stroke: #ddd; fill:none;stroke-dasharray: 10 5")
                                   .attr("stroke", "#ddd");
        
-            d3.json("http://visualmail.herokuapp.com/project/getDialogos/<%=project.id%>", function(error, root){    
+            d3.json("http://localhost:1337/project/getDialogos/<%=project.id%>", function(error, root){    
                var nodes = cluster.nodes(root);    
                var links = cluster.links(nodes);    
                var link = svg.selectAll(".link")       
@@ -204,31 +215,37 @@
     <div class="row " ng-repeat="x in mensajes | filter:busquedamensaje" > 
       <div ng-if="x.cssvalue">
           <div class="col s8 offset-s4 bubble2">
-            <div class="col s12">
-              <h6>{{x.createdAt | date:'M/d/yyyy HH:mm:ss'}}</h6>
-            </div>
+   
+              <div class="col s11"><h6>{{x.createdAt | date:'M/d/yyyy HH:mm:ss'}}</h6></div>
+              <div class="col s1 "tooltipped data-position="right" data-delay="50" data-tooltip="Unir al Kanban"> <a modal href="#modalmensajekanban" ng-click="seleccionar(x)" class="btn-floating light-green valign-wrapper"  ><img src="/images/kanbanicon.png"height="33px" width="33px" ></a></div>
+            
             <div class=" col s11">
-              <div class=" col s2">
+              <div class=" col s2" >
                 <div class="col s12"><img ng-src="{{x.usuario.imgurl}}" alt=""  class="circle responsive-img"></div>
                 <div class="col s12 offset-s1"><span class="white-text center"> {{x.usuario.initials}}</span> </div>
               </div>
               <div class=" col s10 ">
                 <div class="col s12"><span class="white-text"> {{x.tipo}}</span></div>
-                <div class="col s12"><h6 class=""> {{x.name}}</h6></div>
+                <div class="col s12 textito"><h6 class=""> {{x.name}}</h6></div>
               </div>
-            
             </div>
-            <div class=" col s1 "><br>
+            <div class=" col s1 " tooltipped data-position="right" data-delay="50" data-tooltip="Responder"><br>
               <a  modal ng-click="seleccionar(x)" href="#modal2" class="btn-floating waves-effect waves-light light-green modal-trigger"><i class="small material-icons ">reply</i> </a>
             </div>
+            
+               
+                 
+        
+
           </div>
       </div><!--fin ng-if-->
       
       <div ng-if="x.cssvalue==false">
           <div class=" col s8 offset-s1 bubble">
-            <div class="col s12">
+            <div class="col s11">
               <h6>{{x.createdAt | date:'M/d/yyyy HH:mm:ss'}}</h6>
             </div>
+               <div class="col s1 "tooltipped data-position="right" data-delay="50" data-tooltip="Unir al Kanban"> <a modal  href="#modalmensajekanban" ng-click="seleccionar(x)"class="btn-floating light-green valign-wrapper"  ><img src="/images/kanbanicon.png"height="33px" width="33px" ></a></div>
             <div class="col s11">
               <div class=" col s2">
                 <div class="col s12"><img ng-src="{{x.usuario.imgurl}}" alt=""  class="circle responsive-img"></div>
@@ -236,14 +253,15 @@
               </div>
               <div class=" col s10">
                 <div class="col s12"><span class="white-text"> {{x.tipo}}</span></div>
-                <div class="col s12"><h6 class=""> {{x.name}}</h6></div>
+                <div class="col s12 textito"><h6 class=""> {{x.name}}</h6></div>
                
               </div>
             
             </div>
-            <div class="col s1 "><br>
-              <a modal  ng-click="seleccionar(x)" href="#modal2" class="btn-floating waves-effect waves-light  light-green modal-trigger"><i class="small material-icons ">reply</i> </a>
+             <div class=" col s1 " tooltipped data-position="right" data-delay="50" data-tooltip="Responder"><br>
+              <a  modal ng-click="seleccionar(x)" href="#modal2" class="btn-floating waves-effect waves-light light-green modal-trigger"><i class="small material-icons ">reply</i> </a>
             </div>
+
           </div>
       </div><!--fin ng-if-->
 
@@ -344,10 +362,17 @@
                <div class="col s12 contenedorkanbanheader"> <div class="col s1"><br><i class="material-icons light-green-text prefix">search</i></div><div class="col 11"><input type="text" ng-model="filtro1"></div></div>
             <div id="new"  class=" col s12 contenedorkanban" data-drop="true" ng-model='list1' data-jqyoui-options="optionsList1" jqyoui-droppable="{multiple:true, onDrop:'onDrop'}">
               
-              <div id="kanban1" class =" row kanbanyellow conheight hoverable" ng-repeat="item in list1 | filter:filtro1" ng-show="item.title" data-drag="{{item.drag}}" data-jqyoui-options="{helper: 'clone'}" ng-model="list1" jqyoui-draggable="{index: {{$index}},animate:true}"> 
+              <div id="kanban1" class =" kanbanbubble  hoverable" ng-repeat="item in list1 | filter:filtro1" ng-show="item.title" data-drag="{{item.drag}}" data-jqyoui-options="{helper: 'clone'}" ng-model="list1" jqyoui-draggable="{index: {{$index}},animate:true}"> 
                 <div class="row">
-                <div class=" col s3 "> <br><img class="circle responsive-img" ng-src="{{item.usuario.imgurl}}"></div>
-                <div class="col s9 textito"> <h6>{{item.title}} </h6> </div>
+                <div class="kanbanred col s12" ng-if="item.associated==true && item.element!=''">
+                <div class="col s12  white-text"> <h6> {{item.element}}</h6></div>
+                <!--<div class="col s2 ">  <i class="material-icons black-text prefix">edit_mode</i></div>--> </div>
+                <!--<div class="col s2"><i class="material-icons black-text prefix">visibility</i></div>-->
+                <div class=" col s3 "> 
+                  <div class="col s12"><br><img class="circle" height="40px" width="40px" ng-src="{{item.usuario.imgurl}}"></div> 
+                  <div class="col s12"> {{item.usuario.initials}}</div>
+                </div>
+                  <div class="col s9 textito"> <h6>{{item.title}} </h6> </div>  
                 </div>
        
               </div>
@@ -360,9 +385,15 @@
    <div class="col s12 contenedorkanbanheader"> <div class="col s1"><br><i class="material-icons light-green-text prefix">search</i></div><div id="doing"  class="col 11"><input type="text" ng-model="filtro2" ></div></div>
       <div class=" col s12 contenedorkanban" data-drop="true" ng-model='list2' data-jqyoui-options="optionsList2" jqyoui-droppable="{multiple:true, onDrop:'onDrop'}">
               
-              <div class =" kanbanyellow conheight hoverable" ng-repeat="item in list2 | filter:filtro2" ng-show="item.title" data-drag="{{item.drag}}" data-jqyoui-options="{helper: 'clone'}" ng-model="list2" jqyoui-draggable="{index: {{$index}},animate:true}"> 
+              <div class ="  kanbanbubble hoverable" ng-repeat="item in list2 | filter:filtro2" ng-show="item.title" data-drag="{{item.drag}}" data-jqyoui-options="{helper: 'clone'}" ng-model="list2" jqyoui-draggable="{index: {{$index}},animate:true}"> 
                 <div class="row">
-                <div class=" col s3 "> <br><img class="circle responsive-img" ng-src="{{item.usuario.imgurl}}"></div>
+                <div class="kanbanred col s12" ng-if="item.associated==true && item.element!=''">
+                <div class="col s12  white-text"> <h6> {{item.element}}</h6></div>
+                <!--<div class="col s2 ">  <i class="material-icons black-text prefix">edit_mode</i></div>--> </div>
+                    <div class=" col s3 "> 
+                  <div class="col s12"><br><img class="circle" height="40px" width="40px" ng-src="{{item.usuario.imgurl}}"></div> 
+                  <div class="col s12"> {{item.usuario.initials}}</div>
+                </div>
                 <div class="col s9 textito"> <h6>{{item.title}}</h6> </div>
                 </div>
        
@@ -376,9 +407,15 @@
              <div class="col s12 contenedorkanbanheader"> <div class="col s1"><br><i class="material-icons light-green-text prefix">search</i></div><div class="col 11"><input type="text" ng-model="filtro3"></div></div>
               <div id="testing"  class=" col s12 contenedorkanban" data-drop="true" ng-model='list3' data-jqyoui-options="optionsList3" jqyoui-droppable="{multiple:true, onDrop:'onDrop'}">
               
-              <div class =" kanbanyellow conheight hoverable" ng-repeat="item in list3 | filter:filtro3" ng-show="item.title" data-drag="{{item.drag}}" data-jqyoui-options="{helper: 'clone'}" ng-model="list3" jqyoui-draggable="{index: {{$index}},animate:true}"> 
+              <div class =" kanbanyellow kanbanbubble hoverable" ng-repeat="item in list3 | filter:filtro3" ng-show="item.title" data-drag="{{item.drag}}" data-jqyoui-options="{helper: 'clone'}" ng-model="list3" jqyoui-draggable="{index: {{$index}},animate:true}"> 
                 <div class="row">
-                <div class=" col s3 "> <br><img class="circle responsive-img" ng-src="{{item.usuario.imgurl}}"></div>
+               <div class="kanbanred col s12" ng-if="item.associated==true && item.element!=''">
+                <div class="col s12  white-text"> <h6> {{item.element}}</h6></div>
+                <!--<div class="col s2 ">  <i class="material-icons black-text prefix">edit_mode</i></div>--> </div>
+                    <div class=" col s3 "> 
+                  <div class="col s12"><br><img class="circle" height="40px" width="40px" ng-src="{{item.usuario.imgurl}}"></div> 
+                  <div class="col s12"> {{item.usuario.initials}}</div>
+                </div>
                 <div class="col s9 textito"> <h6>{{item.title}}</h6> </div>
                 </div>
        
@@ -392,9 +429,15 @@
             <div class="col s12 contenedorkanbanheader"> <div class="col s1"><br><i class="material-icons light-green-text prefix">search</i></div><div class="col 11"><input type="text" ng-model="filtro4"></div></div>
               <div id="done" class=" col s12 contenedorkanban" data-drop="true" ng-model='list4' data-jqyoui-options="optionsList4" jqyoui-droppable="{multiple:true, onDrop:'onDrop'}">
               
-              <div class =" kanbanyellow conheight hoverable" ng-repeat="item in list4 |filter:filtro4" ng-show="item.title" data-drag="{{item.drag}}" data-jqyoui-options="{helper: 'clone'}" ng-model="list4" jqyoui-draggable="{index: {{$index}},animate:true}"> 
+              <div class =" kanbanyellow kanbanbubble hoverable" ng-repeat="item in list4 |filter:filtro4" ng-show="item.title" data-drag="{{item.drag}}" data-jqyoui-options="{helper: 'clone'}" ng-model="list4" jqyoui-draggable="{index: {{$index}},animate:true}"> 
                 <div class="row">
-                <div class=" col s3 "> <br><img class="circle responsive-img" ng-src="{{item.usuario.imgurl}}"></div>
+                <div class="kanbanred col s12" ng-if="item.associated==true && item.element!=''">
+                <div class="col s12  white-text"> <h6> {{item.element}}</h6></div>
+                <!--<div class="col s2 ">  <i class="material-icons black-text prefix">edit_mode</i></div>--> </div>
+                    <div class=" col s3 "> 
+                  <div class="col s12"><br><img class="circle" height="40px" width="40px" ng-src="{{item.usuario.imgurl}}"></div> 
+                  <div class="col s12"> {{item.usuario.initials}}</div>
+                </div>
                 <div class="col s9 textito"> <h6>{{item.title}}</h6> </div>
                 </div>
        
@@ -410,7 +453,8 @@
     <div class="modal-content">
       <h4 class="green-text"> Crear una nueva Tarea</h4>
       <form  novalidate name="creartareaform">
-        <div class="col s12">
+
+        
           <div class="row">
             <div class="col s1">
                 <br><i class="small material-icons green-text">mode_edit</i>
@@ -419,13 +463,13 @@
               <input type="text" name="nuevatarea" class="input-area" length="130" ng-model="nuevatarea" ng-minlength="3" ng-maxlength="130" ng-required="true">
               <label for="nuevatarea"> Tarea</label>
             </div>
-          <div ng-messages="creartareaform.nuevatarea.$error" role="alert" class="col s4 centerme red-text" >
-            <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
-            <div ng-message="minlength">Mínimo 3 caracteres</div> 
-            <div ng-message ="maxlength">Tarea demasiada larga</div>
-            <div ng-show="creartareaform.nuevatarea.$valid"><i class="small material-icons light-green-text">done</i></div>
-         </div>
-          </div>
+            <div ng-messages="creartareaform.nuevatarea.$error" role="alert" class="col s5 centerme red-text" >
+              <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
+              <div ng-message="minlength">Mínimo 3 caracteres</div> 
+              <div ng-message ="maxlength">Tarea demasiada larga</div>
+              <div ng-show="creartareaform.nuevatarea.$valid"><i class="small material-icons light-green-text">done</i></div>
+            </div>
+          </div><!-- FIN DIV row1-->
           <div class="row">
              <div class="col s1">
                <br><i class="small material-icons green-text">search</i>
@@ -433,18 +477,135 @@
              <div class="col s8">
                <selectize config='myConfig2' options='misparticipantes' ng-model="inputdatos2"></selectize>
              </div>
-          </div>
-        </div>
+          </div><!-- FIN DIV row2-->
+        
+
       </form>
-    </div>
+    </div><!-- FIN DIV Modal content-->
  
     <div class="modal-footer">
        <a href="#!" ng-click="creartarea()" class="modal-action modal-close waves-effect waves-green btn-flat " ng-show="creartareaform.$valid">Aceptar</a>
       <a href="#!" ng-click="" class="modal-action modal-close waves-effect waves-green btn-flat ">Cancelar</a>
      
+    </div><!-- FIN DIV FOOTER-->
+  </div> <!-- FIN DIV ID-->
+
+ <!-- Modal Structure -->
+  <div id="modaleditproject" class="modal">
+    <h4 class="green-text"> Editar el proyecto</h4>
+    <div class="modal-content">
+        <div class="row " >
+          <form name="formeditarprojecto" novalidate>
+          <div class="row">
+            <div class="col s1">
+                <br><i class="prefix small material-icons green-text">mode_edit</i>
+            </div>
+            <div class="col s6 input-field">
+            <input id="name_project" type="text"  name="name_project" ng-model="name_project" ng-minlength="3" ng-maxlength="25" placeholder="{{miproyecto.name}}" >
+            <label for="name_project"   >Nombre del projecto</label> 
+            </div>
+          <div ng-messages="formeditarprojecto.name_project.$error" role="alert" class="col s5 centerme red-text" >
+            <div ng-message="minlength">Mínimo 3 caracteres</div> 
+            <div ng-message ="maxlength">Nombre muy largo</div>
+          </div>
+        </div>
+   
+          <div class="row">
+            <div class="col s1">
+                <br><i class="prefix small material-icons green-text">date_range</i>
+            </div>
+            <div class="col s6">
+             <input type="text" input-date
+                type="text"
+                name="created"
+                id="inputCreated"
+                ng-model="finish_date_project"
+                container="body"
+                format="dd/mm/yyyy"
+                months-full="{{ month }}"
+                months-short="{{ monthShort }}"
+                weekdays-full="{{ weekdaysFull }}"
+                weekdays-short="{{ weekdaysShort }}"
+                weekdays-letter="{{ weekdaysLetter }}"
+                disable="disable"
+                min="{{ minDate }}"
+                max="{{ maxDate }}"
+                today="Hoy"
+                clear="Limpiar"
+                close="Cerrar"
+                select-years="15"
+                on-start="onStart()"
+                on-render="onRender()"
+                on-open="onOpen()"
+                on-close="onClose()"
+                on-set="onSet()"
+                on-stop="onStop()" 
+                placeholder="{{miproyecto.finish_date | date:'M/d/yyyy'}}"
+                >
+              <label for="finishdate"   >Fecha límite del proyecto</label> 
+          </div>
+          <div class="col s5">
+            
+          </div>
+          </div>
+      
+          </form>
+          </div>
     </div>
+    <div class="modal-footer">
+      <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat " ng-show="formeditarprojecto.$valid" ng-click="editproject()">Aceptar</a>
+      <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
     </div>
   </div>
+
+
+
+    <div id="modalmensajekanban" class="modal modal-fixed-footer">
+    <div class="modal-content">
+      <h4 class="green-text"> Crear una nueva Tarea asociada</h4>
+      <form  novalidate name="creartareaform">
+
+        
+          <div class="row">
+            <div class="col s1">
+                <br><i class="small material-icons green-text">mode_edit</i>
+            </div>
+            <div class= "col s6 input-field">
+              <input type="text" name="nuevatarea" class="input-area" length="130" ng-model="nuevatarea" ng-minlength="3" ng-maxlength="130" ng-required="true">
+              <label for="nuevatarea"> Tarea</label>
+            </div>
+            <div ng-messages="creartareaform.nuevatarea.$error" role="alert" class="col s5 centerme red-text" >
+              <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
+              <div ng-message="minlength">Mínimo 3 caracteres</div> 
+              <div ng-message ="maxlength">Tarea demasiada larga</div>
+              <div ng-show="creartareaform.nuevatarea.$valid"><i class="small material-icons light-green-text">done</i></div>
+            </div>
+          </div><!-- FIN DIV row1-->
+          <div class="row">
+             <div class="col s1">
+               <br><i class="small material-icons green-text">search</i>
+             </div>
+             <div class="col s8">
+               <selectize config='myConfig2' options='misparticipantes' ng-model="inputdatos2"></selectize>
+             </div>
+          </div><!-- FIN DIV row2-->
+        
+
+      </form>
+    </div><!-- FIN DIV Modal content-->
+ 
+    <div class="modal-footer">
+       <a href="#!" ng-click="creartareaconmensaje()" class="modal-action modal-close waves-effect waves-green btn-flat " ng-show="creartareaform.$valid">Aceptar</a>
+      <a href="#!" ng-click="" class="modal-action modal-close waves-effect waves-green btn-flat ">Cancelar</a>
+     
+    </div><!-- FIN DIV FOOTER-->
+  </div> <!-- FIN DIV ID-->
+
+
+
+
+
+
 
   </div><!-- FIN CONTENEDOR DIV -->
 
@@ -455,9 +616,4 @@
 
 
 
-
-
-
-
-
-
+ 

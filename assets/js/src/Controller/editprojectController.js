@@ -29,6 +29,115 @@ $scope.nuevatarea;
 $scope.booleanocss=false;
 $scope.inputdialogo='';
 $scope.isDisabled=false;
+$scope.finish_date_project='';
+$scope.name_project='';
+$scope.editproject = function(){
+  console.log('estoy enviando');
+  console.log($scope.finish_date_project);
+  console.log($scope.name_project);
+if($scope.name_project=='' && ( $scope.finish_date_project=='' ||$scope.finish_date_project==null)){
+  console.log('nulos');
+}
+else{
+    if($scope.name_project=='')
+    $scope.name_project= $scope.miproyecto.name;
+  
+  if(( $scope.finish_date_project=='' ||$scope.finish_date_project==null))
+    $scope.finish_date_project=$scope.miproyecto.finish_date;
+
+
+    $http({
+        method: 'POST',
+        url: '/project/editarproyecto',
+        headers: {'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': $scope.csrfToken 
+        },
+        data: {
+          id:$scope.miproyecto.id,
+          name:  $scope.name_project,
+          finish_date: $scope.finish_date_project
+        }
+
+        }).success(function (datanew){
+           if(datanew.project=='false'){
+               Materialize.toast($mensaje5, 2000);
+           }
+           else{
+
+            Materialize.toast($mensaje4, 1000);
+            $scope.miproyecto.name= datanew.project.name;
+            $scope.miproyecto.finish_date=datanew.project.finish_date;
+            $scope.name_project='';
+            $scope.finish_date_project='';
+           }
+        });
+}
+
+
+
+}
+
+
+//seleccionado
+$scope.creartareaconmensaje= function(){
+    
+  //$scope.list1.splice(0,0,{'title':$scope.nuevatarea,'drag':true});
+  for(var i=0;i<$scope.misparticipantes.length;i++){
+    if($scope.misparticipantes[i].id==$scope.getselectedtask){
+      $scope.selectedusuariotask= $scope.misparticipantes[i];
+      break;
+    }
+  }
+  //console.log('aca');
+  //console.log($scope.selectedusuariotask);
+  
+  //$scope.json.push($scope.selectedusuariotask);
+  delete $scope.selectedusuariotask.$$hashKey;
+  delete $scope.selectedusuariotask.$order;
+  delete $scope.selectedusuariotask.password;
+  $scope.associated;
+  $scope.element=$scope.seleccionado.tipo;
+
+
+        $http({
+        method: 'POST',
+        url: '/tarea/create',
+        headers: {'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': $scope.csrfToken 
+        },
+        data: {
+          drag:true,
+          tipo:'new',
+          kanban: $scope.miproyecto.kanban[0].id,
+          usuario:$scope.selectedusuariotask.id,
+          title:$scope.nuevatarea,
+          project_id:$scope.miproyecto.id,
+          associated:true,
+          element:   $scope.element,
+          mensaje: $scope.seleccionado.id
+        }
+
+        }).success(function (datatarea){
+          $scope.nuevatarea='';
+           if(datatarea.tarea=='false'){
+             Materialize.toast($mensaje5, 2000);
+            }
+          else{
+            console.log(datatarea.tarea.associated)
+            datatarea.tarea["usuario"]=$scope.selectedusuariotask;
+            $scope.list1.splice(0,0,datatarea.tarea);
+            Materialize.toast($mensaje6, 2000);
+           }
+          
+        });
+
+
+}
+
+
+
+
+
 $scope.creartarea= function(){
     
   //$scope.list1.splice(0,0,{'title':$scope.nuevatarea,'drag':true});
@@ -58,7 +167,9 @@ $scope.creartarea= function(){
           kanban: $scope.miproyecto.kanban[0].id,
           usuario:$scope.selectedusuariotask.id,
           title:$scope.nuevatarea,
-          project_id:$scope.miproyecto.id
+          project_id:$scope.miproyecto.id,
+          associated:false,
+          element: ''
         }
 
         }).success(function (datatarea){
@@ -340,9 +451,11 @@ for(var i=0;i<$scope.seleccionado.position.length;i++){
 }
 //console.log($scope.seleccionado.numero_hijos);
 //nuevo scope position a ingresar
-$scope.position.push($scope.seleccionado.numero_hijos);
 
-console.log($scope.respuesta);
+$scope.position.push($scope.seleccionado.numero_hijos);
+console.log('el seleccionado es');
+console.log($scope.position);
+console.log($scope.seleccionado);
 
 $http({
         method: 'POST',
@@ -403,7 +516,9 @@ $http({
 
           }
           else{//ahora se agrega en el dialogo
+            console.log('ACA VA LO QUE VA A DIALOGO');
             console.log($scope.miproyecto.dialogos[0].id);
+            console.log($scope.temporaldata);
             $http({
               method: 'POST',
               url: '/dialogo/update_dialogo',
@@ -585,5 +700,35 @@ $scope.myConfig3 = {
 
   }
 
-
+var currentTime = new Date();
+$scope.currentTime = currentTime;
+$scope.month = [ 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre' ];
+$scope.monthShort = [ 'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic' ];
+$scope.weekdaysFull = [ 'Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado' ];
+$scope.weekdaysLetter = [ 'D', 'L', 'M', 'X', 'J', 'V', 'S' ];
+$scope.disable = [false, 1, 7];
+$scope.today = 'Hoy';
+$scope.clear = 'Limpiar';
+$scope.close = 'Cerrar';
+var days = 15;
+$scope.minDate = (new Date($scope.currentTime.getTime() - ( 1000 * 60 * 60 *24 * days ))).toISOString();
+$scope.maxDate = (new Date($scope.currentTime.getTime() + ( 1000 * 60 * 60 *24 * days ))).toISOString();
+$scope.onStart = function () {
+    console.log('onStart');
+};
+$scope.onRender = function () {
+    console.log('onRender');
+};
+$scope.onOpen = function () {
+    console.log('onOpen');
+};
+$scope.onClose = function () {
+    console.log('onClose');
+};
+$scope.onSet = function () {
+    console.log('onSet');
+};
+$scope.onStop = function () {
+    console.log('onStop');
+};
 }]);
