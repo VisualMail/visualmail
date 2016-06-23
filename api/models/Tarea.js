@@ -12,12 +12,18 @@ schema:true,autoCreatedAt: true,autoUpdatedAt: true,
   		model:'User'
   	},
     project_id:{type:'string'},
+    associated:{type:'boolean'},
+    element:{type:'string'},
   	title:{type:'string'},
   	tipo:{type:'string'},//doing.done,testing,new
   	kanban:{
   		model:'kanban'
   	},
+    mensaje:{
+      model:'mensaje'
+    },
     drag:{type:'boolean'},
+
   }
 };
 

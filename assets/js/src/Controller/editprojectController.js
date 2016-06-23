@@ -106,7 +106,9 @@ $scope.creartarea= function(){
           kanban: $scope.miproyecto.kanban[0].id,
           usuario:$scope.selectedusuariotask.id,
           title:$scope.nuevatarea,
-          project_id:$scope.miproyecto.id
+          project_id:$scope.miproyecto.id,
+          associated:false,
+          element: ''
         }
 
         }).success(function (datatarea){
@@ -388,9 +390,11 @@ for(var i=0;i<$scope.seleccionado.position.length;i++){
 }
 //console.log($scope.seleccionado.numero_hijos);
 //nuevo scope position a ingresar
-$scope.position.push($scope.seleccionado.numero_hijos);
 
-console.log($scope.respuesta);
+$scope.position.push($scope.seleccionado.numero_hijos);
+console.log('el seleccionado es');
+console.log($scope.position);
+console.log($scope.seleccionado);
 
 $http({
         method: 'POST',
@@ -451,7 +455,9 @@ $http({
 
           }
           else{//ahora se agrega en el dialogo
+            console.log('ACA VA LO QUE VA A DIALOGO');
             console.log($scope.miproyecto.dialogos[0].id);
+            console.log($scope.temporaldata);
             $http({
               method: 'POST',
               url: '/dialogo/update_dialogo',

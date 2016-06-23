@@ -213,31 +213,37 @@
     <div class="row " ng-repeat="x in mensajes | filter:busquedamensaje" > 
       <div ng-if="x.cssvalue">
           <div class="col s8 offset-s4 bubble2">
-            <div class="col s12">
-              <h6>{{x.createdAt | date:'M/d/yyyy HH:mm:ss'}}</h6>
-            </div>
+   
+              <div class="col s11"><h6>{{x.createdAt | date:'M/d/yyyy HH:mm:ss'}}</h6></div>
+              <div class="col s1 "tooltipped data-position="right" data-delay="50" data-tooltip="Unir al Kanban"> <a modal  href="" class="btn-floating light-green valign-wrapper"  ><img src="/images/kanbanicon.png"height="33px" width="33px" ></a></div>
+            
             <div class=" col s11">
-              <div class=" col s2">
+              <div class=" col s2" >
                 <div class="col s12"><img ng-src="{{x.usuario.imgurl}}" alt=""  class="circle responsive-img"></div>
                 <div class="col s12 offset-s1"><span class="white-text center"> {{x.usuario.initials}}</span> </div>
               </div>
               <div class=" col s10 ">
                 <div class="col s12"><span class="white-text"> {{x.tipo}}</span></div>
-                <div class="col s12"><h6 class=""> {{x.name}}</h6></div>
+                <div class="col s12 textito"><h6 class=""> {{x.name}}</h6></div>
               </div>
-            
             </div>
-            <div class=" col s1 "><br>
+            <div class=" col s1 " tooltipped data-position="right" data-delay="50" data-tooltip="Responder"><br>
               <a  modal ng-click="seleccionar(x)" href="#modal2" class="btn-floating waves-effect waves-light light-green modal-trigger"><i class="small material-icons ">reply</i> </a>
             </div>
+            
+               
+                 
+        
+
           </div>
       </div><!--fin ng-if-->
       
       <div ng-if="x.cssvalue==false">
           <div class=" col s8 offset-s1 bubble">
-            <div class="col s12">
+            <div class="col s11">
               <h6>{{x.createdAt | date:'M/d/yyyy HH:mm:ss'}}</h6>
             </div>
+               <div class="col s1 "tooltipped data-position="right" data-delay="50" data-tooltip="Unir al Kanban"> <a modal  href="" class="btn-floating light-green valign-wrapper"  ><img src="/images/kanbanicon.png"height="33px" width="33px" ></a></div>
             <div class="col s11">
               <div class=" col s2">
                 <div class="col s12"><img ng-src="{{x.usuario.imgurl}}" alt=""  class="circle responsive-img"></div>
@@ -245,14 +251,15 @@
               </div>
               <div class=" col s10">
                 <div class="col s12"><span class="white-text"> {{x.tipo}}</span></div>
-                <div class="col s12"><h6 class=""> {{x.name}}</h6></div>
+                <div class="col s12 textito"><h6 class=""> {{x.name}}</h6></div>
                
               </div>
             
             </div>
-            <div class="col s1 "><br>
-              <a modal  ng-click="seleccionar(x)" href="#modal2" class="btn-floating waves-effect waves-light  light-green modal-trigger"><i class="small material-icons ">reply</i> </a>
+             <div class=" col s1 " tooltipped data-position="right" data-delay="50" data-tooltip="Responder"><br>
+              <a  modal ng-click="seleccionar(x)" href="#modal2" class="btn-floating waves-effect waves-light light-green modal-trigger"><i class="small material-icons ">reply</i> </a>
             </div>
+            
           </div>
       </div><!--fin ng-if-->
 
@@ -355,9 +362,10 @@
               
               <div id="kanban1" class =" kanbanbubble  hoverable" ng-repeat="item in list1 | filter:filtro1" ng-show="item.title" data-drag="{{item.drag}}" data-jqyoui-options="{helper: 'clone'}" ng-model="list1" jqyoui-draggable="{index: {{$index}},animate:true}"> 
                 <div class="row">
-                <div class="col s8 kanbanred white-text"> Compromiso </div>
-                <div class="col s2"> <div class=""> <i class="material-icons black-text prefix">edit_mode</i></div> </div>
-                <div class="col s2"><i class="material-icons black-text prefix">visibility</i></div>
+                <div class="kanbanred col s12" ng-if="x.associated==true">
+                <div class="col s12  white-text"> Compromiso </div>
+                <!--<div class="col s2 ">  <i class="material-icons black-text prefix">edit_mode</i></div>--> </div>
+                <!--<div class="col s2"><i class="material-icons black-text prefix">visibility</i></div>-->
                 <div class=" col s3 "> 
                   <div class="col s12"><br><img class="circle" height="40px" width="40px" ng-src="{{item.usuario.imgurl}}"></div> 
                 </div>
@@ -376,6 +384,9 @@
               
               <div class ="  kanbanbubble hoverable" ng-repeat="item in list2 | filter:filtro2" ng-show="item.title" data-drag="{{item.drag}}" data-jqyoui-options="{helper: 'clone'}" ng-model="list2" jqyoui-draggable="{index: {{$index}},animate:true}"> 
                 <div class="row">
+                <div class="kanbanred col s12" ng-if="x.associated==true">
+                <div class="col s12  white-text"> Compromiso </div>
+                <!--<div class="col s2 ">  <i class="material-icons black-text prefix">edit_mode</i></div>--> </div>
                 <div class=" col s3 "> <br><img class="circle responsive-img" ng-src="{{item.usuario.imgurl}}"></div>
                 <div class="col s9 textito"> <h6>{{item.title}}</h6> </div>
                 </div>
@@ -392,6 +403,9 @@
               
               <div class =" kanbanyellow kanbanbubble hoverable" ng-repeat="item in list3 | filter:filtro3" ng-show="item.title" data-drag="{{item.drag}}" data-jqyoui-options="{helper: 'clone'}" ng-model="list3" jqyoui-draggable="{index: {{$index}},animate:true}"> 
                 <div class="row">
+                <div class="kanbanred col s12" ng-if="x.associated==true">
+                <div class="col s12  white-text"> Compromiso </div>
+                <!--<div class="col s2 ">  <i class="material-icons black-text prefix">edit_mode</i></div>--> </div>
                 <div class=" col s3 "> <br><img class="circle responsive-img" ng-src="{{item.usuario.imgurl}}"></div>
                 <div class="col s9 textito"> <h6>{{item.title}}</h6> </div>
                 </div>
@@ -408,6 +422,9 @@
               
               <div class =" kanbanyellow kanbanbubble hoverable" ng-repeat="item in list4 |filter:filtro4" ng-show="item.title" data-drag="{{item.drag}}" data-jqyoui-options="{helper: 'clone'}" ng-model="list4" jqyoui-draggable="{index: {{$index}},animate:true}"> 
                 <div class="row">
+                <div class="kanbanred col s12" ng-if="x.associated==true">
+                <div class="col s12  white-text"> {{x.element}} </div>
+                <!--<div class="col s2 ">  <i class="material-icons black-text prefix">edit_mode</i></div>--> </div>
                 <div class=" col s3 "> <br><img class="circle responsive-img" ng-src="{{item.usuario.imgurl}}"></div>
                 <div class="col s9 textito"> <h6>{{item.title}}</h6> </div>
                 </div>
@@ -463,6 +480,7 @@
 
  <!-- Modal Structure -->
   <div id="modaleditproject" class="modal">
+    <h4 class="green-text"> Editar el proyecto</h4>
     <div class="modal-content">
         <div class="row " >
           <form name="formeditarprojecto" novalidate>
