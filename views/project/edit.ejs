@@ -136,7 +136,7 @@
                                  .attr("style", "stroke: #ddd; fill:none;stroke-dasharray: 10 5")
                                   .attr("stroke", "#ddd");
        
-            d3.json("http://localhost:1337/project/getDialogos/<%=project.id%>", function(error, root){    
+            d3.json("http://visualmail.herokuapp.com/project/getDialogos/<%=project.id%>", function(error, root){    
                var nodes = cluster.nodes(root);    
                var links = cluster.links(nodes);    
                var link = svg.selectAll(".link")       
