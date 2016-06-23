@@ -364,7 +364,7 @@
               
               <div id="kanban1" class =" kanbanbubble  hoverable" ng-repeat="item in list1 | filter:filtro1" ng-show="item.title" data-drag="{{item.drag}}" data-jqyoui-options="{helper: 'clone'}" ng-model="list1" jqyoui-draggable="{index: {{$index}},animate:true}"> 
                 <div class="row">
-                <div class="kanbanred col s12" ng-if="item.associated==true">
+                <div class="kanbanred col s12" ng-if="item.associated==true && item.element!=''">
                 <div class="col s12  white-text"> <h6> {{item.element}}</h6></div>
                 <!--<div class="col s2 ">  <i class="material-icons black-text prefix">edit_mode</i></div>--> </div>
                 <!--<div class="col s2"><i class="material-icons black-text prefix">visibility</i></div>-->
@@ -387,10 +387,13 @@
               
               <div class ="  kanbanbubble hoverable" ng-repeat="item in list2 | filter:filtro2" ng-show="item.title" data-drag="{{item.drag}}" data-jqyoui-options="{helper: 'clone'}" ng-model="list2" jqyoui-draggable="{index: {{$index}},animate:true}"> 
                 <div class="row">
-                <div class="kanbanred col s12" ng-if="true">
-                <div class="col s12  white-text"> {{item.element }}</div>
+                <div class="kanbanred col s12" ng-if="item.associated==true && item.element!=''">
+                <div class="col s12  white-text"> <h6> {{item.element}}</h6></div>
                 <!--<div class="col s2 ">  <i class="material-icons black-text prefix">edit_mode</i></div>--> </div>
-                <div class=" col s3 "> <br><img class="circle responsive-img" ng-src="{{item.usuario.imgurl}}"></div>
+                    <div class=" col s3 "> 
+                  <div class="col s12"><br><img class="circle" height="40px" width="40px" ng-src="{{item.usuario.imgurl}}"></div> 
+                  <div class="col s12"> {{item.usuario.initials}}</div>
+                </div>
                 <div class="col s9 textito"> <h6>{{item.title}}</h6> </div>
                 </div>
        
@@ -406,10 +409,13 @@
               
               <div class =" kanbanyellow kanbanbubble hoverable" ng-repeat="item in list3 | filter:filtro3" ng-show="item.title" data-drag="{{item.drag}}" data-jqyoui-options="{helper: 'clone'}" ng-model="list3" jqyoui-draggable="{index: {{$index}},animate:true}"> 
                 <div class="row">
-                <div class="kanbanred col s12" ng-if="x.associated==true">
-                <div class="col s12  white-text"> Compromiso </div>
+               <div class="kanbanred col s12" ng-if="item.associated==true && item.element!=''">
+                <div class="col s12  white-text"> <h6> {{item.element}}</h6></div>
                 <!--<div class="col s2 ">  <i class="material-icons black-text prefix">edit_mode</i></div>--> </div>
-                <div class=" col s3 "> <br><img class="circle responsive-img" ng-src="{{item.usuario.imgurl}}"></div>
+                    <div class=" col s3 "> 
+                  <div class="col s12"><br><img class="circle" height="40px" width="40px" ng-src="{{item.usuario.imgurl}}"></div> 
+                  <div class="col s12"> {{item.usuario.initials}}</div>
+                </div>
                 <div class="col s9 textito"> <h6>{{item.title}}</h6> </div>
                 </div>
        
@@ -425,10 +431,13 @@
               
               <div class =" kanbanyellow kanbanbubble hoverable" ng-repeat="item in list4 |filter:filtro4" ng-show="item.title" data-drag="{{item.drag}}" data-jqyoui-options="{helper: 'clone'}" ng-model="list4" jqyoui-draggable="{index: {{$index}},animate:true}"> 
                 <div class="row">
-                <div class="kanbanred col s12" ng-if="x.associated==true">
-                <div class="col s12  white-text"> {{x.element}} </div>
+                <div class="kanbanred col s12" ng-if="item.associated==true && item.element!=''">
+                <div class="col s12  white-text"> <h6> {{item.element}}</h6></div>
                 <!--<div class="col s2 ">  <i class="material-icons black-text prefix">edit_mode</i></div>--> </div>
-                <div class=" col s3 "> <br><img class="circle responsive-img" ng-src="{{item.usuario.imgurl}}"></div>
+                    <div class=" col s3 "> 
+                  <div class="col s12"><br><img class="circle" height="40px" width="40px" ng-src="{{item.usuario.imgurl}}"></div> 
+                  <div class="col s12"> {{item.usuario.initials}}</div>
+                </div>
                 <div class="col s9 textito"> <h6>{{item.title}}</h6> </div>
                 </div>
        
@@ -587,11 +596,7 @@
  
     <div class="modal-footer">
        <a href="#!" ng-click="creartareaconmensaje()" class="modal-action modal-close waves-effect waves-green btn-flat " ng-show="creartareaform.$valid">Aceptar</a>
-      <a href="#!" ng-click="" class="modal-action modal-close waves-effect waves-green btn-flat ">Cancelar
-      <script>
-         $('ul.tabs').tabs('select_tab', 'kanban');
-      </script>
-      </a>
+      <a href="#!" ng-click="" class="modal-action modal-close waves-effect waves-green btn-flat ">Cancelar</a>
      
     </div><!-- FIN DIV FOOTER-->
   </div> <!-- FIN DIV ID-->
