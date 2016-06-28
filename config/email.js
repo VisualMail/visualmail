@@ -2,7 +2,7 @@ module.exports.email = {
 service: 'Gmail',
   auth: {
           user: 'noreply.visualmail@gmail.com',
-          pass: ''
+          pass: 'visualmail2016'
         },
          transporter: {
             host: 'smtp.gmail.com',
