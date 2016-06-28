@@ -1,14 +1,19 @@
 
-module.exports.sendWelcomeMail = function(obj) {
+module.exports.sendWelcomeMail = function(user) {
  sails.hooks.email.send(
- 'welcomeEmail', 
- {
- Name: obj.name
- },
- {
- to: obj.email,
- subject: 'Welcome Email'
- },
- function(err) {console.log(err || 'Mail Sent!');}
- )
+	  "welcomeEmail",
+		  {
+		    recibe: user.firstname,
+		    envia: "Visual Mail",
+		    direccion_envia: "noreply.visualmail@gmail.com",
+		    clave: user.id,
+		  },
+		  {
+		    from: "VisualMail <noreply.visualmail@gmail.com>",
+		    to: user.email,
+		    subject: "Recuperar Contraseña"
+		  },
+		  function(err) {console.log(err || "Email is sent");}
+		)	
 }
+
