@@ -6,7 +6,7 @@ service: 'Mailgun',
  },
  templateDir: 'views/emailTemplates',
  from: 'noreply.visualmail@gmail.com',
- testMode: false,
+ testMode: true,
  ssl: true
 
  /*service: 'Mailgun',
