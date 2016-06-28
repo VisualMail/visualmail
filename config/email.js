@@ -1,4 +1,5 @@
 module.exports.email = {
+service: 'Gmail',
   auth: {
           user: 'noreply.visualmail@gmail.com',
           pass: ''
@@ -14,9 +15,10 @@ module.exports.email = {
            // tls: {rejectUnauthorized: false},
             //debug:true          
         },
- 	templateDir: 'views/emailTemplates',
+ 	templateDir: path.resolve(sails.config.appPath, 'views/emailTemplates'),
    	from: 'noreply@visualmail.com',
-    testMode: false
+    testMode: false,
+     ssl: true
  //ssl: true
 }
 
