@@ -1,9 +1,6 @@
 module.exports.email = {
 service: 'Gmail',
-  auth: {
-          user: 'noreply.visualmail@gmail.com',
-          pass: 'visualmail2016'
-        },
+
          transporter: {
             host: 'smtp.gmail.com',
             port: 465,
