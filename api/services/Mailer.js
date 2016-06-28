@@ -5,11 +5,11 @@ module.exports.sendWelcomeMail = function(user) {
 		  {
 		    recibe: user.firstname,
 		    envia: "Visual Mail",
-		    direccion_envia: "noreply.visualmail@gmail.com",
+		    direccion_envia: "visualmail@app861ea74e5a0e4900a1ede12f23e2e12b.mailgun.org",
 		    clave: user.id,
 		  },
 		  {
-		    from: "VisualMail <noreply.visualmail@gmail.com>",
+		    from: "VisualMail <visualmail@app861ea74e5a0e4900a1ede12f23e2e12b.mailgun.org>",
 		    to: user.email,
 		    subject: "Recuperar Contraseña"
 		  },
