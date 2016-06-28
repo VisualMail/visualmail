@@ -97,21 +97,7 @@ sendEmail: function(req,res){
 		}
 		//si el usuario existe se envia el correo
 		console.log('enviando');
-		sails.hooks.email.send(
-		  "welcomeEmail",
-		  {
-		    recibe: user.firstname,
-		    envia: "Visual Mail",
-		    direccion_envia: "noreply.visualmail@gmail.com",
-		    clave: user.id,
-		  },
-		  {
-		    from: "VisualMail <noreply.visualmail@gmail.com>",
-		    to: req.param('email'),
-		    subject: "Recuperar Contraseña"
-		  },
-		  function(err) {console.log(err || "Email is sent");}
-		)	
+		Mailer.sendWelcomeMail(user);
 
 
 			return res.json({opcion:'true'});
