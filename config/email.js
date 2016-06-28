@@ -15,7 +15,7 @@ service: 'Gmail',
            // tls: {rejectUnauthorized: false},
             //debug:true          
         },
- 	templateDir: path.resolve(sails.config.appPath, 'views/emailTemplates'),
+ 	templateDir:  'views/emailTemplates',
    	from: 'noreply@visualmail.com',
     testMode: false,
      ssl: true
