@@ -472,6 +472,8 @@ $http({
           position:$scope.position,
           root:false,
           numero_hijos:0,
+          parent:$scope.seleccionado.id,
+
         }
 
     }).success(function (data) {
@@ -528,6 +530,7 @@ $http({
               data: {
                 id:$scope.miproyecto.dialogos[0].id,//corresponde al id del dialogo a buscar
                 mensaje:$scope.temporaldata,
+
               }
             }).success(function (datadialogoupdate) {
                 //console.log('termino');

@@ -99,10 +99,11 @@ NO OLVIDAR ARREGLAR ESTA FUNCION DEACUERDO A FALLAS EN LOS POST
             session:0,
             numero_hijos:0,
             session_actual:0,
-            ultimo_session_email:$scope.mi_id,
+            ultimo_session_email:$scope.jsonuser.email,
             usuario: $scope.jsonuser,
             parent:'',
-            idmensaje:data_mensaje.mensaje.id
+            idmensaje:data_mensaje.mensaje.id,
+            parent_ultimo_respondido:data_mensaje.mensaje.id,
           }
 
       }).success(function (data_dialogo) {
@@ -126,7 +127,7 @@ NO OLVIDAR ARREGLAR ESTA FUNCION DEACUERDO A FALLAS EN LOS POST
 
       }).success(function (datakanban) {
         if(datakanban.kanban=='false'){
-
+ Materialize.toast($mensaje3, 5000);
         }
         else{
           $scope.miusuario.splice(0,0,data.project);

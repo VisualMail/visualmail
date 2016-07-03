@@ -28,6 +28,7 @@ schema:true,autoCreatedAt: true,autoUpdatedAt: true,
     numero_hijos:{type:'integer'},
     session_actual:{type:'integer'},
     ultimo_session_email:{type:'string'},
+    parent_ultimo_respondido:{type:'string'}
 
   }
 };

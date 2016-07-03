@@ -66,6 +66,11 @@ module.exports = {
 				console.log('no encontrado id');
 			}
 			else{
+				dialog.ultimo_session_email=mensaje.usuario.email;
+				var session = dialog.session;
+				var sessionactual = dialog.session_actual;
+				var ultimoemailsession=dialog.ultimo_session_email;
+				var parenultimorespondido =dialog.parent_ultimo_respondido;
 				console.log('pillado');
 				function busco(dialog,position,contador,largo){
 					console.log('ejecutando');
@@ -74,8 +79,44 @@ module.exports = {
 					if(contador==largo){
 						console.log('imprimiendo'+dialog.children[position[contador]]);
 						console.log('imprimiendo2: '+dialog.children.length);
-						mensaje["idmensaje"]=id.mensaje;
+						mensaje["idmensaje"]=mensaje.id;
 						delete mensaje.id;
+						//determino la session
+						if(dialog.session==0){
+							mensaje['session']= 1;
+							sessionactual=1;
+							ultimoemailsession=mensaje.usuario.email;
+							parenultimorespondido=mensaje.parent;
+
+						}
+						else{
+							if(ultimoemailsession==mensaje.usuario.email){
+								//la session se mantiene 
+								
+								//aca tengo que ver el parent y con respecto a eso aumentar la session
+								if(parenultimorespondido!=mensaje.parent){
+										mensaje['session'] =sessionactual+1;
+										sessionactual=sessionactual+1;
+										ultimoemailsession=mensaje.usuario.email;
+										parenultimorespondido=mensaje.parent;
+								}
+								else{
+									mensaje['session']=sessionactual;
+									ultimoemailsession=mensaje.usuario.email;
+									parenultimorespondido=mensaje.parent;
+
+								}
+							}
+							else{
+								mensaje['session'] =sessionactual+1;
+								sessionactual=sessionactual+1;
+								ultimoemailsession=mensaje.usuario.email;
+								parenultimorespondido=mensaje.parent;
+
+
+
+							}
+						}
 						dialog.children[dialog.children.length]=mensaje;
 						
 						//console.log(dialog.children[dialog.children.length-1]);
@@ -96,6 +137,10 @@ module.exports = {
 					var largo =mensaje.position.length-1;
 					console.log('largo es'+largo);
 					busco(dialog,position,contador,largo);
+					console.log('se ejecuta despues de busco')
+				 dialog.session_actual=sessionactual;
+				dialog.ultimo_session_email=ultimoemailsession;
+				dialog.parent_ultimo_respondido=parenultimorespondido;
 					//console.log(dialog.children[1].children[1].children[0]);
 					//var puntero =dialog;
 					//console.log(dialog.children[1].children[1].children[0].children[0]);

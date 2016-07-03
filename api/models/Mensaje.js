@@ -15,7 +15,7 @@ module.exports = {
     numero_hijos:{type:'integer'},
     root:{type:'boolean'},
         parent:{type:'string'},
-    session:{type:'integer'},
+
   	children:{
   		collection:'Mensaje'
   	},
