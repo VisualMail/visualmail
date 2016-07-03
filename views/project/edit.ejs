@@ -127,14 +127,7 @@
                .append("g")    
                .attr("transform","translate(90,30)"); 
 
-  var line = svg.append("line")
-                                 .attr("x1", 0)
-                                 .attr("y1", 1)
-                                 .attr("x2", 0)
-                                 .attr("y2", 1000)   
-                                 .attr("stroke-width", 2)
-                                 .attr("style", "stroke: #ddd; fill:none;stroke-dasharray: 10 5")
-                                  .attr("stroke", "#ddd");
+
        
             d3.json("http://localhost:1337/project/getDialogos/<%=project.id%>", function(error, root){    
                var nodes = cluster.nodes(root);    
@@ -143,19 +136,42 @@
                   .data(links)       
                   .enter().append("path")       
                   .attr("class","link")       
-                  .attr("d", diagonal);     
+                  .attr("d", diagonal);
+
+
                var node = svg.selectAll(".node")       
                   .data(nodes)       
                   .enter().append("g")       
                   .attr("class","node")       
-                  .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });    
-               node.append("circle")       
-                  .attr("r", 4.5);    
+                  .attr("transform", function(d) { return "translate(" + (d.y) + "," + d.x + ")"; });    
+              
+                      node.append("line").attr("x1", 0)
+                                 .attr("y1", -100)
+                                 .attr("x2", 0)
+                                 .attr("y2", 100)   
+                                 .attr("stroke-width", 2)
+                                 .attr("style", "stroke: #ddd; fill:none;stroke-dasharray: 10 5")
+                                  .attr("stroke", "#ddd");
                node.append("text")       
                   .attr("dx", function(d) { return d.children ? -8 : 8; })       
                   .attr("dy", 3)       
                   .style("text-anchor", function(d) { return d.children ? "end" : "start"; })      
-                  .text( function(d){ return d.name;}); 
+                  .text( function(d){ return d.name;});
+            
+                
+
+                  node.append("circle")       
+                  .attr("r", 10);  
+
+                  node.append("image")
+                      .attr("xlink:href", function(d) { return d.usuario.imgurl; })
+         
+                      .attr("width", "24px")
+                      .attr("height", "24px")
+                      .attr("x", "-12px")
+                      .attr("y", "-12px")
+                       
+
             }); 
             </script>
           <!--

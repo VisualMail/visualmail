@@ -101,7 +101,6 @@ NO OLVIDAR ARREGLAR ESTA FUNCION DEACUERDO A FALLAS EN LOS POST
             session_actual:0,
             ultimo_session_email:$scope.jsonuser.email,
             usuario: $scope.jsonuser,
-            parent:'',
             idmensaje:data_mensaje.mensaje.id,
             parent_ultimo_respondido:data_mensaje.mensaje.id,
           }
