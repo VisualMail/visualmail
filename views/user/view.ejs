@@ -39,7 +39,7 @@ var $mensaje3 = $('<span class="  color_acentuado-text"> Ocurrió un error al gu
           <label for="search" class="green-text"> Buscar</label>
         </div>
       </div>
-      <div ng-repeat="x in miusuario | filter:busqueda" ng-model="miusuario">
+      <div ng-repeat="x in miusuario.slice().reverse() | filter:busqueda" ng-model="miusuario">
         <a ng-href="/project/edit/{{x.id}}" ng-if="x.owner_email==mi_email">
           <div class="col s6 " >
             <div class="card green hoverable "> 
@@ -63,7 +63,7 @@ var $mensaje3 = $('<span class="  color_acentuado-text"> Ocurrió un error al gu
           <label for="search" class="green-text"> Buscar</label>
         </div>
       </div>
-      <div ng-repeat="x in miusuario| filter:busqueda_participo" ng-model="miusuario">
+      <div ng-repeat="x in miusuario.slice().reverse() | filter:busqueda_participo" ng-model="miusuario">
         <a ng-href="/project/edit/{{x.id}}" ng-if="x.owner_email!=mi_email">
           <div class="col s6" >
             <div class="card  light-green lighten z-depth-2"> 

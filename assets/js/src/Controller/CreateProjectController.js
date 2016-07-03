@@ -19,7 +19,10 @@
   		//console.log('imprimo mi usuario');
       //console.log(result.data.user);
       //delete result.data.user.projects;
-      //$scope.jsonuser=result.data.user;
+      $scope.jsonuser=result.data.user;
+      delete $scope.jsonuser.projects;
+      //delete $scope.jsonuser.projects;
+      console.log($scope.jsonuser);
   	});
 
 /*
@@ -57,8 +60,32 @@ NO OLVIDAR ARREGLAR ESTA FUNCION DEACUERDO A FALLAS EN LOS POST
  				Materialize.toast($mensaje3, 5000);
 			}
 			else{
-	     //entonces se crea el dialogo
-          $http({
+	     //entonces se crea primero el mensaje
+        $http({
+            method: 'POST',
+            url: '/mensaje/create/',
+            headers: {'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': $scope.csrfToken 
+          },
+          data: {
+           name: 'inicio del nuevo proyecto '+data.project.name,
+           project_id:data.project.id,
+           tipo: '',
+           position: [0],
+           numero_hijos:0,
+           session:0,
+           parent:'',
+           root:true,
+           usuario: $scope.mi_id 
+          }
+
+      }).success(function (data_mensaje) {
+        //aca van if si falla
+        if(data_mensaje.mensaje=='false'){
+          Materialize.toast($mensaje3, 5000);
+        }
+        else{
+         $http({
             method: 'POST',
             url: '/dialogo/create/',
             headers: {'Content-Type': 'application/json',
@@ -68,38 +95,21 @@ NO OLVIDAR ARREGLAR ESTA FUNCION DEACUERDO A FALLAS EN LOS POST
             project: data.project.id,
             name: 'inicio del nuevo proyecto '+data.project.name,
             root: true,
-            children:[],       
+            children:[],
+            session:0,
+            numero_hijos:0,
+            session_actual:0,
+            ultimo_session_email:$scope.jsonuser.email,
+            usuario: $scope.jsonuser,
+            idmensaje:data_mensaje.mensaje.id,
+            parent_ultimo_respondido:data_mensaje.mensaje.id,
           }
 
       }).success(function (data_dialogo) {
-        //aca van if si falla
-        if(data_dialogo.dialogo=='false'){
-          console.log('error de algun tipo');
-        }
-        else{
-         console.log('voy aca');
-          //como resulto bien manda post final para crear el mensaje asociado a ese dialogo
-           $http({
-            method: 'POST',
-            url: '/mensaje/create/',
-            headers: {'Content-Type': 'application/json',
-              'X-CSRF-TOKEN': $scope.csrfToken 
-          },
-          data: {
-           name: data_dialogo.dialogo.name,
-           project_id:data.project.id,
-           tipo: '',
-           position: [0],
-           numero_hijos:0,
-           dialogos: data_dialogo.dialogo.id,
-           root:true,
-           usuario: $scope.mi_id 
-          }
-
-      }).success(function (data_mensaje) {
         console.log('mande ya mi post');
-        if(data_mensaje.mensaje=='false'){
+        if(data_dialogo.dialogo=='false'){
           console.log('fallo comunicación con el servidor');
+          Materialize.toast($mensaje3, 5000);
         }
         else{
           $http({
@@ -116,7 +126,7 @@ NO OLVIDAR ARREGLAR ESTA FUNCION DEACUERDO A FALLAS EN LOS POST
 
       }).success(function (datakanban) {
         if(datakanban.kanban=='false'){
-
+ Materialize.toast($mensaje3, 5000);
         }
         else{
           $scope.miusuario.splice(0,0,data.project);
@@ -147,3 +157,7 @@ NO OLVIDAR ARREGLAR ESTA FUNCION DEACUERDO A FALLAS EN LOS POST
 
 
    }]);
+
+
+
+        

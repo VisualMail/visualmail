@@ -44,11 +44,11 @@
 
         <div class= " col s12">
          <div class="input-field col s7 offset-s1">
-          <input  id="lastname" type="text"  name="lastname" ng-model="lastname" ng-minlength="5" ng-maxlength="30" ng-pattern="/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u" placeholder="<%=session.User.lastname%>">
+          <input  id="lastname" type="text"  name="lastname" ng-model="lastname" ng-minlength="3" ng-maxlength="30" ng-pattern="/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u" placeholder="<%=session.User.lastname%>">
           <label for="lastname"   >Apellidos</label>
          </div>
         <div ng-messages="update_campos.lastname.$error" role="alert" class="col s4 centerme red-text" >
-            <div ng-message="minlength">Mínimo 5 caracteres</div> 
+            <div ng-message="minlength">Mínimo 3 caracteres</div> 
             <div ng-message ="maxlength">Apellido muy largo</div>
             <div ng-message ="pattern"> Formato no válido</div>
            

@@ -26,7 +26,7 @@
   <div class="row" ng-controller="projectedit">
     <div class="col s12">
       <ul class="tabs">
-        <li class="tab col s3"><a  href="#participantes">Proyecto {{miproyecto.name}}</a></li>
+        <li class="tab col s3"><a  href="#participantes">Proyecto: {{miproyecto.name}}</a></li>
         <li class="tab col s3"><a    href="#dialogo">Diálogo</a></li>
         <li class="tab col s3 "><a  class="active"  href="#mensajes"> Mensajes</a></li>
         <li class="tab col s3 "><a href="#kanban"> Kanban</a></li>
@@ -127,35 +127,51 @@
                .append("g")    
                .attr("transform","translate(90,30)"); 
 
-  var line = svg.append("line")
-                                 .attr("x1", 0)
-                                 .attr("y1", 1)
-                                 .attr("x2", 0)
-                                 .attr("y2", 1000)   
-                                 .attr("stroke-width", 2)
-                                 .attr("style", "stroke: #ddd; fill:none;stroke-dasharray: 10 5")
-                                  .attr("stroke", "#ddd");
-       
-            d3.json("http://localhost:1337/project/getDialogos/<%=project.id%>", function(error, root){    
+
+       			/*localhost:1337*/
+            d3.json("http://visualmail.herokuapp.com/project/getDialogos/<%=project.id%>", function(error, root){    
                var nodes = cluster.nodes(root);    
                var links = cluster.links(nodes);    
                var link = svg.selectAll(".link")       
                   .data(links)       
                   .enter().append("path")       
                   .attr("class","link")       
-                  .attr("d", diagonal);     
+                  .attr("d", diagonal);
+
+
                var node = svg.selectAll(".node")       
                   .data(nodes)       
                   .enter().append("g")       
                   .attr("class","node")       
-                  .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });    
-               node.append("circle")       
-                  .attr("r", 4.5);    
+                  .attr("transform", function(d) { return "translate(" + (d.y) + "," + d.x + ")"; });    
+              
+                      node.append("line").attr("x1", 0)
+                                 .attr("y1", -100)
+                                 .attr("x2", 0)
+                                 .attr("y2", 100)   
+                                 .attr("stroke-width", 2)
+                                 .attr("style", "stroke: #ddd; fill:none;stroke-dasharray: 10 5")
+                                  .attr("stroke", "#ddd");
                node.append("text")       
                   .attr("dx", function(d) { return d.children ? -8 : 8; })       
                   .attr("dy", 3)       
                   .style("text-anchor", function(d) { return d.children ? "end" : "start"; })      
-                  .text( function(d){ return d.name;}); 
+                  .text( function(d){ return d.name;});
+            
+                
+
+                  node.append("circle")       
+                  .attr("r", 10);  
+
+                  node.append("image")
+                      .attr("xlink:href", function(d) { return d.usuario.imgurl; })
+         
+                      .attr("width", "24px")
+                      .attr("height", "24px")
+                      .attr("x", "-12px")
+                      .attr("y", "-12px")
+                       
+
             }); 
             </script>
           <!--
@@ -358,7 +374,7 @@
       <br>
       
           <div class="col s3 ">
-               <div class=" col s12 contenedorkanbanheader"><div class="col s10"> NUEVA</div> <div class="col s1"><a class="modal-trigger " href="#modal1"> <i class="material-icons light-green-text prefix">add_circle</i></a></div></div>
+               <div class=" col s12 contenedorkanbanheader"><div class="col s10"> NUEVA</div> <div class="col s1"><a class="modal-trigger " href="#modal1"> <i class="material-icons light-green-text prefix tooltipped" data-position="top" data-delay="50" data-tooltip="Crear Tarea">add_circle</i></a></div></div>
                <div class="col s12 contenedorkanbanheader"> <div class="col s1"><br><i class="material-icons light-green-text prefix">search</i></div><div class="col 11"><input type="text" ng-model="filtro1"></div></div>
             <div id="new"  class=" col s12 contenedorkanban" data-drop="true" ng-model='list1' data-jqyoui-options="optionsList1" jqyoui-droppable="{multiple:true, onDrop:'onDrop'}">
               
