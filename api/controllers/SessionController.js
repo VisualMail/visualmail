@@ -21,7 +21,9 @@ module.exports = {
 	'recover': function(req,res){
 		res.view('session/recover');
 	},
-
+	'help': function(req,res){
+		res.view('session/help');
+	},
 	'forgotpassword':function(req,res){
 		/*var olddate = new Date();
 		var newdate = new Date(olddate.getTime()+60000);

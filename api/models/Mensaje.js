@@ -14,9 +14,8 @@ module.exports = {
     project_id:{type:'string'},
     numero_hijos:{type:'integer'},
     root:{type:'boolean'},
-  	dialogos:{
-  		model: 'Dialogo'
-  	},
+        parent:{type:'string'},
+
   	children:{
   		collection:'Mensaje'
   	},
