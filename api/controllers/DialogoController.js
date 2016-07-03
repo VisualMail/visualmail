@@ -74,6 +74,8 @@ module.exports = {
 					if(contador==largo){
 						console.log('imprimiendo'+dialog.children[position[contador]]);
 						console.log('imprimiendo2: '+dialog.children.length);
+						mensaje["idmensaje"]=id.mensaje;
+						delete mensaje.id;
 						dialog.children[dialog.children.length]=mensaje;
 						
 						//console.log(dialog.children[dialog.children.length-1]);

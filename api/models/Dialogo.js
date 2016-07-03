@@ -8,17 +8,27 @@
 module.exports = {
 schema:true,autoCreatedAt: true,autoUpdatedAt: true,
   attributes: {
-  	name:{type:'string'},
+
   	children:{
   		type:'json'
   	},
   	project:{
   		model:'Project',
   	},
-    mensajes:{
-      collection: 'mensaje',
-      via: 'dialogos'
-    }
+    name:{type:'string'},
+    tipo:{type:'string'},
+    numero_hijos:{type:'integer'},
+    root:{type:'boolean'},
+    parent:{type:'string'},
+    session:{type:'integer'},
+    usuario:{
+      type:'json'
+    },
+    idmensaje:{type:'string'},
+    numero_hijos:{type:'integer'},
+    session_actual:{type:'integer'},
+    ultimo_session_email:{type:'string'},
+
   }
 };
 

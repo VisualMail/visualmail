@@ -44,12 +44,12 @@ var $toastContent = $('<span class="  color_acentuado-text">Ocurrió un error</s
    
     <div class= " ">
          <div class="input-field col s7 offset-s1">
-          <input  id="lastname" type="text"  name="lastname" ng-model="lastname" ng-minlength="5" ng-maxlength="30" ng-required="true" ng-pattern="/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u">
+          <input  id="lastname" type="text"  name="lastname" ng-model="lastname" ng-minlength="3" ng-maxlength="30" ng-required="true" ng-pattern="/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u">
           <label for="lastname"   >Apellidos</label>
          </div>
         <div ng-messages="signupform.lastname.$error" role="alert" class="col s4 centerme red-text" >
              <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
-            <div ng-message="minlength">Mínimo 5 caracteres</div> 
+            <div ng-message="minlength">Mínimo 3 caracteres</div> 
             <div ng-message ="maxlength">Apellido muy largo</div>
             <div ng-message ="pattern"> Formato no válido</div>
             <div ng-show="signupform.lastname.$valid"><i class="small material-icons light-green-text">done</i></div>
