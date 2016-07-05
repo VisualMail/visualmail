@@ -109,13 +109,13 @@
 
     </div><!-- FIN TAB -->
 
-    <div id="dialogo" class="col s12">
+    <div id="dialogo" class="col s12 scrolled">
 
       
 
             <script type="text/javascript"> 
 
-            var width = 1000; 
+            var width = 1200; 
             var height = 600; 
             var cluster = d3.layout.cluster()    
                .size([height, width-200]); 
@@ -126,9 +126,11 @@
                .attr("height",height)    
                .append("g")    
                .attr("transform","translate(90,30)"); 
+var tooltip = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
 
-
-       
+       			/*localhost:1337*/
             d3.json("http://localhost:1337/project/getDialogos/<%=project.id%>", function(error, root){    
                var nodes = cluster.nodes(root);    
                var links = cluster.links(nodes);    
@@ -143,33 +145,42 @@
                   .data(nodes)       
                   .enter().append("g")       
                   .attr("class","node")       
-                  .attr("transform", function(d) { return "translate(" + (d.y) + "," + d.x + ")"; });    
+                  .attr("transform", function(d) { return "translate(" + (d.y) + "," + d.x + ")"; })
+                  .on("mouseover", function(d) {
+                    tooltip.transition()
+                         .duration(200)
+                         .style("opacity", .9);
+                    tooltip.html(
+                      " <div class='row textito '>"+d.tipo+"<br>"+d.name+"</div>"
+                      )
+                         .style("left", (d3.event.pageX - 50) + "px")
+                         .style("top", (d3.event.pageY - 90) + "px");
+                })
+                .on("mouseout", function(d) {
+                    tooltip.transition()
+                         .duration(500)
+                         .style("opacity", 0);
+                });
               
                       node.append("line").attr("x1", 0)
-                                 .attr("y1", -100)
+                                 .attr("y1", -35)
                                  .attr("x2", 0)
-                                 .attr("y2", 100)   
-                                 .attr("stroke-width", 2)
+                                 .attr("y2", 30)   
+                                 .attr("stroke-width", 1)
                                  .attr("style", "stroke: #ddd; fill:none;stroke-dasharray: 10 5")
                                   .attr("stroke", "#ddd");
-               node.append("text")       
-                  .attr("dx", function(d) { return d.children ? -8 : 8; })       
-                  .attr("dy", 3)       
-                  .style("text-anchor", function(d) { return d.children ? "end" : "start"; })      
-                  .text( function(d){ return d.name;});
-            
-                
-
                   node.append("circle")       
                   .attr("r", 10);  
 
-                  node.append("image")
-                      .attr("xlink:href", function(d) { return d.usuario.imgurl; })
-         
-                      .attr("width", "24px")
-                      .attr("height", "24px")
-                      .attr("x", "-12px")
-                      .attr("y", "-12px")
+               node.append("text")       
+                  .attr("dx", "3")       
+                  .attr("dy", "-20")       
+                  .style("text-anchor", function(d) { return d.children ? "end" : "start"; })      
+                  .text( function(d){ return d.usuario.initials;});
+            
+                
+
+        
                        
 
             }); 

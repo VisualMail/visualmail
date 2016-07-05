@@ -299,13 +299,22 @@ top: 28px;
  overflow-x:hidden;
  margin-right:1220px;
 }
+
+.scrolled{
+  overflow-y: auto;
+ padding-right:10px;
+ overflow-x:hidden;
+ margin-right:1220px;
+}
+
+
 .margenimg{
   padding-top: 5px;
 }
 
 
 .node circle {
-  fill: #fff;
+  fill: #8BC34A;
   stroke: black;
   stroke-width: 1.5px;
   transform: scale(1, 1);
@@ -321,7 +330,7 @@ top: 28px;
   stroke-width: 1.5px;
 }
 
-
+.
 .linkFocus {
   fill: none;
   stroke: #ccc;
@@ -348,7 +357,7 @@ svg .focus  {
 
 path.link {
   fill: none;
-  stroke: #9ecae1;
+  stroke: #8BC34A;
   stroke-width: 1.5px;
 }
 
@@ -363,6 +372,43 @@ padding-right: 10px;
 }
 
 
+.tooltip {
+  position: absolute;
+  width: 250px;
+  height: 200px;
+  pointer-events: none;
+}
+.tooltip {
+position: absolute; 
+  width: 210px;  
+  height: 80px;   
+  padding: 2px; 
+  font: 10px sans-serif;  
+background: #8BC34A;
+  border: 0px;          
+  border-radius: 8px;
+  -webkit-border-radius: 6px;
+-moz-border-radius: 6px;
+border-radius: 6px;
+ /*  pointer-events: none;  This line needs to be removed */
+  pointer-events: none;
+}
+
+
+.tooltip:after 
+{
+content: '';
+position: absolute;
+border-style: solid;
+border-width: 0px 0px 0;
+border-color: #FFEB3B transparent;
+display: block;
+width: 0;
+z-index: 1;
+bottom: -0px;
+left: 8px;
+}
+
 
 
 .kanbanbubble 
@@ -376,6 +422,7 @@ background: #FFEB3B;
 -moz-border-radius: 6px;
 border-radius: 6px;
  margin:10px;  
+   word-wrap: break-word;
 }
 
 .kanbanbubble:after 

@@ -70,7 +70,7 @@ NO OLVIDAR ARREGLAR ESTA FUNCION DEACUERDO A FALLAS EN LOS POST
           data: {
            name: 'inicio del nuevo proyecto '+data.project.name,
            project_id:data.project.id,
-           tipo: '',
+           tipo: 'nuevo',
            position: [0],
            numero_hijos:0,
            session:0,
