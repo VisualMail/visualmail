@@ -1,42 +1,44 @@
 /**
  * User.js
  *
- * @description :: TODO: You might write a short summary of how this model works and what it represents here.
+ * @description :: TODO: Representa un usuario de la aplicación
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
 
 module.exports = {
 schema:true,autoCreatedAt: false,autoUpdatedAt: false,
 attributes: {
-	//id:{ type: 'integer', required: true, unique:true,autoIncrement: true,primaryKey: true,},
-	firstname:{ type: 'string', required:true },
-	lastname:{ type: 'string', required:true},
-	email:{ type: 'email', email:true, required:true, unique:true},
 	
-	initials:{ type: 'string',required:true},
-	password:{ type: 'string',required:true},
-	imgurl:{ type:'string'},
-	rut:{type:'string'},
-	projects:{
+	firstname:{ type: 'string', required:true }, //primer nombre
+	lastname:{ type: 'string', required:true}, //ultimo nombre
+	email:{ type: 'email', email:true, required:true, unique:true}, //email
+	
+	initials:{ type: 'string',required:true}, //iniciales
+	password:{ type: 'string',required:true}, //password
+	imgurl:{ type:'string'},//url de la imagen
+	rut:{type:'string'}, //rut
+	projects:{ //relacion muchos a muchos con proyecto
 		dominant: true,
 		collection: 'project',
 		via:'participants'
 	},
-	mensajes:{
+	mensajes:{ //asociacion con mensajes
 		collection:'mensaje',
 		via:'usuario'
 	},
-	tareas:{
+	tareas:{//asociacion con tareas
 		collection:'tarea',
 		via:'usuario'
 	}
 },
-	//callback llamado antes de crear el usuario, el password se encripta
+ //callback llamado antes de crear el usuario, el password se encripta
  beforeCreate: function(values,next){
+  //utilizando bcryptjs recibe el password sin encriptar values.password y valor de configuracion
   require('bcryptjs').hash(values.password,10, function passwordEncrypted(err,password){ 
-    if(err) return next(err);
+    if(err) return next(err); //Si hay error
+
     values.password = password;
-    next();
+    next(); //continua Sails
   });
  },
 };

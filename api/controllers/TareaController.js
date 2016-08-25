@@ -1,7 +1,7 @@
 /**
  * TareaController
  *
- * @description :: Server-side logic for managing tareas
+ * @description :: Logica del lado del servidor para manejar las tareas
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
