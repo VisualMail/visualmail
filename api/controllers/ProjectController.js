@@ -16,6 +16,8 @@ module.exports = {
 */
 create: function(req,res,next){
 Project.create(req.allParams(), function ProjectCreated(err,user){
+	console.log("LLegue a crear");
+	console.log(req.param('finish_date'));
 	var data=req.allParams();
 			if(err) {
 				//req.session dura el tiempo de la sesion hasta que el browser cierra

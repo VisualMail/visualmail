@@ -153,7 +153,37 @@ NO OLVIDAR ARREGLAR ESTA FUNCION DEACUERDO A FALLAS EN LOS POST
   		
 
   	}
-
+var currentTime = new Date();
+$scope.currentTime = currentTime;
+$scope.month = [ 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre' ];
+$scope.monthShort = [ 'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic' ];
+$scope.weekdaysFull = [ 'Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado' ];
+$scope.weekdaysLetter = [ 'D', 'L', 'M', 'X', 'J', 'V', 'S' ];
+$scope.disable = [false, 1, 7];
+$scope.today = 'Hoy';
+$scope.clear = 'Limpiar';
+$scope.close = 'Cerrar';
+var days = 365;
+$scope.minDate = (new Date($scope.currentTime.getTime() - ( 1000 * 60 * 60 *24 * days ))).toISOString();
+$scope.maxDate = (new Date($scope.currentTime.getTime() + ( 1000 * 60 * 60 *24 * days ))).toISOString();
+$scope.onStart = function () {
+    
+};
+$scope.onRender = function () {
+    
+};
+$scope.onOpen = function () {
+    
+};
+$scope.onClose = function () {
+    
+};
+$scope.onSet = function () {
+   
+};
+$scope.onStop = function () {
+   
+};
 
 
    }]);

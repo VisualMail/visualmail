@@ -95,12 +95,38 @@ var $mensaje3 = $('<span class="  color_acentuado-text"> Ocurrió un error al gu
        
    
           <div class="col s4">
-             <input type="text" class="datepicker" name="finishdate" ng-model="finish_date" ng-required="true">
-              <label for="finishdate"   >Fecha límite del proyecto</label> 
+                 <input type="text" input-date
+                type="text"
+                name="created"
+                id="inputCreated"
+                ng-model="finish_date"
+                container="body"
+                format="dd/mm/yyyy"
+                months-full="{{ month }}"
+                months-short="{{ monthShort }}"
+                weekdays-full="{{ weekdaysFull }}"
+                weekdays-short="{{ weekdaysShort }}"
+                weekdays-letter="{{ weekdaysLetter }}"
+                disable="disable"
+                min="{{ minDate }}"
+                max="{{ maxDate }}"
+                today="Hoy"
+                clear="Limpiar"
+                close="Cerrar"
+                select-years="15"
+                on-start="onStart()"
+                on-render="onRender()"
+                on-open="onOpen()"
+                on-close="onClose()"
+                on-set="onSet()"
+                on-stop="onStop()" 
+              
+                >
+              <label for="finish_date"   >Fecha límite del proyecto</label> 
           </div>
-           <div ng-messages="crearproyectoform.finishdate.$error" role="alert" class="col s2 centerme red-text" >
+           <div ng-messages="crearproyectoform.finish_date.$error" role="alert" class="col s2 centerme red-text" >
             <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
-            <div ng-show="crearproyectoform.finishdate.$valid"><i class="small material-icons light-green-text">done</i></div>
+            <div ng-show="crearproyectoform.finish_date.$valid"><i class="small material-icons light-green-text">done</i></div>
           </div>
       
       </form>
@@ -122,33 +148,3 @@ var $mensaje3 = $('<span class="  color_acentuado-text"> Ocurrió un error al gu
 </div>
 
 
-
-  <!--¿
-  <div id="modal_nuevo_proyecto" class="modal modal-fixed-footer">
-    <form name="crearproyectoform" novalidate>
-    <div class="modal-content">
-      <h4 class="light-green-text">Crear un nuevo proyecto </h4>
-      <div class= "container">
-        <div class="row">
-          <div class="col s8">
-            <input id="name_project" type="text"  name="name_project" ng-model="name_project" ng-minlength="3" ng-maxlength="25" ng-required="true" >
-            <label for="name_project"   >Nombre del projecto</label> 
-          </div>
-          <div ng-messages="crearproyectoform.name_project.$error" role="alert" class="col s4 centerme red-text" >
-            <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
-            <div ng-message="minlength">Mínimo 3 caracteres</div> 
-            <div ng-message ="maxlength">Nombre muy largo</div>
-            <div ng-show="crearproyectoform.name_project.$valid"><i class="small material-icons light-green-text">done</i></div>
-          </div>
-        </div> 
-        <div class="row">
-          <div class="col s8">
-             <input type="date" class="datepicker" name="finishdate" ng-model="finish_date" ng-required="true">
-              <label for="finishdate"   >Fecha límite del proyecto</label> 
-          </div>
-           <div ng-messages="crearproyectoform.finishdate.$error" role="alert" class="col s4 centerme red-text" >
-            <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
-            <div ng-show="crearproyectoform.finishdate.$valid"><i class="small material-icons light-green-text">done</i></div>
-          </div>
-        </div> 
-       
