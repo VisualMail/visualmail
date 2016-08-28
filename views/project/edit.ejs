@@ -207,8 +207,8 @@ var tooltip = d3.select("body").append("div")
                   .attr("r", 10);  
 
                node.append("text")       
-                  .attr("x", "0")       
-                  .attr("y", -20)       
+                  .attr("x", 0)       
+                  .attr("y", -15)       
                   .style("text-anchor", function(d) { return d.children ? "end" : "start"; })      
                   .text( function(d){ console.log("asasa"+d.y +" asasas "+d.x+" "+d.name);return d.usuario.initials;});
             
@@ -219,45 +219,7 @@ var tooltip = d3.select("body").append("div")
 
             }); 
             </script>
-          <!--
-                 <div class="principalproject" id="contenedor principal">
-        <div class="contenedor_dialogo card">
-        <form action="/dialogo/create/" method="post" novalidate class="row">
-          para crear root
-          <input type="text" name="name">
-          <label for="name"> Nombre del dialogo</label>
-          <input type="hidden" value="true" name="root">
-          <input type="hidden" name="project_id" value="<%=project.id%>">
-          <input type="hidden" name="_csrf" value="<%=_csrf%>">
-          <button type="submit">
-            Enviar 
-          </button>
-        </form>
 
-      OTra form
-        <form action="/dialogo/add_dialogo/" method="post" novalidate class="row">
-          para unir 
-          
-          <input type="hidden"  name="id_dialogo" value="5753bf818f7d89371752f517">
-          <input type="hidden" name="id_nuevo" value="5753bfb58f7d89371752f519">
-          <input type="hidden" name="_csrf" value="<%=_csrf%>">
-          <button type="submit">
-            Enviar union
-          </button>
-        </form>
-        nuevo form
-          <form action="/dialogo/buscar/" method="post" novalidate class="row">
-         ultimo
-
-          <input type="hidden" name="_csrf" value="<%=_csrf%>">
-            <input type="hidden" name="project_id" value="<%=project.id%>">
-          <button type="submit">
-            ultimo union
-          </button>
-        </form>
-      </div>
-      </div>
-      -->
 
     </div><!-- FIN TAB -->
 <div id="mensajes" class="" >
@@ -429,11 +391,11 @@ var tooltip = d3.select("body").append("div")
                 <div class="col s12  white-text"> <h6> {{item.element}}</h6></div>
                 <!--<div class="col s2 ">  <i class="material-icons black-text prefix">edit_mode</i></div>--> </div>
                 <!--<div class="col s2"><i class="material-icons black-text prefix">visibility</i></div>-->
-                <div class=" col s3 "> 
-                  <div class="col s12"><br><img class="circle" height="40px" width="40px" ng-src="{{item.usuario.imgurl}}"></div> 
+                <div class=" col s4 "> 
+                  <div ng-show="item.usuario.imgurl" class="col s12"><br><img class="circle" height="40px" width="40px" ng-src="{{item.usuario.imgurl}}"></div> 
                   <div class="col s12"> {{item.usuario.initials}}</div>
                 </div>
-                  <div class="col s9 textito"> <h6>{{item.title}} </h6> </div>  
+                  <div class="col s8 textito"> <h6>{{item.title}} </h6> </div>  
                 </div>
        
               </div>
@@ -451,11 +413,11 @@ var tooltip = d3.select("body").append("div")
                 <div class="kanbanred col s12" ng-if="item.associated==true && item.element!=''">
                 <div class="col s12  white-text"> <h6> {{item.element}}</h6></div>
                 <!--<div class="col s2 ">  <i class="material-icons black-text prefix">edit_mode</i></div>--> </div>
-                    <div class=" col s3 "> 
-                  <div class="col s12"><br><img class="circle" height="40px" width="40px" ng-src="{{item.usuario.imgurl}}"></div> 
+             <div class=" col s4 "> 
+                  <div ng-show="item.usuario.imgurl" class="col s12"><br><img class="circle" height="40px" width="40px" ng-src="{{item.usuario.imgurl}}"></div>
                   <div class="col s12"> {{item.usuario.initials}}</div>
                 </div>
-                <div class="col s9 textito"> <h6>{{item.title}}</h6> </div>
+                <div class="col s8 textito"> <h6>{{item.title}}</h6> </div>
                 </div>
        
               </div>
@@ -473,11 +435,11 @@ var tooltip = d3.select("body").append("div")
                <div class="kanbanred col s12" ng-if="item.associated==true && item.element!=''">
                 <div class="col s12  white-text"> <h6> {{item.element}}</h6></div>
                 <!--<div class="col s2 ">  <i class="material-icons black-text prefix">edit_mode</i></div>--> </div>
-                    <div class=" col s3 "> 
-                  <div class="col s12"><br><img class="circle" height="40px" width="40px" ng-src="{{item.usuario.imgurl}}"></div> 
+                <div class=" col s4 "> 
+                  <div ng-show="item.usuario.imgurl" class="col s12"><br><img class="circle" height="40px" width="40px" ng-src="{{item.usuario.imgurl}}"></div>
                   <div class="col s12"> {{item.usuario.initials}}</div>
                 </div>
-                <div class="col s9 textito"> <h6>{{item.title}}</h6> </div>
+                <div class="col s8 textito"> <h6>{{item.title}}</h6> </div>
                 </div>
        
               </div>
@@ -495,11 +457,11 @@ var tooltip = d3.select("body").append("div")
                 <div class="kanbanred col s12" ng-if="item.associated==true && item.element!=''">
                 <div class="col s12  white-text"> <h6> {{item.element}}</h6></div>
                 <!--<div class="col s2 ">  <i class="material-icons black-text prefix">edit_mode</i></div>--> </div>
-                    <div class=" col s3 "> 
-                  <div class="col s12"><br><img class="circle" height="40px" width="40px" ng-src="{{item.usuario.imgurl}}"></div> 
+               <div class=" col s4 "> 
+                  <div ng-show="item.usuario.imgurl" class="col s12"><br><img class="circle" height="40px" width="40px" ng-src="{{item.usuario.imgurl}}"></div>
                   <div class="col s12"> {{item.usuario.initials}}</div>
                 </div>
-                <div class="col s9 textito"> <h6>{{item.title}}</h6> </div>
+                <div class="col s8 textito"> <h6>{{item.title}}</h6> </div>
                 </div>
        
               </div>
