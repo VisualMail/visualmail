@@ -1,7 +1,8 @@
 
 module.exports.sendWelcomeMail = function(user) {
+//Para el hook para mandar correo	
  sails.hooks.email.send(
-	  "welcomeEmail",
+	  "welcomeEmail",//deacuerdo a esta configuración se configuran los valores de envio y recepcion
 		  {
 		    recibe: user.firstname,
 		    envia: "Visual Mail",

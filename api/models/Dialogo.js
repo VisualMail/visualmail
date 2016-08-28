@@ -1,34 +1,34 @@
 /**
  * Dialogo.js
  *
- * @description :: TODO: You might write a short summary of how this model works and what it represents here.
+ * @description :: TODO: Maneja los dialogos en formato JSON según formato d3.js y de acuerdo a los valores guardados en mensajes
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
-//Corresponde al modelo para el nodo principal root de los dialogos, mantiene en un json cuales son los valores que le siguen
+
 module.exports = {
 schema:true,autoCreatedAt: true,autoUpdatedAt: true,
   attributes: {
 
-  	children:{
+  	children:{ //guarda los mensajes hijos
   		type:'json'
   	},
-  	project:{
+  	project:{ //recibe pk de proyecto
   		model:'Project',
   	},
-    name:{type:'string'},
-    tipo:{type:'string'},
-    numero_hijos:{type:'integer'},
-    root:{type:'boolean'},
-    parent:{type:'string'},
-    session:{type:'integer'},
-    usuario:{
+    name:{type:'string'}, //contiene el texto del mensaje inicial
+    tipo:{type:'string'}, //contiene el tipo de mensaje del mensaje inicial (por defecto null)
+    numero_hijos:{type:'integer'}, //contiene cuantos hijos tiene
+    root:{type:'boolean'}, //contiene valor booleano si es root ( por defecto true)
+    parent:{type:'string'}, //contiene el id del mensaje padre (por defecto null)
+    session:{type:'integer'}, //contiene el valor de session del primer mensaje
+    usuario:{ //contiene el json de quien realizo el primer mensaje
       type:'json'
     },
-    idmensaje:{type:'string'},
-    numero_hijos:{type:'integer'},
-    session_actual:{type:'integer'},
-    ultimo_session_email:{type:'string'},
-    parent_ultimo_respondido:{type:'string'}
+    idmensaje:{type:'string'}, //guarda el id del mensaje inicial
+    
+    session_actual:{type:'integer'}, //contiene el valor de sesion actual
+    ultimo_session_email:{type:'string'}, //contiene quien realizo la ultima respuesta
+    parent_ultimo_respondido:{type:'string'} //contiene el id del ultimo mensaje respondido
 
   }
 };

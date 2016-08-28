@@ -713,25 +713,25 @@ $scope.disable = [false, 1, 7];
 $scope.today = 'Hoy';
 $scope.clear = 'Limpiar';
 $scope.close = 'Cerrar';
-var days = 15;
+var days = 365;
 $scope.minDate = (new Date($scope.currentTime.getTime() - ( 1000 * 60 * 60 *24 * days ))).toISOString();
 $scope.maxDate = (new Date($scope.currentTime.getTime() + ( 1000 * 60 * 60 *24 * days ))).toISOString();
 $scope.onStart = function () {
-    console.log('onStart');
+    
 };
 $scope.onRender = function () {
-    console.log('onRender');
+    
 };
 $scope.onOpen = function () {
-    console.log('onOpen');
+    
 };
 $scope.onClose = function () {
-    console.log('onClose');
+    
 };
 $scope.onSet = function () {
-    console.log('onSet');
+    
 };
 $scope.onStop = function () {
-    console.log('onStop');
+    
 };
 }]);

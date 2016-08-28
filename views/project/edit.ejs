@@ -132,7 +132,41 @@ var tooltip = d3.select("body").append("div")
 
        			/*localhost:1337*/
             d3.json("http://visualmail.herokuapp.com/project/getDialogos/<%=project.id%>", function(error, root){    
-               var nodes = cluster.nodes(root);    
+               var nodes = cluster.nodes(root); 
+                var offset = 50;
+                create_offset(nodes[0]);
+            
+  
+
+                 function create_offset(node){
+                 
+                  console.log(nodes[0]);
+                if(node.children){
+                 
+
+                  //modify the y values of each child. increasing the offset each time
+                 
+                    console.log("sesion"+node.session+" y : "+node.name + "depth : "+node.depth);
+                  for(var i = 0; i<node.children.length;i++){
+                    console.log("sesion"+node.children[i].session+" y : "+node.children[i].name + "depth : "+node.children[i].depth);
+                     console.log("si entre");
+                    node.children[i].y = node.children[i].depth + offset;
+                    console.log(node.children[i].y);
+                    offset += 40; //change this to change the degree of offset
+                  }
+
+                  //check each child to see if it has it's own children. If so, decend the tree recursively
+                  for(var i = 0; i<node.children.length;i++){
+                    if(node.children[i].children){
+                      create_offset(node.children[i]);
+                    }
+                  }    
+                }
+                else{
+                  console.log("else")
+                   console.log("sesion"+node.session+" y : "+node.name);
+                }
+              }
                var links = cluster.links(nodes);    
                var link = svg.selectAll(".link")       
                   .data(links)       
@@ -163,9 +197,9 @@ var tooltip = d3.select("body").append("div")
                 });
               
                       node.append("line").attr("x1", 0)
-                                 .attr("y1", -35)
+                                 .attr("y1", -600)
                                  .attr("x2", 0)
-                                 .attr("y2", 30)   
+                                 .attr("y2", 600)   
                                  .attr("stroke-width", 1)
                                  .attr("style", "stroke: #ddd; fill:none;stroke-dasharray: 10 5")
                                   .attr("stroke", "#ddd");
@@ -173,10 +207,10 @@ var tooltip = d3.select("body").append("div")
                   .attr("r", 10);  
 
                node.append("text")       
-                  .attr("dx", "3")       
-                  .attr("dy", "-20")       
+                  .attr("x", "0")       
+                  .attr("y", -100)       
                   .style("text-anchor", function(d) { return d.children ? "end" : "start"; })      
-                  .text( function(d){ return d.usuario.initials;});
+                  .text( function(d){ console.log("asasa"+d.y +" asasas "+d.x+" "+d.name);return d.usuario.initials;});
             
                 
 

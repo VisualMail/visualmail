@@ -2,7 +2,7 @@
  * sessionAuth
  *
  * @module      :: Policy
- * @description :: Simple policy to allow any authenticated user
+ * @description :: Politica simple para manejar un usuario autenticado
  *                 Assumes that your login action in one of your controllers sets `req.session.authenticated = true;`
  * @docs        :: http://sailsjs.org/#!/documentation/concepts/Policies
  *
@@ -15,11 +15,11 @@ module.exports = function(req, res, next) {
     return next();
   }
   else{
-var requireLoginerror= [{name: 'requireLogin', message: 'You must be signed in.'}]
-req.session.flash={
-	err: requireLoginerror
-}
-res.redirect('/session/login');
-return;
+	var requireLoginerror= [{name: 'requireLogin', message: 'You must be signed in.'}]
+	req.session.flash={
+		err: requireLoginerror
+	}
+	res.redirect('/session/login');
+	return;
   }
 };
