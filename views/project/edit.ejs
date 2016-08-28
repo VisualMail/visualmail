@@ -208,7 +208,7 @@ var tooltip = d3.select("body").append("div")
 
                node.append("text")       
                   .attr("x", "0")       
-                  .attr("y", -100)       
+                  .attr("y", -20)       
                   .style("text-anchor", function(d) { return d.children ? "end" : "start"; })      
                   .text( function(d){ console.log("asasa"+d.y +" asasas "+d.x+" "+d.name);return d.usuario.initials;});
             
