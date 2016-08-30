@@ -12,13 +12,15 @@ $scope.initials ='';
 $scope.password ='';
 $scope.confirmpassword ='';
 
-
+  
+/**
+* @method :: actualizar_campos 
+* @description ::  POST paraa editar datos de usuario
+*/
 
 $scope.actualizar_campos= function(){
-
-
 $http.defaults.withCredentials = true;
-	$http({
+	$http({//se genera post con cabeceras y datos
         method: 'POST',
         url: '/user/actualizardatos/',
         headers: {'Content-Type': 'application/json',
@@ -34,25 +36,24 @@ $http.defaults.withCredentials = true;
 
         }
 
-    }).success(function (data) {
+    }).success(function (data) {//al finalizar el post
  
-      
-       if(data.opcion=='true'){
+       if(data.opcion=='true'){//si en el servidor los datos fueron correctos, se recarga la pagina y la variable flash manda la notificacion
         location.reload(true);
         //Materialize.toast($mensaje1, 5000);
-
         }
-        else{
+        else{//si hay un error
         Materialize.toast($mensaje2, 5000);
         }
-
-
     });
 }
-
+  
+/**
+* @method :: actualizar_password 
+* @description ::  POST para actualizar la password de un usuario
+*/
 $scope.actualizar_password = function(){
-	
-	//console.log($scope.password);
+	//Se mandan las cabeceras y datos de entrada del post
 	$http.defaults.withCredentials = true;
 	$http({
         method: 'POST',
@@ -60,21 +61,15 @@ $scope.actualizar_password = function(){
         headers: {'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': $scope.csrfToken 
         },
-
         data: {
           password: $scope.password,
           id: $scope.id,
         }
-
-    }).success(function (data) {
-       //console.log('fin');
-      
-       if(data.opcion=='true'){
-       	
+    }).success(function (data) {//luego del retorno del servidor
+       if(data.opcion=='true'){//se manda mensaje si fue correcto
         Materialize.toast($mensaje3, 5000);
-
         }
-        else{
+        else{//en caso de haber error
         Materialize.toast($mensaje4, 5000);
         }
 

@@ -1,51 +1,167 @@
 angular.module('app.projectedit',['ngMessages','gp.rutValidator','selectize','ngDragDrop','luegg.directives','ui.materialize'])
 .controller('projectedit',["$scope", "$http", "$timeout", function($scope,$http,$timeout){
+
+/*
+*
+* Declaracion de variables
+*
+*/
+
 var REGEX_EMAIL = '([a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@' +
-                  '(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)';
+                  '(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)';//expresion regular para el mail
+
 $scope.usuarios = [];
-$scope.project_id = new String(id);
-$scope.owner_email = new String(own_email);
-$scope.misparticipantes;
+$scope.project_id = new String(id);//id del proyecto
+$scope.owner_email = new String(own_email);//email del dueño del proyecto
+$scope.misparticipantes;//usuarios del proyecto menos el del que inicia sesion
 $scope.todos=[];
-$scope.mensajes_proyectos;
-$scope.miproyecto;
+$scope.mensajes_proyectos;//datos de los mensajes
+$scope.miproyecto;//datos del proyecto
 $scope.mesajes;
-$scope.miusuario;
-$scope.userid = miid;
-$scope.getselectedtask='';
-$scope.inputdatos2;
+$scope.miusuario;//variable con el objeto del usuario
+$scope.userid = miid; //id del usuario
+$scope.getselectedtask='';//tarea seleccionada
+$scope.inputdatos2;//valores de arreglo para api selectize
 $scope.selectedusuariotask={};
-$scope.tipokanban=['new','doing','testing','done'];
-$scope.largos=[];
-$scope.list4 = [];
-$scope.list1 = [];
-$scope.list3 = [];  
-$scope.list2 = [];
+$scope.tipokanban=['new','doing','testing','done'];//valor de los tipos de kanban
+$scope.largos=[]; //contiene los largos 
+$scope.list4 = []; //contiene mensajes de new
+$scope.list1 = []; //contiene mensajes de doing
+$scope.list3 = []; //contiene mensajes de testing
+$scope.list2 = []; //contiene mensajes de done
 $scope.filtro1;
 $scope.filtro2;
 $scope.filtro3;
 $scope.filtro4;
 $scope.nuevatarea;
-$scope.booleanocss=false;
+$scope.booleanocss=false;//variable para dar efecto intercalado a los mensajes
 $scope.inputdialogo='';
 $scope.isDisabled=false;
-$scope.finish_date_project='';
-$scope.name_project='';
+$scope.finish_date_project='';//variable fecha de termino del proyecto
+$scope.name_project='';//nombre del proyecto
+
+
+/*
+*
+* FUNCIONES GET
+*
+*/
+
+  //Adquiere el token de csrf
+    $http.get('/csrfToken')
+      .success(function (token) {
+        $scope.csrfToken = token._csrf;
+    });
+//pide los datos de usuario
+  $http({
+      url:'/user/findUserOnly/',
+      method: 'GET',
+      params: {id: $scope.userid}
+    }).then(function(result){
+      $scope.miusuario = result.data.user;
+    });
+   //pide todos los datos de los usuarios
+  $http({
+      url:'/user/getAllEmail/',
+      method: 'GET',
+      params: {id: id}
+    })
+      .then(function(result) { //obtiene los datos de un proyecto y los usuarios asociados
+        $http({
+        url:'/project/getOne/',
+        method: 'GET',
+        params: {id: id}
+      }).then(function(getOne){//luego del post
+        $scope.todos=result.data.arr;//variable temporal para copiar los resultados de getallemail
+        $scope.usuarios = [];//se inicializa los usuarios
+        $scope.miproyecto= getOne.data.project;//el dato del proyecto 
+        $scope.misparticipantes = getOne.data.project.participants;//el dato de los participantes
+        
+        //Para la API selectize y que solo aparezcan los mail de los usuarios distintos al del usuario que inicio sesion
+        for(i in result.data.arr){//de todos los valores de getallemail
+          var bandera=0;//bandera
+          for(j in $scope.misparticipantes){//para cada participante
+            if(result.data.arr[i].email==$scope.misparticipantes[j].email){//si el email del arreglo es igual al email de la persona que inicio sesion
+              bandera=1;
+              break;
+            }
+          }
+          if(bandera==0){//si bandera no fue cambiado agrego los usuarios
+            $scope.usuarios.push(result.data.arr[i]);
+            }
+          }
+
+      }).then(function(getMessages){
+        $http({//get para obtener los mensajes
+            url:'/mensaje/getMessages/',
+            method: 'GET',
+            params: {id: $scope.miproyecto.id}
+          }).then(function(resultado){
+            $scope.mensajes = resultado.data.mensaje;
+            //AL cargar los mensajes, se intercala el valor de los mensajes entre true y false para darle un valor intercalado y presentarlos en formato whatsapp
+            for(var i=0;i<$scope.mensajes.length;i++){
+              $scope.mensajes[i]["cssvalue"]= !$scope.booleanocss; 
+              $scope.booleanocss=!$scope.booleanocss;
+            }
+          });
+          }).then(function(getKanban){//get para obtener el kanban
+              $http({
+                  url:'/tarea/getTareas/',
+                  method: 'GET',
+                  params: {id:$scope.miproyecto.id}
+                }).then(function(datatarea){
+                  if(datatarea.data.tarea=='false'){//si hay error
+                    
+                  } 
+                  //en caso de no haber error
+
+                  for(var i=0;i<datatarea.data.tarea.length;i++){
+                    //se separa por cada panel del kanban por el tipo de tarea
+                    if(datatarea.data.tarea[i].tipo==$scope.tipokanban[0]){//New
+                      $scope.list1.splice(0,0,datatarea.data.tarea[i]);
+                    }
+                    if(datatarea.data.tarea[i].tipo==$scope.tipokanban[1]){//haciendo
+                      $scope.list2.splice(0,0,datatarea.data.tarea[i]);
+                    }
+                    if(datatarea.data.tarea[i].tipo==$scope.tipokanban[2]){//en pruebas
+                      $scope.list3.splice(0,0,datatarea.data.tarea[i]);
+                    }
+                    if(datatarea.data.tarea[i].tipo==$scope.tipokanban[3]){//terminada
+                      $scope.list4.splice(0,0,datatarea.data.tarea[i]);
+                    }
+                  }
+                  //Guarda los largos de las listas del kanban
+                  $scope.largos[0]= $scope.list1.length;
+                  $scope.largos[1]=$scope.list2.length;
+                  $scope.largos[2]=$scope.list3.length;
+                  $scope.largos[3]=$scope.list4.length;
+                });
+
+          });
+        });
+
+
+
+
+/*FUNCIONES*/
+
+
+/**
+* @method :: editproject 
+* @description ::  Funcion para mandar POST con valores nuevos del proyecto
+*/
 $scope.editproject = function(){
-  console.log('estoy enviando');
-  console.log($scope.finish_date_project);
-  console.log($scope.name_project);
-if($scope.name_project=='' && ( $scope.finish_date_project=='' ||$scope.finish_date_project==null)){
-  console.log('nulos');
-}
-else{
-    if($scope.name_project=='')
-    $scope.name_project= $scope.miproyecto.name;
+
+if($scope.name_project=='' && ( $scope.finish_date_project=='' || $scope.finish_date_project==null)){//en caso de ser un valor nulo
   
-  if(( $scope.finish_date_project=='' ||$scope.finish_date_project==null))
+}
+else{//en caso de ser un valor distinto de nulo para el nombre o la fecha
+    if($scope.name_project=='')
+    $scope.name_project= $scope.miproyecto.name;//se actualiza el nombre del proyecto para la vista
+  
+  if(( $scope.finish_date_project=='' ||$scope.finish_date_project==null))//Se actualiza la fecha para la vista
     $scope.finish_date_project=$scope.miproyecto.finish_date;
-
-
+    //
     $http({
         method: 'POST',
         url: '/project/editarproyecto',
@@ -58,13 +174,13 @@ else{
           finish_date: $scope.finish_date_project
         }
 
-        }).success(function (datanew){
-           if(datanew.project=='false'){
-               Materialize.toast($mensaje5, 2000);
+        }).success(function (datanew){//en caso de que el post sea realizado
+           if(datanew.project=='false'){//si el servidor devuelve un valor false
+               Materialize.toast($mensaje5, 2000);//se manda mensaje de que no fue posible actualizarlo en el servidor
            }
-           else{
-
+           else{//en caso de actualizar los datos
             Materialize.toast($mensaje4, 1000);
+            //se actualizan los datos en el cliente y se limpian los datos
             $scope.miproyecto.name= datanew.project.name;
             $scope.miproyecto.finish_date=datanew.project.finish_date;
             $scope.name_project='';
@@ -78,34 +194,33 @@ else{
 }
 
 
-//seleccionado
+/**
+* @method :: creartareaconmensaje 
+* @description ::  Funcion para mandar POST y crear tarea a partir del mensaje
+*/
 $scope.creartareaconmensaje= function(){
     
-  //$scope.list1.splice(0,0,{'title':$scope.nuevatarea,'drag':true});
-  for(var i=0;i<$scope.misparticipantes.length;i++){
-    if($scope.misparticipantes[i].id==$scope.getselectedtask){
-      $scope.selectedusuariotask= $scope.misparticipantes[i];
-      break;
+    for(var i=0;i<$scope.misparticipantes.length;i++){
+      if($scope.misparticipantes[i].id==$scope.getselectedtask){//para identificar cual fue el usuario asociado al mensaje para posterior
+        //unirlo a un mensaje, el usuario seleccionado es el elegido por API selectize
+        $scope.selectedusuariotask= $scope.misparticipantes[i];
+        break;
+      }
     }
-  }
-  //console.log('aca');
-  //console.log($scope.selectedusuariotask);
-  
-  //$scope.json.push($scope.selectedusuariotask);
-  delete $scope.selectedusuariotask.$$hashKey;
-  delete $scope.selectedusuariotask.$order;
-  delete $scope.selectedusuariotask.password;
-  $scope.associated;
-  $scope.element=$scope.seleccionado.tipo;
-
+    //se eliminan valores que no se utilizan de usuario
+    delete $scope.selectedusuariotask.$$hashKey;
+    delete $scope.selectedusuariotask.$order;
+    delete $scope.selectedusuariotask.password;
+    $scope.associated;
+    $scope.element=$scope.seleccionado.tipo;//el tipo del mensaje (duda, acuerdo,norma )
 
         $http({
-        method: 'POST',
-        url: '/tarea/create',
-        headers: {'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': $scope.csrfToken 
+          method: 'POST',
+          url: '/tarea/create',
+          headers: {'Content-Type': 'application/json',
+                  'X-CSRF-TOKEN': $scope.csrfToken 
         },
-        data: {
+        data: {//se mandan las entradas
           drag:true,
           tipo:'new',
           kanban: $scope.miproyecto.kanban[0].id,
@@ -117,13 +232,13 @@ $scope.creartareaconmensaje= function(){
           mensaje: $scope.seleccionado.id
         }
 
-        }).success(function (datatarea){
+        }).success(function (datatarea){//se reciben los valores del post
           $scope.nuevatarea='';
-           if(datatarea.tarea=='false'){
+           if(datatarea.tarea=='false'){//si hay error en el servidor
              Materialize.toast($mensaje5, 2000);
             }
-          else{
-            console.log(datatarea.tarea.associated)
+          else{//si no hay error
+            
             datatarea.tarea["usuario"]=$scope.selectedusuariotask;
             $scope.list1.splice(0,0,datatarea.tarea);
             Materialize.toast($mensaje6, 2000);
@@ -136,32 +251,31 @@ $scope.creartareaconmensaje= function(){
 
 
 
-
-
+/**
+* @method :: creartarea 
+* @description ::  Funcion para mandar POST y crear una tarea
+*/
 $scope.creartarea= function(){
     
-  //$scope.list1.splice(0,0,{'title':$scope.nuevatarea,'drag':true});
+  //Para identificar el usuario seleccionado de Selectize
   for(var i=0;i<$scope.misparticipantes.length;i++){
     if($scope.misparticipantes[i].id==$scope.getselectedtask){
       $scope.selectedusuariotask= $scope.misparticipantes[i];
       break;
     }
   }
-  //console.log('aca');
-  //console.log($scope.selectedusuariotask);
-  
-  //$scope.json.push($scope.selectedusuariotask);
+ //se eliminan los valores indeseados
   delete $scope.selectedusuariotask.$$hashKey;
   delete $scope.selectedusuariotask.$order;
   delete $scope.selectedusuariotask.password;
-
+        //se ejecuta el post para crear la tarea
         $http({
         method: 'POST',
         url: '/tarea/create',
         headers: {'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': $scope.csrfToken 
         },
-        data: {
+        data: {//las entradas
           drag:true,
           tipo:'new',
           kanban: $scope.miproyecto.kanban[0].id,
@@ -172,7 +286,7 @@ $scope.creartarea= function(){
           element: ''
         }
 
-        }).success(function (datatarea){
+        }).success(function (datatarea){//se mandan mensajes para manejar el error
           $scope.nuevatarea='';
            if(datatarea.tarea=='false'){
              Materialize.toast($mensaje5, 2000);
@@ -185,19 +299,22 @@ $scope.creartarea= function(){
            }
           
         });
-
-
 }
-$scope.onDrop= function(evt,ui){
-  //console.log('he aqui el drop manda el post');
-    //console.log($scope.list1);
-    var obj = ui.draggable.scope().dndDragItem;
 
-    //console.log(obj);
-    //determinar cual cambio
+/**
+* @method :: onDrop 
+* @description ::  Funcion de la API DRAG&DROP que se encarga de manejar los eventos luego de dropear una tarea del kanban
+*/
+$scope.onDrop= function(evt,ui){
+
+    var obj = ui.draggable.scope().dndDragItem;//elemento que se tiene en el cursor
+
     var dragged=-1;
     var dropped=-1;
     //detrminar cual fue draggeado y cual dropped
+    //como largos tiene el valor de los tamaños de las tareas por columna
+    //se determina cual fue drageado (quien tiene menos elementos) y cual fue dropeado (quien aumento en 1 elemento)
+    //IFS DE CONSULTA  :
     if($scope.largos[0]!=$scope.list1.length){
       if($scope.largos[0]<$scope.list1.length){
         dragged=0;
@@ -230,11 +347,8 @@ $scope.onDrop= function(evt,ui){
         dropped=3;
       }
     }
-    //console.log(dropped);
-    //console.log(dragged);
-    //console.log($scope.tipokanban[dragged]);
-
-    //console.log(obj);
+    
+    //Se manda el post para actualizar el tipo
     $http({
         method: 'POST',
         url: '/tarea/updateTipo',
@@ -247,134 +361,33 @@ $scope.onDrop= function(evt,ui){
           id: obj.id
         }
 
-    }).success(function (datakanbanupdate){
+    }).success(function (datakanbanupdate){//bloque para manejar el error y limpiar filtros
       if(datakanbanupdate.tarea=='false'){
          Materialize.toast($mensaje5, 2000);
          $scope.filtro1='';
-         c
          $scope.filtro2='';
          $scope.filtro3='';
          $scope.filtro4='';
       }
       else{
-         //Materialize.toast($mensaje4, 2000);
+  
       }
     });
-
-
-    //es 1 post 
     
 }
-//aqui lelgan las tareas del kanban
-
-
-    $http.get('/csrfToken')
-      .success(function (token) {
-        $scope.csrfToken = token._csrf;
-    });
-
-$http({
-    url:'/user/findUserOnly/',
-    method: 'GET',
-    params: {id: $scope.userid}
-  }).then(function(result){
-    $scope.miusuario = result.data.user;
-  });
-
-
-$http({
-    url:'/user/getAllEmail/',
-    method: 'GET',
-    params: {id: id}
-  })
-
-  .then(function(result) {
-    $http({
-    url:'/project/getOne/',
-    method: 'GET',
-    params: {id: id}
-  }).then(function(getOne){
-    $scope.todos=result.data.arr;
-    //console.log(value);
-    $scope.usuarios = [];
-    $scope.miproyecto= getOne.data.project;
-    $scope.misparticipantes = getOne.data.project.participants;
-    //console.log($scope.miproyecto);
-
-    for(i in result.data.arr){
-      var bandera=0;
-      for(j in $scope.misparticipantes){
-        //console.log($scope.copy[j].email);
-        if(result.data.arr[i].email==$scope.misparticipantes[j].email){
-          bandera=1;
-          break;
-        }
-      }
-    if(bandera==0){
-      $scope.usuarios.push(result.data.arr[i]);
-    }
-    }
-
-  }).then(function(getMessages){
-    //console.log($scope.miproyecto.dialogos[0].id);
-
-    $http({
-        url:'/mensaje/getMessages/',
-        method: 'GET',
-        params: {id: $scope.miproyecto.id}
-      }).then(function(resultado){
-        //console.log(resultado.data.mensaje);
-        $scope.mensajes = resultado.data.mensaje;
-        console.log($scope.mensajes);
-        for(var i=0;i<$scope.mensajes.length;i++){
-          $scope.mensajes[i]["cssvalue"]= !$scope.booleanocss;
-         
-          $scope.booleanocss=!$scope.booleanocss;
-        }
-      });
-
-
-      }).then(function(getKanban){//Se obtiene el kanban
-          $http({
-              url:'/tarea/getTareas/',
-              method: 'GET',
-              params: {id:$scope.miproyecto.id}
-            }).then(function(datatarea){
-              console.log('tarea');
-              console.log(datatarea);
-              if(datatarea.data.tarea=='false'){
-               
-              }
-
-              for(var i=0;i<datatarea.data.tarea.length;i++){
-
-                if(datatarea.data.tarea[i].tipo==$scope.tipokanban[0]){
-                  $scope.list1.splice(0,0,datatarea.data.tarea[i]);
-                }
-                if(datatarea.data.tarea[i].tipo==$scope.tipokanban[1]){
-                  $scope.list2.splice(0,0,datatarea.data.tarea[i]);
-                }
-                if(datatarea.data.tarea[i].tipo==$scope.tipokanban[2]){
-                  $scope.list3.splice(0,0,datatarea.data.tarea[i]);
-                }
-                if(datatarea.data.tarea[i].tipo==$scope.tipokanban[3]){
-                  $scope.list4.splice(0,0,datatarea.data.tarea[i]);
-                }
-              }
-              $scope.largos[0]= $scope.list1.length;
-              $scope.largos[1]=$scope.list2.length;
-              $scope.largos[2]=$scope.list3.length;
-              $scope.largos[3]=$scope.list4.length;
-            });
-
-      });
-    });
 
 
 
 
 
-$scope.inputdatos = '';
+//contiene una lista de todos los id seleccionados en selectize
+$scope.inputdatos = ''; //variable de selectize, al seleccionar un valor se llena con el valor del usuario
+
+
+/**
+* @method :: sendData 
+* @description ::  Funcion para mandar POST que agrega usuarios a un proyecto
+*/
 $scope.sendData = function(){
 
 $http.defaults.withCredentials = true;
@@ -390,36 +403,33 @@ $http({
           id: $scope.project_id
         }
 
-    }).success(function (data) {      
-        for(var i=0;i<$scope.inputdatos.length;i++){
+    }).success(function (data) {  //en caso de ser un exito el POST 
+        //es necesario actualizar de parte del cliente el valor de usuarios para que estos no sean seleccionados en selectize
+        for(var i=0;i<$scope.inputdatos.length;i++){//primero para cada usuario ingresado al proyecto
           var bandera =0;
           var position=0;
 
-          for(var j=0;j<$scope.usuarios.length;j++){
+          for(var j=0;j<$scope.usuarios.length;j++){//Busca la posicion de cada usuario seleccionado por selectize en usuario 
             if($scope.inputdatos[i]==$scope.usuarios[j].id){
               bandera=1;
               position=j;
-            
               break;
             }
           }
-          if(bandera==1){
-            //console.log(position);
-            //console.log($scope.usuarios);
-            $scope.misparticipantes.splice(0,0,$scope.usuarios[position]);
-            $scope.usuarios.splice(position,1);
-
-
+          if(bandera==1){//si el elemento es encontrado se actualizan los arreglos
+            $scope.misparticipantes.splice(0,0,$scope.usuarios[position]);//participantes lo agrega en la primera posicion
+            $scope.usuarios.splice(position,1);//y agrega el elemento a usuarios
           }
         }
 
-        //aqui mensaje
+        //Se manda mensaje al usuario
         if($scope.inputdatos.length==1){
           Materialize.toast($mensaje1, 500);
         }
         else if($scope.inputdatos.length>=2){
           Materialize.toast($mensaje2, 2000);
         }
+        //Se actualizan y refrescan los valores de Selectize
         $scope.selectize.clear();
         $scope.selectize.refreshItems();
     });
@@ -427,129 +437,130 @@ $http({
 
 }
 
-//primero crear el mensaje
-//luego unir los dos mensajes
-//recibir como entrada el mensaje y guardarlo en dialogo
+//VARIABLES UTILIZADAS EN FUNCION SENDMESSAGE:
 $scope.respuesta; //debe ser quien guarda el modelo de mi respuesta
 $scope.tiposeleccionado;//indica cual es el tipo seleccionado del mensaje
 $scope.idmensajepadre;//corresponde al id del mensaje que se va a responder
 $scope.tiposeleccionado=''; //CAMBIAR
-
+//Se enumeran los tipos de dialogo
 $scope.tiposdialogo=[
 {id:0, title:'Duda o Alternativa'},
 {id:1, title:'Normas comunes'},
 {id:2, title:'Compromiso individual'},
 {id:3, title:'Acuerdos de Coordinación'},
 {id:4, title:'Desacuerdo o Brecha'}];
-
+/**
+* @method :: sendMessage 
+* @description ::  Funcion para mandar POST que crea un nuevo mensaje
+*/
 $scope.sendMessage = function(){
-  $scope.isDisabled=true;
-$http.defaults.withCredentials = true;
-$scope.position=[];
-for(var i=0;i<$scope.seleccionado.position.length;i++){
-  $scope.position.push($scope.seleccionado.position[i]);
-}
-//console.log($scope.seleccionado.numero_hijos);
-//nuevo scope position a ingresar
+  $scope.isDisabled=true;//variable para mostrar en html
+  $http.defaults.withCredentials = true;//para post de csrf
 
-$scope.position.push($scope.seleccionado.numero_hijos);
-console.log('el seleccionado es');
-console.log($scope.position);
-console.log($scope.seleccionado);
+  $scope.position=[];//arreglo position a enviar
+  for(var i=0;i<$scope.seleccionado.position.length;i++){//por cada valor de position del mensaje seleccionado a responder se copia
+    $scope.position.push($scope.seleccionado.position[i]);
+  }
 
-$http({
-        method: 'POST',
-        url: '/mensaje/create',
-        headers: {'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': $scope.csrfToken 
-        },
-        data: {
-          dialogos: $scope.miproyecto.dialogos[0].id,
-          usuario: $scope.miusuario.id,
-          project_id:$scope.miproyecto.id,
-          name:$scope.respuesta,
-          tipo:$scope.tiposeleccionado,
-          position:$scope.position,
-          root:false,
-          numero_hijos:0,
-          parent:$scope.seleccionado.id,
+  $scope.position.push($scope.seleccionado.numero_hijos);//ingresa el valor que le corresponde al nuevo mensaje en position
+
+
+  $http({//envia post
+          method: 'POST',
+          url: '/mensaje/create',
+          headers: {'Content-Type': 'application/json',
+                  'X-CSRF-TOKEN': $scope.csrfToken 
+          },
+          data: {//entradas
+            dialogos: $scope.miproyecto.dialogos[0].id,
+            usuario: $scope.miusuario.id,
+            project_id:$scope.miproyecto.id,
+            name:$scope.respuesta,
+            tipo:$scope.tiposeleccionado,
+            position:$scope.position,
+            root:false,
+            numero_hijos:0,
+            parent:$scope.seleccionado.id,
+
+          }
+
+      }).success(function (data) { //data retorna el mensaje recien creado en caso de que el post sea creado
+   
+        if(data.mensaje=='false'){
 
         }
+        else{ //si la primera operacion fue realizada con exito
+      
+          $scope.temporaldata=data.mensaje;//mensaje temporal
+          //Se manda el POST para unir el mensaje nuevo con el anterior
+          $http({
+          method: 'POST',
+          url: '/mensaje/unir',
+          headers: {'Content-Type': 'application/json',
+                  'X-CSRF-TOKEN': $scope.csrfToken 
+          },
+          data: {
+            id:$scope.seleccionado.id,
+            idunion:data.mensaje.id
+          }
 
-    }).success(function (data) {
-      //retorna el mensaje recien creado
+          }).success(function (datamensaje) {//se hizo correctamente la union
+            
+            //se actualiza el dato de numero de hijos para el mensaje seleccionado
+            for(var i=0;i<$scope.mensajes.length;i++){
+              if($scope.mensajes[i].id==datamensaje.mensaje.id){
+                $scope.mensajes[i].numero_hijos=datamensaje.mensaje.numero_hijos;
+                break;
+              }
 
-      if(data.mensaje=='false'){
-
-      }
-      else{ //else 1
-        //llamar a nuevo post
-        $scope.temporaldata=data.mensaje;
-        $http({
-        method: 'POST',
-        url: '/mensaje/unir',
-        headers: {'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': $scope.csrfToken 
-        },
-        data: {
-          id:$scope.seleccionado.id,
-          idunion:data.mensaje.id
-        }
-
-        }).success(function (datamensaje) {
-          //se hizo correctamente la union
-          //se actualiza el dato
-          for(var i=0;i<$scope.mensajes.length;i++){
-            if($scope.mensajes[i].id==datamensaje.mensaje.id){
-              $scope.mensajes[i].numero_hijos=datamensaje.mensaje.numero_hijos;
-              //console.log('nuevo numero de hijos'+$scope.mensajes[i].numero_hijos);
-              break;
             }
 
-          }
-          //console.log(datamensaje.mensaje);
-          //console.log(datamensaje.mensaje);
-          
-          $scope.temporaldata["usuario"]=$scope.miusuario;
-          $scope.mensajes.push($scope.temporaldata);
-          //buscar padremensaje y añadir hijos
+            $scope.temporaldata["usuario"]=$scope.miusuario;//se añade el objeto con los valores de usuario
+            $scope.mensajes.push($scope.temporaldata);//a los mensajes se le añade el nuevo elemento creado en la parte del cliente
+            //buscar padremensaje y añadir hijos
 
-          if(datamensaje.mensaje=='false'){
+            if(datamensaje.mensaje=='false'){
 
-          }
-          else{//ahora se agrega en el dialogo
-            console.log('ACA VA LO QUE VA A DIALOGO');
-            console.log($scope.miproyecto.dialogos[0].id);
-            console.log($scope.temporaldata);
-            $http({
-              method: 'POST',
-              url: '/dialogo/update_dialogo',
-              headers: {'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': $scope.csrfToken 
-              },
-              data: {
-                id:$scope.miproyecto.dialogos[0].id,//corresponde al id del dialogo a buscar
-                mensaje:$scope.temporaldata,
+            }
+            else{//ahora se agrega el mensaje creado en el dialogo
+              //Manda el POST para añadirlo al dialogo
+              $http({
+                method: 'POST',
+                url: '/dialogo/update_dialogo',
+                headers: {'Content-Type': 'application/json',
+                  'X-CSRF-TOKEN': $scope.csrfToken 
+                },
+                data: {
+                  id:$scope.miproyecto.dialogos[0].id,//corresponde al id del dialogo a buscar
+                  mensaje:$scope.temporaldata,
 
-              }
-            }).success(function (datadialogoupdate) {
-                //console.log('termino');
-                $scope.respuesta='';
+                }
+              }).success(function (datadialogoupdate) {
+                 
+                  $scope.respuesta='';
 
-                location.reload(true);
-                });
-          }//fin else 2
-        });
+                  location.reload(true);
+                  });
+            }//fin else 2
+          });
 
-      
-      }//fin else 1
-    });
+        
+        }//fin else 1
+      });
 
 }
+/**
+* @method :: seleccionar 
+* @description ::  Le da el valor de seleccionado a un elemento
+*/
 $scope.seleccionar = function(value){
 $scope.seleccionado =value;
 }
 
+/** SELECTIZE**/
+/**
+CONFIGURACIONES DE SELECTIZE
+*/
 $scope.myConfig = {
   create: false,
   persist:false,
@@ -574,7 +585,7 @@ $scope.myConfig = {
 
         return false;
     },
-render: {
+  render: {
         item: function(item, escape) {
             return '<div>' +
                 (item.firstname ? '<span class="name">' + escape(item.firstname+' , ') + '</span>' : '') +
@@ -592,19 +603,20 @@ render: {
     },
 
 
-  onInitialize: function(selectize){
-    // receives the selectize object as an argument
-    //console.log('Initialized',selectize);
+  //Funciones para actualizar la lista
+  onInitialize: function(selectize){//Al iniciar
     $scope.selectize=selectize;
   },
-  onItemRemove: function(value){
+  onItemRemove: function(value){//Al remover un elemento
     $scope.usuarios.splice(0,0,value);
     $scope.selectize.refreshItems();
   }
 };
 
 
-
+/**
+CONFIGURACIONES DE SELECTIZE PARA TAREA DEL KANBAN 
+*/
 $scope.myConfig2 = {
   create: false,
   persist:false,
@@ -630,7 +642,7 @@ $scope.myConfig2 = {
 
         return false;
     },
-render: {
+  render: {
         item: function(item, escape) {
             return '<div>' +
                 (item.firstname ? '<span class="name">' + escape(item.firstname+' , ') + '</span>' : '') +
@@ -646,9 +658,9 @@ render: {
             '</div>';
         }
     },
+
+  //Funciones para actualizar la lista
   onInitialize: function(selectize){
-    // receives the selectize object as an argument
-    //console.log('Initialized',selectize);
     $scope.selectize=selectize;
   },
   onItemRemove: function(value){
@@ -659,7 +671,7 @@ render: {
   },
   onItemAdd: function(value,item){
     $scope.getselectedtask=value;
-    console.log($scope.getselectedtask);
+
   },
   onDropdownOpen: function(dropdown){
     $scope.selectize.clear();
@@ -670,6 +682,9 @@ render: {
 
 
 
+/**
+CONFIGURACIONES DE SELECTIZE PARA ELEMENTOS DEL DIALOGO 
+*/
 
 $scope.myConfig3 = {
   create: false,
@@ -680,10 +695,8 @@ $scope.myConfig3 = {
   delimiter: '|',
   placeholder: 'Tipo de elemento del diálogo',
   searchField: ['title'],
-
+  //Funciones de Actualizacion y de eventos de SELECTIZE
   onInitialize: function(selectize){
-    // receives the selectize object as an argument
-    //console.log('Initialized',selectize);
     $scope.selectize=selectize;
   },
   onDropdownOpen: function(dropdown){
@@ -703,35 +716,36 @@ $scope.myConfig3 = {
 
   }
 
-var currentTime = new Date();
-$scope.currentTime = currentTime;
-$scope.month = [ 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre' ];
-$scope.monthShort = [ 'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic' ];
-$scope.weekdaysFull = [ 'Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado' ];
-$scope.weekdaysLetter = [ 'D', 'L', 'M', 'X', 'J', 'V', 'S' ];
-$scope.disable = [false, 1, 7];
-$scope.today = 'Hoy';
-$scope.clear = 'Limpiar';
-$scope.close = 'Cerrar';
-var days = 365;
-$scope.minDate = (new Date($scope.currentTime.getTime() - ( 1000 * 60 * 60 *24 * days ))).toISOString();
-$scope.maxDate = (new Date($scope.currentTime.getTime() + ( 1000 * 60 * 60 *24 * days ))).toISOString();
-$scope.onStart = function () {
-    
-};
-$scope.onRender = function () {
-    
-};
-$scope.onOpen = function () {
-    
-};
-$scope.onClose = function () {
-    
-};
-$scope.onSet = function () {
-    
-};
-$scope.onStop = function () {
-    
-};
+  //VALORES DE CONFIGURACION DE CALENDAR
+  var currentTime = new Date();
+  $scope.currentTime = currentTime;
+  $scope.month = [ 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre' ];
+  $scope.monthShort = [ 'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic' ];
+  $scope.weekdaysFull = [ 'Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado' ];
+  $scope.weekdaysLetter = [ 'D', 'L', 'M', 'X', 'J', 'V', 'S' ];
+  $scope.disable = [false, 1, 7];
+  $scope.today = 'Hoy';
+  $scope.clear = 'Limpiar';
+  $scope.close = 'Cerrar';
+  var days = 365;
+  $scope.minDate = (new Date($scope.currentTime.getTime() - ( 1000 * 60 * 60 *24 * days ))).toISOString();
+  $scope.maxDate = (new Date($scope.currentTime.getTime() + ( 1000 * 60 * 60 *24 * days ))).toISOString();
+  $scope.onStart = function () {
+      
+  };
+  $scope.onRender = function () {
+      
+  };
+  $scope.onOpen = function () {
+      
+  };
+  $scope.onClose = function () {
+      
+  };
+  $scope.onSet = function () {
+      
+  };
+  $scope.onStop = function () {
+      
+  };
 }]);
