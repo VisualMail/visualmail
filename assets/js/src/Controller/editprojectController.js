@@ -538,7 +538,7 @@ $scope.sendMessage = function(){
                 data: {
                   id:$scope.miproyecto.dialogos[0].id,//corresponde al id del dialogo a buscar
                   mensaje:$scope.temporaldata,
-
+                  
                 }
               }).success(function (datadialogoupdate) {
                  

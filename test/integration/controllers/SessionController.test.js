@@ -12,8 +12,6 @@ describe('SessionController', function() {
     });
 
 
-
-
  });
 
   describe('#logout()', function() {

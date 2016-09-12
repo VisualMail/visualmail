@@ -109,6 +109,7 @@
             session:0,
             numero_hijos:0,
             session_actual:0,
+            orden_message:[''+data_mensaje.mensaje.id],
             ultimo_session_email:$scope.jsonuser.email, //el ultimo usuario que realizo un mensaje
             usuario: $scope.jsonuser,//el objeto usuario
             idmensaje:data_mensaje.mensaje.id, //el id del mensaje que se realizo

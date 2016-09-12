@@ -45,16 +45,79 @@
               d3.json("http://localhost:1337/project/getDialogos/<%=project.id%>", function(error, root){    
                  var nodes = cluster.nodes(root); 
                   var offset = 40;
-       
-                  create_offset(nodes[0]);
+              var encontrado=0;
+              var mensajeultimodibujado =nodes[0].idmensaje; //el ultimo email de sesion se actualiza
+              var usuarioultimodibujado=nodes[0].usuario.id; // guarda id del mensaje ultimo respondido
+              for(var i=0;i<nodes[0].orden_message.length;i++){
+                busco(nodes[0],nodes[0].orden_message[i]);
+                encontrado=0;
+              }
+                
+
+
+              function busco(node, id){
+                if(encontrado===0){
+                  if(node.children){
+                    for(var i = 0; i<node.children.length;i++){
+                      //aca se hacen las consultas
+                      if(node.children[i].idmensaje===id){
+                        //encontrado
+                        console.log('encontrado');
+                        console.log(node.children[i].idmensaje);
+                        encontrado=1;
+                        if(node.children[i].usuario.id===usuarioultimodibujado){
+                          if(node.children[i].parent.idmensaje===mensajeultimodibujado){
+                                  offset += 40; //cambiar esto para cambiar el grado de cada nodo    
+                                  node.children[i].y = offset;
+                                  usuarioultimodibujado=node.children[i].usuario.id;
+                                  mensajeultimodibujado=node.children[i].idmensaje;
+                                }
+                                else{
+                               
+                                    node.children[i].y = offset;
+                                   usuarioultimodibujado=node.children[i].usuario.id;
+                                    mensajeultimodibujado=node.children[i].idmensaje;
+                                  
+                         
+                                }
+                        }//primer if de offset
+                else{
+                                  offset += 40; //cambiar esto para cambiar el grado de cada nodo
+                                  node.children[i].y = offset;
+                                  usuarioultimodibujado=node.children[i].usuario.id;
+                                  mensajeultimodibujado=node.children[i].idmensaje;
+                            }
+
+
+                        return;
+                      }
+                    }
+
+
+                  for(var i = 0; i<node.children.length;i++){
+                    if(node.children[i].children && encontrado===0 ){
+                      busco(node.children[i],id);
+                    }
+                  } 
+                  }
+                  else{
+                    //nada
+                  }
+
+                }
+                else{
+                  return;
+                }
+              }
+
+                  //create_offset(nodes[0]);
                 //  recorre(nodes[0]);
       
                       /**
                       * @method :: create_offset 
                       * @description :: Funcion que muestra los nodos en columnas(se cambia su posicion)
                       */
-                      var mensajeultimodibujado =nodes[0].idmensaje; //el ultimo email de sesion se actualiza
-                      var usuarioultimodibujado=nodes[0].usuario.id; // guarda id del mensaje ultimo respondido
+           
                 
                    function create_offset(node){
                    
@@ -65,9 +128,7 @@
                        
                           for(var i = 0; i<node.children.length;i++){  
                          
-                            
-                           
-
+            
                             if(node.children[i].usuario.id===usuarioultimodibujado){
                                 if(node.children[i].parent.idmensaje===mensajeultimodibujado){
                                   offset += 40; //cambiar esto para cambiar el grado de cada nodo    
@@ -98,10 +159,10 @@
                                   usuarioultimodibujado=node.children[i].usuario.id;
                                   mensajeultimodibujado=node.children[i].idmensaje;
                             }
-                             console.log(node.children[i].name + " x: "+node.children[i].x+" y: "+node.children[i].y);
-                             console.log(mensajeultimodibujado);
-                             console.log(usuarioultimodibujado);
-                             console.log("salto");
+                             //console.log(node.children[i].name + " x: "+node.children[i].x+" y: "+node.children[i].y);
+                             //console.log(mensajeultimodibujado);
+                             //console.log(usuarioultimodibujado);
+                             //console.log("salto");
                           }
 
                           //Chequea si cada nodo tiene un hijo y lo revisa recursivamente
