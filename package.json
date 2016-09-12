@@ -37,5 +37,9 @@
     "url": "git://github.com/matias/VisualMail.git"
   },
   "author": "matias",
-  "license": ""
+  "license": "",
+  "devDependencies": {
+    "mocha": "^3.0.2",
+    "supertest": "^2.0.0"
+  }
 }

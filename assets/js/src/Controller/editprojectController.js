@@ -242,6 +242,11 @@ $scope.creartareaconmensaje= function(){
             datatarea.tarea["usuario"]=$scope.selectedusuariotask;
             $scope.list1.splice(0,0,datatarea.tarea);
             Materialize.toast($mensaje6, 2000);
+            $scope.selectedusuariotask={};
+            $scope.selectize.refreshItems();
+            $scope.selectize.clear();
+            associated=false;
+
            }
           
         });
@@ -662,6 +667,7 @@ $scope.myConfig2 = {
   //Funciones para actualizar la lista
   onInitialize: function(selectize){
     $scope.selectize=selectize;
+
   },
   onItemRemove: function(value){
     $scope.misparticipantes.splice(0,0,value);
@@ -674,6 +680,8 @@ $scope.myConfig2 = {
 
   },
   onDropdownOpen: function(dropdown){
+   $scope.selectedusuariotask={};
+    $scope.getselectedtask='';
     $scope.selectize.clear();
     $scope.selectize.refreshItems();
 

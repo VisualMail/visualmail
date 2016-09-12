@@ -113,6 +113,7 @@
             usuario: $scope.jsonuser,//el objeto usuario
             idmensaje:data_mensaje.mensaje.id, //el id del mensaje que se realizo
             parent_ultimo_respondido:data_mensaje.mensaje.id,//el padre id del mensaje (es el mismo para el primer caso)
+            tipo:'Mensaje inicial'
           }
 
       }).success(function (data_dialogo) {

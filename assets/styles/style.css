@@ -171,6 +171,10 @@ footer.page-footer {
 
 .textito{
   word-wrap: break-word;
+
+}
+.boldeado{
+   font-weight: bold;
 }
 .conheight{
   text-overflow-y:scroll;
@@ -381,7 +385,7 @@ padding-right: 10px;
 .tooltip {
 position: absolute; 
   width: 210px;  
-  height: 80px;   
+  height: 100px;   
   padding: 2px; 
   font: 10px sans-serif;  
 background: #8BC34A;

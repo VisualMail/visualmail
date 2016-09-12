@@ -44,24 +44,64 @@
               //se carga el elemento de la vista
               d3.json("http://localhost:1337/project/getDialogos/<%=project.id%>", function(error, root){    
                  var nodes = cluster.nodes(root); 
-                  var offset = 50;
+                  var offset = 40;
+       
                   create_offset(nodes[0]);
-              
-    
+                //  recorre(nodes[0]);
+      
                       /**
                       * @method :: create_offset 
                       * @description :: Funcion que muestra los nodos en columnas(se cambia su posicion)
                       */
+                      var mensajeultimodibujado =nodes[0].idmensaje; //el ultimo email de sesion se actualiza
+                      var usuarioultimodibujado=nodes[0].usuario.id; // guarda id del mensaje ultimo respondido
+                
                    function create_offset(node){
                    
-                 
+                        //console.log(node.name)
                         if(node.children){
-
+                          //console.log(node.name);
                          //modifica los valores y de cada hijo incrementando el offset cada tiempo
                        
-                          for(var i = 0; i<node.children.length;i++){                  
-                            node.children[i].y = node.children[i].depth + offset;
-                            offset += 40; //cambiar esto para cambiar el grado de cada nodo
+                          for(var i = 0; i<node.children.length;i++){  
+                         
+                            
+                           
+
+                            if(node.children[i].usuario.id===usuarioultimodibujado){
+                                if(node.children[i].parent.idmensaje===mensajeultimodibujado){
+                                  offset += 40; //cambiar esto para cambiar el grado de cada nodo    
+                                  node.children[i].y = offset;
+                                  usuarioultimodibujado=node.children[i].usuario.id;
+                                  mensajeultimodibujado=node.children[i].idmensaje;
+                                }
+                                else{
+                                  if(node.y===offset && i===0){
+                                  offset += 40; //cambiar esto para cambiar el grado de cada nodo    
+                                  node.children[i].y = offset;
+                                  usuarioultimodibujado=node.children[i].usuario.id;
+                                  mensajeultimodibujado=node.children[i].idmensaje; 
+                                  }
+                                  else{
+                                    node.children[i].y = offset;
+                                   usuarioultimodibujado=node.children[i].usuario.id;
+                                    mensajeultimodibujado=node.children[i].idmensaje;
+                                  }
+                         
+                                }
+
+                               
+                            }
+                            else{
+                                  offset += 40; //cambiar esto para cambiar el grado de cada nodo
+                                  node.children[i].y = offset;
+                                  usuarioultimodibujado=node.children[i].usuario.id;
+                                  mensajeultimodibujado=node.children[i].idmensaje;
+                            }
+                             console.log(node.children[i].name + " x: "+node.children[i].x+" y: "+node.children[i].y);
+                             console.log(mensajeultimodibujado);
+                             console.log(usuarioultimodibujado);
+                             console.log("salto");
                           }
 
                           //Chequea si cada nodo tiene un hijo y lo revisa recursivamente
@@ -72,6 +112,7 @@
                           }    
                         }
                         else{
+                          //console.log(node.name);
                         }
                 }//FIN FUNCTION
 
@@ -93,7 +134,7 @@
                            .duration(200)
                            .style("opacity", .9);
                       tooltip.html(
-                        " <div class='row textito '>"+d.tipo+"<br>"+d.name+"</div>"
+                        " <div class='row textito '>"+"<span class='boldeado'>"+d.tipo+"</span><br>"+d.name+"</div>"
                         )
                            .style("left", (d3.event.pageX - 50) + "px")
                            .style("top", (d3.event.pageY - 90) + "px");
@@ -118,7 +159,7 @@
                     .attr("x", 0)       
                     .attr("y", -15)       
                     .style("text-anchor", function(d) { return d.children ? "end" : "start"; })      
-                    .text( function(d){ console.log("asasa"+d.y +" asasas "+d.x+" "+d.name);return d.usuario.initials;});                 
+                    .text( function(d){return d.usuario.initials;});                 
 
               }); 
 
