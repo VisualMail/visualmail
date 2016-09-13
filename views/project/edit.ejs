@@ -48,22 +48,25 @@
               var encontrado=0;
               var mensajeultimodibujado =nodes[0].idmensaje; //el ultimo email de sesion se actualiza
               var usuarioultimodibujado=nodes[0].usuario.id; // guarda id del mensaje ultimo respondido
+              nodes[0].dibujado=true;
               for(var i=0;i<nodes[0].orden_message.length;i++){
                 busco(nodes[0],nodes[0].orden_message[i]);
                 encontrado=0;
               }
                 
 
-
+                 /**
+                      * @method :: create_offset 
+                      * @description :: Funcion que muestra los nodos en columnas(se cambia su posicion) 
+                      de acuerdo a la sesion cronologica del usuario
+                      */
+           
               function busco(node, id){
                 if(encontrado===0){
                   if(node.children){
                     for(var i = 0; i<node.children.length;i++){
                       //aca se hacen las consultas
                       if(node.children[i].idmensaje===id){
-                        //encontrado
-                        console.log('encontrado');
-                        console.log(node.children[i].idmensaje);
                         encontrado=1;
                         if(node.children[i].usuario.id===usuarioultimodibujado){
                           if(node.children[i].parent.idmensaje===mensajeultimodibujado){
@@ -71,14 +74,15 @@
                                   node.children[i].y = offset;
                                   usuarioultimodibujado=node.children[i].usuario.id;
                                   mensajeultimodibujado=node.children[i].idmensaje;
+                                  node.children[i].dibujado=true;
                                 }
                                 else{
                                
                                     node.children[i].y = offset;
-                                   usuarioultimodibujado=node.children[i].usuario.id;
+                                    usuarioultimodibujado=node.children[i].usuario.id;
                                     mensajeultimodibujado=node.children[i].idmensaje;
                                   
-                         
+                           
                                 }
                         }//primer if de offset
                 else{
@@ -86,14 +90,15 @@
                                   node.children[i].y = offset;
                                   usuarioultimodibujado=node.children[i].usuario.id;
                                   mensajeultimodibujado=node.children[i].idmensaje;
+                                   node.children[i].dibujado=true;
                             }
 
 
                         return;
-                      }
+                      }//fin if encontrado
                     }
 
-
+                  //Chequea si cada nodo tiene un hijo y lo revisa recursivamente
                   for(var i = 0; i<node.children.length;i++){
                     if(node.children[i].children && encontrado===0 ){
                       busco(node.children[i],id);
@@ -110,74 +115,9 @@
                 }
               }
 
-                  //create_offset(nodes[0]);
-                //  recorre(nodes[0]);
-      
-                      /**
-                      * @method :: create_offset 
-                      * @description :: Funcion que muestra los nodos en columnas(se cambia su posicion)
-                      */
-           
-                
-                   function create_offset(node){
-                   
-                        //console.log(node.name)
-                        if(node.children){
-                          //console.log(node.name);
-                         //modifica los valores y de cada hijo incrementando el offset cada tiempo
-                       
-                          for(var i = 0; i<node.children.length;i++){  
-                         
+
             
-                            if(node.children[i].usuario.id===usuarioultimodibujado){
-                                if(node.children[i].parent.idmensaje===mensajeultimodibujado){
-                                  offset += 40; //cambiar esto para cambiar el grado de cada nodo    
-                                  node.children[i].y = offset;
-                                  usuarioultimodibujado=node.children[i].usuario.id;
-                                  mensajeultimodibujado=node.children[i].idmensaje;
-                                }
-                                else{
-                                  if(node.y===offset && i===0){
-                                  offset += 40; //cambiar esto para cambiar el grado de cada nodo    
-                                  node.children[i].y = offset;
-                                  usuarioultimodibujado=node.children[i].usuario.id;
-                                  mensajeultimodibujado=node.children[i].idmensaje; 
-                                  }
-                                  else{
-                                    node.children[i].y = offset;
-                                   usuarioultimodibujado=node.children[i].usuario.id;
-                                    mensajeultimodibujado=node.children[i].idmensaje;
-                                  }
-                         
-                                }
-
-                               
-                            }
-                            else{
-                                  offset += 40; //cambiar esto para cambiar el grado de cada nodo
-                                  node.children[i].y = offset;
-                                  usuarioultimodibujado=node.children[i].usuario.id;
-                                  mensajeultimodibujado=node.children[i].idmensaje;
-                            }
-                             //console.log(node.children[i].name + " x: "+node.children[i].x+" y: "+node.children[i].y);
-                             //console.log(mensajeultimodibujado);
-                             //console.log(usuarioultimodibujado);
-                             //console.log("salto");
-                          }
-
-                          //Chequea si cada nodo tiene un hijo y lo revisa recursivamente
-                          for(var i = 0; i<node.children.length;i++){
-                            if(node.children[i].children){
-                              create_offset(node.children[i]);
-                            }
-                          }    
-                        }
-                        else{
-                          //console.log(node.name);
-                        }
-                }//FIN FUNCTION
-
-                //Continua D3
+                //Continua d3
                  var links = cluster.links(nodes);    
                  var link = svg.selectAll(".link")       
                     .data(links)       
@@ -205,14 +145,32 @@
                            .duration(500)
                            .style("opacity", 0);
                   });
-                //se añade el circulo a los nodos
-                        node.append("line").attr("x1", 0)
-                                   .attr("y1", -600)
-                                   .attr("x2", 0)
-                                   .attr("y2", 600)   
-                                   .attr("stroke-width", 1)
-                                   .attr("style", "stroke: #ddd; fill:none;stroke-dasharray: 10 5")
-                                    .attr("stroke", "#ddd");
+                //se añade la linea
+                node.append("line")
+                .attr("x1", 0)
+               
+                .attr("x2", 0)
+                .attr("y2", 600)   
+                .attr("stroke-width", 1)
+                .attr("style", "stroke: #ddd; fill:none;stroke-dasharray: 10 5")
+                .attr("stroke", "#ddd");
+                //solo actualizo los que estan mas arriba, codigo solo para desarrollo puede servir solo para recorrer los de arriba
+                        node.append("line").each(function(d) {
+                          var header = d3.select(this);
+                          d3.keys(d).forEach(function(key) {
+                                if (key === "dibujado"){
+                                   header.attr("y1", -0);
+                                   header.attr("stroke-width", 1);
+                                   header.attr("style", "stroke: #ddd; fill:none;stroke-dasharray: 10 5")
+                                   header.attr("stroke", "#ddd");
+                                }
+                                    
+                            });
+                        });
+              
+
+            //Se añade el circulo
+
                     node.append("circle")       
                     .attr("r", 10);  
                     //se añaden las inciiales a cada elemento
