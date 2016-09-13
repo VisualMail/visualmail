@@ -25,7 +25,7 @@ schema:true,autoCreatedAt: true,autoUpdatedAt: true,
       type:'json'
     },
     idmensaje:{type:'string'}, //guarda el id del mensaje inicial
-    
+    orden_message:{type:'array'},//guarda en orden lso mensajes segun su id
     session_actual:{type:'integer'}, //contiene el valor de sesion actual
     ultimo_session_email:{type:'string'}, //contiene quien realizo la ultima respuesta
     parent_ultimo_respondido:{type:'string'} //contiene el id del ultimo mensaje respondido

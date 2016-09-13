@@ -20,6 +20,171 @@
     selectYears: 15 // Creates a dropdown of 15 years to control year
   });
 
+  /**
+  * @method :: FuncionD3 
+  * @description ::  Muestra los elementos del dialogo en D3
+  */
+  FuncionD3 = function(){
+     var width = 1200; //Largo del lienzo
+              var height = 600; //altura del lienzo
+              //Configuracion de d3
+              var cluster = d3.layout.cluster()    
+                 .size([height, width-200]); 
+              var diagonal = d3.svg.diagonal()    
+                 .projection (function(d) { return [d.y, d.x];}); 
+              var svg = d3.select("#dialogo").append("svg")   //en el id del div= dialogo se muestra el arbol
+                 .attr("width",width)    
+                 .attr("height",height)    
+                 .append("g")    
+                 .attr("transform","translate(90,30)"); 
+          var tooltip = d3.select("body").append("div") //para el tooptip de un nodo
+              .attr("class", "tooltip")
+              .style("opacity", 0);
+
+              //se carga el elemento de la vista
+              //http://visualmail.herokuapp.com/
+              //http://localhost:1337
+              d3.json("http://visualmail.herokuapp.com/project/getDialogos/<%=project.id%>", function(error, root){    
+                 var nodes = cluster.nodes(root); 
+                  var offset = 40;
+              var encontrado=0;
+              var mensajeultimodibujado =nodes[0].idmensaje; //el ultimo email de sesion se actualiza
+              var usuarioultimodibujado=nodes[0].usuario.id; // guarda id del mensaje ultimo respondido
+              nodes[0].dibujado=true;
+              for(var i=0;i<nodes[0].orden_message.length;i++){
+                busco(nodes[0],nodes[0].orden_message[i]);
+                encontrado=0;
+              }
+                
+
+                 /**
+                      * @method :: create_offset 
+                      * @description :: Funcion que muestra los nodos en columnas(se cambia su posicion) 
+                      de acuerdo a la sesion cronologica del usuario
+                      */
+           
+              function busco(node, id){
+                if(encontrado===0){
+                  if(node.children){
+                    for(var i = 0; i<node.children.length;i++){
+                      //aca se hacen las consultas
+                      if(node.children[i].idmensaje===id){
+                        encontrado=1;
+                        if(node.children[i].usuario.id===usuarioultimodibujado){
+                          if(node.children[i].parent.idmensaje===mensajeultimodibujado){
+                                  offset += 40; //cambiar esto para cambiar el grado de cada nodo    
+                                  node.children[i].y = offset;
+                                  usuarioultimodibujado=node.children[i].usuario.id;
+                                  mensajeultimodibujado=node.children[i].idmensaje;
+                                  node.children[i].dibujado=true;
+                                }
+                                else{
+                               
+                                    node.children[i].y = offset;
+                                    usuarioultimodibujado=node.children[i].usuario.id;
+                                    mensajeultimodibujado=node.children[i].idmensaje;
+                                  
+                           
+                                }
+                        }//primer if de offset
+                else{
+                                  offset += 40; //cambiar esto para cambiar el grado de cada nodo
+                                  node.children[i].y = offset;
+                                  usuarioultimodibujado=node.children[i].usuario.id;
+                                  mensajeultimodibujado=node.children[i].idmensaje;
+                                   node.children[i].dibujado=true;
+                            }
+
+
+                        return;
+                      }//fin if encontrado
+                    }
+
+                  //Chequea si cada nodo tiene un hijo y lo revisa recursivamente
+                  for(var i = 0; i<node.children.length;i++){
+                    if(node.children[i].children && encontrado===0 ){
+                      busco(node.children[i],id);
+                    }
+                  } 
+                  }
+                  else{
+                    //nada
+                  }
+
+                }
+                else{
+                  return;
+                }
+              }
+
+
+            
+                //Continua d3
+                 var links = cluster.links(nodes);    
+                 var link = svg.selectAll(".link")       
+                    .data(links)       
+                    .enter().append("path")       
+                    .attr("class","link")       
+                    .attr("d", diagonal);
+                //g = global , se actualizan elementos de los nodos y funciones(onmouseover)
+                 var node = svg.selectAll(".node")       
+                    .data(nodes)       
+                    .enter().append("g")       
+                    .attr("class","node")       
+                    .attr("transform", function(d) { return "translate(" + (d.y) + "," + d.x + ")"; })
+                    .on("mouseover", function(d) {
+                      tooltip.transition()
+                           .duration(200)
+                           .style("opacity", .9);
+                      tooltip.html(
+                        " <div class='row textito '>"+"<span class='boldeado'>"+d.tipo+"</span><br>"+d.name+"</div>"
+                        )
+                           .style("left", (d3.event.pageX - 50) + "px")
+                           .style("top", (d3.event.pageY - 90) + "px");
+                  })
+                  .on("mouseout", function(d) {
+                      tooltip.transition()
+                           .duration(500)
+                           .style("opacity", 0);
+                  });
+                //se añade la linea
+                node.append("line")
+                .attr("x1", 0)
+               
+                .attr("x2", 0)
+                .attr("y2", 600)   
+                .attr("stroke-width", 1)
+                .attr("style", "stroke: #ddd; fill:none;stroke-dasharray: 10 5")
+                .attr("stroke", "#ddd");
+                //solo actualizo los que estan mas arriba, codigo solo para desarrollo puede servir solo para recorrer los de arriba
+                        node.append("line").each(function(d) {
+                          var header = d3.select(this);
+                          d3.keys(d).forEach(function(key) {
+                                if (key === "dibujado"){
+                                   header.attr("y1", -0);
+                                   header.attr("stroke-width", 1);
+                                   header.attr("style", "stroke: #ddd; fill:none;stroke-dasharray: 10 5")
+                                   header.attr("stroke", "#ddd");
+                                }
+                                    
+                            });
+                        });
+              
+
+            //Se añade el circulo
+
+                    node.append("circle")       
+                    .attr("r", 10);  
+                    //se añaden las inciiales a cada elemento
+                 node.append("text")       
+                    .attr("x", 0)       
+                    .attr("y", -15)       
+                    .style("text-anchor", function(d) { return d.children ? "end" : "start"; })      
+                    .text( function(d){return d.usuario.initials;});                 
+
+              }); 
+
+}
 </script>
 
 
@@ -111,113 +276,11 @@
 
     <div id="dialogo" class="col s12 scrolled">
 
-      
+        <!-- EN ESTE DIV VA EL VALOR DE D3.JS -->
 
             <script type="text/javascript"> 
-
-            var width = 1200; 
-            var height = 600; 
-            var cluster = d3.layout.cluster()    
-               .size([height, width-200]); 
-            var diagonal = d3.svg.diagonal()    
-               .projection (function(d) { return [d.y, d.x];}); 
-            var svg = d3.select("#dialogo").append("svg")    
-               .attr("width",width)    
-               .attr("height",height)    
-               .append("g")    
-               .attr("transform","translate(90,30)"); 
-var tooltip = d3.select("body").append("div")
-    .attr("class", "tooltip")
-    .style("opacity", 0);
-
-       			/*localhost:1337*/
-            d3.json("http://visualmail.herokuapp.com/project/getDialogos/<%=project.id%>", function(error, root){    
-               var nodes = cluster.nodes(root); 
-                var offset = 50;
-                create_offset(nodes[0]);
-            
-  
-
-                 function create_offset(node){
-                 
-                  console.log(nodes[0]);
-                if(node.children){
-                 
-
-                  //modify the y values of each child. increasing the offset each time
-                 
-                    console.log("sesion"+node.session+" y : "+node.name + "depth : "+node.depth);
-                  for(var i = 0; i<node.children.length;i++){
-                    console.log("sesion"+node.children[i].session+" y : "+node.children[i].name + "depth : "+node.children[i].depth);
-                     console.log("si entre");
-                    node.children[i].y = node.children[i].depth + offset;
-                    console.log(node.children[i].y);
-                    offset += 40; //change this to change the degree of offset
-                  }
-
-                  //check each child to see if it has it's own children. If so, decend the tree recursively
-                  for(var i = 0; i<node.children.length;i++){
-                    if(node.children[i].children){
-                      create_offset(node.children[i]);
-                    }
-                  }    
-                }
-                else{
-                  console.log("else")
-                   console.log("sesion"+node.session+" y : "+node.name);
-                }
-              }
-               var links = cluster.links(nodes);    
-               var link = svg.selectAll(".link")       
-                  .data(links)       
-                  .enter().append("path")       
-                  .attr("class","link")       
-                  .attr("d", diagonal);
-
-
-               var node = svg.selectAll(".node")       
-                  .data(nodes)       
-                  .enter().append("g")       
-                  .attr("class","node")       
-                  .attr("transform", function(d) { return "translate(" + (d.y) + "," + d.x + ")"; })
-                  .on("mouseover", function(d) {
-                    tooltip.transition()
-                         .duration(200)
-                         .style("opacity", .9);
-                    tooltip.html(
-                      " <div class='row textito '>"+d.tipo+"<br>"+d.name+"</div>"
-                      )
-                         .style("left", (d3.event.pageX - 50) + "px")
-                         .style("top", (d3.event.pageY - 90) + "px");
-                })
-                .on("mouseout", function(d) {
-                    tooltip.transition()
-                         .duration(500)
-                         .style("opacity", 0);
-                });
-              
-                      node.append("line").attr("x1", 0)
-                                 .attr("y1", -600)
-                                 .attr("x2", 0)
-                                 .attr("y2", 600)   
-                                 .attr("stroke-width", 1)
-                                 .attr("style", "stroke: #ddd; fill:none;stroke-dasharray: 10 5")
-                                  .attr("stroke", "#ddd");
-                  node.append("circle")       
-                  .attr("r", 10);  
-
-               node.append("text")       
-                  .attr("x", 0)       
-                  .attr("y", -15)       
-                  .style("text-anchor", function(d) { return d.children ? "end" : "start"; })      
-                  .text( function(d){ console.log("asasa"+d.y +" asasas "+d.x+" "+d.name);return d.usuario.initials;});
-            
-                
-
-        
-                       
-
-            }); 
+              FuncionD3();
+         
             </script>
 
 
@@ -349,25 +412,6 @@ var tooltip = d3.select("body").append("div")
   </div>
   </div>
   </div>
-
-<!--
-  aca va el seleccionado {{seleccionado}}
-    <form novalidate class="row">
-          para crear mensaje de respuesta
-          <input type="text" name="name" ng-model="respuesta">
-          <label for="name"> Nombre del dialogo</label>
-          <input type="text" name="padre" ng-model="idmensajepadre" >
-          <label for="padre"> id del padre</label>
-          <input type="hidden" name="tipo" value="duda" ng-model="tiposeleccionado">
-          
-          <button  ng-click="sendMessage()" type="submit">
-            Enviar 
-          </button>
-        </form>
--->
-
-
-
 
 
 <!-- Modal Structure -->

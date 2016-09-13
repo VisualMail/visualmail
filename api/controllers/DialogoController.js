@@ -55,7 +55,7 @@ module.exports = {
 				console.log('no encontrado id');
 			}
 			else{ //en caso de no haber error entonces se updatea el dialogo
-				
+				dialog.orden_message.push(mensaje.id);
 				/* BLOQUE DE DEFINICION DE ELEMENTOS PARA MANEJAR LA SESION DE UN DIALOGO */
 				dialog.ultimo_session_email=mensaje.usuario.email; //del json mensaje obtiene el email de quien realizo el mensaje a updatear (se crea nuevo elemento del json dialog)
 				var session = dialog.session; //variable que obtiene el ultimo valor de sesion
