@@ -13,7 +13,7 @@
 * FUNCIONES GET
 *
 */
-
+//cambio para 
   //get para el csrf
 	$http.get('/csrfToken') 
     .success(function (token) {
