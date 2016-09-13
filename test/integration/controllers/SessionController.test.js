@@ -21,6 +21,13 @@ describe('SessionController', function() {
         .expect(302)
         .expect('location','/', done);// cambiar id segun usuario de prueba creado
     });
+     it('should redirect to /user/view/+id', function (done) {
+      request(sails.hooks.http.app)
+        .post('/session/create')
+        .send({ email: 'noreply.visualmail@gmail.com', password: 'prueba' })
+        .expect(302)
+        .expect('location','/user/view/577ade5cd48d11590b311db8', done);// cambiar id segun usuario de prueba creado
+    });
  });
 
   describe('#verificarclave()', function() {
@@ -37,6 +44,54 @@ describe('SessionController', function() {
     });
  });
   
+
+
+
+    describe('#help()', function() {
+    it('should redirect to /user/view/+id', function (done) {
+      request(sails.hooks.http.app)
+        .post('/session/create')
+        .send({ email: 'noreply.visualmail@gmail.com', password: 'prueba' })
+        .expect(302)
+        .expect('location','/user/view/577ade5cd48d11590b311db8', done);// cambiar id segun usuario de prueba creado
+    });
+    it('should redirect to /session/help', function (done) {
+      request(sails.hooks.http.app)
+        .post('/session/help')
+        .expect(200)
+         .end(function(err,res){
+          done();
+        })
+    });
+
+
+ });
+
+
+    describe('#recover()', function() {
+
+    it('should redirect to /session/recover', function (done) {
+      request(sails.hooks.http.app)
+        .post('/session/recover')
+        .expect(200)
+         .end(function(err,res){
+          done();
+        })
+    });
+  });
+    describe('#forgotpassword()', function() {
+
+    it('should redirect to /session/forgotpassword', function (done) {
+      request(sails.hooks.http.app)
+        .post('/session/forgotpassword')
+        .expect(200)
+         .end(function(err,res){
+          done();
+        })
+    });
+
+ });
+
 
 
 })

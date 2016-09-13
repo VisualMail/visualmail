@@ -42,7 +42,9 @@
               .style("opacity", 0);
 
               //se carga el elemento de la vista
-              d3.json("http://localhost:1337/project/getDialogos/<%=project.id%>", function(error, root){    
+              //http://visualmail.herokuapp.com/
+              //http://localhost:1337
+              d3.json("http://visualmail.herokuapp.com/project/getDialogos/<%=project.id%>", function(error, root){    
                  var nodes = cluster.nodes(root); 
                   var offset = 40;
               var encontrado=0;
