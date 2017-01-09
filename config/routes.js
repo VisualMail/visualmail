@@ -43,7 +43,7 @@ module.exports.routes = {
   'post /session/verficar_clave': 'SessionController.verficar_clave', 
   'post /session/actualizarpass': 'SessionController.actualizarpass', 
   'post /user/actualizardatos': 'UserController.actualizardatos', 
-  'post /project/create': 'ProjectController.create', 
+  'post /project/create': 'ProjectController.create' 
   
   /***************************************************************************
   *                                                                          *

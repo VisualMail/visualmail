@@ -33,7 +33,12 @@ module.exports.policies = {
      view: ['flash','sessionAuth'],
      '*': "sessionAuth"
    },
-
+    project:{
+      add_user: ['flash','sessionAuth'],
+      create: ['flash','sessionAuth'],
+      edit: ['flash','sessionAuth'],
+      '*': "sessionAuth"
+    }
   // '*': true,
 
   /***************************************************************************

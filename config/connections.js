@@ -56,13 +56,21 @@ module.exports.connections = {
   * Run: npm install sails-mongo                                             *
   *                                                                          *
   ***************************************************************************/
-   MongoDB: {
+   /*MongoDB: {
      adapter: 'sails-mongo',
      host: 'localhost',
      port: 27017,
      user: '', //optional
      password: '', //optional
      database: 'VisualMail_2' //optional
+   },*/
+   MongoDB: {
+     adapter: 'sails-mongo',
+     host: 'ds017514.mlab.com',
+     port: 17514,
+     user: 'visualmail', //optional
+     password: 'visualmail2016db', //optional
+     database: 'visualmailtest' //optional
    },
 
   /***************************************************************************

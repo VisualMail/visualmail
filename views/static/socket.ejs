@@ -1,0 +1,244 @@
+<style>
+.main { 
+	height: 600px; 
+	width: 100%; 
+	border:2px solid #000; 
+	overflow: scroll;
+ }
+
+.sky { 
+	height: 190px; 
+	width: 390px; 
+	border:1px dotted #ccc; 
+	background-color: #ccc;
+}
+
+</style>
+<div id="main" class="main">
+
+</div>
+
+<button type="button" onclick="add()">Añadir</button>
+
+<script>
+//var nodoMensaje = [
+//{ nodoId: 0, nodoPadreId: 0, sessionId: 0, nodoNivel: 0, nodoPadreNivel: 0, nodoPadreSessionId: 0, color: 'GFO000' },
+//{ nodoId: 1, nodoPadreId: 0, sessionId: 1, nodoNivel: 0, nodoPadreNivel: 0, nodoPadreSessionId: 0, color: '388E3C' },
+//{ nodoId: 2, nodoPadreId: 0, sessionId: 1, nodoNivel: 1, nodoPadreNivel: 0, nodoPadreSessionId: 0, color: '388E3C' },
+//{ nodoId: 3, nodoPadreId: 2, sessionId: 2, nodoNivel: 1, nodoPadreNivel: 1, nodoPadreSessionId: 1, color: '9F9F9F' },
+//{ nodoId: 4, nodoPadreId: 0, sessionId: 3, nodoNivel: 2, nodoPadreNivel: 0, nodoPadreSessionId: 0, color: '597DA3' },
+//{ nodoId: 5, nodoPadreId: 1, sessionId: 4, nodoNivel: 0, nodoPadreNivel: 0, nodoPadreSessionId: 1, color: 'C0903B' },
+//{ nodoId: 6, nodoPadreId: 3, sessionId: 5, nodoNivel: 1, nodoPadreNivel: 1, nodoPadreSessionId: 2, color: 'AA0000' },
+//{ nodoId: 7, nodoPadreId: 3, sessionId: 5, nodoNivel: 2, nodoPadreNivel: 1, nodoPadreSessionId: 2, color: 'AA0000' },
+//{ nodoId: 8, nodoPadreId: 4, sessionId: 6, nodoNivel: 2, nodoPadreNivel: 2, nodoPadreSessionId: 3, color: 'FF999F' },
+//{ nodoId: 9, nodoPadreId: 3, sessionId: 7, nodoNivel: 3, nodoPadreNivel: 1, nodoPadreSessionId: 2, color: 'C1DFBB' },
+//];
+
+
+var nodoMensaje = [
+{ nodoId: 0, nodoPadreId: 0, sessionId: 0, nodoNivel: 0, nodoPadreNivel: 0, nodoPadreSessionId: 0, color: 'GFO000' },
+{ nodoId: 1, nodoPadreId: 0, sessionId: 1, nodoNivel: 0, nodoPadreNivel: 0, nodoPadreSessionId: 0, color: '388E3C' },
+{ nodoId: 2, nodoPadreId: 0, sessionId: 1, nodoNivel: 1, nodoPadreNivel: 0, nodoPadreSessionId: 0, color: '388E3C' },
+{ nodoId: 3, nodoPadreId: 2, sessionId: 2, nodoNivel: 1, nodoPadreNivel: 1, nodoPadreSessionId: 1, color: '9F9F9F' },
+{ nodoId: 4, nodoPadreId: 1, sessionId: 2, nodoNivel: 0, nodoPadreNivel: 0, nodoPadreSessionId: 1, color: "4DF4DF"},
+{ nodoId: 5, nodoPadreId: 1, sessionId: 2, nodoNivel: 1, nodoPadreNivel: 0, nodoPadreSessionId: 1, color: "4DF4DF"},
+{ nodoId: 6, nodoPadreId: 1, sessionId: 2, nodoNivel: 2, nodoPadreNivel: 0, nodoPadreSessionId: 1, color: "4DF4DF"},
+
+];
+
+
+
+
+
+dibujarDialogo();
+//dibujarItem({nodoId: 10, nodoPadreId: 1, sessionId: 8, nodoNivel: 3, nodoPadreNivel: 0, nodoPadreSessionId: 0, color: 'AAAAAA'});
+
+
+function dibujarItem(item) {
+	nodoMensaje.push(item);
+	dibujarDialogo();
+}
+
+
+
+
+
+
+function dibujarDialogo() {
+	var totalHeight = 580;
+	var totalWidth = 1328;
+	var circleHeight = 150;
+	var circleWidth = 90;
+	var circleRadio = 12;
+	var lineHeight = 102;
+	var y1 = 0;
+	var y2 = 0;
+	var listaNodos = [];
+	listaNodos.push({
+		nodoId: nodoMensaje[0].nodoId,
+		sessionId: nodoMensaje[0].sessionId,
+		nodoPadreId: nodoMensaje[0].nodoPadreId,
+		cx: circleWidth,
+		cy: circleHeight,
+		color: nodoMensaje[0].color
+	});
+	$("#main").html("");
+	var svgContainer = d3.select("#main").append("svg").attr("style", "background-color: #fff;");
+	var sessionIdAux = -1;
+	var imageI = 0;
+
+	$.each(nodoMensaje, function(k, v) {
+		if(sessionIdAux != v.sessionId) {
+			sessionIdAux = v.sessionId;
+			var sessionLine = svgContainer.append("line")
+				.attr("x1", circleWidth + (v.sessionId * 100))
+				.attr("x2", circleWidth + (v.sessionId * 100))
+				.attr("y1", 0)
+				.attr("y2", 1024)
+				.attr("style", "stroke: #000; fill:none;stroke-dasharray: 10 5") 
+				.attr("stroke-width", "1");
+			var defPattern = svgContainer
+				.append("svg:defs")
+				.append("svg:pattern")
+				.attr("id", "image" + imageI)
+				.attr("height", 44)
+				.attr("width", 44)
+				.append("svg:image")
+				.attr("x", 0)
+				.attr("y", 0)
+				.attr("height", 44)
+				.attr("width", 44)
+				.attr("xlink:href", "https://upload.wikimedia.org/wikipedia/en/b/b9/Jack_Bauer.jpg");
+			var sessionCircle = svgContainer.append("circle")
+				.attr("data-header-session-id", v.sessionId)
+				.attr("fill", "url(#image" + imageI + ")")
+				.attr("stroke", "black")
+				.attr("stroke-width", "1")
+				.attr("cx", circleWidth + (v.sessionId * 100))
+				.attr("cy", 22)
+				.attr("r", 22);
+				imageI++;
+
+		}
+
+		if(v.sessionId > 0) { 
+			y1 = circleHeight + (v.nodoPadreNivel * 40);
+			y2 = circleHeight + (v.nodoNivel * 40);
+
+			var line = svgContainer.append("line")
+				.attr("data-line-nodo-id", v.nodoId)
+				.attr("x1", lineHeight + (100 * (v.nodoPadreSessionId)))
+				.attr("y1", y1)
+				.attr("x2", lineHeight + 76 + (100 * (v.sessionId - 1)))
+				.attr("y2", y2)
+				.attr("stroke", "#797979")
+				.attr("stroke-width", "1");
+
+			listaNodos.push({
+				nodoId: v.nodoId,
+				sessionId: v.sessionId,
+				nodoPadreId: v.nodoPadreId,
+				nodoPadreNivel: v.nodoPadreNivel,
+				nodoNivel: v.nodoNivel,
+				color: v.color,
+				cx: circleWidth + (v.sessionId * 100),
+				cy: y2
+			});
+
+			if(y2 > totalHeight)
+				totalHeight = y2 + 80;
+
+			if((circleWidth + (v.sessionId * 100)) > totalWidth)
+				totalWidth = circleWidth + (v.sessionId * 100) + 100;
+		}
+	});
+
+	$.each(listaNodos, function(k, v) {
+		var circle = svgContainer.append("circle")
+			.attr("data-nodo-id", v.nodoId)
+			.attr("data-nodo-session-id", v.sessionId)
+			.attr("data-nodo-parent-id", v.nodoPadreId)
+			.attr("data-nodo-parent-nivel", v.nodoPadreNivel)
+			.attr("data-nodo-nivel", v.nodoNivel)
+			.attr("fill", "#" + v.color)
+			.attr("cx", v.cx)
+			.attr("cy", v.cy)
+			.attr("r", circleRadio);
+	});
+
+	d3.select("#main")
+
+	d3.select("#main").select("svg")
+		.attr("height", totalHeight)
+		.attr("width", totalWidth);
+
+	sortSession(2);
+}
+
+function sortSession(session) {
+	var totalSession = nodoMensaje[nodoMensaje.length - 1].sessionId;
+	var sortArray = [];
+
+	$("[data-nodo-session-id=" + session + "]").each(function(){ 
+		var a = $(this);
+
+		sortArray.push({ 
+			nodoId: parseInt(a.attr("data-nodo-id")),
+			cy: parseInt(a.attr("cy")),
+			nodoPadreNivel: parseInt(a.attr("data-nodo-parent-nivel")),
+			nodoNivel: parseInt(a.attr("data-nodo-nivel"))
+		});
+	});
+
+	$.each(sortArray, function(kx, x){
+		var z = {
+			nodoId: 0,
+			cy: 0,
+			nodoPadreNivel: 0,
+			nodoNivel: 0
+		};
+
+		$.each(sortArray, function(ky, y){
+			if(x.nodoPadreNivel < y.nodoPadreNivel) {
+				setNodo(z, x);
+				setNodo(x, y);
+				setNodo(y, z);
+			}
+		});
+
+	});
+
+	$.each(sortArray, function(kx, x){
+		$.each(sortArray, function(ky, y){
+			if(x.cy === y.cy && x.nodoId !== y.nodoId && 
+				(x.nodoPadreNivel < y.nodoPadreNivel || (x.nodoPadreNivel === y.nodoPadreNivel && x.nodoId < y.nodoId ))) {
+				y.cy += 40;
+				y.nodoNivel += 1;
+				return;
+			}
+		});
+	});
+
+	$("[data-nodo-session-id=" + session + "]").each(function(){ 
+		var b = $(this);
+		var bId = parseInt(b.attr("data-nodo-id"));
+
+		$.each(sortArray, function(k, v){
+			if(bId === v.nodoId) {
+				b.attr("cy", v.cy);
+				b.attr("data-nodo-nivel", v.nodoNivel);
+				$("[data-line-nodo-id=" + bId + "]").attr("y2", v.cy);
+				return;
+			}
+		});
+
+	});
+}
+
+function setNodo(x, y) {
+	x.nodoId = y.nodoId;
+	x.cy = y.cy;
+	x.nodoPadreNivel = y.nodoPadreNivel;
+	x.nodoNivel = y.nodoNivel;
+}
+</script>
