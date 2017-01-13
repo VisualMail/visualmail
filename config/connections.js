@@ -28,10 +28,11 @@ module.exports.connections = {
   * Installed by default.                                                    *
   *                                                                          *
   ***************************************************************************/
-  localDiskDb: {
-    adapter: 'sails-disk'
-  },
-
+'default': 'MongoDB',
+MongoDB: {
+     adapter: 'sails-mongo',
+     url: 'mongodb://matias:prueba@ds017514.mlab.com:17514/visualmailtest'
+   },
   /***************************************************************************
   *                                                                          *
   * MySQL is the world's most popular relational database.                   *
@@ -56,22 +57,7 @@ module.exports.connections = {
   * Run: npm install sails-mongo                                             *
   *                                                                          *
   ***************************************************************************/
-   /*MongoDB: {
-     adapter: 'sails-mongo',
-     host: 'localhost',
-     port: 27017,
-     user: '', //optional
-     password: '', //optional
-     database: 'VisualMail_2' //optional
-   },*/
-   MongoDB: {
-     adapter: 'sails-mongo',
-     host: 'ds017514.mlab.com',
-     port: 17514,
-     user: 'visualmail', //optional
-     password: 'visualmail2016db', //optional
-     database: 'visualmailtest' //optional
-   },
+
 
   /***************************************************************************
   *                                                                          *
