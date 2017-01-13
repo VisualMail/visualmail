@@ -34,5 +34,8 @@ module.exports.email = {
 
 }
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 140f86feda29170d0f7757c30b0cbf241eb8ea22
