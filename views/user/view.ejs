@@ -40,7 +40,7 @@ var $mensaje3 = $('<span class="  color_acentuado-text"> Ocurrió un error al gu
         </div>
       </div>
       <div ng-repeat="x in miusuario.slice().reverse() | filter:busqueda" ng-model="miusuario">
-        <a ng-href="/project/edit/{{x.id}}" ng-if="x.owner_email==mi_email">
+        <a ng-href="/project/admin/{{x.id}}" ng-if="x.owner_email==mi_email">
           <div class="col s6 " >
             <div class="card green hoverable "> 
               <div class="card-content white-text" > {{x.name}}  </div>
@@ -64,7 +64,7 @@ var $mensaje3 = $('<span class="  color_acentuado-text"> Ocurrió un error al gu
         </div>
       </div>
       <div ng-repeat="x in miusuario.slice().reverse() | filter:busqueda_participo" ng-model="miusuario">
-        <a ng-href="/project/edit/{{x.id}}" ng-if="x.owner_email!=mi_email">
+        <a ng-href="/project/admin/{{x.id}}" ng-if="x.owner_email!=mi_email">
           <div class="col s6" >
             <div class="card  light-green lighten z-depth-2"> 
               <div class="card-content white-text" > {{x.name}}  </div>
@@ -84,7 +84,7 @@ var $mensaje3 = $('<span class="  color_acentuado-text"> Ocurrió un error al gu
         
           <div class="col s4">
             <input id="name_project" type="text"  name="name_project" ng-model="name_project" ng-minlength="3" ng-maxlength="23" ng-required="true" >
-            <label for="name_project"   >Nombre del projecto</label> 
+            <label for="name_project"   >Nombre del proyecto</label> 
           </div>
           <div ng-messages="crearproyectoform.name_project.$error" role="alert" class="col s2 centerme red-text" >
             <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
@@ -132,7 +132,7 @@ var $mensaje3 = $('<span class="  color_acentuado-text"> Ocurrió un error al gu
       </form>
       <div class= "row col s6">
          <div class="card  grey z-depth-2 waves-effect waves" ng-show="crearproyectoform.$valid" ng-click="crearProyecto()"> 
-        <div class="card-content black-text" > Crear nuevo Projecto </div>
+        <div class="card-content black-text" > Crear nuevo Proyecto </div>
       </div>
       </div>
     </div>

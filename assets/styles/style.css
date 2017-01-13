@@ -5,6 +5,38 @@
  *
  * Made By MaterializeCSS.com
  */
+ .main { 
+  height: 600px; 
+  width: 100%; 
+  overflow: scroll;
+ }
+.main-avatar { display: inline-block; height: 45px !important; position: relative; right: 15px; top: .5em; width: 45px; } 
+.main-logo { display: inline-block; height: auto; padding: .2em 0em 1.6em; position: relative; width: auto; } 
+.main-logo > img { height: 50px; width: 50px; } 
+.main-menu-btn { background-color: transparent; background-image: none; border: 1px solid transparent; border-color: transparent; border-radius: 4px; display: inline-block; float: left; margin: 15px 15px 8px 0px; padding: 9px 10px; position: relative; } 
+.main-menu-btn:hover { background-color: #ddd; outline: none; } 
+.main-menu-btn .icon-bar { background-color: #FFF; border-radius: 1px; display: block; height: 2px; width: 22px; } 
+.main-menu-btn .icon-bar + .icon-bar { margin-top: 4px; } 
+.main-user-menu { width: 145px !important; } 
+
+.resizable-panel-container { border: 1px solid silver; display: flex; flex-direction: row; height: 270px; left: 0; overflow: hidden; position: absolute !important; bottom: -1; width: 100%; xtouch-action: none; } 
+.resizable-panel-left { background-color: #fff; flex: 0 0 auto; margin-top: 18px; min-height: 200px; min-width: 200px; padding: 10px; width: 50%;  } 
+.resizable-panel-right { background-color: #fff; flex: 1 1 auto; margin: 18px 0px 0px 5px; min-height: 200px; padding: 10px; width: auto; z-index: 999; } 
+.resizable-splitter { background: url(../images/vsizegrip.png) center center no-repeat #999; cursor: col-resize; flex: 0 0 auto; min-height: 200px; width: 18px; } 
+.resizable-splitter-horizontal { background: url(../images/hsizegrip.png) center center no-repeat #999 !important; cursor: row-resize; flex: 0 0 auto; height: 18px; margin: 5px 0 0 0; } 
+
+
+.principal {
+    background-image: url(../images/fondo.jpg);
+    background-size: cover;
+    width: 100%;
+    padding: 20px 0;
+}
+
+h5.sub {
+   font-size: 125%; 
+   font-family: 'Fira Sans', sans-serif;
+}
 
 nav ul a,
 nav .brand-logo {
@@ -171,10 +203,6 @@ footer.page-footer {
 
 .textito{
   word-wrap: break-word;
-
-}
-.boldeado{
-   font-weight: bold;
 }
 .conheight{
   text-overflow-y:scroll;
@@ -385,7 +413,7 @@ padding-right: 10px;
 .tooltip {
 position: absolute; 
   width: 210px;  
-  height: 100px;   
+  height: 80px;   
   padding: 2px; 
   font: 10px sans-serif;  
 background: #8BC34A;
