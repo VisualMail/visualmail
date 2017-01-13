@@ -27,10 +27,4 @@ module.exports.models = {
   * See http://sailsjs.org/#!/documentation/concepts/ORM/model-settings.html  *
   *                                                                          *
   ***************************************************************************/
-<<<<<<< HEAD
-   connection: 'MongoDB',
-=======
->>>>>>> 140f86feda29170d0f7757c30b0cbf241eb8ea22
-   migrate: 'safe'
-
 };
