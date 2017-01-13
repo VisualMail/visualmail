@@ -1,6 +1,6 @@
 # VisualMail
 
-Proyecto de Memoria Matías Quinteros
+Proyecto de comunicación para grupos colaboartivos
 
 Especificaciones:
 
