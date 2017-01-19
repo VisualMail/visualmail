@@ -793,6 +793,7 @@ var $anclar = false;
         	vm.miMensaje.push(nuevoMensaje);
 
             // Dibujar el diálogo
+            $('.tooltipped').tooltip('remove');
             dibujarDialogo(vm.miMensaje); 
 
             // Revisar si los mensajes en las sesiones no están sobrepuestos
