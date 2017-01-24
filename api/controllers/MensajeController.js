@@ -50,7 +50,7 @@ module.exports = {
 						var nivelOcupado = false; 
 						var existeNodoHermano = false; 
 
-						if(msj.length >= 2) {
+						if(msj.length > 1) {
 
 							// Obtener el estado actual de los nodos en la sesión
 							for(var i = 0; i < msj.length; i++) { 
@@ -152,7 +152,7 @@ module.exports = {
 
 	/**
 	* @method :: unir (POST)
-	* @description :: Hace la unión entre mensajes en la parte de lños modelos
+	* @description :: Hace la unión entre mensajes en la parte de los modelos
 	* @param :: {Object} req, request element de sails
 	* @param :: {Objetct} res, de la vista ejs del servidor
 	* @param :: {Objetct} next, para continuar en caso de error
