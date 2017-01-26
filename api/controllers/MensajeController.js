@@ -45,29 +45,55 @@ module.exports = {
 					// Buscar los mensajes almacenados en la sesión del usuario
 					Mensaje.find({ project_id: mensajeUser.project_id, sessionId: mensajeUser.sessionId }).exec(function(err, msj) {
 
-						var revisarSession = false; 
-						var revisarSessionId = 0; 
-						var nivelOcupado = false; 
-						var existeNodoHermano = false; 
-
+						// Verificar los niveles en la sesión 
 						if(msj.length > 1) {
+
+							var nodoNivelAux = mensajeUser.nodoNivel; 
 
 							// Obtener el estado actual de los nodos en la sesión
 							for(var i = 0; i < msj.length; i++) { 
-								if(mensajeUser.nodoId !== msj[i].nodoId) {
 
-									// Verificar si está ocupado el nivel actual del nuevo mensaje 
-									if(!nivelOcupado && (mensajeUser.nodoNivel === msj[i].nodoNivel)) 
-										nivelOcupado = true; 
+								// Verificar si el nivel del nodo está ocupado
+								if(mensajeUser.nodoId !== msj[i].nodoId && mensajeUser.nodoNivel === msj[i].nodoNivel) {
 
-									// Verificar si existe un nodo hermano en el mapa 
-									if(!existeNodoHermano && (mensajeUser.nodoPadreId === msj[i].nodoPadreId)) 
-										existeNodoHermano = true; 
+									// Modificar el nivel
+									if(mensajeUser.nodoPadreId === msj[i].nodoPadreId || 
+										(mensajeUser.nodoPadreNivel > msj[i].nodoPadreNivel) || 
+										(mensajeUser.nodoPadreNivel === msj[i].nodoPadreNivel && mensajeUser.nodoPadreSessionId < msj[i].nodoPadreSessionId))  {
+										mensajeUser.nodoNivel++; 
+									}
 								}
-							} 
+							}
+
+							// Verificar si se modificó el nivel 
+							if(mensajeUser.nodoNivel !== nodoNivelAux) 
+								mensajeUser.save(); 
+
+							// Modificar el nivel en cada sesión 
+							for(var j = (mensajeUser.sessionId - 1); j >= mensajeUser.nodoPadreSessionId; j--) {
+								Mensaje.find({ project_id: mensajeUser.project_id, sessionId: j }).then(function(m) {
+
+
+									for(var x = 0; x < m.length; x++) {
+										if(m[x].nodoNivel >= mensajeUser.nodoNivel && m[x].nodoPadreNivel > mensajeUser.nodoPadreNivel) { 
+											m[x].nodoNivel++; 
+											mmsj[x].save(); 
+										}
+									}
+
+
+								}); 
+							}
+
+
+
+
+
+
+
 
 							// Si el nivel está ocupado
-							if(nivelOcupado) { 
+							/*if(nivelOcupado) { 
 								revisarSession = true;
 								revisarSessionId= mensajeUser.sessionId; 
 
@@ -95,12 +121,12 @@ module.exports = {
 									mensajeUser.nodoNivel = ++ultimoNivel;
 									mensajeUser.save(); 
 								}
-							}
+							}*/
 
 						}
 
 						// Enviar un broadcast a los usuarios en línea que pertecen al proyecto
-						sails.sockets.broadcast(
+						/*sails.sockets.broadcast(
 							mensaje.project_id, 
 							"socket_project_response", { 
 								message: "Mensaje desde el servidor.", 
@@ -108,7 +134,7 @@ module.exports = {
 								obj: mensajeUser, 
 								revisarSession: (revisarSession && nivelOcupado && existeNodoHermano), 
 								revisarSessionId: revisarSessionId 
-							}, req); 
+							}, req); */
 					});
 				}
 

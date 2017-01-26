@@ -23,21 +23,12 @@
 		var usuarioB = { initials: "BBB", color: "BF360C", imgurl: "https://lh5.googleusercontent.com/-Sv0q6lkSAGM/AAAAAAAAAAI/AAAAAAAAAYI/eE7kV9LMcnQ/s0-c-k-no-ns/photo.jpg" };
 		var usuarioC = { initials: "HHH", color: "8E4F3E", imgurl: "http://static0.misionesonline.net/wp-content/uploads/2016/09/HILLARY-EN-SAN-DIEGO-35ho7ci5lrfg.jpg?w=640" }; 
 
-		var nodoMensaje = [ 
+		/*var nodoMensaje = [ 
 			{ nodoId: 1, sessionId: 0, nodoNivel: 0, nodoPadreId: 0, nodoPadreSessionId: 0, nodoPadreNivel: 0, usuario: usuarioA, name: "Hello my fellow americans", tipo: "" },
 
 			{ nodoId: 2, sessionId: 1, nodoNivel: 0, nodoPadreId: 1, nodoPadreSessionId: 0, nodoPadreNivel: 0, usuario: usuarioB, name: "Fuck Obamacare", tipo: "" },
 			{ nodoId: 3, sessionId: 1, nodoNivel: 1, nodoPadreId: 1, nodoPadreSessionId: 0, nodoPadreNivel: 0, usuario: usuarioB, name: "Where's your birth certificate?", tipo: "" },
-			{ nodoId: 4, sessionId: 1, nodoNivel: 2, nodoPadreId: 1, nodoPadreSessionId: 0, nodoPadreNivel: 0, usuario: usuarioB, name: "Suck it, I'm charge now", tipo: "" },
-			/*{ nodoId: 8, sessionId: 1, nodoNivel: 3, nodoPadreId: 1, nodoPadreSessionId: 0, nodoPadreNivel: 0, usuario: usuarioB, name: "Fuck Obamacare", tipo: "" },
-			{ nodoId: 9, sessionId: 1, nodoNivel: 4, nodoPadreId: 1, nodoPadreSessionId: 0, nodoPadreNivel: 0, usuario: usuarioB, name: "Where's your birth certificate?", tipo: "" },
-			{ nodoId: 10, sessionId: 1, nodoNivel: 5, nodoPadreId: 1, nodoPadreSessionId: 0, nodoPadreNivel: 0, usuario: usuarioB, name: "Suck it, I'm charge now", tipo: "" },
-			{ nodoId: 11, sessionId: 1, nodoNivel: 6, nodoPadreId: 1, nodoPadreSessionId: 0, nodoPadreNivel: 0, usuario: usuarioB, name: "Fuck Obamacare", tipo: "" },
-			{ nodoId: 12, sessionId: 1, nodoNivel: 7, nodoPadreId: 1, nodoPadreSessionId: 0, nodoPadreNivel: 0, usuario: usuarioB, name: "Where's your birth certificate?", tipo: "" },
-			{ nodoId: 13, sessionId: 1, nodoNivel: 8, nodoPadreId: 1, nodoPadreSessionId: 0, nodoPadreNivel: 0, usuario: usuarioB, name: "Suck it, I'm charge now", tipo: "" },
-			{ nodoId: 14, sessionId: 1, nodoNivel: 9, nodoPadreId: 1, nodoPadreSessionId: 0, nodoPadreNivel: 0, usuario: usuarioB, name: "Fuck Obamacare", tipo: "" },
-			{ nodoId: 15, sessionId: 1, nodoNivel: 10, nodoPadreId: 1, nodoPadreSessionId: 0, nodoPadreNivel: 0, usuario: usuarioB, name: "Where's your birth certificate?", tipo: "" },
-			{ nodoId: 16, sessionId: 1, nodoNivel: 11, nodoPadreId: 1, nodoPadreSessionId: 0, nodoPadreNivel: 0, usuario: usuarioB, name: "Suck it, I'm charge now", tipo: "" },*/
+			{ nodoId: 4, sessionId: 1, nodoNivel: 2, nodoPadreId: 1, nodoPadreSessionId: 0, nodoPadreNivel: 0, usuario: usuarioB, name: "Suck it, I'm charge now", tipo: "" }, 
 
 			{ nodoId: 5, sessionId: 2, nodoNivel: 0, nodoPadreId: 2, nodoPadreSessionId: 1, nodoPadreNivel: 0, usuario: usuarioA, name: "Here we go", tipo: "" },
 			{ nodoId: 6, sessionId: 2, nodoNivel: 1, nodoPadreId: 2, nodoPadreSessionId: 1, nodoPadreNivel: 0, usuario: usuarioA, name: "Why so much rage?", tipo: "" },
@@ -45,6 +36,20 @@
 			{ nodoId: 7, sessionId: 3, nodoNivel: 3, nodoPadreId: 0, nodoPadreSessionId: 0, nodoPadreNivel: 0, usuario: usuarioC, name: "Fuck It", tipo: "" },
 			{ nodoId: 8, sessionId: 3, nodoNivel: 0, nodoPadreId: 6, nodoPadreSessionId: 2, nodoPadreNivel: 0, usuario: usuarioC, name: "I wanna be in charge", tipo: "" },
 			{ nodoId: 9, sessionId: 3, nodoNivel: 2, nodoPadreId: 2, nodoPadreSessionId: 1, nodoPadreNivel: 0, usuario: usuarioC, name: "I wanna be in charge", tipo: "" }
+		];*/
+
+		var nodoMensaje = [ 
+			{ nodoId: 1, sessionId: 0, nodoNivel: 0, nodoPadreId: 0, nodoPadreSessionId: 0, nodoPadreNivel: 0, usuario: usuarioA, name: "Hello my fellow americans", tipo: "" },
+
+			{ nodoId: 2, sessionId: 1, nodoNivel: 0, nodoPadreId: 1, nodoPadreSessionId: 0, nodoPadreNivel: 0, usuario: usuarioB, name: "Fuck Obamacare", tipo: "" },
+
+			{ nodoId: 3, sessionId: 2, nodoNivel: 0, nodoPadreId: 2, nodoPadreSessionId: 1, nodoPadreNivel: 0, usuario: usuarioA, name: "Why so much rage?", tipo: "" },
+
+			{ nodoId: 4, sessionId: 3, nodoNivel: 0, nodoPadreId: 3, nodoPadreSessionId: 2, nodoPadreNivel: 0, usuario: usuarioB, name: "Because, fuck you!", tipo: "" }, 
+
+			{ nodoId: 5, sessionId: 1, nodoNivel: 1, nodoPadreId: 0, nodoPadreSessionId: 0, nodoPadreNivel: 0, usuario: usuarioB, name: "Fuck it, I'm in charge!", tipo: "" }, 
+
+			{ nodoId: 6, sessionId: 3, nodoNivel: 1, nodoPadreId: 1, nodoPadreSessionId: 1, nodoPadreNivel: 0, usuario: usuarioB, name: "Make america great again!", tipo: "" }
 		];
 		dibujarDialogo(nodoMensaje);
 	</script>
