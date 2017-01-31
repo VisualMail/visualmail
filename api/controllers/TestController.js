@@ -1,9 +1,8 @@
 module.exports = {
 
-	mensaje: function(req, res, next) {
-		var mensajeAux = Mailer.sample(); 
-		sails.log(mensajeAux); 
 
+	mensaje: function(req, res, next) {
+		
 		res.redirect("/test/index.html"); 
 	},
 

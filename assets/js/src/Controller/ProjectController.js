@@ -766,9 +766,17 @@ var $anclar = false;
         * @method :: onSocketMensajeNuevo 
         * @description :: Actualizar el mensaje enviado desde el socket 
         **/
-        vm.onSocketMensajeNuevo = function(data) {            
+        vm.onSocketMensajeNuevo = function(data) { 
+            vm.miMensaje = data.obj;
+            var nuevoMensaje = data.nuevoMensaje; 
+
+            for(var i = 0; i < vm.miMensaje.length; i++) { 
+                if(vm.miMensaje[i].id === nuevoMensaje.parent) 
+                    vm.miMensaje[i].numero_hijos++; 
+            }
+
             // Almacenar el nuevo mensaje
-            var nuevoMensaje = data.obj; 
+            /*var nuevoMensaje = data.obj; 
             var revisarSession = data.revisarSession; 
 
             // Si un nuevo usuario creo el mensaje, actualizar mi sesión
@@ -776,7 +784,7 @@ var $anclar = false;
                 vm.miSessionId = nuevoMensaje.sessionId + 1; 
 
             // Actualizar el número de hijos del mensaje padre
-        	for(var i = 0; i< vm.miMensaje.length; i++) { 
+        	for(var i = 0; i < vm.miMensaje.length; i++) { 
         		if(vm.miMensaje[i].id === nuevoMensaje.parent) 
         			vm.miMensaje[i].numero_hijos++; 
 
@@ -790,7 +798,7 @@ var $anclar = false;
         	// A los mensajes se le añade el nuevo elemento creado en la parte del cliente
             nuevoMensaje["cssvalue"] = !vm.miMensajeIntercalar; 
             vm.miMensajeIntercalar = !vm.miMensajeIntercalar; 
-        	vm.miMensaje.push(nuevoMensaje);
+        	vm.miMensaje.push(nuevoMensaje);*/
 
             // Dibujar el diálogo
             $('.tooltipped').tooltip('remove');

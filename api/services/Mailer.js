@@ -17,15 +17,3 @@ module.exports.sendWelcomeMail = function(user) {
 		  function(err) {console.log(err || "Email is sent");}
 		)	
 }
-
-module.exports.sample = function() {
-Mensaje.find().then(function(msj) {
-			return msj; 
-		})
-		.catch(function(err){
-    		sails.log(err);
-    	})
-    	.done(function(){
-    		sails.log("done");
-    	});
-}
