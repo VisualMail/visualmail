@@ -41,7 +41,17 @@ module.exports = {
 					delete user.password; 
 					mensajeUser["usuario"] = user; 
 					mensajeUser.save(); 
-					Mensaje.setMensajePosicion(mensajeUser, req); 
+
+					// Establecerla posición del nodo 
+					if((mensajeUser.sessionId > 1) && (mensajeUser.nodoPadreSessionId < (mensajeUser.sessionId - 1))) { 
+						// Si la sesión del padre del nuevo mensaje es mayor que la sesión previa del nuevo mensaje 
+						// Verificar si no existen nodos intercalados en el camino del nuevo nodo 
+						Mensaje.setMensajePosicionIntercalar(mensajeUser, req); 
+					} else { 
+						// Si la sesión del padre del nuevo mensaje es igual a la sesión previa del nuevo mensaje 
+						// Verificar si no existen nodos en el mismo nivel de la sesión 
+						Mensaje.setMensajePosicionNoIntercalar(mensajeUser, req); 
+					}
 				}
 
 				return;
@@ -62,18 +72,18 @@ module.exports = {
 		
 		// Llamar a la función de Sails para encontrar todos los mensajes segun la 'id' del proyecto 
 		// más los usuarios asociados al mensaje
-		Mensaje.find({ project_id: req.param('id') }).populate('usuario').exec(function(err, mensaje) { 
+		Mensaje.find({ project_id: req.param("id") }).populate("usuario").exec(function(err, mensaje) { 
 			
 			// Verificar si existe un error
 			if(err) { 
 				req.session.flash = { err: err }; 
-				return res.json({ mensaje: 'false' }); 
+				return res.json({ mensaje: "false" }); 
 			}
 
 			// Si hay error se actualiza la variable flash y se entrega el json con formato de manejo del error
 			if(!mensaje) { 
 				req.session.flash = { err: err }; 
-				return res.json({ mensaje: 'false' });
+				return res.json({ mensaje: "false" });
 			} else { 
 				// Si no hay error se deja la variable flash como vacia ya que no hay error y se retornan los mensajes
 				req.session.flash = { };

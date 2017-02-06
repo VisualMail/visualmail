@@ -1,6 +1,15 @@
+/**
+* @method :: $(document).ready(function() { });
+* @description :: Función iniciar cuando el Documento HTML está listo  
+**/
 $(document).ready(function() { 
+	// Iniciar los tooltips 
     $(".tooltipped").tooltip({delay: 50}); 
+
+    // Iniciar los modal popups
     $(".modal-trigger").leanModal(); 
+
+    // Iniciar el menú contextual de cada nodo del mapa del diálogo
     $(function() { 
         $.contextMenu({ 
             selector: ".context-menu-one", 
@@ -123,7 +132,7 @@ function dibujarDialogo(nodoMensaje) {
 			y1 = circleHeight + (v.nodoPadreNivel * 40); 
 			y2 = circleHeight + (v.nodoNivel * 40); 
 
-			if(v.nodoPadreSessionId === (v.sessionId - 1)) { 
+			if(y1 === y2) { 
 				svgContainer.append("line")
 					.attr("data-line-navigate", "")
 					.attr("data-line-nodo-id", v.nodoId)
@@ -233,4 +242,14 @@ function mapaDialogoDibujarSesion(circleWidth, imageI, imgurl, initials, session
 		.attr("data-position", "left")
 		.attr("data-delay", "50")
 		.attr("data-tooltip", initials);
+} 
+
+function mapaDialogoModificarNodo(nodoId, nodoNivel) {
+	var circleHeight = 100;
+	var y2 = circleHeight + (nodoNivel * 40); 
+	var circle = $("[data-nodo-id='" + nodoId + "'"); 
+	var line = $("[data-line-nodo-id='" + nodoId + "'"); 
+	console.log(line.prop('nodeName'));
+	//circle.attr("cy", y2); 
+	//line.attr("cy", y2); 
 }
