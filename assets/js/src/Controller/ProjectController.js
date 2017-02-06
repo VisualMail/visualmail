@@ -440,7 +440,7 @@ var $anclar = false;
                 }
 
                 //Se manda mensaje al usuario 
-                if(vm.miListaUsuariosSeleccionado.length == 1){ 
+                if(vm.miListaUsuariosSeleccionado.length == 1) { 
                     Materialize.toast($mensaje1, 500); 
                 } else if(vm.miListaUsuariosSeleccionado.length >= 2) { 
                     Materialize.toast($mensaje2, 2000); 
@@ -770,7 +770,6 @@ var $anclar = false;
             // Obtener los parámetros 
             var nuevoMensaje = data.nuevoMensaje; 
             var revisarSession = data.revisarSession; 
-            var revisarSessionId = data.revisarSessionId; 
 
             // Si un nuevo usuario creo el mensaje, actualizar mi sesión
             if(vm.miUsuario.id !== nuevoMensaje.usuario.id) 
@@ -778,6 +777,36 @@ var $anclar = false;
 
             // Actualizar el número de hijos del nodo padre 
             if((nuevoMensaje.sessionId > 1) && (nuevoMensaje.nodoPadreSessionId < (nuevoMensaje.sessionId - 1))) { 
+                var actualizarNodos = data.actualizarNodos; 
+
+                // Verificar cada mensaje 
+                $.each(vm.miMensaje, function(key, value) { 
+
+                    // Si encuentra el mensaje padre 
+                    // actualizar el número de hijos
+                    if(value.id === nuevoMensaje.parent) {
+                        value.numero_hijos++; 
+
+                        // Si no se deben revisar los mensajes en la sesión terminar
+                        if(!revisarSession)
+                            return false; 
+                    }
+
+                    // Si hay que revisar los nodos 
+                    if(revisarSession && actualizarNodos.length > 0) { 
+                        for(var i = 0; i < actualizarNodos.length; i++) {
+                            if(actualizarNodos[i] === value.nodoId) {
+                                value.nodoNivel++; 
+
+                                if(value.nodoPadreSessionId > nuevoMensaje.nodoPadreSessionId) { 
+                                    value.nodoPadreNivel++; 
+                                }
+
+                                mapaDialogoModificarNodo(value); 
+                            }
+                        }
+                    } 
+                }); 
 
             } else { 
                 // Verificar cada mensaje 
@@ -799,7 +828,7 @@ var $anclar = false;
                         value.nodoPadreId !== nuevoMensaje.nodoPadreId && 
                         value.nodoNivel >= nuevoMensaje.nodoNivel) {
                         value.nodoNivel++; 
-                        mapaDialogoModificarNodo(value.nodoId, value.nodoNivel); 
+                        mapaDialogoModificarNodo(value); 
                     }
                         
                 }); 
@@ -808,6 +837,7 @@ var $anclar = false;
             nuevoMensaje["cssvalue"] = !vm.miMensajeIntercalar; 
             vm.miMensajeIntercalar = !vm.miMensajeIntercalar; 
             vm.miMensaje.push(nuevoMensaje); 
+            mapaDialogoAgregarNodo(nuevoMensaje); 
 
             // Almacenar el nuevo mensaje
             /*var nuevoMensaje = data.obj; 
@@ -835,8 +865,8 @@ var $anclar = false;
         	vm.miMensaje.push(nuevoMensaje);*/
 
             // Dibujar el diálogo
-            $('.tooltipped').tooltip('remove');
-            dibujarDialogo(vm.miMensaje); 
+            //$('.tooltipped').tooltip('remove');
+            //dibujarDialogo(vm.miMensaje); 
 
             // Revisar si los mensajes en las sesiones no están sobrepuestos
             //if(data.revisarSession) 

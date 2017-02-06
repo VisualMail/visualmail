@@ -1,84 +1,11 @@
-/**
-* @method :: $(document).ready(function() { });
-* @description :: Función iniciar cuando el Documento HTML está listo  
-**/
-$(document).ready(function() { 
-	// Iniciar los tooltips 
-    $(".tooltipped").tooltip({delay: 50}); 
+// Constantes requeridas para dibujar el mapa del diálogo 
+var totalHeight = 580;
+var totalWidth = 1328;
+var circleHeight = 100;
+var circleWidth = 90;
+var circleRadio = 12;
+var lineHeight = 102;
 
-    // Iniciar los modal popups
-    $(".modal-trigger").leanModal(); 
-
-    // Iniciar el menú contextual de cada nodo del mapa del diálogo
-    $(function() { 
-        $.contextMenu({ 
-            selector: ".context-menu-one", 
-            callback: function(key, options) { 
-                var nodoId = parseInt($(this[0]).attr("data-nodo-id"));
-                var scope = angular.element(document.getElementById("ProjectControllerMain")).scope();
-                switch(key) {
-                    case "reply":
-                        scope.$apply(function () { 
-                            scope.vm.onMensajeModalShow(nodoId, 1); 
-                        });
-                        break;
-                    case "add":
-                        scope.$apply(function () { 
-                            scope.vm.onMensajeModalShow(nodoId, 2); 
-                        });
-                        break;
-                    case "anchor":
-                        $anclar = true; 
-
-                        if(scope.vm.miMensajeAnclado !== "") 
-                            $anclar = nodoId !== scope.vm.miMensajeAnclado.nodoId;
-
-                        $("[data-circle=dialogo]").attr("stroke", ""); 
-                        $("[data-circle=dialogo]").attr("stroke-width", ""); 
-                        var n = $("[data-circle-navigate=ok]");
-                        n.attr("stroke", ""); 
-                        n.attr("stroke-width", ""); 
-                        n.attr("data-circle-navigate", ""); 
-                        n = $("[data-line-navigate=ok]"); 
-                        n.attr("stroke", "#797979"); 
-                        n.attr("data-line-navigate", ""); 
-
-                        scope.$apply(function () { 
-                            scope.vm.onMensajeAnclarClick(nodoId); 
-                        });
-
-                        scope.vm.iniciarMensajeAnclado();
-
-                        break; 
-                    default: 
-                        break; 
-                } 
-            }, 
-            items: { 
-                "reply": { name: "Responder", icon: "edit" }, 
-                "add": { name: "Añadir al Kanban", icon: "add" }, 
-                "anchor": { name: "Anclar/Desanclar", icon: "paste" }, 
-                "sep1": "---------", 
-                "quit": { name: "Cancelar", icon: function() { return "context-menu-icon context-menu-icon-quit"; } } 
-            } 
-        });
-    }); 
-    $(".resizable-panel-container").resizable({ 
-        handles: "n", 
-        classes: { "ui-resizable-n": "resizable-splitter-horizontal" }, 
-        maxHeight: 820,
-        minHeight: 20, 
-        resizeWidth: false, 
-        start: function( event, ui ) { 
-            ui.originalPosition.top  = ui.position.top + 2; 
-        }
-    }); 
-    $(".resizable-panel-left").resizable({ 
-        handles: "e", 
-        classes: { "ui-resizable-e": "resizable-splitter" }, 
-        resizeHeight: false 
-    }); 
-}); 
 
 /**
 * @method :: dibujarDialogo 
@@ -86,12 +13,6 @@ $(document).ready(function() {
 * @param :: {Object} nodoMensaje, la lista de los mensajes del proyecto 
 **/
 function dibujarDialogo(nodoMensaje) {
-	var totalHeight = 580;
-	var totalWidth = 1328;
-	var circleHeight = 100;
-	var circleWidth = 90;
-	var circleRadio = 12;
-	var lineHeight = 102;
 	var x1 = 0;
 	var x2 = 0; 
 	var y1 = 0;
@@ -121,36 +42,15 @@ function dibujarDialogo(nodoMensaje) {
 		// Crear una nueva línea de sesión 
 		if(sessionIdAux !== v.sessionId) {
 			sessionIdAux = v.sessionId;
-			mapaDialogoDibujarSesion(circleWidth, imageI, v.usuario.imgurl, v.usuario.initials, v.sessionId, svgContainer); 
+			mapaDialogoDibujarSesion(imageI, v.usuario.imgurl, v.usuario.initials, v.sessionId, svgContainer); 
 			imageI++;
 		}
 
 		// Si no es el nodo inicial, calcular los parámetros 
 		if(v.sessionId > 0) { 
-			x1 = lineHeight + (100 * (v.nodoPadreSessionId)); 
-			x2 = lineHeight + 76 + (100 * (v.sessionId - 1)); 
-			y1 = circleHeight + (v.nodoPadreNivel * 40); 
 			y2 = circleHeight + (v.nodoNivel * 40); 
 
-			if(y1 === y2) { 
-				svgContainer.append("line")
-					.attr("data-line-navigate", "")
-					.attr("data-line-nodo-id", v.nodoId)
-					.attr("x1", x1)
-					.attr("y1", y1)
-					.attr("x2", x2)
-					.attr("y2", y2)
-					.attr("stroke", "#797979")
-					.attr("stroke-width", "1");
-			} else { 
-				var d = "M " + x1 + " " + y1 + " L " + parseInt(x1 + 50) + " " + y2 + " L " + x2 + " " + y2; 
-				svgContainer.append("path").attr("d", d)
-					.attr("data-line-navigate", "")
-					.attr("data-line-nodo-id", v.nodoId)
-					.attr("fill", "none") 
-					.attr("stroke", "#797979")
-					.attr("stroke-width", "1"); 
-			}
+			mapaDialogoDibujarLinea(svgContainer, v); 
 
 			listaNodos.push({
 				nodoId: v.nodoId,
@@ -174,24 +74,7 @@ function dibujarDialogo(nodoMensaje) {
 	});
 
 	$.each(listaNodos, function(k, v) {
-		var circle = svgContainer.append("circle")
-			.attr("data-circle", "dialogo")
-			.attr("data-circle-navigate", "")
-			.attr("data-nodo-id", v.nodoId)
-			.attr("data-nodo-session-id", v.sessionId)
-			.attr("data-nodo-parent-id", v.nodoPadreId)
-			.attr("data-nodo-parent-nivel", v.nodoPadreNivel)
-			.attr("data-nodo-nivel", v.nodoNivel)
-			.attr("fill", "#" + v.color)
-			.attr("cx", v.cx)
-			.attr("cy", v.cy)
-			.attr("r", circleRadio)
-			.attr("class", "tooltipped context-menu-one")
-			.attr("data-position", "bottom")
-			.attr("data-delay", "50")
-			.attr("data-tooltip", 
-				(v.tipo ? '"' + v.tipo +  '". ' : "") + 
-				(v.name.length > 50 ? v.name.substring(0, 50) + "..." : v.name));
+		mapaDialogoDibujarNodo(svgContainer, v); 
 	});
 
 	d3.select("#main").select("svg")
@@ -204,14 +87,13 @@ function dibujarDialogo(nodoMensaje) {
 /**
 * @method :: mapaDialogoDibujarSesion 
 * @description :: Se encarga de dibujar la sesión del diálogo 
-* @param :: {Object} circleWidth, el ancho del marco que contiene la imagen del usuario
 * @param :: {Object} imageI, el índice de la imagen del usuario en el arreglo de mensajes
 * @param :: {Object} imgurl, la dirección hacia la imagen del usuario
 * @param :: {Object} initials, iniciales del usuario
 * @param :: {Object} sessionId, la sesión que se dibujará en el mapa
 * @param :: {Object} svgContainer, objeto svg que contiene el mapa del diálogo
 **/
-function mapaDialogoDibujarSesion(circleWidth, imageI, imgurl, initials, sessionId, svgContainer) {
+function mapaDialogoDibujarSesion(imageI, imgurl, initials, sessionId, svgContainer) {
 	var sessionLine = svgContainer.append("line") 
 		.attr("x1", circleWidth + (sessionId * 100)) 
 		.attr("x2", circleWidth + (sessionId * 100)) 
@@ -244,12 +126,105 @@ function mapaDialogoDibujarSesion(circleWidth, imageI, imgurl, initials, session
 		.attr("data-tooltip", initials);
 } 
 
-function mapaDialogoModificarNodo(nodoId, nodoNivel) {
-	var circleHeight = 100;
-	var y2 = circleHeight + (nodoNivel * 40); 
-	var circle = $("[data-nodo-id='" + nodoId + "'"); 
-	var line = $("[data-line-nodo-id='" + nodoId + "'"); 
-	console.log(line.prop('nodeName'));
-	//circle.attr("cy", y2); 
-	//line.attr("cy", y2); 
+function mapaDialogoAgregarNodo(mensaje) {
+	console.log("AgregarNodo"); 
+	var svgContainer = d3.select("#main svg"); 
+
+	if(!$("[data-header-session-id='" + mensaje.sessionId + "']").length) 
+		mapaDialogoDibujarSesion(mensaje.sessionId, mensaje.usuario.imgurl, mensaje.usuario.initials, mensaje.sessionId, svgContainer); 
+
+	var y2 = circleHeight + (mensaje.nodoNivel * 40); 
+	var data = { 
+		nodoId: mensaje.nodoId, 
+		sessionId: mensaje.sessionId, 
+		nodoPadreId: mensaje.nodoPadreId, 
+		nodoPadreNivel: mensaje.nodoPadreNivel, 
+		nodoNivel: mensaje.nodoNivel, 
+		color: mensaje.usuario.color, 
+		cx: circleWidth + (mensaje.sessionId * 100), 
+		cy: y2, 
+		name: mensaje.name, 
+		tipo: mensaje.tipo 
+	}; 
+
+	mapaDialogoDibujarNodo(svgContainer, data); 
+	mapaDialogoDibujarLinea(svgContainer, mensaje); 
+}
+
+function mapaDialogoDibujarNodo(svgContainer, data) {
+	var circle = svgContainer.append("circle")
+		.attr("data-circle", "dialogo")
+		.attr("data-circle-navigate", "")
+		.attr("data-nodo-id", data.nodoId)
+		.attr("data-nodo-session-id", data.sessionId)
+		.attr("data-nodo-parent-id", data.nodoPadreId)
+		.attr("data-nodo-parent-nivel", data.nodoPadreNivel)
+		.attr("data-nodo-nivel", data.nodoNivel)
+		.attr("fill", "#" + data.color)
+		.attr("cx", data.cx)
+		.attr("cy", data.cy)
+		.attr("r", circleRadio)
+		.attr("class", "tooltipped context-menu-one")
+		.attr("data-position", "bottom")
+		.attr("data-delay", "50")
+		.attr("data-tooltip", 
+			(data.tipo ? '"' + data.tipo +  '". ' : "") + 
+			(data.name.length > 50 ? data.name.substring(0, 50) + "..." : data.name));
+}
+
+function mapaDialogoDibujarLinea(svgContainer, data) { 
+	var x1 = lineHeight + (100 * data.nodoPadreSessionId); 
+	var x2 = lineHeight + 76 + (100 * (data.sessionId - 1)); 
+	var y1 = circleHeight + (data.nodoPadreNivel * 40); 
+	var y2 = circleHeight + (data.nodoNivel * 40); 
+
+	if(y1 === y2) { 
+		svgContainer.append("line")
+			.attr("data-line-navigate", "")
+			.attr("data-line-nodo-id", data.nodoId)
+			.attr("x1", x1)
+			.attr("y1", y1)
+			.attr("x2", x2)
+			.attr("y2", y2)
+			.attr("stroke", "#797979")
+			.attr("stroke-width", "1");
+	} else { 
+		var d = "M " + x1 + " " + y1 + " L " + parseInt(x1 + 50) + " " + y2 + " L " + x2 + " " + y2; 
+		svgContainer.append("path").attr("d", d)
+			.attr("data-line-navigate", "")
+			.attr("data-line-nodo-id", data.nodoId)
+			.attr("fill", "none") 
+			.attr("stroke", "#797979")
+			.attr("stroke-width", "1"); 
+	}
+}
+
+function mapaDialogoModificarNodo(mensaje) {
+	console.log("ModificarNodo"); 
+
+	var x1 = lineHeight + (100 * mensaje.nodoPadreSessionId); 
+	var x2 = lineHeight + 76 + (100 * (mensaje.sessionId - 1)); 
+	var y1 = circleHeight + (mensaje.nodoPadreNivel * 40); 
+	var y2 = circleHeight + (mensaje.nodoNivel * 40); 
+
+	// Modificar el nodo 
+	var circle = $("[data-nodo-id='" + mensaje.nodoId + "'"); 
+	circle.attr("data-nodo-parent-nivel", mensaje.nodoPadreNivel);
+	circle.attr("data-nodo-nivel", mensaje.nodoNivel);
+	circle.attr("cy", y2);
+
+	var d = "M " + x1 + " " + y1 + " L " + parseInt(x1 + 50) + " " + y2 + " L " + x2 + " " + y2; 
+	var line = $("[data-line-nodo-id='" + mensaje.nodoId + "'"); 
+
+	if(line.prop("nodeName") === "line") {
+		line.remove(); 
+		var svgContainer = d3.select("#main svg"); 
+		svgContainer.append("path").attr("d", d)
+			.attr("data-line-navigate", "")
+			.attr("data-line-nodo-id", mensaje.nodoId)
+			.attr("fill", "none") 
+			.attr("stroke", "#797979")
+			.attr("stroke-width", "1"); 
+	} else 
+		line.attr("d", d); 
 }
