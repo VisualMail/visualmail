@@ -119,177 +119,144 @@
             }, req);
     }, 
 
-    setMensajePosicionNoIntercalar: function(nuevoMensaje, req) { 
-
-        // Buscar los nodos que están en la sesión actual del nuevo nodo 
-        Mensaje.find({ 
-            id: { "!": nuevoMensaje.id }, 
-            project_id: nuevoMensaje.project_id, 
-            sessionId: nuevoMensaje.sessionId, 
-            nodoNivel: { ">=": nuevoMensaje.nodoNivel } 
-        })
-        .sort("nodoNivel ASC")
-        .then(function(msj) { 
-            // Iniciar parámetros 
-            var revisarSession = false; 
-            var modificarNivel = false; 
-
-            // Si existe más de 1 mensaje actualizar
-            if(msj.length > 1) { 
-
-                for(var i = 0; i < msj.length; i++) { 
-
-                    // Verificar si el nivel está ocupado 
-                    if(msj[i].nodoNivel === nuevoMensaje.nodoNivel) {
-
-                        // Verificar si el nivel del nodo padre del nuevo mensaje es menor que el nodo del mensaje analizado 
-                        if(msj[i].nodoPadreId === nuevoMensaje.nodoPadreId || 
-                            (msj[i].nodoPadreSessionId === nuevoMensaje.nodoPadreSessionId && 
-                            msj[i].nodoPadreNivel < nuevoMensaje.nodoPadreNivel)) {
-                            modificarNivel = false; 
-                            nuevoMensaje.nodoNivel++; 
-                        } else 
-                            modificarNivel = true; 
-                    } 
-
-                    // Vericar si es necesario modificar el nivel de los nodos 
-                    if(modificarNivel) {
-                        revisarSession = true;  
-                        msj[i].nodoNivel++; 
-                        msj[i].save(); 
-                    }
-                } 
-
-                nuevoMensaje.save(); 
-            } 
-
-            // Enviar mensaje por el socket 
-            Mensaje.sendMensajeSocket(nuevoMensaje, revisarSession, [], req); 
-        })
-        .catch(function(err) {
-            sails.log("Error en 'setMensajePosicionNoIntercalar':", err); 
-        }); 
-    }, 
-
     setMensajePosicionIntercalar: function(nuevoMensaje, req) { 
-
-        // Encontrar todos los mensajes que podrían estar intercalados
+        // Buscar los mensajes del proyecto que cumplan las condiciones: 
+        // - Que no sea el primer mensaje, el nuevo mensaje, o el mensaje padre 
+        // - Que el nivel que ocupan sea igual o mayor al nivel del nuevo mensaje 
         Mensaje.find({ 
             project_id: nuevoMensaje.project_id, 
-            id: { "!": nuevoMensaje.id }, 
-            sessionId: { ">": nuevoMensaje.nodoPadreSessionId } 
+            nodoId: { "!": [1, nuevoMensaje.nodoId, nuevoMensaje.nodoPadreId] }, 
+            nodoNivel: { ">=": nuevoMensaje.nodoPadreNivel } 
         })
+        .sort("sessionId ASC")
         .then(function(msj) { 
+            // Parámetros iniciales 
+            var revisarSession = false; 
+            var actualizarNodos = []; 
 
             // Si existen mensajes por actualizar 
-            if(msj.length > 1) {
+            if(msj.length > 1) { 
 
-                // En 'parentsId' se almacenan todos los mensajes padres que no se modificarán
-                var parentsId = []; 
-                parentsId.push(nuevoMensaje.nodoPadreId); 
+                // Lista auxiliar para almacenar los nodos que se actualizarán 
+                var actualizarNodosAux = []; 
+                // Variable auxiliar para almacenar el último nivel que ocupará el nuevo mensaje 
                 var auxNivel = nuevoMensaje.nodoNivel; 
+                var verificarCamino = false; 
+                var noActualizarId = []; 
 
                 // Buscar cada mensaje 
-                for(var j = 0; j < msj.length; j++) { 
+                for(var i = 0; i < msj.length; i++) { 
 
-                    // Buscar en cada 'parentsId' si el mensaje no se afecta 
-                    for(var k = 0; k < parentsId.length; k++) { 
+                    // Si el mensaje está en el mismo nivel del padre del nuevo mensaje y 
+                    // el mensaje tiene una sesión menor a la del padre del nuevo mensaje, saltar este loop 
+                    if(msj[i].nodoNivel === nuevoMensaje.nodoPadreNivel && 
+                        msj[i].sessionId < nuevoMensaje.nodoPadreSessionId) 
+                        continue; 
 
-                        // Si el padre del mensaje se encuentra en 'parentsId' añadir el id del mensaje actual 
-                        if(msj[j].nodoPadreId === parentsId[k]) { 
-                            parentsId.push(msj[j].nodoId); 
+                    if(msj[i].nodoNivel === nuevoMensaje.nodoNivel && msj[i].sessionId > nuevoMensaje.nodoPadreSessionId) 
+                        verificarCamino = true; 
 
-                            // Verificar si el nivel del mensaje es mayor al nuevo 
-                            if(msj[j].nodoNivel >= nuevoMensaje.nodoNivel) { 
-                                // Si lo es actualizar el nuevo a la última posición 
-                                nuevoMensaje.nodoNivel = msj[j].nodoNivel + 1; 
-                                nuevoMensaje.save(); 
-                            } 
+                    // 'noActualizarNivel' almacena el nivel del mensaje que no se actualizará 
+                    var noActualizarNivel = 0; 
+                    // 'actualizar' es una bandera para agregar los mensajes que se actualizarán 
+                    var actualizar = true; 
 
-                            break; 
-                        } 
+                    // Si el nivel del mensaje es menor o igual al nivel del nuevo mensaje y 
+                    // el padre del mensaje es el mismo padre del nuevo mensaje o 
+                    // la sesion del padre del mensaje es mayor o igual a la sesión del padre del nuevo mensaje y 
+                    // el nivel del padre del mensaje es menor al nivel del padre del nuevo mensaje 
+                    if(
+                        ((msj[i].nodoNivel === nuevoMensaje.nodoPadreNivel || msj[i].nodoPadreNivel < nuevoMensaje.nodoPadreNivel) && msj[i].sessionId > nuevoMensaje.nodoPadreSessionId) || 
+                        (msj[i].nodoPadreId === nuevoMensaje.nodoPadreId) 
+                    ) { 
+                        // Agregar el 'id' del mensaje como un mensaje que no se debe actualizar 
+                        noActualizarId.push(msj[i].nodoId); 
+                        // Guardar el nivel del mensaje para verificarlo con el nuevo mensaje 
+                        noActualizarNivel = msj[i].nodoNivel; 
+                        // No actualizar este mensaje 
+                        actualizar = false;
+                    } else {
+
+                        // Buscar si el mensaje es hijo de un mensaje que no se debe actualizar 
+                        for(var j = 0; j < noActualizarId.length; j++) { 
+                            // Si es un hijo de un mensaje que no se actualiza
+                            if(msj[i].nodoPadreId === noActualizarId[j]) {
+                                // Agregar el 'id' del mensaje como un mensaje que no se debe actualizar 
+                                noActualizarId.push(msj[i].nodoId); 
+                                // Guardar el nivel del mensaje para verificarlo con el nuevo mensaje 
+                                noActualizarNivel = msj[i].nodoNivel; 
+                                // No actualizar este mensaje 
+                                actualizar = false;
+                                break; 
+                            }
+                        }
+
                     }
+
+                    // Verificar si el mensaje debe ser actualizado 
+                    if(actualizar) {
+                        // Agregar en la lista auxiliar 
+                        actualizarNodosAux.push(msj[i]); 
+                    } else if(noActualizarNivel >= nuevoMensaje.nodoNivel) {
+                        // Actualizar el máximo nivel del nuevo mensaje
+                        nuevoMensaje.nodoNivel = noActualizarNivel + 1; 
+                        nuevoMensaje.save(); 
+                    } 
 
                     // Verificar si el nivel está ocupado 
-                    if(msj[j].nodoNivel === auxNivel && 
-                        msj[j].nodoPadreSessionId >= nuevoMensaje.nodoPadreSessionId && 
-                        msj[j].nodoPadreNivel < nuevoMensaje.nodoPadreNivel) {
+                    if(msj[i].nodoNivel === auxNivel && 
+                        msj[i].nodoPadreSessionId >= nuevoMensaje.nodoPadreSessionId && 
+                        msj[i].nodoPadreNivel < nuevoMensaje.nodoPadreNivel) {
                         auxNivel++; 
                     }
-                } 
+                }
 
-                // Si no existen mensajes superiores del nuevo mensaje
-                if(parentsId.length <= 1) {
+                // Si no existen mensajes superiores al nuevo mensaje
+                if(noActualizarId.length <= 1) {
                     // Asignar el nivel auxiliar 
                     nuevoMensaje.nodoNivel = auxNivel; 
                     nuevoMensaje.save(); 
                 }
 
-                var msjMismoNivel = Mensaje.find({ 
-                    project_id: nuevoMensaje.project_id, 
-                    id: { "!": nuevoMensaje.id }, 
-                    nodoId: {"!": parentsId}, 
-                    sessionId: { ">": nuevoMensaje.nodoPadreSessionId }, 
-                    nodoNivel: nuevoMensaje.nodoNivel  
-                })
-                .then(function(resultado) { 
-                    var retorno = []; 
-                    
-                    if(resultado.length > 0) {
-                        retorno = Mensaje.find({ 
-                            project_id: nuevoMensaje.project_id, 
-                            id: { "!": nuevoMensaje.id }, 
-                            nodoId: {"!": parentsId }, 
-                            sessionId: { ">": nuevoMensaje.nodoPadreSessionId }, 
-                            nodoNivel: {">=": nuevoMensaje.nodoNivel } 
-                        })
-                        .sort("sessionId ASC")
-                        .then(function(resultado) { 
-                            return resultado; 
-                        })
-                        .catch(function(err) {
-                            sails.log("Error en 'Buscar nodos en el mismo nivel':", err); 
-                            return []; 
-                        });
+                // Si existen mensajes por actualizar nivel 
+                if(actualizarNodosAux.length > 0 && verificarCamino) { 
+                    revisarSession = true; 
+
+                    // Actualizar cada mensaje 
+                    for(var j = 0; j < actualizarNodosAux.length; j++) {
+
+                        /*if(actualizarNodosAux[j].sessionId <= nuevoMensaje.nodoPadreSessionId && 
+                            actualizarNodosAux[j].numero_hijos === 0)
+                            continue; */
+
+                        if(actualizarNodosAux[j].nodoNivel <= nuevoMensaje.nodoNivel) { 
+                            actualizarNodosAux[j].nodoNivel += ((nuevoMensaje.nodoNivel - actualizarNodosAux[j].nodoNivel) + 1);  
+                        } else 
+                            actualizarNodosAux[j].nodoNivel++; 
+
+                        actualizarNodos.push(actualizarNodosAux[j]); 
                     }
 
-                    return [retorno]; 
-                })
-                .spread(function(retorno){
-                    return retorno; 
-                })
-                .catch(function(err) {
-                    sails.log("Error en 'Buscar nodos en el mismo nivel':", err); 
-                    return []; 
-                }); 
+                    for(var l = 0; l < actualizarNodos.length; l++) {
 
-                return [msjMismoNivel]; 
-            } 
-        })
-        .spread(function(msjMismoNivel) {
-            // Si existen mensajes en el mismo nivel del nuevo mensaje 
-            var actualizarNodos = []; 
-            var revisarSession = false; 
+                        for(var m = 0; m < actualizarNodos.length; m++) {
+                            if(actualizarNodos[m].id === actualizarNodos[l].parent) {
+                                actualizarNodos[l].nodoPadreNivel = actualizarNodos[m].nodoNivel; 
+                                break; 
+                            }
+                        }
 
-            if(msjMismoNivel.length > 0) { 
-
-                // Actualizar el nivel de cada mensaje debajo del nuevo mensaje 
-                for(var m = 0; m < msjMismoNivel.length; m++) { 
-                    msjMismoNivel[m].nodoNivel += nuevoMensaje.nodoNivel; 
-
-                    if(msjMismoNivel[m].nodoPadreSessionId > nuevoMensaje.nodoPadreSessionId) 
-                        msjMismoNivel[m].nodoPadreNivel += nuevoMensaje.nodoNivel; 
-
-                    msjMismoNivel[m].save(); 
-                    actualizarNodos.push(msjMismoNivel[m].nodoId); 
-                } 
+                        actualizarNodos[l].save(); 
+                    }
+                }
             }
 
             // Enviar el mensaje por el socket 
             Mensaje.sendMensajeSocket(nuevoMensaje, revisarSession, actualizarNodos, req); 
         })
         .catch(function(err) {
-            sails.log("Error en 'Buscar nodos hijos':", err); 
-        }); 
-    }, 
+            // Si existe un error, desplegar en pantalla 
+            sails.log("Se produjo un error en 'Buscar mensajes mayor o iguales al nivel del nuevo mensaje'", err); 
+        });
+    },
 }; 

@@ -43,7 +43,7 @@ module.exports = {
 					mensajeUser.save(); 
 
 					// Establecerla posición del nodo 
-					if((mensajeUser.sessionId > 1) && (mensajeUser.nodoPadreSessionId < (mensajeUser.sessionId - 1))) { 
+					/*if((mensajeUser.sessionId > 1) && (mensajeUser.nodoPadreSessionId < (mensajeUser.sessionId - 1))) { 
 						// Si la sesión del padre del nuevo mensaje es mayor que la sesión previa del nuevo mensaje 
 						// Verificar si no existen nodos intercalados en el camino del nuevo nodo 
 						Mensaje.setMensajePosicionIntercalar(mensajeUser, req); 
@@ -51,7 +51,9 @@ module.exports = {
 						// Si la sesión del padre del nuevo mensaje es igual a la sesión previa del nuevo mensaje 
 						// Verificar si no existen nodos en el mismo nivel de la sesión 
 						Mensaje.setMensajePosicionNoIntercalar(mensajeUser, req); 
-					}
+					}*/
+					if(mensajeUser.sessionId > 0)
+						Mensaje.setMensajePosicionIntercalar(mensajeUser, req); 
 				}
 
 				return;

@@ -794,18 +794,21 @@ var $anclar = false;
 
                     // Si hay que revisar los nodos 
                     if(revisarSession && actualizarNodos.length > 0) { 
-                        for(var i = 0; i < actualizarNodos.length; i++) {
-                            if(actualizarNodos[i] === value.nodoId) {
-                                value.nodoNivel++; 
+                        console.log(actualizarNodos); 
 
-                                if(value.nodoPadreSessionId > nuevoMensaje.nodoPadreSessionId) { 
-                                    value.nodoPadreNivel++; 
-                                }
+                        $.each(actualizarNodos, function(k, v) { 
 
-                                mapaDialogoModificarNodo(value); 
-                            }
-                        }
+                            if(v.id === value.id) {
+                                value.nodoNivel = v.nivel; 
+                            } else if(v.id === value.parent) {
+                                value.nodoPadreNivel = v.nivel; 
+                            } 
+                        }); 
                     } 
+                }); 
+
+                $.each(actualizarNodos, function(k, v) { 
+                    mapaDialogoModificarNodo(v); 
                 }); 
 
             } else { 
