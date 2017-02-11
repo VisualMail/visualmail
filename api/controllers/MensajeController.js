@@ -53,7 +53,7 @@ module.exports = {
 						Mensaje.setMensajePosicionNoIntercalar(mensajeUser, req); 
 					}*/
 					if(mensajeUser.sessionId > 0)
-						Mensaje.setMensajePosicionIntercalar(mensajeUser, req); 
+						Mensaje.setMensajePosicion(mensajeUser, req); 
 				}
 
 				return;

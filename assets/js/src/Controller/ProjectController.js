@@ -770,72 +770,43 @@ var $anclar = false;
             // Obtener los parámetros 
             var nuevoMensaje = data.nuevoMensaje; 
             var revisarSession = data.revisarSession; 
+            var actualizarNodos = data.actualizarNodos; 
 
             // Si un nuevo usuario creo el mensaje, actualizar mi sesión
             if(vm.miUsuario.id !== nuevoMensaje.usuario.id) 
                 vm.miSessionId = nuevoMensaje.sessionId + 1; 
 
-            // Actualizar el número de hijos del nodo padre 
-            if((nuevoMensaje.sessionId > 1) && (nuevoMensaje.nodoPadreSessionId < (nuevoMensaje.sessionId - 1))) { 
-                var actualizarNodos = data.actualizarNodos; 
+            var dibujado = false; 
 
-                // Verificar cada mensaje 
-                $.each(vm.miMensaje, function(key, value) { 
+            // Verificar cada mensaje 
+            $.each(vm.miMensaje, function(key, value) { 
 
-                    // Si encuentra el mensaje padre 
-                    // actualizar el número de hijos
-                    if(value.id === nuevoMensaje.parent) {
-                        value.numero_hijos++; 
+                // Si encuentra el mensaje padre 
+                // actualizar el número de hijos 
+                if(value.id === nuevoMensaje.parent) { 
+                    value.numero_hijos++; 
 
-                        // Si no se deben revisar los mensajes en la sesión terminar
-                        if(!revisarSession)
-                            return false; 
-                    }
+                    if(!revisarSession)
+                        return false; 
+                }
 
-                    // Si hay que revisar los nodos 
-                    if(revisarSession && actualizarNodos.length > 0) { 
-                        console.log(actualizarNodos); 
+                // Si hay que revisar los nodos 
+                if(revisarSession && actualizarNodos.length > 0) { 
 
-                        $.each(actualizarNodos, function(k, v) { 
+                    $.each(actualizarNodos, function(k, v) { 
+                        if(v.id === value.id) { 
+                            value.nodoNivel = v.nodoNivel; 
+                        } else if(v.id === value.parent) {
+                            value.nodoPadreNivel = v.nodoNivel; 
+                        } 
 
-                            if(v.id === value.id) {
-                                value.nodoNivel = v.nivel; 
-                            } else if(v.id === value.parent) {
-                                value.nodoPadreNivel = v.nivel; 
-                            } 
-                        }); 
-                    } 
-                }); 
+                        if(!dibujado) 
+                            mapaDialogoModificarNodo(v); 
+                    }); 
 
-                $.each(actualizarNodos, function(k, v) { 
-                    mapaDialogoModificarNodo(v); 
-                }); 
-
-            } else { 
-                // Verificar cada mensaje 
-                $.each(vm.miMensaje, function(key, value) { 
-
-                    // Si encuentra el mensaje padre 
-                    // actualizar el número de hijos
-                    if(value.id === nuevoMensaje.parent) {
-                        value.numero_hijos++; 
-
-                        // Si no se deben revisar los mensajes en la sesión terminar
-                        if(!revisarSession)
-                            return false; 
-                    }
-
-                    // Si hay que revisar los nodos 
-                    if(revisarSession && 
-                        value.sessionId === nuevoMensaje.sessionId && 
-                        value.nodoPadreId !== nuevoMensaje.nodoPadreId && 
-                        value.nodoNivel >= nuevoMensaje.nodoNivel) {
-                        value.nodoNivel++; 
-                        mapaDialogoModificarNodo(value); 
-                    }
-                        
-                }); 
-            }
+                    dibujado = true; 
+                } 
+            }); 
 
             nuevoMensaje["cssvalue"] = !vm.miMensajeIntercalar; 
             vm.miMensajeIntercalar = !vm.miMensajeIntercalar; 
