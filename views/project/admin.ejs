@@ -109,6 +109,12 @@
   						</div>
   						<div class="col s3 offset-s3">
   							<span tooltipped 
+								data-delay="50" 
+								data-position="left" 
+								data-tooltip="Mensaje anclado">
+								<img alt="Kanban" height="33px" src="/images/anchor-small.png" width="33px" />
+							</span>
+  							<span tooltipped 
   								data-delay="50" 
   								data-position="left" 
   								data-tooltip="Unir al Kanban">
@@ -145,7 +151,7 @@
 	  						<div class="col s6">
 	  							<p><strong>{{ vm.miMensajeAncladoNavegar.usuario.initials }}</strong> dijo:</p>
 	  						</div>
-	  						<div class="col s3 offset-s3">
+	  						<div class="col s2 offset-s4">
 	  							<span tooltipped 
 									data-delay="50" 
 									data-position="left" 
@@ -258,7 +264,7 @@
 		<div id="kanban" class="col s12" ng-cloak>
 			<br />
 			<div class="col s3">
-				<div class="col s12 contenedorkanbanheader"> 
+				<div class="col s1 contenedorkanbanheader"> 
 					<div class="col s10">NUEVA</div> 
 					<div class="col s1"> 
 						<a class="modal-trigger" href="#modalKanbanTarea"> 
@@ -275,20 +281,20 @@
 						<i class="light-green-text material-icons prefix">search</i>
 					</div>
 					<div class="col 11">
-						<input type="text" ng-model="vm.filtro1" />
+						<input placeholder="Buscar..." type="text" ng-model="vm.miKanbanColumnSearch1" />
 					</div>
 				</div>
 				<div class="col s12 contenedorkanban" id="new" 
 					data-drop="true" 
 					data-jqyoui-options="optionsList1" 
-					jqyoui-droppable="{ multiple: true, onDrop:'vm.onDrop' }"
-					ng-model="vm.list1">
+					jqyoui-droppable="{ multiple: true, onDrop:'vm.onDrop', index: vm.test }"
+					ng-model="vm.miKanbanColumn1">
 					<div class="hoverable kanbanbubble" id="kanban1" 
 						data-drag="{{ item.drag }}" 
 						data-jqyoui-options="{ helper: 'clone' }" 
 						jqyoui-draggable="{ index: {{ $index }}, animate: true }" 
-						ng-model="vm.list1" 
-						ng-repeat="item in vm.list1 | filter: vm.filtro1" 
+						ng-model="vm.miKanbanColumn1" 
+						ng-repeat="item in vm.miKanbanColumn1 | filter: vm.miKanbanColumnSearch1" 
 						ng-show="item.title">
 						<div class="row">
 							<div class="col s12 kanbanred" 
@@ -318,20 +324,20 @@
 						<i class="material-icons light-green-text prefix">search</i>
 					</div>
 					<div class="col 11" id="doing">
-						<input type="text" ng-model="vm.filtro2" />
+						<input type="text" ng-model="vm.miKanbanColumnSearch2" />
 					</div>
 				</div>
 				<div class="col s12 contenedorkanban" 
 					data-drop="true" 
 					data-jqyoui-options="optionsList2" 
 					jqyoui-droppable="{ multiple: true, onDrop: 'vm.onDrop' }" 
-					ng-model="vm.list2">
+					ng-model="vm.miKanbanColumn2">
 					<div class="kanbanbubble hoverable" 
 						data-drag="{{ item.drag }}" 
 						data-jqyoui-options="{ helper: 'clone' }" 
 						jqyoui-draggable="{ index: {{ $index }}, animate: true }" 
-						ng-model="vm.list2" 
-						ng-repeat="item in vm.list2 | filter: vm.filtro2" 
+						ng-model="vm.miKanbanColumn2" 
+						ng-repeat="item in vm.miKanbanColumn2 | filter: vm.miKanbanColumnSearch2" 
 						ng-show="item.title">
 						<div class="row">
 							<div class="col s12 kanbanred" ng-if="item.associated == true && item.element != ''">
@@ -359,20 +365,20 @@
 						<i class="material-icons light-green-text prefix">search</i>
 					</div>
 					<div class="col 11">
-						<input type="text" ng-model="vm.filtro3" />
+						<input placeholder="Buscar..." type="text" ng-model="vm.miKanbanColumnSearch3" />
 					</div>
 				</div>
 				<div class="col s12 contenedorkanban" id="testing" 
 					data-drop="true" 
 					data-jqyoui-options="optionsList3" 
 					jqyoui-droppable="{ multiple: true, onDrop: 'vm.onDrop' }" 
-					ng-model="vm.list3">
+					ng-model="vm.miKanbanColumn3">
 					<div class="hoverable kanbanbubble kanbanyellow" 
 						data-drag="{{ item.drag }}" 
 						data-jqyoui-options="{ helper: 'clone' }" 
 						jqyoui-draggable="{ index: {{ $index }}, animate: true }"
-						ng-model="vm.list3" 
-						ng-repeat="item in vm.list3 | filter: vm.filtro3" 
+						ng-model="vm.miKanbanColumn3" 
+						ng-repeat="item in vm.miKanbanColumn3 | filter: vm.miKanbanColumnSearch3" 
 						ng-show="item.title">
 						<div class="row">
 							<div class="col s12 kanbanred" ng-if="item.associated == true && item.element != ''">
@@ -400,20 +406,20 @@
 						<i class="material-icons light-green-text prefix">search</i>
 					</div>
 					<div class="col 11">
-						<input type="text" ng-model="vm.filtro4" />
+						<input placeholder="Buscar..." type="text" ng-model="vm.miKanbanColumnSearch4" />
 					</div>
 				</div>
 				<div class="col s12 contenedorkanban" id="done" 
 					data-drop="true" 
 					data-jqyoui-options="optionsList4" 
 					jqyoui-droppable="{ multiple: true, onDrop: 'vm.onDrop' }" 
-					ng-model="vm.list4">
+					ng-model="vm.miKanbanColumn4">
 					<div class="hoverable kanbanbubble kanbanyellow" 
 						data-drag="{{ item.drag }}" 
 						data-jqyoui-options="{ helper: 'clone' }" 
 						jqyoui-draggable="{ index: {{ $index }}, animate: true }" 
-						ng-model="vm.list4" 
-						ng-repeat="item in vm.list4 | filter: vm.filtro4" 
+						ng-model="vm.miKanbanColumn4" 
+						ng-repeat="item in vm.miKanbanColumn4 | filter: vm.miKanbanColumnSearch4" 
 						ng-show="item.title">
 						<div class="row">
 							<div class="col s12 kanbanred" ng-if="item.associated == true && item.element != ''">

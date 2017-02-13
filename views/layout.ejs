@@ -34,10 +34,9 @@
 		<!-- Fin referencias externas -->
 
 		<!-- Inicio hojas de estilo CSS -->
-		<link rel="stylesheet" href="/framework/jquery-contextmenu/jquery.contextMenu.min.css">
-		<link rel="stylesheet" href="/framework/jquery-ui/jquery-ui.css">
+		<link rel="stylesheet" href="/js/dependencies/jquery-contextmenu/jquery.contextMenu.min.css">
+		<link rel="stylesheet" href="/js/dependencies/jquery-ui/jquery-ui.css">
 		<link rel="stylesheet" href="/styles/importer.css">
-		<!--<link rel="stylesheet" href="/framework/materialize/css/materialize.min.css">-->
 		<link rel="stylesheet" href="/styles/materialize.css">
 		<link rel="stylesheet" href="/styles/selectize.css">
 		<link rel="stylesheet" href="/styles/selectize.default.css">
@@ -46,10 +45,10 @@
 
 		<!-- Inicio Scripts -->
 		<script src="/js/dependencies/sails.io.js"></script>
-		<script src="/framework/jquery/js/jquery.min.js"></script>
-		<script src="/framework/jquery-contextmenu/jquery.contextMenu.min.js"></script>
-		<script src="/framework/jquery-ui/jquery-ui.min.js"></script>
-		<script src="/framework/jscolor/js/jscolor.min.js"></script>
+		<script src="/js/dependencies/jquery/js/jquery-3.1.1.min.js"></script>
+		<script src="/js/dependencies/jquery-contextmenu/jquery.contextMenu.min.js"></script>
+		<script src="/js/dependencies/jquery-ui/jquery-ui.min.js"></script>
+		<script src="/js/dependencies/jscolor/js/jscolor.min.js"></script>
 		<!--<script src="/js/dependencies/jquery/jquery.contextMenu.js"></script>-->
 		<!--<script src="/js/dependencies/jquery/jquery.ui.position.min.js"></script>-->
 		<script src="/js/dependencies/jquery/microplugin.js"></script>
@@ -59,7 +58,6 @@
 		<script src="/js/Javascript/fisheye.js"></script>
 		<script src="/js/Javascript/init.js"></script>
 		<script src="/js/Javascript/materialize.js"></script>
-		<!--<script src="/framework/materialize/js/materialize.min.js"></script>-->
 		<script src="/js/Javascript/selectize.js"></script>
 		<script src="/js/dependencies/angular/angular.min.js"></script>
 		<script src="/js/dependencies/angular/angular-messages.js"></script>
@@ -80,12 +78,12 @@
 		<script src="/js/src/Controller/ProjectController.js"></script>
 		<script>
 			$(document).ready(function(){
-				$('.main-menu-btn').sideNav({
+				$(".main-menu-btn").sideNav({
 					menuWidth: 300, // Default is 240
 					edge: 'left', // Choose the horizontal origin
 					closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
 				});
-				$('.dropdown-button').dropdown({
+				$(".dropdown-button").dropdown({
 					inDuration: 300,
 					outDuration: 225,
 					constrain_width: true, // Does not change width of dropdown to that of the activator
@@ -128,7 +126,7 @@
 						data-position="bottom" 
 						data-tooltip="Regresar al inicio" 
 						data-tooltip-id="0b19c82d-fa47-bd7e-797c-9c3ff2b6857d">
-						<img src="/images/iconosmall2.png">
+						<img src="/images/icon.png">
 					</a>
 					<button type="button" class="main-menu-btn" data-activates="slide-out">
 		            	<span class="icon-bar"></span>
@@ -149,9 +147,6 @@
     					<li><a href="/session/logout">Cerrar sesión</a></li>
   					</ul>
 		        </div>
-
-
-
 			
 				<!--<div class=" col s3">
 					<div class ="col s1 offset-s1">

@@ -10,17 +10,17 @@ angular
       'ui.materialize', 
       'app.editUserCtrl', 
       'app.createProjectCtrl',
-      'app.signupctrl',
-      'app.ProjectController'
-      ])
-   .directive('capitalize', function() { 
+      "app.SignUpController", 
+      "app.ProjectController" 
+   ])
+   .directive("capitalize", function() { 
       return { 
-         require: 'ngModel', 
-         link: function(scope, element, attrs, modelCtrl) {
-            var capitalize = function(inputValue) {
+         require: "ngModel", 
+         link: function(scope, element, attrs, modelCtrl) { 
+            var capitalize = function(inputValue) { 
 
-               if (inputValue == undefined) 
-                  inputValue = ''; 
+               if (inputValue === undefined) 
+                  inputValue = ""; 
 
                var capitalized = inputValue.toUpperCase(); 
 

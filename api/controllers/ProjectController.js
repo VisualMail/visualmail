@@ -6,7 +6,6 @@
 **/
 module.exports = {
 
-
 	/**
 	* @method :: admin (VIEW)
 	* @description :: retorna la vista de administración de proyectos
@@ -17,7 +16,7 @@ module.exports = {
 	admin: function(req, res, next) {
 		
 		// Llamar a Sails para ir a la vista de edición del proyecto
-		Project.findOne(req.param('id')).populate('participants').exec(function(err, project) {
+		Project.findOne(req.param("id")).populate("participants").exec(function(err, project) {
 			
 			// Verificar si existe un error
 			if(err) 
@@ -54,7 +53,7 @@ module.exports = {
 				// req.session dura el tiempo de la sesion hasta que el browser cierra
 				// Se actualiza la variable flash y se entrega json con formato
 				req.session.flash = { err: err };
-				return res.json({ project: 'false' });
+				return res.json({ project: "false" });
 			}
 			
 			// Si no hay error se deja vacía la variable flash y se retorna 'user' como json
@@ -221,30 +220,23 @@ module.exports = {
 	},
 
 	/**
-	* @method :: conectar_socket (POST)
-	* @description :: Añade un usuario al socket de comunicación
-	* @param :: {Object} req, request element de sails
-	* @param :: {Objetct} res, de la vista ejs del servidor
-	* @param :: {Objetct} next, para continuar en caso de error
+	* @method :: conectar_socket (POST) 
+	* @description :: Añade un usuario al socket de comunicación 
+	* @param :: {Object} req, request element de sails 
+	* @param :: {Objetct} res, de la vista ejs del servidor 
 	**/
-	conectar_socket: function(req, res) {
-		// Make sure this is a socket request (not traditional HTTP)
-	    if (!req.isSocket) {
-	    	return res.badRequest();
-	    }
+	conectar_socket: function(req, res) { 
+		// Verificar que es un socket request (no un request HTTP tradicional)
+	    if (!req.isSocket) 
+	    	return res.badRequest(); 
 
-	    // Have the socket which made the request join the "funSockets" room
-	    //sails.sockets.join(req, 'funSockets');
-	    sails.sockets.join(req, req.param('project_id'));
-	    // Broadcast a "hello" message to all the fun sockets.
-	    // This message will be sent to all sockets in the "funSockets" room,
-	    // but will be ignored by any client sockets that are not listening-- i.e. that didn't call `io.socket.on('hello', ...)`
-	    // The data of the message ({} object) is the "data" in io.socket.on('hello', function gotHelloMessage (data)
-	    //sails.sockets.broadcast('funSockets', 'hello', {message: 'my id'}, req);
-	    sails.sockets.broadcast(req.param('project_id'), 'conectar_socket', {message: 'conectado a VisualMail Socket'}, req);
+	    // Establecer el socket que realizó el request join hacia un nuevo room 
+	    sails.sockets.join(req, req.param("project_id")); 
+
+	    // Realizar un broadcast al 'room' 
+	    sails.sockets.broadcast(req.param("project_id"), "conectar_socket", {message: "conectado a VisualMail Socket"}, req);
 	    
-	    // Respond to the request with an a-ok message
-	    // The object returned here is "body" in io.socket.get('/say/hello', function gotResponse(body, response)
+	    // Responder al nuevo integrante 
 	    return res.ok({
 	        message: "Ahora estás conectado al proyecto."
 	    });

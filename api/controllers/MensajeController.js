@@ -18,13 +18,13 @@ module.exports = {
 			// Verificar si existe un error
 			if(err) { 
 				req.session.flash = { err: err }; 
-				return res.json({ mensaje: 'false' }); 
+				return res.json({ mensaje: "false" }); 
 			}
 			
 			// Si el objeto no se pudo crear, retornar json con formato de manejo de error
 			if(!mensaje) { 
 				req.session.flash = { err: err }; 
-				return res.json({ mensaje: 'false' }); 
+				return res.json({ mensaje: "false" }); 
 			}
 			
 			// Se deja la variable flash como vacía ya que no hay error y se retorna el mensaje creado
@@ -42,17 +42,8 @@ module.exports = {
 					mensajeUser["usuario"] = user; 
 					mensajeUser.save(); 
 
-					// Establecerla posición del nodo 
-					/*if((mensajeUser.sessionId > 1) && (mensajeUser.nodoPadreSessionId < (mensajeUser.sessionId - 1))) { 
-						// Si la sesión del padre del nuevo mensaje es mayor que la sesión previa del nuevo mensaje 
-						// Verificar si no existen nodos intercalados en el camino del nuevo nodo 
-						Mensaje.setMensajePosicionIntercalar(mensajeUser, req); 
-					} else { 
-						// Si la sesión del padre del nuevo mensaje es igual a la sesión previa del nuevo mensaje 
-						// Verificar si no existen nodos en el mismo nivel de la sesión 
-						Mensaje.setMensajePosicionNoIntercalar(mensajeUser, req); 
-					}*/
-					if(mensajeUser.sessionId > 0)
+					// Si no es el mensaje inicial o el primer hijo, verificar la posición 
+					if(mensajeUser.nodoId > 1)
 						Mensaje.setMensajePosicion(mensajeUser, req); 
 				}
 
@@ -89,7 +80,7 @@ module.exports = {
 			} else { 
 				// Si no hay error se deja la variable flash como vacia ya que no hay error y se retornan los mensajes
 				req.session.flash = { };
-				return res.json({mensaje: mensaje});
+				return res.json({ mensaje: mensaje });
 			}
 		});
 	},
@@ -104,28 +95,28 @@ module.exports = {
 	unir: function(req, res, next) { 
 		
 		// Estoy uniendo
-		Mensaje.findOne(req.param('id')).populate('children').exec(function(err, mensaje) { 
+		Mensaje.findOne(req.param("id")).populate("children").exec(function(err, mensaje) { 
 
 			// Si hay error se actualiza la variable flash y se entrega el json con formato de manejo del error
 			if(err) { 
 				req.session.flash = { err: err }; 
-				return res.json({ mensaje: 'false' });
+				return res.json({ mensaje: "false" });
 			}
 
 			// Si hay error se actualiza la variable flash y se entrega el json con formato de manejo del error
 			if(!mensaje) {
 				req.session.flash = { err: err }; 
-				return res.json({ mensaje: 'false' }); 
+				return res.json({ mensaje: "false" }); 
 			}
 			else { 
 				// Si no hay error
 				// se deja la variable flash como vacía ya que no hay error y se retornan los mensajes
 				// se añade el mensaje a children de mensaje
 				req.session.flash = { };
-				mensaje.children.add(req.param('idunion'));	
+				mensaje.children.add(req.param("idunion"));	
 
 				// Se actualiza el numero de hijos 
-				mensaje.numero_hijos = mensaje.numero_hijos + 1; 
+				mensaje.numero_hijos += 1; 
 
 				// Se guarda en la base de datos
 				mensaje.save(function(err) { });

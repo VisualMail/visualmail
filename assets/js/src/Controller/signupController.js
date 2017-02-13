@@ -1,10 +1,10 @@
 angular
-    .module('app.signupctrl', [
-        'ngMessages',
-		'gp.rutValidator',
-		'selectize'])
-    .controller('signupctrl', [
-        '$scope', 
+    .module("app.SignUpController", [
+        "ngMessages",
+		"selectize"
+    ])
+    .controller("SignUpController", [
+        "$scope", 
         function($scope) {  
             $scope.color = "FFFFFF";
    	    }

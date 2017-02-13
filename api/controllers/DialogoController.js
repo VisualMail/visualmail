@@ -206,7 +206,7 @@ module.exports = {
 
 				// Le dice a sails que actualice el modelo de dialogo
 				dialog.save(function(err) { });	
-				sails.sockets.broadcast(project_id_aux, 'conectar_socket', {message: 'conectado a VisualMail Socket'}, req);
+				//sails.sockets.broadcast(project_id_aux, 'conectar_socket', {message: 'conectado a VisualMail Socket'}, req);
 				return res.json({ dialog: dialog });
 			}
 		});

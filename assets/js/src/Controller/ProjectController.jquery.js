@@ -47,8 +47,7 @@ $(document).ready(function() {
                             scope.vm.onMensajeAnclarClick(nodoId); 
                         });
 
-                        scope.vm.iniciarMensajeAnclado();
-
+                        scope.vm.iniciarMensajeAnclado(); 
                         break; 
                     default: 
                         break; 
@@ -66,11 +65,17 @@ $(document).ready(function() {
     $(".resizable-panel-container").resizable({ 
         handles: "n", 
         classes: { "ui-resizable-n": "resizable-splitter-horizontal" }, 
-        maxHeight: 820,
+        maxHeight: 820, 
         minHeight: 20, 
         resizeWidth: false, 
-        start: function( event, ui ) { 
+        start: function(event, ui) { 
             ui.originalPosition.top  = ui.position.top + 2; 
+        }, 
+        stop: function(event, ui) {
+            var topHeight = 600; 
+            var originalHeight = 270; 
+            var finalHeight = (ui.size.height > originalHeight ? (ui.size.height - originalHeight) : 0); 
+            $("#main").css("height", topHeight - (finalHeight > 0 ? finalHeight : 0)); 
         }
     }); 
     $(".resizable-panel-left").resizable({ 

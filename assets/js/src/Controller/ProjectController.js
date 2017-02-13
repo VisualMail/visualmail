@@ -53,14 +53,14 @@ var $anclar = false;
             }, render: { 
                 item: function(item, escape) { 
                     return '<div>' + 
-                        (item.firstname ? '<span class="name">' + escape(item.firstname+' , ') + '</span>' : '') + 
+                        (item.firstname ? '<span class="name">' + escape(item.firstname + ' , ') + '</span>' : '') + 
                         (item.email ? '<span class="email">' + escape(item.email) + '</span>' : '') + 
                         '</div>'; 
                 }, option: function(item, escape) { 
                     var label = item.firstname || item.email; 
                     var caption = item.firstname ? item.email : null; 
                     return '<div>' + 
-                        '<span class="label">' + escape(label+' , ') + '</span>' + 
+                        '<span class="label">' + escape(label + ' , ') + '</span>' + 
                         (caption ? '<span class="caption">' + escape(caption) + '</span>' : '') + 
                         '</div>'; 
                 }
@@ -112,14 +112,14 @@ var $anclar = false;
             }, render: { 
                 item: function(item, escape) { 
                     return '<div>' + 
-                        (item.firstname ? '<span class="name">' + escape(item.firstname+' , ') + '</span>' : '') + 
+                        (item.firstname ? '<span class="name">' + escape(item.firstname + ' , ') + '</span>' : '') + 
                         (item.email ? '<span class="email">' + escape(item.email) + '</span>' : '') + 
                         '</div>'; 
                 }, option: function(item, escape) { 
                     var label = item.firstname || item.email; 
                     var caption = item.firstname ? item.email : null; 
                     return '<div>' + 
-                        '<span class="label">' + escape(label+' , ') + '</span>' + 
+                        '<span class="label">' + escape(label + ' , ') + '</span>' + 
                         (caption ? '<span class="caption">' + escape(caption) + '</span>' : '') + 
                         '</div>'; 
                 } 
@@ -174,21 +174,21 @@ var $anclar = false;
         // Fin datos mensaje
 
         // Inicio datos kanban
-        vm.miKanbanListaTareas = [];
+        vm.miKanbanColumn1 = []; // vm.list1 = [];
+        vm.miKanbanColumn2 = []; // vm.list2 = [];
+        vm.miKanbanColumn3 = []; // vm.list3 = [];
+        vm.miKanbanColumn4 = []; // vm.list4 = [];
+        vm.miKanbanColumnSearch1 = ""; // vm.filtro1;
+        vm.miKanbanColumnSearch2 = ""; // vm.filtro2;
+        vm.miKanbanColumnSearch3 = ""; // vm.filtro3;
+        vm.miKanbanColumnSearch4 = ""; // vm.filtro4;
+        vm.miKanbanListaTareas = []; 
 		vm.miKanbanLogitud = []; 
         vm.miKanbanResponsable; 
         vm.miKanbanSelectedTask = ""; 
         vm.miKanbanSelectedUsuarioTask = { }; 
 		vm.miKanbanTareaNueva = []; 
         vm.miKanbanTipoTarea = ["new", "doing", "testing", "done"]; 
-        vm.filtro1;
-        vm.filtro2;
-        vm.filtro3;
-        vm.filtro4;
-		vm.list1 = [];
-		vm.list2 = [];
-		vm.list3 = [];
-		vm.list4 = [];
         // Fin datos kanban
 
         // Inicio datos proyecto
@@ -291,7 +291,7 @@ var $anclar = false;
 					vm.miMensajeIntercalar = !vm.miMensajeIntercalar; 
 				}
                 
-                dibujarDialogo(vm.miMensaje);
+                mapaDialogoDibujar(vm.miMensaje);
             });
 
             // Obtener las tareas del tablero Kanban
@@ -309,35 +309,34 @@ var $anclar = false;
                 // Almacenar la lista de tareas
                 vm.miKanbanListaTareas = resultado.data.tarea;
 
-            	// Si no existe error 
+            	// Separar cada panel del Kanban por el tipo de tarea 
             	for(var i = 0; i< resultado.data.tarea.length; i++) { 
-            		// Separar cada panel del Kanban por el tipo de tarea 
             		// Nuevas tareas
             		if(resultado.data.tarea[i].tipo == vm.miKanbanTipoTarea[0]) { 
-            			vm.list1.splice(0, 0, resultado.data.tarea[i]); 
+                        vm.miKanbanColumn1.push(resultado.data.tarea[i]); //vm.list1.splice(0, 0, resultado.data.tarea[i]); 
             		} 
 
             		// Haciendo
             		if(resultado.data.tarea[i].tipo == vm.miKanbanTipoTarea[1]) { 
-            			vm.list2.splice(0, 0, resultado.data.tarea[i]); 
+            			vm.miKanbanColumn2.push(resultado.data.tarea[i]); //vm.list2.splice(0, 0, resultado.data.tarea[i]); 
             		} 
 
             		// En pruebas
             		if(resultado.data.tarea[i].tipo == vm.miKanbanTipoTarea[2]) { 
-            			vm.list3.splice(0, 0, resultado.data.tarea[i]); 
+            			vm.miKanbanColumn3.push(resultado.data.tarea[i]); //vm.list3.splice(0, 0, resultado.data.tarea[i]); 
                  	}  
 
                  	// Terminada
                  	if(resultado.data.tarea[i].tipo == vm.miKanbanTipoTarea[3]) { 
-                 		vm.list4.splice(0, 0, resultado.data.tarea[i]); 
+                 		vm.miKanbanColumn4.push(resultado.data.tarea[i]); //vm.list4.splice(0, 0, resultado.data.tarea[i]); 
                  	} 
                  } 
 
                  //Guarda los largos de las listas del kanban 
-                 vm.miKanbanLogitud[0] = vm.list1.length; 
-                 vm.miKanbanLogitud[1] = vm.list2.length; 
-                 vm.miKanbanLogitud[2] = vm.list3.length; 
-                 vm.miKanbanLogitud[3] = vm.list4.length; 
+                 vm.miKanbanLogitud[0] = vm.miKanbanColumn1.length; //vm.list1.length; 
+                 vm.miKanbanLogitud[1] = vm.miKanbanColumn2.length; //vm.list2.length; 
+                 vm.miKanbanLogitud[2] = vm.miKanbanColumn3.length; //vm.list3.length; 
+                 vm.miKanbanLogitud[3] = vm.miKanbanColumn4.length; //vm.list4.length; 
             }); 
 		};
         
@@ -348,20 +347,18 @@ var $anclar = false;
         vm.onBtnActualizarProyectoClick = function() { 
 
             // Verificar que los datos estén correctos
-            if(vm.miProyectoEditar.nombre == "" && 
-                (vm.miProyectoEditar.fechaLimite == "" || 
-                vm.miProyectoEditar.fechaLimite == null)) { 
+            if(vm.miProyectoEditar.nombre === "" && 
+                (vm.miProyectoEditar.fechaLimite === "" || vm.miProyectoEditar.fechaLimite === null)) 
                 return; 
-            } else { 
-
+            else { 
                 // Actualizar el nombre del proyecto para la vista
-                if(vm.miProyectoEditar.nombre == "") 
+                if(vm.miProyectoEditar.nombre === "") 
                     vm.miProyectoEditar.nombre = vm.miProyecto.name;
 
                 // Actualizar la fecha para la vista
-                if((vm.miProyectoEditar.fechaLimite == "" || 
-                    vm.miProyectoEditar.fechaLimite == null)) 
-                    vm.miProyectoEditar.fechaLimite = vm.miProyecto.finish_date;
+                if((vm.miProyectoEditar.fechaLimite === "" || 
+                    vm.miProyectoEditar.fechaLimite === null)) 
+                    vm.miProyectoEditar.fechaLimite = vm.miProyecto.finish_date; 
 
                 $http({ 
                     method: "POST", 
@@ -375,11 +372,10 @@ var $anclar = false;
                         name: vm.miProyectoEditar.nombre, 
                         finish_date: vm.miProyectoEditar.fechaLimite 
                     } 
-                }).success(function(datanew) { 
-
+                }).success(function(resultado) { 
                     // Si el servidor devuelve un valor false 
-                    // se manda mensaje de que no fue posible actualizarlo en el servidor
-                    if(datanew.project == "false") { 
+                    // se proyecta notificación que no fue posible actualizarlo en el servidor 
+                    if(resultado.project === "false") { 
                         Materialize.toast($mensaje5, 2000); 
                     } else { 
                         // En caso de actualizar los datos
@@ -388,7 +384,7 @@ var $anclar = false;
                         // Se actualizan los datos en el cliente y se limpian los datos
                         vm.miProyecto.name = vm.miProyectoEditar.nombre; 
                         vm.miProyecto.finish_date = vm.miProyectoEditar.fechaLimite; 
-                        vm.miProyectoEditar = {nombre: "", fechaLimite: ""}; 
+                        vm.miProyectoEditar = { nombre: "", fechaLimite: "" }; 
                     } 
                 }); 
             }
@@ -462,10 +458,9 @@ var $anclar = false;
 			// Arrego que almacena la posición del nuevo mensaje
 			var mensajePosicion = []; 
 
-			for(var i = 0; i < vm.miMensajeSeleccionado.position.length; i++) { 
-				// Por cada valor de 'position' del mensaje seleccionado a responder se copia 
+            // Por cada valor de 'position' del mensaje seleccionado a responder se copia 
+			for(var i = 0; i < vm.miMensajeSeleccionado.position.length; i++) 
 				mensajePosicion.push(vm.miMensajeSeleccionado.position[i]); 
-			} 
 
 			// Ingresar el valor que le corresponde al nuevo mensaje en 'position'
 			mensajePosicion.push(vm.miMensajeSeleccionado.numero_hijos); 
@@ -551,8 +546,7 @@ var $anclar = false;
 
             // Para identificar el usuario seleccionado de Selectize 
             for(var i = 0; i < vm.miListaParticipantes.length; i++) { 
-                if(vm.miListaParticipantes[i].id == vm.miKanbanSelectedTask) { 
-                    vm.miKanbanSelectedUsuarioTask = vm.miListaParticipantes;
+                if(vm.miListaParticipantes[i].id === vm.miKanbanSelectedTask) { 
                     vm.miKanbanSelectedUsuarioTask = vm.miListaParticipantes[i]; 
                     break; 
                 } 
@@ -601,12 +595,6 @@ var $anclar = false;
                 // Verificar si la respuesta desde el servidor es error 
                 if(dataTarea.tarea == "false") 
                     Materialize.toast($mensaje5, 2000); 
-                else { 
-                    // Si no hay error 
-                    //dataTarea.tarea["usuario"] = vm.miKanbanSelectedUsuarioTask; 
-                    //vm.list1.splice(0, 0, dataTarea.tarea); 
-                    //Materialize.toast($mensaje6, 2000); 
-                } 
             }); 
         }; 
 
@@ -614,8 +602,7 @@ var $anclar = false;
         * @method :: onDrop 
         * @description :: Función de la API DRAG&DROP que se encarga de manejar los eventos luego de dropear una tarea del kanban
         */
-        vm.onDrop = function(evt,ui) { 
-
+        vm.onDrop = function(evt, ui) { 
             // Elemento que se tiene en el cursor 
             var obj = ui.draggable.scope().dndDragItem; 
             var dragged =-1; 
@@ -625,82 +612,95 @@ var $anclar = false;
             // como largos tiene el valor de los tamaños de las tareas por columna 
             // se determina cual fue drageado (quien tiene menos elementos) y cual fue dropeado (quien aumento en 1 elemento) 
             // IFS DE CONSULTA: 
-            if(vm.miKanbanLogitud[0] != vm.list1.length) { 
-                if(vm.miKanbanLogitud[0] < vm.list1.length) 
+            if(vm.miKanbanLogitud[0] !== vm.miKanbanColumn1.length) { 
+                if(vm.miKanbanLogitud[0] < vm.miKanbanColumn1.length) 
                     dragged = 0;  
                 else 
                     dropped = 0; 
             } 
 
-            if(vm.miKanbanLogitud[1] != vm.list2.length) { 
-                if(vm.miKanbanLogitud[1] < vm.list2.length) 
+            if(vm.miKanbanLogitud[1] != vm.miKanbanColumn2.length) { 
+                if(vm.miKanbanLogitud[1] < vm.miKanbanColumn2.length) 
                     dragged = 1; 
                 else 
                     dropped = 1; 
             } 
 
-            if(vm.miKanbanLogitud[2] != vm.list3.length) { 
-                if(vm.miKanbanLogitud[2] < vm.list3.length) 
+            if(vm.miKanbanLogitud[2] != vm.miKanbanColumn3.length) { 
+                if(vm.miKanbanLogitud[2] < vm.miKanbanColumn3.length) 
                     dragged = 2; 
                 else
                     dropped = 2; 
             } 
 
-            if(vm.miKanbanLogitud[3] != vm.list4.length) { 
-                if(vm.miKanbanLogitud[3] < vm.list4.length) 
+            if(vm.miKanbanLogitud[3] != vm.miKanbanColumn4.length) { 
+                if(vm.miKanbanLogitud[3] < vm.miKanbanColumn4.length) 
                     dragged = 3; 
                 else
                     dropped = 3; 
             } 
 
-            // Se manda el post para actualizar el tipo 
-            $http({ 
-                method: "POST", 
-                url: "/tarea/updateTipo", 
-                headers: { 
-                    "Content-Type": "application/json", 
-                    "X-CSRF-TOKEN": vm.csrfToken 
-                }, 
-                data: { 
-                    project_id: vm.miProyecto.id, 
-                    nuevotipo: vm.miKanbanTipoTarea[dragged], 
-                    id: obj.id 
-                } 
-            })
-            .success(function(dataKanbanUpdate) { 
+            if(dragged > -1) {
+                // Se manda el post para actualizar el tipo 
+                $http({ 
+                    method: "POST", 
+                    url: "/tarea/updateTipo", 
+                    headers: { 
+                        "Content-Type": "application/json", 
+                        "X-CSRF-TOKEN": vm.csrfToken 
+                    }, 
+                    data: { 
+                        project_id: vm.miProyecto.id, 
+                        nuevotipo: vm.miKanbanTipoTarea[dragged], 
+                        id: obj.id 
+                    } 
+                })
+                .success(function(dataKanbanUpdate) { 
 
-                // Bloque para manejar el error y limpiar filtros 
-                if(dataKanbanUpdate.tarea === "false") { 
-                    Materialize.toast($mensaje5, 2000); 
-                    vm.filtro1 = ""; 
-                    vm.filtro2 = ""; 
-                    vm.filtro3 = ""; 
-                    vm.filtro4 = ""; 
-                } 
-            }); 
+                    // Bloque para manejar el error y limpiar filtros 
+                    if(dataKanbanUpdate.tarea === "false") { 
+                        Materialize.toast($mensaje5, 2000); 
+                        vm.miKanbanColumnSearch1 = ""; 
+                        vm.miKanbanColumnSearch2 = ""; 
+                        vm.miKanbanColumnSearch3 = ""; 
+                        vm.miKanbanColumnSearch4 = ""; 
+                    } 
+                }); 
+            } 
         }; 
 
         /**
         * @method :: onMensajeAnclarClick 
         * @description :: Establecer el 'nodo anclado' 
+        * @param :: {integer} nodoId, identificador del nodo que representa al nodo 
         **/
-        vm.onMensajeAnclarClick = function(nodoId) {
-            if($anclar) {
+        vm.onMensajeAnclarClick = function(nodoId) { 
+            // Si se debe anclar, Buscar en la lista de mensajes el mensaje anclado 
+            // a través del id del nodo que identifica al mensaje, caso contrario 
+            // iniciar el mensaje anclado 
+            if($anclar) { 
+
                 $.each(vm.miMensaje, function(key, value) { 
                     if(parseInt(value.nodoId) === nodoId) { 
                         vm.miMensajeAnclado = value; 
                         return false; 
                     } 
-                });
+                }); 
             } else 
                 vm.miMensajeAnclado = "";
 
-            vm.miMensajeAncladoNavegar = "";
+            // Iniciar el mensaje navegar 
+            vm.miMensajeAncladoNavegar = ""; 
+
+            // En el caso de anclar el mensaje, dibujar el ancla 
+            mapaDialogoDibujarAncla($anclar, vm.miMensajeAnclado); 
         };
 
         /**
         * @method :: onMensajeModalShow 
         * @description :: Desplegar el modal para enviar un mensaje 
+        * @param :: {integer} nodoId, identificador del nodo que representa al nodo 
+        * @param :: {integer} modal, identificador del elemento modal que se abrirá 
         **/
         vm.onMensajeModalShow = function(nodoId, modal) { 
             $.each(vm.miMensaje, function(key, value) { 
@@ -731,6 +731,7 @@ var $anclar = false;
         /**
         * @method :: iniciarMensajeNavegar 
         * @description :: Iniciar el 'nodo navegar' 
+        * @param :: {boolean} iniciar, variable para verificar si se inicia el dibujo del mensaje navegar  
         **/
         vm.iniciarMensajeNavegar = function(iniciar) {
             var n; 
@@ -765,6 +766,7 @@ var $anclar = false;
         /**
         * @method :: onSocketMensajeNuevo 
         * @description :: Actualizar el mensaje enviado desde el socket 
+        * @param :: {Object} data, información acerca del proceso, contiene además el nuevo mensaje  
         **/
         vm.onSocketMensajeNuevo = function(data) { 
             // Obtener los parámetros 
@@ -812,40 +814,7 @@ var $anclar = false;
             vm.miMensajeIntercalar = !vm.miMensajeIntercalar; 
             vm.miMensaje.push(nuevoMensaje); 
             mapaDialogoAgregarNodo(nuevoMensaje); 
-
-            // Almacenar el nuevo mensaje
-            /*var nuevoMensaje = data.obj; 
-            var revisarSession = data.revisarSession; 
-
-            // Si un nuevo usuario creo el mensaje, actualizar mi sesión
-            if(vm.miUsuario.id !== nuevoMensaje.usuario.id) 
-                vm.miSessionId = nuevoMensaje.sessionId + 1; 
-
-            // Actualizar el número de hijos del mensaje padre
-        	for(var i = 0; i < vm.miMensaje.length; i++) { 
-        		if(vm.miMensaje[i].id === nuevoMensaje.parent) 
-        			vm.miMensaje[i].numero_hijos++; 
-
-                if(revisarSession && 
-                    nuevoMensaje.sessionId === vm.miMensaje[i].sessionId && 
-                    nuevoMensaje.nodoPadreId !== vm.miMensaje[i].nodoPadreId && 
-                    nuevoMensaje.nodoNivel <= vm.miMensaje[i].nodoNivel) 
-                    vm.miMensaje[i].nodoNivel++; 
-        	} 
-
-        	// A los mensajes se le añade el nuevo elemento creado en la parte del cliente
-            nuevoMensaje["cssvalue"] = !vm.miMensajeIntercalar; 
-            vm.miMensajeIntercalar = !vm.miMensajeIntercalar; 
-        	vm.miMensaje.push(nuevoMensaje);*/
-
-            // Dibujar el diálogo
-            //$('.tooltipped').tooltip('remove');
-            //dibujarDialogo(vm.miMensaje); 
-
-            // Revisar si los mensajes en las sesiones no están sobrepuestos
-            //if(data.revisarSession) 
-              //  sortSession(data.revisarSessionId, vm.miMensaje, nuevoMensaje); 
-
+            
             vm.iniciarMensajeAnclado(); 
             vm.iniciarMensajeNavegar(false); 
 
@@ -867,7 +836,7 @@ var $anclar = false;
             vm.miKanbanListaTareas.push(nuevaTarea); 
 
             // Agregar en la columna 'NUEVA' del Kanban 
-            vm.list1.splice(0, 0, nuevaTarea); 
+            vm.miKanbanColumn1.push(nuevaTarea); //vm.list1.push(nuevaTarea); 
 
             // Actualizar el 'scope' 
             $scope.$apply(); 
@@ -880,10 +849,10 @@ var $anclar = false;
         **/
         vm.onSocketTareaActualizar = function(data) { 
             // Iniciar la lista de columnas en el Kanban
-            vm.list1 = []; 
-            vm.list2 = []; 
-            vm.list3 = []; 
-            vm.list4 = []; 
+            vm.miKanbanColumn1 = []; //vm.list1 = []; 
+            vm.miKanbanColumn2 = []; //vm.list2 = []; 
+            vm.miKanbanColumn3 = []; //vm.list3 = []; 
+            vm.miKanbanColumn4 = []; //vm.list4 = []; 
 
             // Actualizar la lista de tareas
             var tareaActualizada = data.obj; 
@@ -899,26 +868,26 @@ var $anclar = false;
 
                 // La tarea equivale a 'new'
                 if(value.tipo === vm.miKanbanTipoTarea[0]) 
-                    vm.list1.splice(0, 0, value); 
+                    vm.miKanbanColumn1.push(value); //vm.list1.splice(0, 0, value); 
 
                 // La tarea equivale a 'doing'
                 if(value.tipo === vm.miKanbanTipoTarea[1]) 
-                    vm.list2.splice(0, 0, value); 
+                    vm.miKanbanColumn2.push(value); //vm.list2.splice(0, 0, value); 
 
                 // La tarea equivale a 'testing'
                 if(value.tipo === vm.miKanbanTipoTarea[2])
-                    vm.list3.splice(0, 0, value); 
+                    vm.miKanbanColumn3.push(value); //vm.list3.splice(0, 0, value); 
 
                 // La tarea equivale a 'done'
                 if(value.tipo === vm.miKanbanTipoTarea[3]) 
-                    vm.list4.splice(0, 0, value); 
+                    vm.miKanbanColumn4.push(value); //vm.list4.splice(0, 0, value); 
             }); 
             
             //Guardar la longitud de las listas del kanban 
-            vm.miKanbanLogitud[0] = vm.list1.length; 
-            vm.miKanbanLogitud[1] = vm.list2.length; 
-            vm.miKanbanLogitud[2] = vm.list3.length; 
-            vm.miKanbanLogitud[3] = vm.list4.length; 
+            vm.miKanbanLogitud[0] = vm.miKanbanColumn1.length; //vm.list1.length; 
+            vm.miKanbanLogitud[1] = vm.miKanbanColumn2.length; //vm.list2.length; 
+            vm.miKanbanLogitud[2] = vm.miKanbanColumn3.length; //vm.list3.length; 
+            vm.miKanbanLogitud[3] = vm.miKanbanColumn4.length; //vm.list4.length; 
 
             // Actualizar el 'scope' 
             $scope.$apply(); 
