@@ -1,42 +1,41 @@
 angular
-   .module('app', [
-      'ngMessages', 
-      'gp.rutValidator', 
-      'selectize', 
-      'ngDragDrop', 
-      'app.LoginCtrl', 
-      'app.RecoverPassCtrl', 
-      'app.RecoverPageCtrl', 
-      'ui.materialize', 
-      'app.editUserCtrl', 
-      'app.createProjectCtrl',
-      "app.SignUpController", 
-      "app.ProjectController" 
-   ])
-   .directive("capitalize", function() { 
-      return { 
-         require: "ngModel", 
-         link: function(scope, element, attrs, modelCtrl) { 
-            var capitalize = function(inputValue) { 
+    .module("app", [
+        "ngMessages", 
+        "gp.rutValidator", 
+        "selectize", 
+        "app.LoginCtrl", 
+        "app.RecoverPassCtrl", 
+        "app.RecoverPageCtrl", 
+        "ui.materialize", 
+        "app.editUserCtrl", 
+        "app.createProjectCtrl",
+        "app.SignUpController", 
+        "app.ProjectController" 
+    ])
+    .directive("capitalize", function() { 
+        return { 
+            require: "ngModel", 
+            link: function(scope, element, attrs, modelCtrl) { 
+                var capitalize = function(inputValue) { 
 
-               if (inputValue === undefined) 
-                  inputValue = ""; 
+                    if (inputValue === undefined) 
+                        inputValue = ""; 
 
-               var capitalized = inputValue.toUpperCase(); 
+                    var capitalized = inputValue.toUpperCase(); 
 
-               if (capitalized !== inputValue) { 
-                  modelCtrl.$setViewValue(capitalized); 
-                  modelCtrl.$render(); 
-               } 
+                    if (capitalized !== inputValue) { 
+                        modelCtrl.$setViewValue(capitalized); 
+                        modelCtrl.$render(); 
+                    } 
 
-               return capitalized; 
+                    return capitalized; 
+                } 
+
+                modelCtrl.$parsers.push(capitalize); 
+
+                // capitalize initial value
+                capitalize(scope[attrs.ngModel]); 
             } 
-
-            modelCtrl.$parsers.push(capitalize); 
-
-            // capitalize initial value
-            capitalize(scope[attrs.ngModel]); 
-         } 
-      }; 
-   })
-   .directive("compareTo", compareTo); 
+        }; 
+    })
+    .directive("compareTo", compareTo); 

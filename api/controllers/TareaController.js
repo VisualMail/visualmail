@@ -70,19 +70,67 @@ module.exports = {
 			else {
 
 				// En caso de existir pedir como entrada del método nuevo tipo y se le da el nuevo tipo a la tarea
-				tarea.tipo = req.param("nuevotipo"); 
+				var tipoOriginal = tarea.tipo; 
+				tarea.tipo = req.param("nuevoTipo"); 
 
-				// Modificar el valor
-				tarea.save(function(err) { }); 
+				if(tarea.tipo !== tipoOriginal) { 
+					Tarea
+						.find({ 
+							project_id: tarea.project_id, 
+							id: { "!": tarea.id }, 
+							tipo: tipoOriginal 
+						})
+						.sort("index ASC")
+						.then(function(tareasTipo) { 
+							for(var i = 0; i < tareasTipo.length; i++) { 
+								tareasTipo[i].index = i + 1; 
+								tareasTipo[i].save(); 
+							} 
+						})
+						.catch(function(err) {
+							sails.log("Se produjo un error en 'updateTipo': ", err); 
+						}); 
+				} 
 
-				// Enviar un broadcast a los usuarios en línea que pertecen al proyecto
-				sails.sockets.broadcast(
-					req.param("project_id"), 
-					"socket_project_response", { 
-						message: "Mensaje desde el servidor.", 
-						obj: tarea, 
-						type: "TareaActualizar" 
-					}, req);
+				Tarea
+					.find({ 
+						project_id: tarea.project_id, 
+						id: { "!": tarea.id }, 
+						tipo: tarea.tipo 
+					})
+					.sort("index ASC")
+					.then(function(tareasActualizar) { 
+						var newCell = req.param("newCell"); 
+						tarea.index = req.param("newIndex"); 
+
+						if(tarea.tipo !== tipoOriginal && newCell) 
+							tarea.index = tareasActualizar.length + 1; 
+
+						// Modificar el valor
+						tarea.save(function(err) { }); 
+						var k = 1; 
+
+						for(var j = 0; j < tareasActualizar.length; j++) { 
+							if(tareasActualizar[j].index === tarea.index)
+								k++;
+
+							tareasActualizar[j].index = k++; 
+							tareasActualizar[j].save(); 
+						} 
+
+						// Enviar un broadcast a los usuarios en línea que pertecen al proyecto
+						sails.sockets.broadcast(
+							tarea.project_id, 
+							"socket_project_response", { 
+								message: "Mensaje desde el servidor.", 
+								obj: tarea, 
+								newCell: newCell, 
+								newIndex: tarea.index, 
+								tipoOriginal: tipoOriginal, 
+								nuevoTipo: tarea.tipo, 
+								type: "TareaActualizar" 
+							}, req);
+					}); 
 
 				// Retornar el json con el nuevo estado de la tarea
 				return res.json({ tarea: tarea }); 
@@ -99,25 +147,22 @@ module.exports = {
 	**/
 	getTareas: function(req, res, next) {
 
-		// De acuerdo al id de un proyecto se buscan todas las tareas asociadas a ese proyecto 
-		// y se hace un populate para ver el mensaje asociado y el usuario
-		Tarea.find({ project_id: req.param('id') }).populate('usuario').populate('mensaje').exec(function(err, tarea) {
-			
+		// De acuerdo al id de un proyecto, se buscan todas las tareas asociadas a ese proyecto 
+		// y se hace un populate para obtener el mensaje asociado y el usuario
+		Tarea.find({ project_id: req.param("id") }).populate("usuario").populate("mensaje").sort("index ASC").exec(function(err, tarea) { 
 			// Verificar si existe un error
 			if(err) { 
-				req.session.flash = { err: err };
-				return res.json({ tarea: 'false' });
+				req.session.flash = { err: err }; 
+				return res.json({ tarea: "false" }); 
 			}
 			
 			// Verificar si no existe la tarea
 			if(!tarea) { 
-				return res.json({ tarea: 'false' });
+				return res.json({ tarea: "false" }); 
 			} else { 
-				
-				// En caso de no existir error se devuelve el json con la lista de tareas
-				return res.json({tarea:tarea});
+				// En caso de no existir error se devuelve el json con la lista de tareas 
+				return res.json({tarea:tarea}); 
 			}
-		
 		});
 	}
 };

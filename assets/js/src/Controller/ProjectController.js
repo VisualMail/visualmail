@@ -174,16 +174,15 @@ var $anclar = false;
         // Fin datos mensaje
 
         // Inicio datos kanban
-        vm.miKanbanColumn1 = []; // vm.list1 = [];
-        vm.miKanbanColumn2 = []; // vm.list2 = [];
-        vm.miKanbanColumn3 = []; // vm.list3 = [];
-        vm.miKanbanColumn4 = []; // vm.list4 = [];
-        vm.miKanbanColumnSearch1 = ""; // vm.filtro1;
-        vm.miKanbanColumnSearch2 = ""; // vm.filtro2;
-        vm.miKanbanColumnSearch3 = ""; // vm.filtro3;
-        vm.miKanbanColumnSearch4 = ""; // vm.filtro4;
+        vm.miKanbanColumn1 = []; 
+        vm.miKanbanColumn2 = []; 
+        vm.miKanbanColumn3 = []; 
+        vm.miKanbanColumn4 = []; 
+        vm.miKanbanColumnSearch1 = ""; 
+        vm.miKanbanColumnSearch2 = ""; 
+        vm.miKanbanColumnSearch3 = ""; 
+        vm.miKanbanColumnSearch4 = ""; 
         vm.miKanbanListaTareas = []; 
-		vm.miKanbanLogitud = []; 
         vm.miKanbanResponsable; 
         vm.miKanbanSelectedTask = ""; 
         vm.miKanbanSelectedUsuarioTask = { }; 
@@ -307,36 +306,19 @@ var $anclar = false;
                     return;
 
                 // Almacenar la lista de tareas
-                vm.miKanbanListaTareas = resultado.data.tarea;
+                vm.miKanbanListaTareas = resultado.data.tarea; 
 
-            	// Separar cada panel del Kanban por el tipo de tarea 
-            	for(var i = 0; i< resultado.data.tarea.length; i++) { 
-            		// Nuevas tareas
-            		if(resultado.data.tarea[i].tipo == vm.miKanbanTipoTarea[0]) { 
-                        vm.miKanbanColumn1.push(resultado.data.tarea[i]); //vm.list1.splice(0, 0, resultado.data.tarea[i]); 
-            		} 
-
-            		// Haciendo
-            		if(resultado.data.tarea[i].tipo == vm.miKanbanTipoTarea[1]) { 
-            			vm.miKanbanColumn2.push(resultado.data.tarea[i]); //vm.list2.splice(0, 0, resultado.data.tarea[i]); 
-            		} 
-
-            		// En pruebas
-            		if(resultado.data.tarea[i].tipo == vm.miKanbanTipoTarea[2]) { 
-            			vm.miKanbanColumn3.push(resultado.data.tarea[i]); //vm.list3.splice(0, 0, resultado.data.tarea[i]); 
-                 	}  
-
-                 	// Terminada
-                 	if(resultado.data.tarea[i].tipo == vm.miKanbanTipoTarea[3]) { 
-                 		vm.miKanbanColumn4.push(resultado.data.tarea[i]); //vm.list4.splice(0, 0, resultado.data.tarea[i]); 
-                 	} 
-                 } 
-
-                 //Guarda los largos de las listas del kanban 
-                 vm.miKanbanLogitud[0] = vm.miKanbanColumn1.length; //vm.list1.length; 
-                 vm.miKanbanLogitud[1] = vm.miKanbanColumn2.length; //vm.list2.length; 
-                 vm.miKanbanLogitud[2] = vm.miKanbanColumn3.length; //vm.list3.length; 
-                 vm.miKanbanLogitud[3] = vm.miKanbanColumn4.length; //vm.list4.length; 
+                // Añadir cada tarea a la columna correspondiente 
+                $.each(vm.miKanbanListaTareas, function(key, value) { 
+                    if(value.tipo === vm.miKanbanTipoTarea[0]) // Nuevas 
+                        vm.miKanbanColumn1.push(value); 
+                    else if(value.tipo === vm.miKanbanTipoTarea[1]) // Haciendo 
+                        vm.miKanbanColumn2.push(value); 
+                    else if(value.tipo === vm.miKanbanTipoTarea[2]) // En pruebas 
+                        vm.miKanbanColumn3.push(value); 
+                    else if(value.tipo === vm.miKanbanTipoTarea[3]) // Terminada 
+                        vm.miKanbanColumn4.push(value); 
+                }); 
             }); 
 		};
         
@@ -598,75 +580,163 @@ var $anclar = false;
             }); 
         }; 
 
+        vm.onActualizarTarea = function(tareaId, newColumn, newCell, newIndex) { 
+
+            $http({ 
+                method: "POST", 
+                url: "/tarea/updateTipo", 
+                headers: { 
+                    "Content-Type": "application/json", 
+                    "X-CSRF-TOKEN": vm.csrfToken 
+                }, 
+                data: {
+                    id: tareaId, 
+                    nuevoTipo: vm.miKanbanTipoTarea[newColumn - 1], 
+                    newCell: newCell, 
+                    newIndex: newIndex 
+                }
+            })
+            .success(function(data) { 
+
+                // Verificar si la respuesta desde el servidor es error 
+                if(data.tarea == "false") 
+                    Materialize.toast($mensaje5, 2000); 
+            }); 
+        }; 
+
         /**
-        * @method :: onDrop 
-        * @description :: Función de la API DRAG&DROP que se encarga de manejar los eventos luego de dropear una tarea del kanban
+        * @method :: onKanbanBoardUpdateColumn 
+        * @description :: Función para actualizar una tarea en el tablero Kanban 
         */
-        vm.onDrop = function(evt, ui) { 
-            // Elemento que se tiene en el cursor 
-            var obj = ui.draggable.scope().dndDragItem; 
-            var dragged =-1; 
-            var dropped =-1; 
+        vm.onKanbanBoardUpdateColumn = function(column, newColumn, newIndex, newCell, tareaId) { 
+            var aux = []; 
+            var tarea; 
+            var i = 1; 
 
-            // Determinar cual participó en el drag y cual en el drop 
-            // como largos tiene el valor de los tamaños de las tareas por columna 
-            // se determina cual fue drageado (quien tiene menos elementos) y cual fue dropeado (quien aumento en 1 elemento) 
-            // IFS DE CONSULTA: 
-            if(vm.miKanbanLogitud[0] !== vm.miKanbanColumn1.length) { 
-                if(vm.miKanbanLogitud[0] < vm.miKanbanColumn1.length) 
-                    dragged = 0;  
-                else 
-                    dropped = 0; 
-            } 
-
-            if(vm.miKanbanLogitud[1] != vm.miKanbanColumn2.length) { 
-                if(vm.miKanbanLogitud[1] < vm.miKanbanColumn2.length) 
-                    dragged = 1; 
-                else 
-                    dropped = 1; 
-            } 
-
-            if(vm.miKanbanLogitud[2] != vm.miKanbanColumn3.length) { 
-                if(vm.miKanbanLogitud[2] < vm.miKanbanColumn3.length) 
-                    dragged = 2; 
-                else
-                    dropped = 2; 
-            } 
-
-            if(vm.miKanbanLogitud[3] != vm.miKanbanColumn4.length) { 
-                if(vm.miKanbanLogitud[3] < vm.miKanbanColumn4.length) 
-                    dragged = 3; 
-                else
-                    dropped = 3; 
-            } 
-
-            if(dragged > -1) {
-                // Se manda el post para actualizar el tipo 
-                $http({ 
-                    method: "POST", 
-                    url: "/tarea/updateTipo", 
-                    headers: { 
-                        "Content-Type": "application/json", 
-                        "X-CSRF-TOKEN": vm.csrfToken 
-                    }, 
-                    data: { 
-                        project_id: vm.miProyecto.id, 
-                        nuevotipo: vm.miKanbanTipoTarea[dragged], 
-                        id: obj.id 
-                    } 
-                })
-                .success(function(dataKanbanUpdate) { 
-
-                    // Bloque para manejar el error y limpiar filtros 
-                    if(dataKanbanUpdate.tarea === "false") { 
-                        Materialize.toast($mensaje5, 2000); 
-                        vm.miKanbanColumnSearch1 = ""; 
-                        vm.miKanbanColumnSearch2 = ""; 
-                        vm.miKanbanColumnSearch3 = ""; 
-                        vm.miKanbanColumnSearch4 = ""; 
-                    } 
+            if(column === 1) { 
+                $.each(vm.miKanbanColumn1, function(key, value) { 
+                    if(value.id !== tareaId) { 
+                        value.index = i++; 
+                        aux.push(value); 
+                    } else 
+                        tarea = value;  
                 }); 
+
+                vm.miKanbanColumn1 = aux; 
+            } else if(column === 2) { 
+                $.each(vm.miKanbanColumn2, function(key, value) { 
+                    if(value.id !== tareaId) { 
+                        value.index = i++; 
+                        aux.push(value); 
+                    } else 
+                        tarea = value;  
+                }); 
+
+                vm.miKanbanColumn2 = aux; 
+            } else if(column === 3) { 
+                $.each(vm.miKanbanColumn3, function(key, value) { 
+                    if(value.id !== tareaId) { 
+                        value.index = i++; 
+                        aux.push(value); 
+                    } else 
+                        tarea = value; 
+                }); 
+
+                vm.miKanbanColumn3 = aux; 
+            } else if(column === 4) { 
+                $.each(vm.miKanbanColumn4, function(key, value) { 
+                    if(value.id !== tareaId) { 
+                        value.index = i++; 
+                        aux.push(value); 
+                    } else 
+                        tarea = value; 
+                }); 
+
+                vm.miKanbanColumn4 = aux; 
             } 
+
+            i = 1; 
+            tarea.index = newIndex; 
+            aux = []; 
+
+            switch(newColumn) { 
+                case 1: 
+                    if(column !== newColumn && newCell) 
+                        newIndex = vm.miKanbanColumn1.length + 1; 
+
+                    $.each(vm.miKanbanColumn1, function(key, value) { 
+                        if(value.index === newIndex) { 
+                            aux.push(tarea); 
+                            i++; 
+                            newIndex = -1; 
+                        }
+
+                        value.index = i++; 
+                        aux.push(value); 
+                    }); 
+                    if(newIndex > 0)
+                        aux.push(tarea); 
+                    vm.miKanbanColumn1 = aux; 
+                    break; 
+                case 2: 
+                    if(column !== newColumn && newCell) 
+                        newIndex = vm.miKanbanColumn2.length + 1; 
+
+                    $.each(vm.miKanbanColumn2, function(key, value) { 
+                        if(value.index === newIndex) { 
+                            aux.push(tarea); 
+                            i++; 
+                            newIndex = -1; 
+                        }
+
+                        value.index = i++; 
+                        aux.push(value); 
+                    }); 
+                    if(newIndex > 0)
+                        aux.push(tarea); 
+                    vm.miKanbanColumn2 = aux; 
+                    break; 
+                case 3: 
+                    if(column !== newColumn && newCell) 
+                        newIndex = vm.miKanbanColumn3.length + 1; 
+
+                    $.each(vm.miKanbanColumn3, function(key, value) { 
+                        if(value.index === newIndex) { 
+                            aux.push(tarea); 
+                            i++; 
+                            newIndex = -1; 
+                        }
+
+                        value.index = i++; 
+                        aux.push(value); 
+                    }); 
+                    if(newIndex > 0)
+                        aux.push(tarea); 
+                    vm.miKanbanColumn3 = aux; 
+                    break; 
+                case 4: 
+                    if(column !== newColumn && newCell) 
+                        newIndex = vm.miKanbanColumn4.length + 1; 
+
+                    $.each(vm.miKanbanColumn4, function(key, value) { 
+                        if(value.index === newIndex) { 
+                            aux.push(tarea); 
+                            i++; 
+                            newIndex = -1; 
+                        }
+
+                        value.index = i++; 
+                        aux.push(value); 
+                    }); 
+                    if(newIndex > 0)
+                        aux.push(tarea); 
+                    vm.miKanbanColumn4 = aux; 
+                    break; 
+                default: 
+                    break; 
+            }; 
+
+            $scope.$apply(); 
         }; 
 
         /**
@@ -836,7 +906,7 @@ var $anclar = false;
             vm.miKanbanListaTareas.push(nuevaTarea); 
 
             // Agregar en la columna 'NUEVA' del Kanban 
-            vm.miKanbanColumn1.push(nuevaTarea); //vm.list1.push(nuevaTarea); 
+            vm.miKanbanColumn1.push(nuevaTarea); 
 
             // Actualizar el 'scope' 
             $scope.$apply(); 
@@ -848,47 +918,33 @@ var $anclar = false;
         * @description :: Recibe la tarea actualizada en el Kanban 
         **/
         vm.onSocketTareaActualizar = function(data) { 
-            // Iniciar la lista de columnas en el Kanban
-            vm.miKanbanColumn1 = []; //vm.list1 = []; 
-            vm.miKanbanColumn2 = []; //vm.list2 = []; 
-            vm.miKanbanColumn3 = []; //vm.list3 = []; 
-            vm.miKanbanColumn4 = []; //vm.list4 = []; 
+            // Obtener las tareas del tablero Kanban
+            $http({ 
+                url: "/tarea/getTareas/", 
+                method: "GET", 
+                params: { id: data.obj.project_id } 
+            })
+            .then(function(resultado) { 
 
-            // Actualizar la lista de tareas
-            var tareaActualizada = data.obj; 
+                // Si existe error
+                if(resultado.data.tarea === "false") 
+                    return;
 
-            if(vm.miKanbanListaTareas.length === 0)
-                vm.miKanbanListaTareas.push(tareaActualizada); 
+                // Almacenar la lista de tareas
+                vm.miKanbanListaTareas = resultado.data.tarea; 
 
-            $.each(vm.miKanbanListaTareas, function(key, value) { 
-                // Si el 'id' corresponde a la tarea actualizada
-                // modificar el 'tipo' de tarea
-                if(value.id === tareaActualizada.id) 
-                    value.tipo = tareaActualizada.tipo; 
-
-                // La tarea equivale a 'new'
-                if(value.tipo === vm.miKanbanTipoTarea[0]) 
-                    vm.miKanbanColumn1.push(value); //vm.list1.splice(0, 0, value); 
-
-                // La tarea equivale a 'doing'
-                if(value.tipo === vm.miKanbanTipoTarea[1]) 
-                    vm.miKanbanColumn2.push(value); //vm.list2.splice(0, 0, value); 
-
-                // La tarea equivale a 'testing'
-                if(value.tipo === vm.miKanbanTipoTarea[2])
-                    vm.miKanbanColumn3.push(value); //vm.list3.splice(0, 0, value); 
-
-                // La tarea equivale a 'done'
-                if(value.tipo === vm.miKanbanTipoTarea[3]) 
-                    vm.miKanbanColumn4.push(value); //vm.list4.splice(0, 0, value); 
+                // Añadir cada tarea a la columna correspondiente 
+                $.each(vm.miKanbanListaTareas, function(key, value) { 
+                    if(value.tipo === vm.miKanbanTipoTarea[0]) // Nuevas 
+                        vm.miKanbanColumn1.push(value); 
+                    else if(value.tipo === vm.miKanbanTipoTarea[1]) // Haciendo 
+                        vm.miKanbanColumn2.push(value); 
+                    else if(value.tipo === vm.miKanbanTipoTarea[2]) // En pruebas 
+                        vm.miKanbanColumn3.push(value); 
+                    else if(value.tipo === vm.miKanbanTipoTarea[3]) // Terminada 
+                        vm.miKanbanColumn4.push(value); 
+                }); 
             }); 
-            
-            //Guardar la longitud de las listas del kanban 
-            vm.miKanbanLogitud[0] = vm.miKanbanColumn1.length; //vm.list1.length; 
-            vm.miKanbanLogitud[1] = vm.miKanbanColumn2.length; //vm.list2.length; 
-            vm.miKanbanLogitud[2] = vm.miKanbanColumn3.length; //vm.list3.length; 
-            vm.miKanbanLogitud[3] = vm.miKanbanColumn4.length; //vm.list4.length; 
-
             // Actualizar el 'scope' 
             $scope.$apply(); 
             Materialize.toast($mensaje7, 2000); 

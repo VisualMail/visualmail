@@ -15,8 +15,8 @@
 			<ul class="tabs">
 				<li class="tab col s3"><a href="#participantes">Proyecto: {{ vm.miProyecto.name }}</a></li>
 				<li class="tab col s3"><a href="#dialogo">Diálogo</a></li>
-				<li class="tab col s3"><a href="#mensajes">Mensajes</a></li>
-				<li class="tab col s3"><a class="active"  href="#kanbanBoard">Kanban</a></li>
+				<li class="tab col s3"><a class="active" href="#mensajes">Mensajes</a></li>
+				<li class="tab col s3"><a href="#kanban">Kanban</a></li>
 			</ul>
 		</div>
 		<!-- Fin Pestañas -->
@@ -262,23 +262,22 @@
 		<!-- Fin Mensajes -->
 
 		<!-- Inicio Kanban -->
-		<div id="kanbanBoard" class="col s12" ng-cloak>
+		<div id="kanban" class="col s12" ng-cloak>
 			<br />
-
-			<!-- Inicio Lista NUEVA -->
 			<div class="col s3">
-
-				<!-- Inicio Título y búsqueda -->
-				<div class="col s12 kanbanBoardColumnHeader"> 
+				<!-- Inicio Título y búsqueda de la columna NUEVA -->
+				<div class="col s1 contenedorkanbanheader"> 
 					<div class="col s10">NUEVA</div> 
 					<div class="col s1"> 
 						<a class="modal-trigger" href="#modalKanbanTarea"> 
 							<i class="light-green-text material-icons prefix tooltipped" 
-								data-delay="50" data-position="top" data-tooltip="Crear Tarea">add_circle</i>
+								data-delay="50" 
+								data-position="top" 
+								data-tooltip="Crear Tarea">add_circle</i>
 						</a>
 					</div>
 				</div> 
-				<div class="col s12 kanbanBoardColumnHeader"> 
+				<div class="col s12 contenedorkanbanheader"> 
 					<div class="col s1"> 
 						<br /> 
 						<i class="light-green-text material-icons prefix">search</i>
@@ -287,103 +286,86 @@
 						<input placeholder="Buscar..." type="text" ng-model="vm.miKanbanColumnSearch1" />
 					</div>
 				</div>
-				<!-- Fin Título y búsqueda -->
+				<!-- Fin Título y búsqueda de la columna NUEVA -->
 
-				<!-- Inicio Columna -->
-				<div class="col s12 kanbanBoardColumn" id="kanbanBoardColumn1" data-column-index="1">
-
-					<!-- Inicio Celda -->
-					<div class="kanbanBoardCell" id="kanbanBoardColumn1Cell{{ item.index }}" 
-						data-cell-index="{{ item.index }}" 
+				<!-- Inicio Columna NUEVA -->
+				<div class="col s12 contenedorkanban" id="new" 
+					data-drop="true" 
+					data-jqyoui-options="optionsList1" 
+					jqyoui-droppable="{ multiple: true, onDrop:'vm.onDrop', index: vm.test }"
+					ng-model="vm.miKanbanColumn1">
+					<div class="hoverable kanbanbubble" id="kanban1" 
+						data-drag="{{ item.drag }}" 
+						data-jqyoui-options="{ helper: 'clone' }" 
+						jqyoui-draggable="{ index: {{ $index }}, animate: true }" 
+						ng-model="vm.miKanbanColumn1" 
 						ng-repeat="item in vm.miKanbanColumn1 | filter: vm.miKanbanColumnSearch1" 
 						ng-show="item.title">
-
-						<!-- Inicio Tarea -->
-						<div class="hoverable kanbanBoardTask" draggable="true" id="{{ item.id }}">
-							<div class="row">
-								<div class="col s12 kanbanred" ng-if="item.associated == true && item.element != ''"> 
-									<div class="col s12 white-text"><h6>{{ item.element }}</h6></div> 
-								</div>
-								<div class="col s4"> 
-									<div class="col s12" ng-show="item.usuario.imgurl">
-										<br />
-										<img class="circle" height="40px" width="40px" ng-src="{{ item.usuario.imgurl }}">
-									</div>
-									<div class="col s12">{{ item.usuario.initials }}</div>
-								</div>
-								<div class="col s8 textito"><h6>{{ item.title }}</h6></div>
+						<div class="row">
+							<div class="col s12 kanbanred" 
+								ng-if="item.associated == true && item.element != ''"> 
+								<div class="col s12 white-text"><h6>{{ item.element }}</h6></div> 
+								<!--<div class="col s2 ">  <i class="material-icons black-text prefix">edit_mode</i></div>-->
 							</div>
+							<!--<div class="col s2"><i class="material-icons black-text prefix">visibility</i></div>-->
+							<div class="col s4"> 
+								<div class="col s12" ng-show="item.usuario.imgurl">
+									<br />
+									<img class="circle" height="40px" width="40px" ng-src="{{ item.usuario.imgurl }}">
+								</div>
+								<div class="col s12">{{ item.usuario.initials }}</div>
+							</div>
+							<div class="col s8 textito"><h6>{{ item.title }}</h6></div>
 						</div>
-						<!-- Fin Tarea -->
-
 					</div>
-					<!-- Fin Celda -->
-
 				</div>
-				<!-- Fin Columna -->
-
+				<!-- Fin Columna NUEVA -->
 			</div>
-			<!-- Fin Lista NUEVA -->
 
-			<!-- Inicio Lista HACIENDO -->
 			<div class="col s3">
-
-				<!-- Inicio Título y búsqueda -->
-				<div class="col s12 kanbanBoardColumnHeader">HACIENDO</div>
-				<div class="col s12 kanbanBoardColumnHeader">
+				<div class="col s12 contenedorkanbanheader">HACIENDO</div>
+				<div class="col s12 contenedorkanbanheader">
 					<div class="col s1">
 						<br />
 						<i class="material-icons light-green-text prefix">search</i>
 					</div>
-					<div class="col 11">
-						<input placeholder="Buscar..." type="text" ng-model="vm.miKanbanColumnSearch2" />
+					<div class="col 11" id="doing">
+						<input type="text" ng-model="vm.miKanbanColumnSearch2" />
 					</div>
 				</div>
-				<!-- Fin Título y búsqueda -->
-
-				<!-- Inicio Columna -->
-				<div class="col s12 kanbanBoardColumn" id="kanbanBoardColumn2" data-column-index="2"> 
-
-					<!-- Inicio Celda -->
-					<div class="kanbanBoardCell" id="kanbanBoardColumn2Cell{{ item.index }}" 
-						data-cell-index="{{ item.index }}" 
+				<div class="col s12 contenedorkanban" 
+					data-drop="true" 
+					data-jqyoui-options="optionsList2" 
+					jqyoui-droppable="{ multiple: true, onDrop: 'vm.onDrop' }" 
+					ng-model="vm.miKanbanColumn2">
+					<div class="kanbanbubble hoverable" 
+						data-drag="{{ item.drag }}" 
+						data-jqyoui-options="{ helper: 'clone' }" 
+						jqyoui-draggable="{ index: {{ $index }}, animate: true }" 
+						ng-model="vm.miKanbanColumn2" 
 						ng-repeat="item in vm.miKanbanColumn2 | filter: vm.miKanbanColumnSearch2" 
 						ng-show="item.title">
-
-						<!-- Inicio Tarea -->
-						<div class="hoverable kanbanBoardTask" draggable="true" id="{{ item.id }}">
-							<div class="row">
-								<div class="col s12 kanbanred" 
-									ng-if="item.associated == true && item.element != ''">
-									<div class="col s12  white-text"> <h6>{{ item.element }}</h6></div>
-	                  			</div>
-	                  			<div class="col s4"> 
-	                  				<div class="col s12" ng-show="item.usuario.imgurl">
-	                  					<br />
-	                  					<img class="circle" height="40px" width="40px" ng-src="{{ item.usuario.imgurl }}">
-	                  				</div>
-	                  				<div class="col s12">{{ item.usuario.initials }}</div>
-	                  			</div>
-	                  			<div class="col s8 textito"><h6>{{ item.title }}</h6></div>
-	                  		</div>
+						<div class="row">
+							<div class="col s12 kanbanred" ng-if="item.associated == true && item.element != ''">
+								<div class="col s12  white-text"> <h6>{{ item.element }}</h6></div>
+								<!--<div class="col s2 ">  <i class="material-icons black-text prefix">edit_mode</i></div>--> 
+                  			</div>
+                  			<div class="col s4"> 
+                  				<div class="col s12" ng-show="item.usuario.imgurl">
+                  					<br />
+                  					<img class="circle" height="40px" width="40px" ng-src="{{ item.usuario.imgurl }}">
+                  				</div>
+                  				<div class="col s12">{{ item.usuario.initials }}</div>
+                  			</div>
+                  			<div class="col s8 textito"><h6>{{ item.title }}</h6></div>
                   		</div>
-                  		<!-- Fin Tarea -->
-
                   	</div>
-                  	<!-- Fin Celda -->
-
 				</div>
-				<!-- Fin Columna -->
-
 			</div>
-			<!-- Fin Lista HACIENDO -->
 
-			<!-- Inicio Lista EN PRUEBAS -->
 			<div class="col s3">
-
-				<!-- Inicio Título y búsqueda -->
-				<div class="col s12 kanbanBoardColumnHeader">EN PRUEBAS</div>
-				<div class="col s12 kanbanBoardColumnHeader">
+				<div class="col s12 contenedorkanbanheader">EN PRUEBAS</div>
+				<div class="col s12 contenedorkanbanheader">
 					<div class="col s1">
 						<br />
 						<i class="material-icons light-green-text prefix">search</i>
@@ -392,50 +374,39 @@
 						<input placeholder="Buscar..." type="text" ng-model="vm.miKanbanColumnSearch3" />
 					</div>
 				</div>
-				<!-- Fin Título y búsqueda -->
-
-				<!-- Inicio Columna -->
-				<div class="col s12 kanbanBoardColumn" id="kanbanBoardColumn3" data-column-index="3">
-
-					<!-- Inicio Celda -->
-					<div class="kanbanBoardCell" id="kanbanBoardColumn3Cell{{ item.index }}" 
-						data-cell-index="{{ item.index }}" 
+				<div class="col s12 contenedorkanban" id="testing" 
+					data-drop="true" 
+					data-jqyoui-options="optionsList3" 
+					jqyoui-droppable="{ multiple: true, onDrop: 'vm.onDrop' }" 
+					ng-model="vm.miKanbanColumn3">
+					<div class="hoverable kanbanbubble kanbanyellow" 
+						data-drag="{{ item.drag }}" 
+						data-jqyoui-options="{ helper: 'clone' }" 
+						jqyoui-draggable="{ index: {{ $index }}, animate: true }"
+						ng-model="vm.miKanbanColumn3" 
 						ng-repeat="item in vm.miKanbanColumn3 | filter: vm.miKanbanColumnSearch3" 
 						ng-show="item.title">
-
-						<!-- Inicio Tarea -->
-						<div class="hoverable kanbanyellow kanbanBoardTask" draggable="true" id="{{ item.id }}">
-							<div class="row">
-								<div class="col s12 kanbanred" ng-if="item.associated == true && item.element != ''">
-									<div class="col s12  white-text"><h6>{{ item.element }}</h6></div>
-								</div>
-								<div class="col s4"> 
-									<div class="col s12" ng-show="item.usuario.imgurl">
-										<br />
-										<img class="circle" height="40px" width="40px" ng-src="{{ item.usuario.imgurl }}">
-									</div>
-									<div class="col s12"> {{item.usuario.initials}}</div>
-								</div>
-								<div class="col s8 textito"><h6>{{item.title}}</h6></div>
+						<div class="row">
+							<div class="col s12 kanbanred" ng-if="item.associated == true && item.element != ''">
+								<div class="col s12  white-text"><h6>{{ item.element }}</h6></div>
+								<!--<div class="col s2 ">  <i class="material-icons black-text prefix">edit_mode</i></div>--> 
 							</div>
+							<div class="col s4"> 
+								<div class="col s12" ng-show="item.usuario.imgurl">
+									<br />
+									<img class="circle" height="40px" width="40px" ng-src="{{ item.usuario.imgurl }}">
+								</div>
+								<div class="col s12"> {{item.usuario.initials}}</div>
+							</div>
+							<div class="col s8 textito"><h6>{{item.title}}</h6></div>
 						</div>
-						<!-- Fin Tarea -->
-
 					</div>
-					<!-- Fin Celda -->
-
-				</div>
-				<!-- Fin Columna --> 
-
+				</div> 
 			</div>
-			<!-- Fin Lista EN PRUEBAS -->
 
-			<!-- Inicio Lista TERMINADA -->
 			<div  class="col s3">
-
-				<!-- Inicio Título y búsqueda -->
-				<div class="col s12 kanbanBoardColumnHeader">TERMINADA</div>
-				<div class="col s12 kanbanBoardColumnHeader"> 
+				<div class="col s12 contenedorkanbanheader">TERMINADA</div>
+				<div class="col s12 contenedorkanbanheader"> 
 					<div class="col s1">
 						<br />
 						<i class="material-icons light-green-text prefix">search</i>
@@ -444,43 +415,35 @@
 						<input placeholder="Buscar..." type="text" ng-model="vm.miKanbanColumnSearch4" />
 					</div>
 				</div>
-				<!-- Fin Título y búsqueda -->
-
-				<!-- Inicio Columna -->
-				<div class="col s12 kanbanBoardColumn" id="kanbanBoardColumn4" data-column-index="4">
-
-					<!-- Inicio Celda -->
-					<div class="kanbanBoardCell" id="kanbanBoardColumn4Cell{{ item.index }}" 
-						data-cell-index="{{ item.index }}" 
+				<div class="col s12 contenedorkanban" id="done" 
+					data-drop="true" 
+					data-jqyoui-options="optionsList4" 
+					jqyoui-droppable="{ multiple: true, onDrop: 'vm.onDrop' }" 
+					ng-model="vm.miKanbanColumn4">
+					<div class="hoverable kanbanbubble kanbanyellow" 
+						data-drag="{{ item.drag }}" 
+						data-jqyoui-options="{ helper: 'clone' }" 
+						jqyoui-draggable="{ index: {{ $index }}, animate: true }" 
+						ng-model="vm.miKanbanColumn4" 
 						ng-repeat="item in vm.miKanbanColumn4 | filter: vm.miKanbanColumnSearch4" 
 						ng-show="item.title">
-
-						<!-- Inicio Tarea -->
-						<div class="hoverable kanbanyellow kanbanBoardTask" draggable="true" id="{{ item.id }}">
-							<div class="row">
-								<div class="col s12 kanbanred" ng-if="item.associated == true && item.element != ''">
-									<div class="col s12  white-text"><h6>{{ item.element }}</h6></div>
-								</div>
-								<div class="col s4">
-									<div ng-show="item.usuario.imgurl" class="col s12">
-										<br />
-										<img class="circle" height="40px" width="40px" ng-src="{{ item.usuario.imgurl }}">
-									</div>
-									<div class="col s12">{{ item.usuario.initials }}</div>
-								</div>
-								<div class="col s8 textito"><h6>{{ item.title }}</h6></div>
+						<div class="row">
+							<div class="col s12 kanbanred" ng-if="item.associated == true && item.element != ''">
+								<div class="col s12  white-text"><h6>{{ item.element }}</h6></div>
+								<!--<div class="col s2 ">  <i class="material-icons black-text prefix">edit_mode</i></div>--> 
 							</div>
+							<div class="col s4">
+								<div ng-show="item.usuario.imgurl" class="col s12">
+									<br />
+									<img class="circle" height="40px" width="40px" ng-src="{{ item.usuario.imgurl }}">
+								</div>
+								<div class="col s12">{{ item.usuario.initials }}</div>
+							</div>
+							<div class="col s8 textito"><h6>{{ item.title }}</h6></div>
 						</div>
-						<!-- Fin Tarea -->
-
 					</div>
-					<!-- Fin Celda -->
-
 				</div>
-				<!-- Fin Columna -->
-
 			</div>
-			<!-- Fin Lista TERMINADA -->
 		</div>
 		<!-- Fin Kanban -->
 

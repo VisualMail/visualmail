@@ -21,6 +21,49 @@
 .resizable-splitter { background: url(../images/vsizegrip.png) center center no-repeat #999; cursor: col-resize; flex: 0 0 auto; min-height: 200px; width: 18px; } 
 .resizable-splitter-horizontal { background: url(../images/hsizegrip.png) center center no-repeat #999 !important; cursor: row-resize; flex: 0 0 auto; height: 18px; margin: 5px 0 0 0; } 
 
+.kanbanBoardColumn { border: 3px solid #C8E6C9; height:510px; overflow-y: auto; } 
+.kanbanBoardColumnHeader { background: #C8E6C9; color:#4CAF50; } 
+.kanbanBoardCell { border: 0px solid #666; display: block; margin: 15px 5px 15px 0; padding: 0; width: 100%; } 
+.kanbanBoardTask 
+{
+background: #FFEB3B;
+border-radius: 6px;
+cursor: move;
+margin: 0px;  
+padding: 0px;
+position: relative;
+height: 100%;
+width: 100%;
+word-wrap: break-word;
+-moz-border-radius: 6px;
+-webkit-border-radius: 6px;
+}
+
+.kanbanBoardTask:after 
+{
+content: '';
+cursor: move;
+position: absolute;
+border-style: solid;
+border-width: 0px 0px 0;
+border-color: #FFEB3B transparent;
+display: block;
+width: 0;
+z-index: 1;
+bottom: -0px;
+left: 8px;
+}
+.kanbanBoardColumn.droppable, .kanbanBoardCell.droppable {
+  border: 2px dashed #666;
+}
+
+
+
+
+
+
+
+
 
 .principal {
     background-image: url(../images/fondo.jpg);
@@ -182,6 +225,7 @@ footer.page-footer {
     transform: translateX(-50%) translateY(-50%);
 }
 
+/* Iniciar Revisar esto se puede eliminar */
 .contenedorkanban{
   border: 3px solid #C8E6C9; 
   overflow-y: auto;
@@ -192,10 +236,8 @@ footer.page-footer {
 .contenedorkanbanheader{
   background: #C8E6C9;
   color:#4CAF50;
-
-
-  
 }
+/* Fin Revisar esto se puede eliminar */
 
 .textito{
   word-wrap: break-word;
@@ -438,7 +480,7 @@ left: 8px;
 }
 
 
-
+/* Inicio revisar se puede eliminar */
 .kanbanbubble 
 {
 
@@ -466,4 +508,4 @@ z-index: 1;
 bottom: -0px;
 left: 8px;
 }
-
+/* Fin revisar se puede eliminar */

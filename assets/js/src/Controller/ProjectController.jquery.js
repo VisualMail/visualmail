@@ -9,6 +9,9 @@ $(document).ready(function() {
     // Iniciar los modal popups
     $(".modal-trigger").leanModal(); 
 
+    // Iniciar los datos del tablero kanban
+    kanbanBoardInit(); 
+
     // Iniciar el menú contextual de cada nodo del mapa del diálogo
     $(function() { 
         $.contextMenu({ 
