@@ -56,7 +56,7 @@ module.exports = {
 	updateTipo: function(req, res, next) {
 		
 		// Encontrar una tarea por el 'id'
-		Tarea.findOne(req.param("id")).exec(function(err, tarea) {
+		Tarea.findOne(req.param("id")).populate("usuario").populate("mensaje").exec(function(err, tarea) {
 
 			// Verificar si existe un error
 			if(err) { 
@@ -69,10 +69,12 @@ module.exports = {
 				return res.json({ tarea: "false" });
 			else {
 
-				// En caso de existir pedir como entrada del método nuevo tipo y se le da el nuevo tipo a la tarea
+				// Almacenar el tipo original de la tarea y asignar el nuevo tipo 
 				var tipoOriginal = tarea.tipo; 
 				tarea.tipo = req.param("nuevoTipo"); 
 
+				// Si el nuevo tipo de la tarea es distinto del original buscar 
+				// todas las tareas del tipo original ordenadas por el índice 
 				if(tarea.tipo !== tipoOriginal) { 
 					Tarea
 						.find({ 
@@ -82,6 +84,7 @@ module.exports = {
 						})
 						.sort("index ASC")
 						.then(function(tareasTipo) { 
+							// Iterar en cada tarea y actualizar su índice 
 							for(var i = 0; i < tareasTipo.length; i++) { 
 								tareasTipo[i].index = i + 1; 
 								tareasTipo[i].save(); 
@@ -92,6 +95,7 @@ module.exports = {
 						}); 
 				} 
 
+				// Buscar todas las tareas del nuevo tipo ordenadas por su índice 
 				Tarea
 					.find({ 
 						project_id: tarea.project_id, 
@@ -100,30 +104,42 @@ module.exports = {
 					})
 					.sort("index ASC")
 					.then(function(tareasActualizar) { 
+						// La variable "newCell" permite verificar si la tarea se cambió 
+						// hacia una nueva columna (en el tablero Kanban) y el usuario 
+						// no especificó el índice de la tarea 
 						var newCell = req.param("newCell"); 
+
+						// Se adquiere el nuevo indice que el usuario seleccionó 
 						tarea.index = req.param("newIndex"); 
 
+						// Si el nuevo tipo de la tarea es distinto al original y 
+						// el usuario no especificó en que índice colocar la tarea 
+						// establecer el último índice de la tarea 
 						if(tarea.tipo !== tipoOriginal && newCell) 
 							tarea.index = tareasActualizar.length + 1; 
 
-						// Modificar el valor
+						// Almacenar los cambios de la tarea 
 						tarea.save(function(err) { }); 
 						var k = 1; 
 
+						// Para cada tarea del nuevo tipo, actualizar el nuevo índice 
 						for(var j = 0; j < tareasActualizar.length; j++) { 
-							if(tareasActualizar[j].index === tarea.index)
-								k++;
-
 							tareasActualizar[j].index = k++; 
+
+							if(tareasActualizar[j].index === tarea.index)
+								tareasActualizar[j].index = k++; 
+							
 							tareasActualizar[j].save(); 
 						} 
 
-						// Enviar un broadcast a los usuarios en línea que pertecen al proyecto
+						// Enviar un broadcast a los usuarios en línea que pertecen al proyecto 
+						// con la información de la tarea modificada 
 						sails.sockets.broadcast(
 							tarea.project_id, 
 							"socket_project_response", { 
 								message: "Mensaje desde el servidor.", 
 								obj: tarea, 
+								usuarioId: req.param("usuarioId"), 
 								newCell: newCell, 
 								newIndex: tarea.index, 
 								tipoOriginal: tipoOriginal, 

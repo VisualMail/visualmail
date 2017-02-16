@@ -6,6 +6,6 @@ angular
     .controller("SignUpController", [
         "$scope", 
         function($scope) {  
-            $scope.color = "FFFFFF";
+            $scope.color = "4D87C6";
    	    }
     ]);

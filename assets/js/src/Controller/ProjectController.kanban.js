@@ -132,14 +132,14 @@ function kanbanBoardInit() {
 				var parentColumn = $(sectionTask).parent(); 
 				var newColumn = parseInt(parentColumn.attr("data-column-index")); 
 				var newIndex = parseInt($(sectionTask).attr("data-cell-index")); 
-				scope.vm.onActualizarTarea(tareaId, newColumn, false, newIndex); 
+				scope.vm.onActualizarTareaIndice(tareaId, newColumn, false, newIndex); 
 			} 
 		} else { 
 			// Si es una columna, verificar que no sea la misma columna 
 			if($(sectionColumn).attr("id") !== oldCell.parent().attr("id")) { 
 				var newColumn = parseInt($(sectionColumn).attr("data-column-index")); 
 				var newIndex = 1; 
-				scope.vm.onActualizarTarea(tareaId, newColumn, true, newIndex); 
+				scope.vm.onActualizarTareaIndice(tareaId, newColumn, true, newIndex); 
 			} 
 		}
 

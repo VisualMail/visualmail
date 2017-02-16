@@ -8,12 +8,11 @@ var $mensaje8 = $('<span class="color_acentuado-text">Nuevo mensaje en el diálo
 var $listaMensajes = [];
 var $anclar = false;
 
-(function() {
-	//"use strict";
-
+(function() { 
+	//"use strict"; 
 	angular
 		.module("app.ProjectController", [])
-		.controller("ProjectController", ["$scope", "$http", ProjectController]);
+		.controller("ProjectController", ["$scope", "$http", ProjectController]); 
 
 	function ProjectController($scope, $http) { 
 		var vm = this; 
@@ -23,115 +22,10 @@ var $anclar = false;
 
         // Inicio datos usuarios candidatos y participantes
         vm.miListaParticipantes = []; 
-        vm.miListaParticipantesSelectizeConfig = { 
-            create: false, 
-            persist: false, 
-            maxItems: 1, 
-            valueField: "id", 
-            labelField: "firstname", 
-            delimiter: "|", 
-            placeholder: "Hacer responsable", 
-            searchField: ["firstname", "email", "rut"], 
-            createFilter: function(input) { 
-                var match, regex; 
-
-                // email@address.com 
-                regex = new RegExp('^' + REGEX_EMAIL + '$', 'i'); 
-                match = input.match(regex); 
-
-                if(match) 
-                    return !this.options.hasOwnProperty(match[0]); 
-
-                // name <email@address.com> 
-                regex = new RegExp('^([^<]*)\<' + REGEX_EMAIL + '\>$', 'i'); 
-                match = input.match(regex); 
-
-                if(match) 
-                    return !this.options.hasOwnProperty(match[2]); 
-
-                return false; 
-            }, render: { 
-                item: function(item, escape) { 
-                    return '<div>' + 
-                        (item.firstname ? '<span class="name">' + escape(item.firstname + ' , ') + '</span>' : '') + 
-                        (item.email ? '<span class="email">' + escape(item.email) + '</span>' : '') + 
-                        '</div>'; 
-                }, option: function(item, escape) { 
-                    var label = item.firstname || item.email; 
-                    var caption = item.firstname ? item.email : null; 
-                    return '<div>' + 
-                        '<span class="label">' + escape(label + ' , ') + '</span>' + 
-                        (caption ? '<span class="caption">' + escape(caption) + '</span>' : '') + 
-                        '</div>'; 
-                }
-            }, 
-
-            //Funciones para actualizar la lista 
-            onInitialize: function(selectize) { 
-                vm.miKanbanSelectize = selectize; 
-            }, onItemRemove: function(value) { 
-                vm.miListaParticipantes.splice(0, 0, value);
-                vm.miKanbanSelectedTask = ""; 
-                vm.miKanbanSelectedUsuarioTask = { }; 
-                vm.miKanbanSelectize.refreshItems(); 
-            }, onItemAdd: function(value, item) { 
-                vm.miKanbanSelectedTask = value; 
-            }, onDropdownOpen: function(dropdown) { 
-                vm.miKanbanSelectize.clear(); 
-                vm.miKanbanSelectize.refreshItems(); 
-            } 
-        }; 
+        vm.miListaParticipantesSelectizeConfig; 
         vm.miListaUsuarios = []; 
         vm.miListaUsuariosSeleccionado = ""; 
-        vm.miListaUsuariosSelectizeConfig = { 
-            create: false, 
-            persist: false, 
-            valueField: "id", 
-            labelField: "firstname", 
-            delimiter: "|", 
-            placeholder: "Seleccione un participante por nombre, rut o correo", 
-            searchField: ["firstname", "email", "rut"], 
-            createFilter: function(input) { 
-                var match, regex; 
-
-                // email@address.com 
-                regex = new RegExp('^' + REGEX_EMAIL + '$', 'i'); 
-                match = input.match(regex); 
-
-                if(match) 
-                    return !this.options.hasOwnProperty(match[0]); 
-
-                // name <email@address.com>
-                regex = new RegExp('^([^<]*)\<' + REGEX_EMAIL + '\>$', 'i'); 
-                match = input.match(regex); 
-
-                if(match) 
-                    return !this.options.hasOwnProperty(match[2]); 
-
-                return false; 
-            }, render: { 
-                item: function(item, escape) { 
-                    return '<div>' + 
-                        (item.firstname ? '<span class="name">' + escape(item.firstname + ' , ') + '</span>' : '') + 
-                        (item.email ? '<span class="email">' + escape(item.email) + '</span>' : '') + 
-                        '</div>'; 
-                }, option: function(item, escape) { 
-                    var label = item.firstname || item.email; 
-                    var caption = item.firstname ? item.email : null; 
-                    return '<div>' + 
-                        '<span class="label">' + escape(label + ' , ') + '</span>' + 
-                        (caption ? '<span class="caption">' + escape(caption) + '</span>' : '') + 
-                        '</div>'; 
-                } 
-            }, onInitialize: function(selectize) { 
-                // Funciones para actualizar la lista al iniciar 
-                vm.miListaUsuariosSelectize = selectize; 
-            }, onItemRemove: function(value) { 
-                // Al remover un elemento 
-                vm.miListaUsuarios.splice(0, 0, value); 
-                vm.miListaUsuariosSelectize.selectize.refreshItems(); 
-            } 
-        }; 
+        vm.miListaUsuariosSelectizeConfig; 
         // Fin datos usuarios candidatos y participantes
 		
         // Inicio datos mensaje
@@ -139,28 +33,7 @@ var $anclar = false;
 		vm.miMensajeIntercalar = true; 
 		vm.miMensajeRespuesta = ""; 
         vm.miMensajeSeleccionado = []; 
-        vm.miMensajeSelectizeConfig = { 
-            create: false, 
-            persist: false, 
-            maxItems: 1, 
-            valueField: "title", 
-            labelField: "title", 
-            delimiter: "|", 
-            placeholder: "Tipo de elemento del diálogo", 
-            searchField: ["title"], 
-            onInitialize: function(selectize) { 
-                vm.miMensajeSelectize = selectize; 
-            }, onDropdownOpen: function(dropdown) { 
-                vm.miMensajeSelectize.clear(); 
-                vm.miMensajeSelectize.refreshItems(); 
-            }, onItemRemove: function(value) { 
-                vm.miMensajeTipoDialogo.splice(0, 0, value); 
-                vm.miMensajeTipoSeleccionado = ""; 
-                vm.miMensajeSelectize.refreshItems(); 
-            }, onItemAdd: function(value, item) { 
-                vm.miMensajeTipoSeleccionado = value; 
-            } 
-        }; 
+        vm.miMensajeSelectizeConfig; 
 		vm.miMensajeTipoDialogo = [ 
 			{ id: 0, title: "Duda o Alternativa" }, 
 			{ id: 1, title: "Normas comunes" }, 
@@ -320,6 +193,154 @@ var $anclar = false;
                         vm.miKanbanColumn4.push(value); 
                 }); 
             }); 
+
+            // Expresión regular para el E-mail
+            var REGEX_EMAIL = 
+                '([a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@' + 
+                '(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)'; 
+
+            // Iniciar la configuración de 'miListaParticipantesSelectizeConfig' selectize 
+            vm.miListaParticipantesSelectizeConfig = { 
+                create: false, 
+                persist: false, 
+                maxItems: 1, 
+                valueField: "id", 
+                labelField: "firstname", 
+                delimiter: "|", 
+                placeholder: "Hacer responsable", 
+                searchField: ["firstname", "email", "rut"], 
+                createFilter: function(input) { 
+                    var match, regex; 
+
+                    regex = new RegExp('^' + REGEX_EMAIL + '$', 'i'); 
+                    match = input.match(regex); 
+
+                    if(match) 
+                        return !this.options.hasOwnProperty(match[0]); 
+
+                    regex = new RegExp('^([^<]*)\<' + REGEX_EMAIL + '\>$', 'i'); 
+                    match = input.match(regex); 
+
+                    if(match) 
+                        return !this.options.hasOwnProperty(match[2]); 
+
+                    return false; 
+                }, 
+                render: { 
+                    item: function(item, escape) { 
+                        return '<div>' + 
+                            (item.firstname ? '<span class="name">' + escape(item.firstname + ' , ') + '</span>' : '') + 
+                            (item.email ? '<span class="email">' + escape(item.email) + '</span>' : '') + 
+                            '</div>'; 
+                    }, 
+                    option: function(item, escape) { 
+                        var label = item.firstname || item.email; 
+                        var caption = item.firstname ? item.email : null; 
+                        return '<div>' + 
+                            '<span class="label">' + escape(label + ' , ') + '</span>' + 
+                            (caption ? '<span class="caption">' + escape(caption) + '</span>' : '') + 
+                            '</div>'; 
+                    }
+                }, 
+
+                //Funciones para actualizar la lista 
+                onInitialize: function(selectize) { 
+                    vm.miKanbanSelectize = selectize; 
+                }, 
+                onItemRemove: function(value) { 
+                    vm.miListaParticipantes.splice(0, 0, value);
+                    vm.miKanbanSelectedTask = ""; 
+                    vm.miKanbanSelectedUsuarioTask = { }; 
+                    vm.miKanbanSelectize.refreshItems(); 
+                }, 
+                onItemAdd: function(value, item) { 
+                    vm.miKanbanSelectedTask = value; 
+                }, 
+                onDropdownOpen: function(dropdown) { 
+                    vm.miKanbanSelectize.clear(); 
+                    vm.miKanbanSelectize.refreshItems(); 
+                } 
+            }; 
+
+            // Iniciar la configuración de 'miListaUsuariosSelectizeConfig' selectize 
+            vm.miListaUsuariosSelectizeConfig = { 
+                create: false, 
+                persist: false, 
+                valueField: "id", 
+                labelField: "firstname", 
+                delimiter: "|", 
+                placeholder: "Seleccione un participante por nombre, rut o correo", 
+                searchField: ["firstname", "email", "rut"], 
+                createFilter: function(input) { 
+                    var match, regex; 
+
+                    regex = new RegExp('^' + REGEX_EMAIL + '$', 'i'); 
+                    match = input.match(regex); 
+
+                    if(match) 
+                        return !this.options.hasOwnProperty(match[0]); 
+
+                    regex = new RegExp('^([^<]*)\<' + REGEX_EMAIL + '\>$', 'i'); 
+                    match = input.match(regex); 
+
+                    if(match) 
+                        return !this.options.hasOwnProperty(match[2]); 
+
+                    return false; 
+                }, 
+                render: { 
+                    item: function(item, escape) { 
+                        return '<div>' + 
+                            (item.firstname ? '<span class="name">' + escape(item.firstname + ' , ') + '</span>' : '') + 
+                            (item.email ? '<span class="email">' + escape(item.email) + '</span>' : '') + 
+                            '</div>'; 
+                    }, 
+                    option: function(item, escape) { 
+                        var label = item.firstname || item.email; 
+                        var caption = item.firstname ? item.email : null; 
+                        return '<div>' + 
+                            '<span class="label">' + escape(label + ' , ') + '</span>' + 
+                            (caption ? '<span class="caption">' + escape(caption) + '</span>' : '') + 
+                            '</div>'; 
+                    } 
+                }, 
+                onInitialize: function(selectize) { 
+                    // Funciones para actualizar la lista al iniciar 
+                    vm.miListaUsuariosSelectize = selectize; 
+                }, 
+                onItemRemove: function(value) { 
+                    // Al remover un elemento 
+                    vm.miListaUsuarios.splice(0, 0, value); 
+                    vm.miListaUsuariosSelectize.selectize.refreshItems(); 
+                } 
+            }; 
+
+            // Iniciar la configuración de 'miMensajeSelectizeConfig' selectize 
+            vm.miMensajeSelectizeConfig = { 
+                create: false, 
+                persist: false, 
+                maxItems: 1, 
+                valueField: "title", 
+                labelField: "title", 
+                delimiter: "|", 
+                placeholder: "Tipo de elemento del diálogo", 
+                searchField: ["title"], 
+                onInitialize: function(selectize) { 
+                    vm.miMensajeSelectize = selectize; 
+                }, 
+                onDropdownOpen: function(dropdown) { 
+                    vm.miMensajeSelectize.clear(); 
+                    vm.miMensajeSelectize.refreshItems(); 
+                }, 
+                onItemRemove: function(value) { 
+                    vm.miMensajeTipoDialogo.splice(0, 0, value); 
+                    vm.miMensajeTipoSeleccionado = ""; 
+                    vm.miMensajeSelectize.refreshItems(); 
+                }, 
+                onItemAdd: function(value, item) { 
+                    vm.miMensajeTipoSeleccionado = value; 
+                } 
+            }; 
 		};
         
         /**
@@ -429,7 +450,6 @@ var $anclar = false;
                 vm.miListaUsuariosSelectize.refreshItems(); 
             });
         };
-
 
 		/**
 		* @method :: onBtnMensajeEnviarClick 
@@ -580,165 +600,6 @@ var $anclar = false;
             }); 
         }; 
 
-        vm.onActualizarTarea = function(tareaId, newColumn, newCell, newIndex) { 
-
-            $http({ 
-                method: "POST", 
-                url: "/tarea/updateTipo", 
-                headers: { 
-                    "Content-Type": "application/json", 
-                    "X-CSRF-TOKEN": vm.csrfToken 
-                }, 
-                data: {
-                    id: tareaId, 
-                    nuevoTipo: vm.miKanbanTipoTarea[newColumn - 1], 
-                    newCell: newCell, 
-                    newIndex: newIndex 
-                }
-            })
-            .success(function(data) { 
-
-                // Verificar si la respuesta desde el servidor es error 
-                if(data.tarea == "false") 
-                    Materialize.toast($mensaje5, 2000); 
-            }); 
-        }; 
-
-        /**
-        * @method :: onKanbanBoardUpdateColumn 
-        * @description :: Función para actualizar una tarea en el tablero Kanban 
-        */
-        vm.onKanbanBoardUpdateColumn = function(column, newColumn, newIndex, newCell, tareaId) { 
-            var aux = []; 
-            var tarea; 
-            var i = 1; 
-
-            if(column === 1) { 
-                $.each(vm.miKanbanColumn1, function(key, value) { 
-                    if(value.id !== tareaId) { 
-                        value.index = i++; 
-                        aux.push(value); 
-                    } else 
-                        tarea = value;  
-                }); 
-
-                vm.miKanbanColumn1 = aux; 
-            } else if(column === 2) { 
-                $.each(vm.miKanbanColumn2, function(key, value) { 
-                    if(value.id !== tareaId) { 
-                        value.index = i++; 
-                        aux.push(value); 
-                    } else 
-                        tarea = value;  
-                }); 
-
-                vm.miKanbanColumn2 = aux; 
-            } else if(column === 3) { 
-                $.each(vm.miKanbanColumn3, function(key, value) { 
-                    if(value.id !== tareaId) { 
-                        value.index = i++; 
-                        aux.push(value); 
-                    } else 
-                        tarea = value; 
-                }); 
-
-                vm.miKanbanColumn3 = aux; 
-            } else if(column === 4) { 
-                $.each(vm.miKanbanColumn4, function(key, value) { 
-                    if(value.id !== tareaId) { 
-                        value.index = i++; 
-                        aux.push(value); 
-                    } else 
-                        tarea = value; 
-                }); 
-
-                vm.miKanbanColumn4 = aux; 
-            } 
-
-            i = 1; 
-            tarea.index = newIndex; 
-            aux = []; 
-
-            switch(newColumn) { 
-                case 1: 
-                    if(column !== newColumn && newCell) 
-                        newIndex = vm.miKanbanColumn1.length + 1; 
-
-                    $.each(vm.miKanbanColumn1, function(key, value) { 
-                        if(value.index === newIndex) { 
-                            aux.push(tarea); 
-                            i++; 
-                            newIndex = -1; 
-                        }
-
-                        value.index = i++; 
-                        aux.push(value); 
-                    }); 
-                    if(newIndex > 0)
-                        aux.push(tarea); 
-                    vm.miKanbanColumn1 = aux; 
-                    break; 
-                case 2: 
-                    if(column !== newColumn && newCell) 
-                        newIndex = vm.miKanbanColumn2.length + 1; 
-
-                    $.each(vm.miKanbanColumn2, function(key, value) { 
-                        if(value.index === newIndex) { 
-                            aux.push(tarea); 
-                            i++; 
-                            newIndex = -1; 
-                        }
-
-                        value.index = i++; 
-                        aux.push(value); 
-                    }); 
-                    if(newIndex > 0)
-                        aux.push(tarea); 
-                    vm.miKanbanColumn2 = aux; 
-                    break; 
-                case 3: 
-                    if(column !== newColumn && newCell) 
-                        newIndex = vm.miKanbanColumn3.length + 1; 
-
-                    $.each(vm.miKanbanColumn3, function(key, value) { 
-                        if(value.index === newIndex) { 
-                            aux.push(tarea); 
-                            i++; 
-                            newIndex = -1; 
-                        }
-
-                        value.index = i++; 
-                        aux.push(value); 
-                    }); 
-                    if(newIndex > 0)
-                        aux.push(tarea); 
-                    vm.miKanbanColumn3 = aux; 
-                    break; 
-                case 4: 
-                    if(column !== newColumn && newCell) 
-                        newIndex = vm.miKanbanColumn4.length + 1; 
-
-                    $.each(vm.miKanbanColumn4, function(key, value) { 
-                        if(value.index === newIndex) { 
-                            aux.push(tarea); 
-                            i++; 
-                            newIndex = -1; 
-                        }
-
-                        value.index = i++; 
-                        aux.push(value); 
-                    }); 
-                    if(newIndex > 0)
-                        aux.push(tarea); 
-                    vm.miKanbanColumn4 = aux; 
-                    break; 
-                default: 
-                    break; 
-            }; 
-
-            $scope.$apply(); 
-        }; 
-
         /**
         * @method :: onMensajeAnclarClick 
         * @description :: Establecer el 'nodo anclado' 
@@ -831,7 +692,126 @@ var $anclar = false;
             }
 
             $scope.$apply(); 
-        };
+        }; 
+
+        /**
+        * @method :: onActualizarTareaIndice 
+        * @description :: Actualizar el índice de la tarea cuando el usuario cambia la tarea posición en el tablero Kanban 
+        * @param :: {string} tareaId, identificador de la tarea 
+        * @param :: {integer} newColumn, el índice de la columna nueva (tipo de tarea) 
+        * @param :: {integer} newCell, almacena si el usuario cambió de columna y no especificó en que celda (índice) colocar la tarea 
+        * @param :: {integer} newIndex, el índice donde se posiciona la tarea 
+        **/
+        vm.onActualizarTareaIndice = function(tareaId, newColumn, newCell, newIndex) { 
+
+            // Actualizar el indice da la tarea 
+            $http({ 
+                method: "POST", 
+                url: "/tarea/updateTipo", 
+                headers: { 
+                    "Content-Type": "application/json", 
+                    "X-CSRF-TOKEN": vm.csrfToken 
+                }, 
+                data: {
+                    id: tareaId, 
+                    nuevoTipo: vm.miKanbanTipoTarea[newColumn - 1], 
+                    newCell: newCell, 
+                    newIndex: newIndex, 
+                    usuarioId: vm.miUsuario.id 
+                }
+            })
+            .success(function(data) { 
+
+                // Verificar si la respuesta desde el servidor es error 
+                if(data.tarea == "false") 
+                    Materialize.toast($mensaje5, 2000); 
+            }); 
+        }; 
+
+        /**
+        * @method :: onKanbanBoardUpdateColumn 
+        * @description :: Función para actualizar una tarea en el tablero Kanban 
+        * @param :: {integer} column, el índice de la columna original (tipo de tarea original)
+        * @param :: {integer} newColumn, el índice de la columna nueva (tipo de tarea) 
+        * @param :: {integer} newIndex, el índice donde se posiciona la tarea 
+        * @param :: {integer} newCell, almacena si el usuario cambió de columna y no especificó en que celda (índice) colocar la tarea 
+        * @param :: {Object} tarea, objeto que contiene la información de la tarea modificada 
+        */
+        vm.onKanbanBoardUpdateColumn = function(column, newColumn, newIndex, newCell, tarea) { 
+            // Iniciar las variables auxiliares 
+            var listaAuxOrigen = []; 
+            var listaAuxDestino = []; 
+            var i = 1; 
+
+            // Almacenar en una variable auxiliar la columna original de la tarea 
+            if(column === 1)
+                listaAuxOrigen = vm.miKanbanColumn1; 
+            else if(column === 2)
+                listaAuxOrigen = vm.miKanbanColumn2; 
+            else if(column === 3)
+                listaAuxOrigen = vm.miKanbanColumn3; 
+            else if(column === 4)
+                listaAuxOrigen = vm.miKanbanColumn4; 
+
+            // Modificar los índices de todas las tareas en la columna original 
+            $.each(listaAuxOrigen, function(key, value) { 
+                if(value.id !== tarea.id) { 
+                    value.index = i++; 
+                    listaAuxDestino.push(value); 
+                } 
+            }); 
+
+            // Actualizar la columna original 
+            if(column === 1)
+                vm.miKanbanColumn1 = listaAuxDestino; 
+            else if(column === 2)
+                vm.miKanbanColumn2 = listaAuxDestino; 
+            else if(column === 3)
+                vm.miKanbanColumn3 = listaAuxDestino; 
+            else if(column === 4)
+                vm.miKanbanColumn4 = listaAuxDestino; 
+
+            // Iniciar las variables auxiliares 
+            listaAuxOrigen = []; 
+            listaAuxDestino = []; 
+            i = 1; 
+
+            // Almacenar en una variable auxiliar la columna destino de la tarea 
+            if(newColumn === 1)
+                listaAuxOrigen = vm.miKanbanColumn1; 
+            else if(newColumn === 2)
+                listaAuxOrigen = vm.miKanbanColumn2; 
+            else if(newColumn === 3)
+                listaAuxOrigen = vm.miKanbanColumn3; 
+            else if(newColumn === 4)
+                listaAuxOrigen = vm.miKanbanColumn4; 
+
+            // Modificar los índices de todas las tareas en la columna destino (incluida la nueva tarea) 
+            $.each(listaAuxOrigen, function(key, value) { 
+                if(value.index === newIndex) { 
+                    listaAuxDestino.push(tarea); 
+                    i++; 
+                    newIndex = -1; 
+                } 
+
+                value.index = i++; 
+                listaAuxDestino.push(value); 
+            }); 
+
+            // Si la nueva tarea se encuentra en la última posición de la nueva columna destino 
+            if(newIndex > 0) 
+                listaAuxDestino.push(tarea); 
+
+            // Actualizar la columna destino 
+            if(newColumn === 1) 
+                vm.miKanbanColumn1 = listaAuxDestino; 
+            else if(newColumn === 2) 
+                vm.miKanbanColumn2 = listaAuxDestino; 
+            else if(newColumn === 3) 
+                vm.miKanbanColumn3 = listaAuxDestino; 
+            else if(newColumn === 4) 
+                vm.miKanbanColumn4 = listaAuxDestino; 
+        }; 
 
         /**
         * @method :: onSocketMensajeNuevo 
@@ -925,28 +905,48 @@ var $anclar = false;
                 params: { id: data.obj.project_id } 
             })
             .then(function(resultado) { 
-
                 // Si existe error
                 if(resultado.data.tarea === "false") 
                     return;
 
-                // Almacenar la lista de tareas
+                // Almacenar la lista de tareas 
                 vm.miKanbanListaTareas = resultado.data.tarea; 
 
-                // Añadir cada tarea a la columna correspondiente 
-                $.each(vm.miKanbanListaTareas, function(key, value) { 
-                    if(value.tipo === vm.miKanbanTipoTarea[0]) // Nuevas 
-                        vm.miKanbanColumn1.push(value); 
-                    else if(value.tipo === vm.miKanbanTipoTarea[1]) // Haciendo 
-                        vm.miKanbanColumn2.push(value); 
-                    else if(value.tipo === vm.miKanbanTipoTarea[2]) // En pruebas 
-                        vm.miKanbanColumn3.push(value); 
-                    else if(value.tipo === vm.miKanbanTipoTarea[3]) // Terminada 
-                        vm.miKanbanColumn4.push(value); 
-                }); 
+                // Si es usuario es distinto al que modificó la tarea 
+                if(vm.miUsuario.id !== data.usuarioId) { 
+                    // Iniciar las columnas 
+                    vm.miKanbanColumn1 = []; 
+                    vm.miKanbanColumn2 = []; 
+                    vm.miKanbanColumn3 = []; 
+                    vm.miKanbanColumn4 = []; 
+
+                    // Añadir cada tarea a la columna correspondiente 
+                    $.each(vm.miKanbanListaTareas, function(key, value) { 
+                        if(value.tipo === vm.miKanbanTipoTarea[0]) // Nuevas 
+                            vm.miKanbanColumn1.push(value); 
+                        else if(value.tipo === vm.miKanbanTipoTarea[1]) // Haciendo 
+                            vm.miKanbanColumn2.push(value); 
+                        else if(value.tipo === vm.miKanbanTipoTarea[2]) // En pruebas 
+                            vm.miKanbanColumn3.push(value); 
+                        else if(value.tipo === vm.miKanbanTipoTarea[3]) // Terminada 
+                            vm.miKanbanColumn4.push(value); 
+                    }); 
+                } else { 
+                    var column = 0, newColumn = 0;  
+
+                    // Verificar la columna origen y destino (tipo de tarea origen y destino) 
+                    for(var i = 0; i < vm.miKanbanTipoTarea.length; i++) {
+                        if(vm.miKanbanTipoTarea[i] === data.tipoOriginal) 
+                            column = i + 1; 
+                        if(vm.miKanbanTipoTarea[i] === data.nuevoTipo) 
+                            newColumn = i + 1; 
+                    }
+
+                    // Actualizar el tablero kanban en el usuario que envió la tarea 
+                    vm.onKanbanBoardUpdateColumn(column, newColumn, data.newIndex, data.newCell, data.obj); 
+                }
             }); 
-            // Actualizar el 'scope' 
-            $scope.$apply(); 
+            
             Materialize.toast($mensaje7, 2000); 
         }; 
 
