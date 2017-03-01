@@ -35,3 +35,25 @@ Comentar la línea
     password: "", //optional
     database: 'VisualMail_2' //optional
   },*/
+
+
+En el archivo config/model cambiar reemplazar lo siguiente:
+
+connection: "MongoDB"
+migrate: "safe"
+
+En el archivo /config/env/production.js de-comentar models y en el valor de "someMysqlServer" cambiar por "MongoDB" y en el valor de port, cambiar el valor por: "port: process.env.PORT || 1337"
+
+Cambiar en el archivo “package.json” lo siguiente:
+
+"scripts": {
+  "debug": "node debug app.js",
+  "start": "node app.js"
+},
+
+por
+
+"scripts": {
+  "start": "sails lift",
+  "debug": "node debug app.js"
+},
