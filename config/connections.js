@@ -31,7 +31,7 @@ module.exports.connections = {
   /*localDiskDb: { 
     adapter: 'sails-disk'
   },*/
-  "default": "MongoDB", 
+  /*"default": "MongoDB", */
   MongoDB: { 
     adapter: "sails-mongo", 
     url: "mongodb://matias:prueba@ds017514.mlab.com:17514/visualmailtest"
