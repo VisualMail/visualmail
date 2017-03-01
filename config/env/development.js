@@ -21,8 +21,8 @@ module.exports = {
   //   connection: 'someMongodbServer'
   // }
 
-  models: {
+  /*models: {
   	connection: "MongoDB" 
-  }
+  }*/
 
 };
