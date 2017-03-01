@@ -9,7 +9,7 @@ angular
         "ui.materialize", 
         "app.editUserCtrl", 
         "app.createProjectCtrl",
-        "app.SignUpController", 
+        "app.SignUpUserController", 
         "app.ProjectController" 
     ])
     .directive("capitalize", function() { 
