@@ -47,13 +47,14 @@ En el archivo /config/env/production.js de-comentar models y en el valor de "som
 Cambiar en el archivo “package.json” lo siguiente:
 
 "scripts": {
-  "debug": "node debug app.js",
-  "start": "node app.js"
+  "start": "sails lift",
+  "debug": "node debug app.js"
 },
 
 por
 
 "scripts": {
-  "start": "sails lift",
-  "debug": "node debug app.js"
+  "debug": "node debug app.js",
+  "start": "node app.js"
 },
+
