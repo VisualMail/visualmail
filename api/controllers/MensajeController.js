@@ -14,17 +14,24 @@ module.exports = {
 	* @param :: {Objetct} next, para continuar en caso de error
 	**/
 	create: function(req, res, next) { 
+        // Crear el mensaje
 		Mensaje.create(req.allParams(), function mensajeCreated(err, mensaje) { 
 			// Verificar si existe un error
 			if(err) { 
 				req.session.flash = { err: err }; 
-				return res.json({ mensaje: "false" }); 
+				return res.json({ 
+                    mensaje: false, 
+                    mensajeError: "Se produjo un error al conectarse con el objeto 'mensaje'"
+                }); 
 			}
 			
 			// Si el objeto no se pudo crear, retornar json con formato de manejo de error
 			if(!mensaje) { 
 				req.session.flash = { err: err }; 
-				return res.json({ mensaje: "false" }); 
+				return res.json({ 
+                    mensaje: false, 
+                    mensajeError: "Se produjo un error al crear el objeto 'mensaje'" 
+                }); 
 			}
 			
 			// Se deja la variable flash como vacía ya que no hay error y se retorna el mensaje creado

@@ -1,92 +1,79 @@
-<script>
-   var $mensaje1 = $('<span class="color_acentuado-text">La clave ingresada es válida</span>');
-   $(document).ready(function(){
-      $('.tooltipped').tooltip({delay: 50});
-   });
-   var $mensaje2 = $('<span class="color_acentuado-text">La clave ingresada no es válida</span>');
-   var $mensaje3 = $('<span class="color_acentuado-text">Su contraseña ha sido actualizada</span>');
-   var $mensaje4 = $('<span class="color_acentuado-text">Ocurrió un error</span>');
-   $(document).ready(function(){
-      $('.tooltipped').tooltip({delay: 50});
-   });
-</script>
-
-<div class="boxer row" ng-controller="RecoverPageCtrl">
-   <div class="card-panel col s12 m6 offset-m3 l4 offset-l4 z-depth-4">
-
-      <div class="row">
-         <img alt="iconfondo" class="col s6 offset-s3" src="/images/iconobigsinfondo.png">
-         <div class ="row center">
-            <h4 class=" light-green-text">Recuperar contraseña</h4>
-         </div>
-      </div>
-
-      <div ng-show="mostrar">
-         <form name="formclave">
-
-            <div class="row">
-               <div class="input-field col s10">
-                  <i class= "light-green-text small material-icons prefix">person_pin</i>
-                  <input id="clave" name="clave" type="text" ng-model="clave" ng-required="true">
-                  <label for="clave"> Ingrese la clave recibida por correo</label>
-               </div>
-               <div class="col s2 centerme red-text" role="alert" ng-messages="formclave.clave.$error">
-                  <div ng-message="required"><i class="small material-icons red-green-text">error_outline</i></div>
-               </div>
+<div class="boxer row" ng-controller="RecoverController as vm">
+    <div class="card-panel col s12 m6 offset-m3 l4 offset-l4 z-depth-4">
+        <div class="row">
+            <img class="col s6 offset-s3" src="/images/icon716x573.png" alt="icon716x573">
+            <div class ="col s12">
+                <h4 class="center-align light-green-text">Recuperar contraseña</h4>
             </div>
-
-            <div class="container row">
-               <button class="waves-effect waves-light btn-large light-green col s12" type="submit" ng-click="sendData()" ng-show="formclave.clave.$valid">Verificar clave</button>
+        </div>
+        
+        <div id="mainView" style="display: none;">
+            <div ng-show="vm.formularioVerificarMostrar">
+                <form name="vm.formVerificar">
+                    <div class="row">
+                        <div class="input-field col s10">
+                            <i class= "light-green-text small material-icons prefix">person_pin</i>
+                            <input id="claveVerificar" name="claveVerificar" type="text" 
+                                ng-model="vm.claveVerificar" 
+                                ng-required="true" />
+                            <label for="claveVerificar">Ingrese la clave recibida por correo</label>
+                        </div>
+                        <div class="col s2 centerme red-text" role="alert" ng-messages="vm.formVerificar.claveVerificar.$error">
+                            <div ng-message="required"><i class="small material-icons red-green-text">error_outline</i></div>
+                        </div>
+                    </div>
+                    <div class="container row">
+                        <button class="waves-effect waves-light btn-large light-green col s12" type="submit" 
+                            ng-click="vm.onBtnVerificarClaveClick()" 
+                            ng-disabled="!vm.formVerificar.claveVerificar.$valid">Verificar clave</button>
+                    </div>
+                </form>
             </div>
-
-         </form>
-      </div>
-
-      <div ng-show="mostrarpost">
-         <form name="passrecoverform" novalidate>
-            <div class="row tooltipped" data-delay="50" data-position="top" data-tooltip="Ingrese un valor alfanúmerico, mínimo ingrese 6 carácteres">
-               <div class="input-field col s7 offset-s1 ">
-                  <input id="password" name="password" type="password" 
-                     ng-maxlength="20" 
-                     ng-minlength="6" 
-                     ng-model="password" 
-                     ng-pattern="/^[a-zA-Z0-9]*$/" 
-                     ng-required="true">
-                  <label for="password">Ingrese su nueva contraseña</label>
-               </div>
-               <div class="col s4 centerme red-text" role="alert" ng-messages="passrecoverform.password.$error">
-                  <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
-                  <div ng-message="pattern">Formato no válido</div>
-                  <div ng-message="minlength">Mínimo 6 caracteres</div>
-                  <div ng-message ="maxlength">Contraseña muy larga</div>
-                  <div ng-show="passrecoverform.password.$valid"><i class="small material-icons light-green-text">done</i></div>
-               </div>
+            
+            <div ng-show="vm.formularioRecuperarMostrar">
+                <form name="vm.formRecuperar" novalidate="novalidate">
+                    <div class="row tooltipped" data-delay="50" data-position="top" data-tooltip="Ingrese un valor alfanúmerico, mínimo ingrese 6 carácteres">
+                        <div class="input-field col s7 offset-s1">
+                            <input id="password" name="password" type="password" 
+                                ng-maxlength="20" 
+                                ng-minlength="6" 
+                                ng-model="vm.claveNueva" 
+                                ng-pattern="/^[a-zA-Z0-9]*$/" 
+                                ng-required="true" />
+                            <label for="password">Ingrese su nueva contraseña</label>
+                        </div>
+                        <div class="col s4 centerme red-text" role="alert" ng-messages="vm.formRecuperar.password.$error">
+                            <div ng-message="required"> <i class="small material-icons red-green-text">error_outline</i></div>
+                            <div ng-message="pattern">Formato no válido</div>
+                            <div ng-message="minlength">Mínimo 6 caracteres</div>
+                            <div ng-message="maxlength">Contraseña muy larga</div>
+                            <div ng-show="vm.formRecuperar.password.$valid"><i class="small material-icons light-green-text">done</i></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s7 offset-s1">
+                            <input compare-to="vm.claveNueva" id="confirmpassword" name="confirmpassword" type="password" 
+                                ng-model="vm.claveConfirmar" 
+                                ng-required="true">
+                            <label for="confirmpassword">Confirmar Contraseña</label>
+                        </div>
+                        <div class="col s4 centerme red-text" role="alert" ng-messages="vm.formRecuperar.confirmpassword.$error">
+                            <div ng-message="required"><i class="small material-icons red-green-text">error_outline</i></div>
+                            <div ng-message="compareTo">La contraseña no coincide</div>
+                            <div ng-show="vm.formRecuperar.confirmpassword.$valid"><i class="small material-icons light-green-text">done</i></div>
+                        </div>
+                    </div>
+                    <div class="container row">
+                        <button class="waves-effect waves-light btn-large light-green col s8" type="submit" 
+                            ng-click="vm.onBtnActualizarClaveClick()" 
+                            ng-disabled="!vm.formRecuperar.$valid">Actualizar clave</button>
+                    </div>
+                </form>
             </div>
-
-            <div class="row">
-               <div class="input-field col s7 offset-s1">
-                  <input compare-to="password" id="confirmpassword" name="confirmpassword" type="password" 
-                     ng-model="confirmpassword" 
-                     ng-required="true">
-                  <label for="confirmpassword">Confirmar Contraseña</label>
-               </div>
-               <div class="col s4 centerme red-text" role="alert" ng-messages="passrecoverform.confirmpassword.$error">
-                  <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
-                  <div ng-message="compareTo"> La contraseña no coincide</div>
-                  <div ng-show="passrecoverform.confirmpassword.$valid"><i class="small material-icons light-green-text">done</i></div>
-               </div>
+            <div class="container row" ng-show="vm.confirmado">
+                <h6 class="green-text">Se ha actualizado su nueva contraseña</h6>
+                <a href="/session/login" class="waves-effect waves-light btn-large light-green col s12"> Iniciar seśión</a>
             </div>
-
-            <div class="container row">
-               <button class="waves-effect waves-light btn-large light-green col s8" type="submit" ng-click="actualizar_pass()" ng-show="passrecoverform.$valid">Actualizar clave</button>
-            </div>
-         </form>
-      </div>
-
-      <div class="container row" ng-show="confirmacion">
-         <h6 class="green-text">Se ha actualizado su nueva contraseña</h6>
-         <a href="/session/login" class="waves-effect waves-light btn-large light-green col s12"> Iniciar seśión</a>
-      </div>
-
+        </div>
    </div>
 </div>

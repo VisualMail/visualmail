@@ -14,7 +14,6 @@ module.exports = {
 	* @param :: {Objetct} next, para continuar en caso de error
 	**/
 	create: function(req,res,next){ 
-
 		// En caso de tener todos los parámetros solicitados de acuerdo al modelo
 		Dialogo.create(req.allParams(), function dialogoCreated(err, dialogo) { 
 			
@@ -23,20 +22,26 @@ module.exports = {
 			// retorna un json con el valor dialogo falso
 			if(err) { 
 				req.session.flash = { err: err }; 
-				return res.json({ dialogo: 'false' }); 
+				return res.json({ 
+                    dialogo: false, 
+                    mensaje: "Se produjo un error al conectarse con el objeto 'dialogo'"
+                }); 
 			}
 			
 			// Si no es un objeto diálogo
 			// retorna un error y el json con la configuracion
 			if(!dialogo) 
-				return res.json({ dialogo:'false' }); 
+				return res.json({ 
+                    dialogo: false, 
+                    mensaje: "Se produjo un error al crear el objeto 'dialogo'"
+                }); 
 			
 			// En caso de no haber error
 			// la variable flash de sesión se actualiza
 			req.session.flash = { }; 
 
 			// Se crea el valor y se retorna un json para el metodo POST
-			return res.json({dialogo:dialogo}); 
+			return res.json({ dialogo:dialogo }); 
 		});
 	},
 

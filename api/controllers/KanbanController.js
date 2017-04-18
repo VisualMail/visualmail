@@ -21,12 +21,18 @@ module.exports = {
 			// Verificar si existe un error, actualizar la variable flash y se entrega json con formato
 			if(err) { 
 				req.session.flash = { err: err }; 
-				return res.json({ kanban: 'false' }); 
+				return res.json({ 
+                    kanban: false, 
+                    mensaje: "Se produjo un error al conectarse con el objeto 'kanban'"
+                 }); 
 			}
 			
 			// Si no fue posible crear el objeto, el POST retorna un mensaje de error según formato
 			if(!kanban)
-				return res.json({ kanban:'false' });
+				return res.json({ 
+                    kanban: false, 
+                    mensaje: "Se produjo un error al crear el objeto 'kanban'"
+                 });
 			else {
 				// Si no hay error, la variable flash es nula y se retorna el objeto kanban
 				req.session.flash = { };

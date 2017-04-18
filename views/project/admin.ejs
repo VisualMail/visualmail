@@ -1,11 +1,4 @@
-<script type="text/javascript">
-	var proyectoIdAux = "<%= project.id %>"; 
-</script>
-<script type="text/javascript" src="/js/src/Controller/ProjectController.d3.js"></script>
-<script type="text/javascript" src="/js/src/Controller/ProjectController.kanban.js"></script>
-<script type="text/javascript" src="/js/src/Controller/ProjectController.jquery.js"></script>
-
-<div id="ProjectControllerMain" ng-controller="ProjectController as vm">
+<div id="ProjectControllerMain" ng-controller="ProjectController as vm" style="display: none; padding-top: .2em;">
 
 	<!-- Inicio contenido -->
 	<div class="row">
@@ -13,10 +6,10 @@
 		<!-- Inicio Pestañas -->
 		<div class="col s12">
 			<ul class="tabs">
-				<li class="tab col s3"><a href="#participantes">Proyecto: {{ vm.miProyecto.name }}</a></li>
-				<li class="tab col s3"><a href="#dialogo">Diálogo</a></li>
-				<li class="tab col s3"><a class="active" href="#mensajes">Mensajes</a></li>
-				<li class="tab col s3"><a href="#kanbanBoard">Kanban</a></li>
+				<li class="tab col s3"><a class="green-text text-darken-2" href="#participantes">Proyecto: {{ vm.miProyecto.name }}</a></li>
+				<li class="tab col s3"><a class="green-text text-darken-2 active" href="#dialogo">Diálogo</a></li>
+				<li class="tab col s3"><a class="green-text text-darken-2" href="#mensajes">Mensajes</a></li>
+				<li class="tab col s3"><a class="green-text text-darken-2" href="#kanbanBoard">Kanban</a></li>
 			</ul>
 		</div>
 		<!-- Fin Pestañas -->
@@ -29,7 +22,7 @@
 				<%if(session.User.email == project.owner_email) { %>
 				<div class="row">
 					<div class="col s12">
-						<p class="green-text">Estas a cargo del proyecto, puedes editarlo <a class="modal-trigger" href="#modalEditarProyecto" modal>aquí</a></p> 
+						<p class="green-text">Estás a cargo del proyecto, puedes editarlo <a class="modal-trigger" href="#modalEditarProyecto" modal>aquí</a></p> 
 					</div>
 				</div>
 				<div class="row">
@@ -80,8 +73,8 @@
 	            						<td class="light-green-text"> {{ x.initials }} </td>
 	            						<td class="light-green-text"> {{ x.email  }}</td>
 	            						<td class="light-green-text"> {{x.rut}} </td>
-	            						<td><i class= "green-text small material-icons prefix" ng-if="owner_email==x.email">done</i></td>
-	            						<td><i class= "green-text small material-icons prefix" ng-if="owner_email==x.email">done</i></td>
+	            						<td><i class="green-text small material-icons prefix" ng-if="owner_email==x.email">done</i></td>
+	            						<td><i class="green-text small material-icons prefix" ng-if="owner_email==x.email">done</i></td>
 	            						<td class="light-green-text">Desarrollador Front end</td>
 	            					</tr>
             					</tbody>
@@ -102,91 +95,105 @@
 			<div id="main" class="main">
 			</div>
 
-  			<div class="resizable-panel-container" ng-show="vm.miMensajeAnclado.id"> 
-  				<div class="resizable-panel-left">
-  					<div class="row">
-  						<div class="col s6">
-  							<p><strong>{{ vm.miMensajeAnclado.usuario.initials }}</strong> dijo:</p>
-  						</div>
-  						<div class="col s3 offset-s3">
-  							<span tooltipped 
-								data-delay="50" 
-								data-position="left" 
-								data-tooltip="Mensaje anclado">
-								<img alt="Kanban" height="33px" src="/images/anchor-small.png" width="33px" />
-							</span>
-  							<span tooltipped 
-  								data-delay="50" 
-  								data-position="left" 
-  								data-tooltip="Unir al Kanban">
-  								<a class="btn-floating light-green valign-wrapper" href="#modalMensajeKanban" 
-									modal 
-									ng-click="vm.miMensajeSeleccionado = vm.miMensajeAnclado">
-									<img alt="Kanban" height="33px" src="/images/kanbanicon.png" width="33px" />
-								</a>
-							</span>
-							<span tooltipped 
-  								data-delay="50" 
-  								data-position="left" 
-  								data-tooltip="Responder">
-								<a class="btn-floating waves-effect waves-light light-green modal-trigger" href="#modalMensaje" 
-									modal 
-									ng-click="vm.miMensajeSeleccionado = vm.miMensajeAnclado">
-									<i class="small material-icons ">reply</i>
-								</a>
-							</span>
-  						</div>
-	  				</div>
-	  				<div class="row">
-  						<div class="col s2">
+			<div class="resizable-panel-container" ng-show="vm.miMensajeAnclado.id">
+				<div class="resizable-panel-left">
+
+					<div class="row">
+						<div class="col s12 m2 l2"> 
 							<img alt="Usuario" class="circle responsive-img" ng-src="{{ vm.miMensajeAnclado.usuario.imgurl }}" />
 						</div>
-  						<div class="col s10">
-  							{{ vm.miMensajeAnclado.name }}
-  						</div>
-  					</div>
+						<div class="col s12 m10 l10">
+							<div class="row">
+								<div class="col s12 m12 l9">
+									<h6>{{ vm.miMensajeAnclado.createdAt | date:'M/d/yyyy HH:mm:ss' }}</h6>
+									<p><strong>{{ vm.miMensajeAnclado.usuario.firstname }} ({{ vm.miMensajeAnclado.usuario.initials }})</strong> dijo:</p>
+								</div>
+								<div class="col s12 m12 l3">
+																	
+									<span tooltipped 
+										data-delay="50" 
+										data-position="left" 
+										data-tooltip="Mensaje anclado">
+										<span class="mensaje-anclar-icon">
+											<img alt="Kanban" src="/images/anchor-small.png" style="height: 33px; width: 33px;" />
+										</span>
+									</span>
+									<span tooltipped 
+										data-delay="50" 
+										data-position="left" 
+										data-tooltip="Unir al Kanban">
+										<a class="btn-floating light-green valign-wrapper" href="#modalMensajeKanban" modal 
+											ng-click="vm.miMensajeSeleccionado = vm.miMensajeAnclado">
+											<img alt="Kanban" height="33px" src="/images/kanbanicon.png" width="33px" />
+										</a>
+									</span>
+									<span tooltipped 
+										data-delay="50" 
+										data-position="left" 
+										data-tooltip="Responder">
+										<a class="btn-floating waves-effect waves-light light-green modal-trigger" href="#modalMensaje" modal 
+											ng-click="vm.miMensajeSeleccionado = vm.miMensajeAnclado">
+											<i class="small material-icons ">reply</i>
+										</a>
+									</span>
+								
+								</div>
+							</div>
+							<div class="row">
+								<div class="mensaje-anclar-card">
+									<p>{{ vm.miMensajeAnclado.name }}</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					
   				</div>
   				<div class="resizable-panel-right">
   					<div ng-show="vm.miMensajeAncladoNavegar != ''">
 						<div class="row">
-	  						<div class="col s6">
-	  							<p><strong>{{ vm.miMensajeAncladoNavegar.usuario.initials }}</strong> dijo:</p>
-	  						</div>
-	  						<div class="col s2 offset-s4">
-	  							<span tooltipped 
-									data-delay="50" 
-									data-position="left" 
-									data-tooltip="Unir al Kanban">
-	  								<a class="btn-floating light-green valign-wrapper" href="#modalMensajeKanban" 
-										modal 
-										ng-click="vm.miMensajeSeleccionado = vm.miMensajeAncladoNavegar">
-										<img alt="Kanban" height="33px" src="/images/kanbanicon.png" width="33px" />
-									</a>
-								</span>
-								<span tooltipped 
-  									data-delay="50" 
-  									data-position="left" 
-  									data-tooltip="Responder">
-									<a class="btn-floating waves-effect waves-light light-green modal-trigger" href="#modalMensaje" 
-										modal 
-										ng-click="vm.miMensajeSeleccionado = vm.miMensajeAncladoNavegar">
-										<i class="small material-icons ">reply</i>
-									</a>
-								</span>
-	  						</div>
-	  					</div>
-	  					<div class="row">
-	  						<div class="col s2">
+							<div class="col s12 m2 l2"> 
 								<img alt="Usuario" class="circle responsive-img" ng-src="{{ vm.miMensajeAncladoNavegar.usuario.imgurl }}" />
 							</div>
-	  						<div class="col s10">
-	  							{{ vm.miMensajeAncladoNavegar.name }}
-	  						</div>
-  						</div>
-  					</div>
-            	</div>
-  			</div>
+							<div class="col s12 m10 l10">
+								<div class="row">
+									<div class="col s12 m12 l9">
+										<h6>{{ vm.miMensajeAncladoNavegar.createdAt | date:'M/d/yyyy HH:mm:ss' }}</h6>
+										<p><strong>{{ vm.miMensajeAncladoNavegar.usuario.firstname }} ({{ vm.miMensajeAncladoNavegar.usuario.initials }})</strong> dijo:</p>
+									</div>
+									<div class="col s12 m12 l3">
+										<span tooltipped 
+											data-delay="50" 
+											data-position="left" 
+											data-tooltip="Unir al Kanban">
+											<a class="btn-floating light-green valign-wrapper" href="#modalMensajeKanban" 
+												modal 
+												ng-click="vm.miMensajeSeleccionado = vm.miMensajeAncladoNavegar">
+												<img alt="Kanban" height="33px" src="/images/kanbanicon.png" width="33px" />
+											</a>
+										</span>
+										<span tooltipped 
+											data-delay="50" 
+											data-position="left" 
+											data-tooltip="Responder">
+											<a class="btn-floating waves-effect waves-light light-green modal-trigger" href="#modalMensaje" 
+												modal 
+												ng-click="vm.miMensajeSeleccionado = vm.miMensajeAncladoNavegar">
+												<i class="small material-icons">reply</i>
+											</a>
+										</span>
+									</div>
+								</div>
+								<div class="row">
+									<div class="mensaje-anclar-card">
+										<p>{{ vm.miMensajeAncladoNavegar.name }}</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 
+			</div>
 		</div>
 		<!-- Fin Mapa del diálogo -->
 
@@ -492,19 +499,23 @@
 		<div class="modal-content">
 			<h4 class="green-text">Editar el proyecto</h4>
 
-			<form name="formEditarProyecto" novalidate>
+			<form name="vm.formEditarProyecto" novalidate="novalidate">
 
 				<div class="row">
 					<div class="col s1">
-						<br /><i class="green-text material-icons prefix small">mode_edit</i>
+						<br />
+						<i class="green-text material-icons prefix small">mode_edit</i>
 					</div>
 					<div class="input-field col s6">
-						<input id="editarProyectoNombre" name="editarProyectoNombre" type="text" placeholder="{{ vm.miProyecto.name }}" ng-maxlength="25" ng-minlength="3" ng-model="vm.miProyectoEditar.nombre" />
+						<input id="editarProyectoNombre" name="editarProyectoNombre" type="text" placeholder="{{ vm.miProyecto.name }}" 
+							ng-maxlength="25" 
+							ng-minlength="3" 
+							ng-model="vm.miProyectoEditar.nombre" />
 						<label for="editarProyectoNombre">Nombre del proyecto</label>
 					</div>
-					<div class="col s5 centerme red-text" role="alert" ng-messages="formEditarProyecto.editarProyectoNombre.$error">
+					<div class="col s5 centerme red-text" role="alert" ng-messages="vm.formEditarProyecto.editarProyectoNombre.$error">
 						<div ng-message="minlength">Mínimo 3 caracteres</div>
-						<div ng-message ="maxlength">Nombre muy largo</div>
+						<div ng-message="maxlength">Nombre muy largo</div>
 					</div>
 				</div>
 
@@ -540,84 +551,98 @@
 							weekdays-letter="{{ vm.miWeekdaysLetter }}" 
 							weekdays-short="{{ vm.miWeekdaysShort }}" 
 							ng-model="vm.miProyecto.fechaLimite" />
-							<label for="editarProyectoFechaLimite">Fecha límite del proyecto</label> 
+						<label for="editarProyectoFechaLimite">Fecha límite del proyecto</label> 
 					</div>
 				</div>
 			</form>
 		</div>
 
 		<div class="modal-footer">
-			<a class="btn-flat modal-action modal-close waves-effect waves-green" href="#!" 
+			<button class="btn-flat modal-action modal-close waves-effect waves-green" type="button"
 				ng-click="vm.onBtnActualizarProyectoClick()" 
-				ng-show="formEditarProyecto.$valid">Aceptar</a>
-			<a class="btn-flat modal-action modal-close waves-effect waves-green" href="#!">Cancelar</a>
+				ng-show="vm.formEditarProyecto.$valid">Aceptar</button>&nbsp;
+			<button class="btn-flat modal-action modal-close waves-effect waves-green" type="button">Cancelar</button>
 		</div>
 	
 	</div>
 	<!-- Fin Modal Proyecto -->
 
 	<!-- Inicio modal mensaje -->
-	<div class="modal bottom-sheet" id="modalMensaje">
+	<div id="modalMensaje" class="modal bottom-sheet modal-noscroll">
 		<div class="modal-content">
-			<div class="row">
-				<div class="col s6"><h6>{{ vm.miMensajeSeleccionado.createdAt | date:'M/d/yyyy HH:mm:ss' }}</h6></div>
-				<div class="col s2 offset-s4">
-					<button class="btn-flat green white-text" ng-click="vm.onBtnMensajeEnviarClick()" ng-show="formmensaje.$valid">Responder</button>
-				</div>
-			</div>
 
 			<div class="row">
-				<div class="card col s6 heightmodal2">
-					<div class="col s12">
-						<div class="col s2">
-							<img alt="Usuario" class="circle responsive-img" ng-src="{{ vm.miMensajeSeleccionado.usuario.imgurl }}" />
+				<div class="col s12 m6 l6">
+					<div class="card horizontal">
+						<div class="card-stacked">
+							<div class="card-content">
+								<div class="row">
+									<div class="col s12 m2 l2">
+										<img alt="Usuario" class="circle responsive-img" ng-src="{{ vm.miMensajeSeleccionado.usuario.imgurl }}" />
+									</div>
+									<div class="col s12 m10 l0">
+										<h6>{{ vm.miMensajeSeleccionado.createdAt | date:'M/d/yyyy HH:mm:ss' }}</h6>
+										<p><strong>{{ vm.miMensajeSeleccionado.usuario.firstname }} ({{ vm.miMensajeSeleccionado.usuario.initials }})</strong> dijo:</p>
+									</div>
+								</div>
+								<div class="mensaje-card">
+									<p>{{ vm.miMensajeSeleccionado.name }}</p>
+								</div>
+							</div>
+							<div class="card-action">
+								<button class="btn waves-effect waves-light orange darken-1 modal-action modal-close" type="button">Cerrar</button>
+							</div>
 						</div>
-						<div class="col s6">
-							<h6>{{ vm.miMensajeSeleccionado.usuario.firstname }} ({{ vm.miMensajeSeleccionado.usuario.initials }}) Dijo:</h6>
-						</div>
-					</div>
-					<div class="col s12 ">
-						<h6 class="">{{ vm.miMensajeSeleccionado.name }}</h6>
 					</div>
 				</div>
-
-				<div class="card col s6 heightmodal2" ng-cloak>
-					<div class="col s12">
-						<div class="col s2">
-							<img alt="Usuario" class="circle responsive-img" ng-src="{{ vm.miUsuario.imgurl }}" />
-						</div>
-						<div class="col s4">
-							<p>{{ vm.miUsuario.firstname }} ({{ vm.miUsuario.initials }})</p>
-						</div>
-						<div class="col s6">
-							<selectize config="vm.miMensajeSelectizeConfig" id="mensajeSelectize" options="vm.miMensajeTipoDialogo" ng-model="vm.miMensajeInputDialogo"></selectize>
-						</div>
-					</div>
-
-					<div class="col s12  ">
-						<form name="formmensaje" novalidate>
-							<div class="input-field col s11">
-								<textarea class="materialize-textarea" id="mensajeRespuesta" name="mensajeRespuesta" 
-									ng-maxlength="500" 
-									ng-minlength="5" 
-									ng-model="vm.miMensajeRespuesta" 
-									ng-required="true">
-								</textarea>
-								<label for="mensajeRespuesta">Ingrese una respuesta (mínimo 5 caracteres, máximo 500 caracteres)</label>
+				<div class="col s12 m6 l6">
+					<div class="card horizontal">
+						<div class="card-stacked">
+							<div class="card-content">
+								<div class="row">
+									<div class="col s12 m2 l2">
+										<img alt="Usuario" class="circle responsive-img" ng-src="{{ vm.miUsuario.imgurl }}" />
+									</div>
+									<div class="col s12 m10 l10">
+										<div class="col s12 m4 l4">
+											<h6><strong>{{ vm.miUsuario.firstname }} ({{ vm.miUsuario.initials }})</strong> responde:</h6>
+										</div>
+										<div class="col s12 m8 l8">
+											<selectize class="selectize-input-mensaje" config="vm.miMensajeSelectizeConfig" id="mensajeSelectize" options="vm.miMensajeTipoDialogo" ng-model="vm.miMensajeInputDialogo"></selectize>
+										</div>
+									</div>
+								</div>
+								<div class="mensaje-card">
+									<form name="vm.formMensaje" novalidate="novalidate">
+										<div class="input-field col s11">
+											<textarea class="materialize-textarea" id="mensajeRespuesta" name="mensajeRespuesta" 
+												ng-maxlength="500" 
+												ng-minlength="5" 
+												ng-model="vm.miMensajeRespuesta" 
+												ng-required="true">
+											</textarea>
+											<label for="mensajeRespuesta">Ingrese una respuesta (mínimo 5 caracteres, máximo 500 caracteres)</label>
+										</div>
+										<div class="col s1 input-field">
+											<br />
+											<span ng-show="vm.formMensaje.mensajeRespuesta.$valid">
+												<i class="small material-icons light-green-text">done</i>
+											</span>
+											<span ng-show="!vm.formMensaje.mensajeRespuesta.$valid">
+												<i class="small material-icons red-text">error_outline</i>
+											</span>
+										</div>
+									</form>
+								</div>
 							</div>
-							<div class="col s1 input-field">
-								<br />
-								<span ng-show="formmensaje.mensajeRespuesta.$valid">
-									<i class="small material-icons light-green-text">done</i>
-								</span>
-								<span ng-show="!formmensaje.mensajeRespuesta.$valid"> 
-									<i class="small material-icons red-text">error_outline</i>
-								</span>	
+							<div class="card-action right-align">
+								<button class="btn waves-effect waves-light" type="button" 
+									ng-click="vm.onBtnMensajeEnviarClick()"
+									ng-disabled="!vm.formMensaje.mensajeRespuesta.$valid">Responder</button>
 							</div>
-						</form>
+						</div>
 					</div>
 				</div>
-
 			</div>
 		</div>
 	</div>

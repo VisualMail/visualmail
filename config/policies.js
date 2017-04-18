@@ -25,21 +25,21 @@ module.exports.policies = {
   * access)                                                                  *
   *                                                                          *
   ***************************************************************************/
-  '*': 'flash',
-     user:{
-    'signup': "flash",
-     create: "flash",
-     edit: ['flash','sessionAuth'],
-     view: ['flash','sessionAuth'],
-     '*': "sessionAuth"
-   },
-    project:{
-      add_user: ['flash','sessionAuth'],
-      create: ['flash','sessionAuth'],
-      edit: ['flash','sessionAuth'],
-      '*': "sessionAuth"
-    }
+
   // '*': true,
+  '*': 'flash', 
+  user:{ 
+    create: "flash", 
+    edit: ['flash','sessionAuth'], 
+    view: ['flash','sessionAuth'], 
+    '*': "sessionAuth" 
+  }, 
+  project:{ 
+    add_user: ['flash','sessionAuth'], 
+    create: ['flash','sessionAuth'], 
+    edit: ['flash','sessionAuth'], 
+    '*': "sessionAuth" 
+  }
 
   /***************************************************************************
   *                                                                          *

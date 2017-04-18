@@ -1,0 +1,124 @@
+<div id="IndexControllerMain" ng-controller="IndexController as vm" style="display: none;">
+    <div class="green-text">
+        <h5> Mis proyectos</h5>
+    </div>
+
+    <div class="row">
+        
+        <!-- Inicio Mis Proyectos activos -->
+        <div class="row col s5 offset-s1">
+            <h6 class="green-text">Mis proyectos activos</h6>    
+            <div class="card-panel scroll-activos">
+                <div class="row">
+                    <div class="col s1">
+                        <br />
+                        <i class="material-icons light-green-text prefix">search</i>
+                    </div>
+                    <div class="col s6 input-field">
+                        <input id="buscar" type="search" ng-model="vm.buscar" />
+                        <label for="buscar" class="green-text">Buscar</label>
+                    </div>
+                </div>
+                <div ng-repeat="item in vm.misProyectos.slice().reverse() | filter: vm.buscar">
+                    <a ng-href="/project/admin/?id={{ item.id }}" ng-if="item.owner_email === vm.miUsuario.email">
+                        <div class="col s6">
+                            <div class="card green hoverable"> 
+                                <div class="card-content white-text">{{ item.name }}</div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-- Fin Mis Proyectos activos -->
+        
+        <div class="row col s5">
+            
+            <!-- Inicio Proyectos en los que participas -->
+            <h6 class="green-text">Proyectos en los que participas</h6>
+            <div id="participo" class="row card-panel scrollparticipo">
+                <div class="row">
+                    <div class="col s1">
+                        <br />
+                        <i class="material-icons light-green-text prefix">search</i>
+                    </div>
+                    <div class="col s6 input-field">
+                        <input id="buscarParticipo" type="search" ng-model="vm.buscarParticipo" />
+                        <label for="buscarParticipo" class="green-text">Buscar</label>
+                    </div>
+                </div>
+                <div ng-repeat="item in vm.misProyectos.slice().reverse() | filter: vm.buscarParticipo">
+                    <a ng-href="/project/admin/?id={{ item.id }}" ng-if="item.owner_email !== vm.miUsuario.email">
+                        <div class="col s6">
+                            <div class="card light-green lighten z-depth-2"> 
+                                <div class="card-content white-text">{{ item.name }}</div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <!-- Fin Proyectos en los que participas -->
+            
+            <!-- Inicio Crear Proyecto -->
+            <div id="crear" class="row card-panel">
+                <h6 class="green-text">Crear un nuevo proyecto</h6>
+                
+                <form method="post" name="vm.formCrearProyecto" novalidate="novalidate">
+                    <div class="col s4">
+                        <input id="projectName" name="projectName" type="text" 
+                            ng-maxlength="23" 
+                            ng-minlength="3" 
+                            ng-model="vm.projectName" 
+                            ng-required="true" />
+                        <label for="projectName">Nombre del proyecto</label> 
+                    </div>
+                    <div ng-messages="vm.formCrearProyecto.projectName.$error" role="alert" class="col s2 centerme red-text">
+                        <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
+                        <div ng-message="minlength">Mínimo 3 caracteres</div> 
+                        <div ng-message ="maxlength">Nombre muy largo</div>
+                        <div ng-show="vm.formCrearProyecto.projectName.$valid"><i class="small material-icons light-green-text">done</i></div>
+                    </div>
+                    
+                    <div class="col s4">
+                        <input id="projectDate" name="projectDate" type="text" 
+                            clear="Limpiar" 
+                            close="Cerrar" 
+                            container="body" 
+                            disable="vm.dateDisable" 
+                            format="dd/mm/yyyy" 
+                            max="{{ vm.dateMaxDate }}" 
+                            min="{{ vm.dateMinDate }}" 
+                            months-full="{{ vm.dateMonth }}" 
+                            months-short="{{ vm.datMonthShort }}" 
+                            input-date 
+                            select-years="15" 
+                            on-close="vm.onDateClose()" 
+                            on-open="vm.onDateOpen()" 
+                            on-render="vm.onDateRender()" 
+                            on-set="vm.onDateSet()" 
+                            on-start="vm.onDateStart()" 
+                            on-stop="vm.onDateStop()"
+                            today="Hoy" 
+                            weekdays-full="{{ vm.dateWeekdaysFull }}" 
+                            weekdays-letter="{{ vm.dateWeekdaysLetter }}" 
+                            ng-model="vm.projectDate">
+                        <label for="projectDate">Fecha límite del proyecto</label> 
+                    </div>
+                    <div class="col s2 centerme red-text" role="alert" ng-messages="vm.formCrearProyecto.proyectDate.$error">
+                        <div ng-message ="required"><i class="small material-icons red-green-text">error_outline</i></div>
+                        <div ng-show="vm.formCrearProyecto.proyectDate.$valid"><i class="small material-icons light-green-text">done</i></div>
+                    </div>
+                    <div class="row col s6">
+                        <button class="btn waves-effect waves" type="button" 
+                            ng-click="vm.onBtnCrearProyectoClick()" 
+                            ng-disabled="!vm.formCrearProyecto.$valid">
+                            Crear
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <!-- Fin Crear Proyecto -->
+
+        </div>
+    </div>
+</div>

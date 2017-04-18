@@ -1,153 +1,153 @@
-<script>
-    var id= '<%=session.User.id%>';
-    $(document).ready(function() { 
-        $('.tooltipped').tooltip({delay: 50}); 
-    }); 
-
-    var $mensaje1 = $('<span class="  color_acentuado-text"> Se actualizaron los campos seleccionados</span>'); 
-    var $mensaje2 = $('<span class="  color_acentuado-text"> Campo(s) mal ingresado(s) </span>'); 
-    var $mensaje3 = $('<span class="  color_acentuado-text"> Se actualizó su nueva contraseña</span>'); 
-    var $mensaje4 = $('<span class="  color_acentuado-text"> Ocurrió un error al actualizar la contraseña</span>');
-
-</script>
-
-<% if(flash && flash.err) { %>
-<script>Materialize.toast($mensaje1, 5000);</script>
-    <% flash = { } %>
-<% } %>
-
-<div class="boxer" id="vistaprincipal" ng-controller="editUserCtrl">
+<div class="boxer" id="vistaPrincipal" ng-controller="EditController as vm">
     <div class=" container">
         <div class="row card-panel" id="contenedor_form">
-            <form name="update_campos" novalidate>
+            
+            <!-- Inicio editar perfil -->
+            <form name="vm.formEdit" novalidate="novalidate">
+                <div class="s12">
+                    <div class="col s11 offset-s1">
+                        <h3 class="green-text">Actualizar campos</h3>
+                    </div>
+                    <div class="col s11 offset-s1">
+                        <h6 class="green-text">Los campos nulos no se actualizarán.</h6>
+                    </div>
+                </div>
+                
+                <div class="col s12">
+                    <div class="input-field col s7 offset-s1">
+                        <input id="firstname" name="firstname" placeholder="{{ vm.miUsuario.firstname }}" type="text" 
+                            ng-maxlength="15" 
+                            ng-minlength="3" 
+                            ng-model="vm.firstname" 
+                            ng-pattern="/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u" />
+                        <label for="firstname">Nombre</label>
+                    </div>
+                    <div class="col s4 centerme red-text" role="alert" ng-messages="vm.formEdit.firstname.$error">
+                        <div ng-message="minlength">Mínimo 3 caracteres</div>
+                        <div ng-message="maxlength">Nombre muy largo</div>
+                        <div ng-message="pattern">Formato no válido</div>
+                    </div>
+                </div>
+                
+                <div class="col s12">
+                    <div class="input-field col s7 offset-s1">
+                        <input id="lastname" name="lastname" placeholder="{{ vm.miUsuario.lastname }}" type="text" 
+                            ng-maxlength="30" 
+                            ng-minlength="3" 
+                            ng-model="vm.lastname" 
+                            ng-pattern="/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u" />
+                        <label for="lastname">Apellidos</label>
+                    </div>
+                    <div class="col s4 centerme red-text" role="alert" ng-messages="vm.formEdit.lastname.$error">
+                        <div ng-message="minlength">Mínimo 3 caracteres</div> 
+                        <div ng-message="maxlength">Apellido muy largo</div>
+                        <div ng-message="pattern">Formato no válido</div>
+                    </div>
+                </div>
+                
+                <div class="col s12">
+                    <div class="input-field col s7 offset-s1">
+                        <input id="imgurl" name="imgurl" placeholder="{{ vm.miUsuario.imgurl }}" type="text" 
+                            ng-model="vm.imgurl" />
+                        <label for="imgurl">URL imagen</label>
+                        <!-- pattern="https?://.+"-->
+                    </div>
+                </div>
+                
+                <div class= "col s12">
+                    <div class="input-field col s7 offset-s1">
+                        <input capitalize class="tooltipped" id="initials" name="initials" placeholder="{{ vm.miUsuario.initials }}" type="text" 
+                            data-delay="50" 
+                            data-position="right" 
+                            data-tooltip="Ingrese 3 caracteres con las iniciales de su nombre" 
+                            ng-maxlength="3" 
+                            ng-minlength="3" 
+                            ng-model="vm.initials" 
+                            ng-pattern="/^[a-zA-Z]+$/" 
+                            ng-required="true" />
+                        <label for="initials">Iniciales</label>
+                    </div>
+                    <div class="col s4 centerme red-text" role="alert" ng-messages="vm.formEdit.initials.$error">
+                        <div ng-message="minlength">3 caracteres</div>
+                        <div ng-message="maxlength">No pueden ser más de 3 carácteres</div>
+                        <div ng-message="pattern">Formato no válido</div>
+                    </div>
+                </div>
+                
+                <div class="col s12">
+                    <div class="col s3 offset-s1">
+                        <button class="waves-effect waves-light btn-large light-green" type="button" 
+                            ng-click="vm.onBtnEditGuardarClick()" 
+                            ng-disabled="!vm.formEdit.$valid">Actualizar</a>
+                    </div>
+                    <div class="col s1 offset-s1">
+                        <button class="waves-effect waves-light btn-large" type="button" 
+                            ng-click="vm.onBtnEditCancelClick()">Cancelar</button>
+                    </div>
+                </div>
+            </form>
+            <!-- Fin editar perfil -->
 
-            <div class="s12">
-               <div class="col s11 offset-s1">
-                  <h3 class="green-text">Actualizar campos</h3>
-               </div> 
-               <div class="col s11 offset-s1">
-                  <h6 class="green-text">Los campos nulos no se actualizarán.</h6>
-               </div>
-            </div>
-
-            <div class="col s12">
-               <div class="input-field col s7 offset-s1">
-                  <input id="firstname" name="firstname" placeholder="<%=session.User.firstname%>" type="text" 
-                     ng-maxlength="15" 
-                     ng-minlength="3" 
-                     ng-model="firstname" 
-                     ng-pattern="/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u">
-                  <label for="firstname">Nombre</label>
-               </div>
-               <div class="col s4 centerme red-text" role="alert" ng-messages="update_campos.firstname.$error">
-                  <div ng-message="minlength">Mínimo 3 caracteres</div>
-                  <div ng-message ="maxlength">Nombre muy largo</div>
-                  <div ng-message ="pattern"> Formato no válido</div>
-               </div>
-            </div>
-
-            <div class="col s12">
-               <div class="input-field col s7 offset-s1">
-                  <input id="lastname" name="lastname" placeholder="<%=session.User.lastname%>" type="text" 
-                     ng-maxlength="30" 
-                     ng-minlength="3" 
-                     ng-model="lastname" 
-                     ng-pattern="/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u">
-                  <label for="lastname">Apellidos</label>
-               </div>
-               <div class="col s4 centerme red-text" role="alert" ng-messages="update_campos.lastname.$error">
-                  <div ng-message="minlength">Mínimo 3 caracteres</div> 
-                  <div ng-message ="maxlength">Apellido muy largo</div>
-                  <div ng-message ="pattern"> Formato no válido</div>
-               </div>
-            </div>
-
-            <div class="col s12">
-               <div class="input-field col s7 offset-s1">
-                  <input id="imgurl" name="imgurl" placeholder="<%=session.User.imgurl%>" type="text" ng-model="imgurl">
-                  <label for="imgurl">URL imagen</label>
-                  <!-- pattern="https?://.+"-->
-               </div>
-            </div>
-
-            <div class= "col s12">
-               <div class="input-field col s7 offset-s1">
-                  <input capitalize class="tooltipped" id="initials" name="initials" placeholder="<%=session.User.initials%>" type="text" data-delay="50" data-position="right" data-tooltip="Ingrese 3 caracteres con las iniciales de su nombre"
-                     ng-maxlength="3" 
-                     ng-minlength="3" 
-                     ng-model="initials" 
-                     ng-pattern="/^[a-zA-Z]+$/" 
-                     ng-required="true">
-                  <label for="initials"   >Iniciales</label>
-               </div>
-               <div class="col s4 centerme red-text" role="alert" ng-messages="update_campos.initials.$error">
-                  <div ng-message="minlength">3 caracteres</div>
-                  <div ng-message ="maxlength">No pueden ser más de 3 carácteres</div>
-                  <div ng-message="pattern">Formato no válido</div>
-               </div>
-            </div>
-
-            <div class="col s12">
-               <div class="col s3 offset-s1">
-                  <a class="waves-effect waves-light btn-large light-green" type="submit" ng-click="actualizar_campos()" ng-show="update_campos.$valid">Actualizar</a>
-               </div>
-               <div class="col s1 offset-s1">
-                  <a class="waves-effect waves-light btn-large green lighten-3" href="/user/view/<%=session.User.id%>/" type="submit">Cancelar</a>
-               </div>
-            </div>
-
-         </form>
-
-         <form name="update_password" novalidate>
-
-            <div class="col s12">
-               <div class="col s8 offset-s1">
-                  <h3 class="green-text"> Cambiar contraseña</h3>
-                  <h6 class="green-text"> Ingrese la nueva contraseña. </h6>
-               </div>
-            </div>
-
-            <div class="col s12">
-               <div class="input-field col s7 offset-s1">
-                  <input class="tooltipped" id="password" name="password" type="password" data-delay="50" data-position="top" data-tooltip="Ingrese un valor alfanúmerico, mínimo 6 carácteres" 
-                     ng-maxlength="20" 
-                     ng-minlength="6" 
-                     ng-model="password" 
-                     ng-pattern="/^[a-zA-Z0-9]*$/" 
-                     ng-required="true">
-                  <label for="password">Contraseña</label>
-               </div>
-               <div class="col s4 centerme red-text" role="alert" ng-messages="update_password.password.$error">
-                  <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
-                  <div ng-message="pattern">Formato no válido</div>
-                  <div ng-message="minlength">Mínimo 6 caracteres</div>
-                  <div ng-message ="maxlength">Contraseña muy larga</div>
-                  <div ng-show="update_password.password.$valid"><i class="small material-icons light-green-text">done</i></div>
-               </div>
-            </div>
-
-            <div class="col s12">
-               <div class="input-field col s7 offset-s1">
-                  <input compare-to="password" id="confirmpassword" name="confirmpassword" type="password" ng-model="confirmpassword" ng-required="true">
-                  <label for="confirmpassword">Confirmar Contraseña</label>
-               </div>
-               <div class="col s4 centerme red-text" role="alert" ng-messages="update_password.confirmpassword.$error">
-                  <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
-                  <div ng-message="compareTo"> La contraseña no coincide</div>
-                  <div ng-show="update_password.confirmpassword.$valid"><i class="small material-icons light-green-text">done</i></div>
-               </div>
-            </div>
-
-            <div class="col s12">
-               <div class="col s3 offset-s1">
-                  <a class="waves-effect waves-light btn-large light-green" type="submit" ng-click="actualizar_password()" ng-show="update_password.$valid">Actualizar contraseña</a>
-               </div>
-               <div class="col s1 offset-s1">
-                  <a class="waves-effect waves-light btn-large green lighten-3" href="/user/view/<%=session.User.id%>/" type="submit">Cancelar</a>
-               </div>
-            </div>
-
-         </form>
-      </div>
-   </div>
+            <!-- Inicio editar contraseña -->
+            <form name="vm.formPassword" novalidate="novalidate">
+                
+                <div class="col s12">
+                    <div class="col s8 offset-s1">
+                        <h3 class="green-text"> Cambiar contraseña</h3>
+                        <h6 class="green-text"> Ingrese la nueva contraseña. </h6>
+                    </div>
+                </div>
+                
+                <div class="col s12">
+                    <div class="input-field col s7 offset-s1">
+                        <input class="tooltipped" id="password" name="password" type="password" 
+                            data-delay="50" 
+                            data-position="top" 
+                            data-tooltip="Ingrese un valor alfanúmerico, mínimo 6 carácteres" 
+                            ng-maxlength="20" 
+                            ng-minlength="6" 
+                            ng-model="vm.password" 
+                            ng-pattern="/^[a-zA-Z0-9]*$/" 
+                            ng-required="true" />
+                        <label for="password">Contraseña</label>
+                    </div>
+                    <div class="col s4 centerme red-text" role="alert" ng-messages="vm.formPassword.password.$error">
+                        <div ng-message ="required"><i class="small material-icons red-green-text">error_outline</i></div>
+                        <div ng-message="pattern">Formato no válido</div>
+                        <div ng-message="minlength">Mínimo 6 caracteres</div>
+                        <div ng-message ="maxlength">Contraseña muy larga</div>
+                        <div ng-show="vm.formPassword.password.$valid"><i class="small material-icons light-green-text">done</i></div>
+                    </div>
+                </div>
+                
+                <div class="col s12">
+                    <div class="input-field col s7 offset-s1">
+                        <input compare-to="vm.password" id="confirmpassword" name="confirmpassword" type="password" 
+                            ng-model="vm.confirmpassword" 
+                            ng-required="true" />
+                        <label for="confirmpassword">Confirmar Contraseña</label>
+                    </div>
+                    <div class="col s4 centerme red-text" role="alert" ng-messages="vm.formPassword.confirmpassword.$error">
+                        <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
+                        <div ng-message="compareTo">La contraseña no coincide</div>
+                        <div ng-show="vm.formPassword.confirmpassword.$valid"><i class="small material-icons light-green-text">done</i></div>
+                    </div>
+                </div>
+                
+                <div class="col s12">
+                    <div class="col s3 offset-s1">
+                        <button class="waves-effect waves-light btn-large" type="button" 
+                            ng-click="vm.onBtnPassActualizarClick()" 
+                            ng-disabled="!vm.formPassword.$valid">Actualizar contraseña</button>
+                    </div>
+                    <div class="col s1 offset-s1">
+                        <button class="waves-effect waves-light btn-large" type="button" 
+                            ng-click="vm.onBtnPassCancelClick()">Cancelar</button>
+                    </div>
+                </div>
+            </form>
+            <!-- Fin editar contraseña -->
+        
+        </div>
+    </div>
 </div>

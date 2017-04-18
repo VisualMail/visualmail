@@ -1,18 +1,12 @@
-angular
-    .module("app", [
-        "ngMessages", 
-        "gp.rutValidator", 
-        "selectize", 
-        "app.LoginCtrl", 
-        "app.RecoverPassCtrl", 
-        "app.RecoverPageCtrl", 
-        "ui.materialize", 
-        "app.editUserCtrl", 
-        "app.createProjectCtrl",
-        "app.SignUpUserController", 
-        "app.ProjectController" 
-    ])
-    .directive("capitalize", function() { 
+(function() { 
+    "use strict"; 
+
+    angular
+        .module("VisualMailApp", [
+            "ngMessages", 
+            "ui.materialize"
+        ])
+        .directive("capitalize", function() { 
         return { 
             require: "ngModel", 
             link: function(scope, element, attrs, modelCtrl) { 
@@ -39,3 +33,4 @@ angular
         }; 
     })
     .directive("compareTo", compareTo); 
+})(); 
