@@ -87,7 +87,8 @@ module.exports = {
 					"<script type='text/javascript' src='/js/src/Project/ProjectController.d3.js'></script>" + 
 					"<script type='text/javascript' src='/js/src/Project/ProjectController.jquery.js'></script>" + 
 					"<script type='text/javascript' src='/js/src/Project/ProjectController.kanban.js'></script>" + 
-					"<script type='text/javascript' src='/js/src/Project/ProjectController.js'></script>", 
+					"<script type='text/javascript' src='/js/src/Project/ProjectController.js'></script>" + 
+					"<script src='/js/dependencies/sails.io.js'></script>", 
 				project: project
 			});
 		});
