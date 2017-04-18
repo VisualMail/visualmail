@@ -1,5 +1,5 @@
 {
-  "name": "VisualMail",
+  "name": "visualmail",
   "private": true,
   "version": "2.0.1",
   "description": "Gestión de la comunicación en proyectos ágiles",
@@ -27,8 +27,8 @@
     "sails-mongo": "^0.12.2"
   },
   "scripts": {
-    "start": "sails lift", 
-    "debug": "node debug app.js"
+    "debug": "node debug app.js", 
+    "start": "node app .js"
   },
   "main": "app.js",
   "repository": {
