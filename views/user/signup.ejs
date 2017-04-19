@@ -1,0 +1,171 @@
+
+
+<script>
+var $toastContent = $('<span class="  color_acentuado-text">Ocurrió un error</span>');
+  $(document).ready(function(){
+    $('.tooltipped').tooltip({delay: 50});
+  });
+   
+</script>
+<!--
+<style type="text/css">
+  .css-form input.ng-invalid.ng-touched {
+    background-color: #ff8a80;
+    color:#212121;
+    class="css-form"
+  }
+</style>-->
+
+
+   <div class= "row " id="signup"  ng-controller="signupctrl" >
+   <div class=" z-depth-4 card-panel col s4 offset-s4">
+     <form  name="signupform" action="/user/create" method="post" novalidate>
+
+
+       <div class="row margin">
+        <h5 class ="col s12 light-green-text center"> Crear una nueva Cuenta Visual Mail </h5>
+       </div>
+
+         <div class= " ">
+         <div class="input-field col s7 offset-s1">
+          
+           <input id="firstname" type="text"  name="firstname" ng-model="firstname" ng-minlength="3" ng-maxlength="15" ng-required="true" ng-pattern="/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u" >
+          <label for="firstname"   >Nombre</label>
+         </div>
+          <div ng-messages="signupform.firstname.$error" role="alert" class="col s4 centerme red-text" >
+            <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
+            <div ng-message="minlength">Mínimo 3 caracteres</div> 
+            <div ng-message ="maxlength">Nombre muy largo</div>
+            <div ng-message ="pattern"> Formato no válido</div>
+            <div ng-show="signupform.firstname.$valid"><i class="small material-icons light-green-text">done</i></div>
+         </div>
+        
+   </div>
+   
+    <div class= " ">
+         <div class="input-field col s7 offset-s1">
+          <input  id="lastname" type="text"  name="lastname" ng-model="lastname" ng-minlength="3" ng-maxlength="30" ng-required="true" ng-pattern="/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u">
+          <label for="lastname"   >Apellidos</label>
+         </div>
+        <div ng-messages="signupform.lastname.$error" role="alert" class="col s4 centerme red-text" >
+             <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
+            <div ng-message="minlength">Mínimo 3 caracteres</div> 
+            <div ng-message ="maxlength">Apellido muy largo</div>
+            <div ng-message ="pattern"> Formato no válido</div>
+            <div ng-show="signupform.lastname.$valid"><i class="small material-icons light-green-text">done</i></div>
+         </div>
+            </div>
+   
+             <div class= " ">
+         <div class="input-field col s7 offset-s1">
+           <input  id="imgurl" type="text" name="imgurl" ng-model="imgurl" placeholder="http://" >
+          <label for="imgurl" >URL imagen</label>
+          <!-- pattern="https?://.+"-->
+         </div>
+          <div class="row col s4">
+            
+          </div>
+            </div>
+   
+         
+             <div class= " ">
+         <div class="input-field col s7 offset-s1 tooltipped" data-position="left" data-delay="50" data-tooltip="hola@visualmail.com">
+               <input id="email" type="email"  name="email" ng-model="email"  ng-required="true" ng-pattern="/^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i">
+          <label for="email"  >Email</label>
+          </div>
+       <div ng-messages="signupform.email.$error" role="alert" class="col s4 centerme red-text" >
+            <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
+            <div ng-message="email">Formato no válido</div>
+            <div ng-message="pattern">Formato no válido</div>
+            <div ng-show="signupform.email.$valid"><i class="small material-icons light-green-text">done</i></div>
+         </div>
+
+            </div>
+   
+             <div class= " ">
+         <div class="input-field col s7 offset-s1 tooltipped" data-position="left" data-delay="50" data-tooltip="Ingrese 3 caracteres con las iniciales de su nombre">
+               <input  id="initials" type="text"  name="initials" ng-model="initials" ng-minlength="3" ng-maxlength="3" ng-required="true" capitalize ng-pattern="/^[a-zA-Z]+$/" length="3">
+          <label for="initials"   > Iniciales </label>
+         </div>
+         
+        <div ng-messages="signupform.initials.$error" role="alert" class="col s4 centerme red-text" >
+            <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
+            <div ng-message="minlength">3 caracteres</div> 
+            <div ng-message="pattern">Formato no válido</div>
+            <div ng-message ="maxlength">No pueden ser más de 3 carácteres</div>
+            <div ng-show="signupform.initials.$valid"><i class="small material-icons light-green-text">done</i></div>
+        </div>
+            </div>
+
+
+          <div class= " ">
+         <div class="input-field col s7 offset-s1 tooltipped" data-position="left" data-delay="50" data-tooltip="Ingrese su Rut sin puntos ni guión">
+               <input  id="rut" type="text"  name="rut"  ng-model="rut" ng-required="true"  ng-pattern="/^0*(\d{1,3}(\.?\d{3})*)\-?([\dkK])$/" gp-rut-validator ng-model-options="{ updateOn: 'blur' }">
+              <label for="rut">Rut</label> 
+          
+         </div>
+          <div ng-messages="signupform.rut.$error" role="alert" class="col s4 centerme red-text" >
+            <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
+            <div ng-message="pattern">Formato no válido</div>
+            <div ng-message="rutInvalid">Rut inválido</div>
+            <div ng-show="signupform.rut.$valid"><i class="small material-icons light-green-text">done</i></div>
+          </div>
+          </div>
+
+
+
+             <div class= " ">
+         <div class="input-field col s7 offset-s1 tooltipped" data-position="left" data-delay="50" data-tooltip="Ingrese un valor alfanúmerico, mínimo ingrese 6 carácteres">
+          <input 
+
+          id="password" type="password"  name="password" ng-model="password" ng-required="true" ng-pattern="/^[a-zA-Z0-9]*$/" ng-minlength="6" ng-maxlength="20" >
+          <label for="password"  >Contraseña</label>
+         </div>
+      <div ng-messages="signupform.password.$error" role="alert" class="col s4 centerme red-text" >
+              <div ng-message ="required"> <i class="small material-icons red-text">error_outline</i></div>
+            <div ng-message="pattern">Formato no válido</div>
+            <div ng-message="minlength">Mínimo 6 caracteres</div> 
+            <div ng-message ="maxlength">Contraseña muy larga</div>
+            <div ng-show="signupform.password.$valid"><i class="small material-icons light-green-text">done</i></div>
+          </div>
+
+           </div>
+          <div class=" ">
+         <div class="input-field col s7 offset-s1">
+           <input type="password" name="confirmpassword" id="confirmpassword" ng-model="confirmpassword" ng-required="true" compare-to="password">
+           <label for="confirmpassword" >Confirmar Contraseña</label>
+         </div>
+           <div ng-messages="signupform.confirmpassword.$error" role="alert" class="col s4 centerme red-text" >
+              <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
+              <div ng-message="compareTo"> La contraseña no coincide</div>
+            <div ng-show="signupform.confirmpassword.$valid"><i class="small material-icons light-green-text">done</i></div>
+          </div>
+       </div>
+
+       <div class="row  container"> 
+          <button type="submit"  
+            ng-show="signupform.$valid"
+          class="waves-effect waves-light btn-large light-green col s6" value="Crear cuenta">  Crear cuenta</button>
+          
+          <input type="hidden" name="_csrf" value="<%= _csrf%>"/>
+             
+          <div class="col s6">
+            <% if(flash && flash.err){ %>
+              <!--<h6 class="red-text"> Ocurrió un error </h6>
+            
+              <% Object.keys(flash.err).forEach(function(error){ %>
+              <li><%= JSON.stringify(flash.err[error])%></li>
+              <%})%>
+            -->
+             <script>Materialize.toast($toastContent, 5000);</script>
+          <% } %>
+
+        </div>
+       </div>
+
+
+
+
+  </form>
+    </div>
+</div>

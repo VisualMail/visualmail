@@ -1,0 +1,686 @@
+
+<script>
+  var id= '<%=project.id%>';
+  var email_user = '<%= session.User.email%>';
+  var miid='<%=session.User.id%>'
+  var own_email = '<%= project.owner_email%>';
+  var $mensaje1 = $('<span class="  color_acentuado-text"> Se agregó el nuevo usuario al proyecto</span>');
+  $(document).ready(function(){
+    $('.tooltipped').tooltip({delay: 50});
+     $('.modal-trigger').leanModal();
+
+  });
+  var $mensaje2 = $('<span class="  color_acentuado-text"> Se agregaron los nuevos usuarios al proyecto</span>');
+  var $mensaje4 = $('<span class="  color_acentuado-text"> Se han actualizado los cambios</span>');
+  var $mensaje5 = $('<span class="  color_acentuado-text"> Ocurrió un error</span>');
+  var $mensaje6 = $('<span class="  color_acentuado-text"> Se ha creado la nueva tarea</span>');
+
+      $('.datepicker').pickadate({
+    selectMonths: true, // Creates a dropdown to control month
+    selectYears: 15 // Creates a dropdown of 15 years to control year
+  });
+
+  /**
+  * @method :: FuncionD3 
+  * @description ::  Muestra los elementos del dialogo en D3
+  */
+  FuncionD3 = function(){
+     var width = 1200; //Largo del lienzo
+              var height = 600; //altura del lienzo
+              //Configuracion de d3
+              var cluster = d3.layout.cluster()    
+                 .size([height, width-200]); 
+              var diagonal = d3.svg.diagonal()    
+                 .projection (function(d) { return [d.y, d.x];}); 
+              var svg = d3.select("#dialogo").append("svg")   //en el id del div= dialogo se muestra el arbol
+                 .attr("width",width)    
+                 .attr("height",height)    
+                 .append("g")    
+                 .attr("transform","translate(90,30)"); 
+          var tooltip = d3.select("body").append("div") //para el tooptip de un nodo
+              .attr("class", "tooltip")
+              .style("opacity", 0);
+
+              //se carga el elemento de la vista
+              //http://visualmail.herokuapp.com/
+              //http://localhost:1337
+              d3.json("http://visualmail.herokuapp.com/project/getDialogos/<%=project.id%>", function(error, root){    
+                 var nodes = cluster.nodes(root); 
+                  var offset = 40;
+              var encontrado=0;
+              var mensajeultimodibujado =nodes[0].idmensaje; //el ultimo email de sesion se actualiza
+              var usuarioultimodibujado=nodes[0].usuario.id; // guarda id del mensaje ultimo respondido
+              nodes[0].dibujado=true;
+              for(var i=0;i<nodes[0].orden_message.length;i++){
+                busco(nodes[0],nodes[0].orden_message[i]);
+                encontrado=0;
+              }
+                
+
+                 /**
+                      * @method :: create_offset 
+                      * @description :: Funcion que muestra los nodos en columnas(se cambia su posicion) 
+                      de acuerdo a la sesion cronologica del usuario
+                      */
+           
+              function busco(node, id){
+                if(encontrado===0){
+                  if(node.children){
+                    for(var i = 0; i<node.children.length;i++){
+                      //aca se hacen las consultas
+                      if(node.children[i].idmensaje===id){
+                        encontrado=1;
+                        if(node.children[i].usuario.id===usuarioultimodibujado){
+                          if(node.children[i].parent.idmensaje===mensajeultimodibujado){
+                                  offset += 40; //cambiar esto para cambiar el grado de cada nodo    
+                                  node.children[i].y = offset;
+                                  usuarioultimodibujado=node.children[i].usuario.id;
+                                  mensajeultimodibujado=node.children[i].idmensaje;
+                                  node.children[i].dibujado=true;
+                                }
+                                else{
+                               
+                                    node.children[i].y = offset;
+                                    usuarioultimodibujado=node.children[i].usuario.id;
+                                    mensajeultimodibujado=node.children[i].idmensaje;
+                                  
+                           
+                                }
+                        }//primer if de offset
+                else{
+                                  offset += 40; //cambiar esto para cambiar el grado de cada nodo
+                                  node.children[i].y = offset;
+                                  usuarioultimodibujado=node.children[i].usuario.id;
+                                  mensajeultimodibujado=node.children[i].idmensaje;
+                                   node.children[i].dibujado=true;
+                            }
+
+
+                        return;
+                      }//fin if encontrado
+                    }
+
+                  //Chequea si cada nodo tiene un hijo y lo revisa recursivamente
+                  for(var i = 0; i<node.children.length;i++){
+                    if(node.children[i].children && encontrado===0 ){
+                      busco(node.children[i],id);
+                    }
+                  } 
+                  }
+                  else{
+                    //nada
+                  }
+
+                }
+                else{
+                  return;
+                }
+              }
+
+
+            
+                //Continua d3
+                 var links = cluster.links(nodes);    
+                 var link = svg.selectAll(".link")       
+                    .data(links)       
+                    .enter().append("path")       
+                    .attr("class","link")       
+                    .attr("d", diagonal);
+                //g = global , se actualizan elementos de los nodos y funciones(onmouseover)
+                 var node = svg.selectAll(".node")       
+                    .data(nodes)       
+                    .enter().append("g")       
+                    .attr("class","node")       
+                    .attr("transform", function(d) { return "translate(" + (d.y) + "," + d.x + ")"; })
+                    .on("mouseover", function(d) {
+                      tooltip.transition()
+                           .duration(200)
+                           .style("opacity", .9);
+                      tooltip.html(
+                        " <div class='row textito '>"+"<span class='boldeado'>"+d.tipo+"</span><br>"+d.name+"</div>"
+                        )
+                           .style("left", (d3.event.pageX - 50) + "px")
+                           .style("top", (d3.event.pageY - 90) + "px");
+                  })
+                  .on("mouseout", function(d) {
+                      tooltip.transition()
+                           .duration(500)
+                           .style("opacity", 0);
+                  });
+                //se añade la linea
+                node.append("line")
+                .attr("x1", 0)
+               
+                .attr("x2", 0)
+                .attr("y2", 600)   
+                .attr("stroke-width", 1)
+                .attr("style", "stroke: #ddd; fill:none;stroke-dasharray: 10 5")
+                .attr("stroke", "#ddd");
+                //solo actualizo los que estan mas arriba, codigo solo para desarrollo puede servir solo para recorrer los de arriba
+                        node.append("line").each(function(d) {
+                          var header = d3.select(this);
+                          d3.keys(d).forEach(function(key) {
+                                if (key === "dibujado"){
+                                   header.attr("y1", -0);
+                                   header.attr("stroke-width", 1);
+                                   header.attr("style", "stroke: #ddd; fill:none;stroke-dasharray: 10 5")
+                                   header.attr("stroke", "#ddd");
+                                }
+                                    
+                            });
+                        });
+              
+
+            //Se añade el circulo
+
+                    node.append("circle")       
+                    .attr("r", 10);  
+                    //se añaden las inciiales a cada elemento
+                 node.append("text")       
+                    .attr("x", 0)       
+                    .attr("y", -15)       
+                    .style("text-anchor", function(d) { return d.children ? "end" : "start"; })      
+                    .text( function(d){return d.usuario.initials;});                 
+
+              }); 
+
+}
+</script>
+
+
+  <div class="row" ng-controller="projectedit">
+    <div class="col s12">
+      <ul class="tabs">
+        <li class="tab col s3"><a  href="#participantes">Proyecto: {{miproyecto.name}}</a></li>
+        <li class="tab col s3"><a    href="#dialogo">Diálogo</a></li>
+        <li class="tab col s3 "><a  class="active"  href="#mensajes"> Mensajes</a></li>
+        <li class="tab col s3 "><a href="#kanban"> Kanban</a></li>
+      </ul>
+    </div>
+   <!-- Inicio TABS-->
+    <div id="participantes" class="col s12">
+      <div class="row container">
+        <br>
+     
+        <%if(session.User.email==project.owner_email){%>
+          <div class="row col s12">
+            <h6 class="green-text"> Estas a cargo del proyecto, puedes editarlo  <a href="#modaleditproject" ng-click="" class="modal-trigger"> aquí</a></h6>
+          </div>
+
+          
+
+
+
+          <div class="row col s12">
+            <!-- Selectize -->
+                <div class= "row col s8">
+                  <selectize config='myConfig' options='usuarios' ng-model="inputdatos"></selectize>
+                </div>
+                <div class="row col s4">
+                     <button type="submit" class="waves-effect waves-light  light-green  btn-large" ng-click="sendData()"> Agregar usuarios </button>
+                </div>
+
+               <!-- Selectize -->
+          </div>
+        <%}%>
+          <div class="col s12">
+            <div class="col s1 ">
+              <br>
+              <i class="material-icons light-green-text prefix">search</i>
+            </div>
+            <div class="col s4 input-field">
+              <input type="search" ng-model="busqueda" id="search" >
+              <label for="search" class="green-text"> Buscar participante</label>
+            </div>
+          </div>
+          <div class=" col s12">
+                <!-- Tabla -->
+            <div class="" id="tabla_participantes">
+              <table class="striped  responsive-table">
+                <thead> 
+                  <tr>
+                    <th class="light-green-text" > </th>
+                    <th data-field="nombre" class="light-green-text">Nombre </th>
+                    <th data-field="initials" class="light-green-text">Iniciales </th>
+                    <th data-field="correo" class="light-green-text">Correo </th>
+                    <th data-field="rut" class="light-green-text"> Rut </th>
+                    <th data-field="owner" class="light-green-text"> PMO</th>
+                    <th data-field="encargado" class="light-green-text"> Encargado</th>
+                    <th data-field="owner" class="light-green-text"> Rol</th>
+                  </tr>
+                </thead> 
+                <tbody>
+                  <tr ng-repeat="x in misparticipantes | filter:busqueda" ng-model="misparticipantes">
+                    <td >  <img ng-src="{{x.imgurl}}" alt="" class="circle " height ="40px" weight="40px"></div>
+                    </td>
+                    <td class="light-green-text"> {{ x.firstname }} {{ x.lastname }}</td>
+                     <td class="light-green-text"> {{ x.initials }} </td>
+                    <td class="light-green-text"> {{ x.email  }}</td>
+                    <td class="light-green-text"> {{x.rut}} </td>
+                    <td>   <i class= "green-text small material-icons prefix" ng-if="owner_email==x.email">done</i></td>  
+                    <td><i class= "green-text small material-icons prefix" ng-if="owner_email==x.email">done</i></td>
+                    <td class="light-green-text">Desarrollador Front end</td>
+                  </tr>  
+                </tbody>
+            </table>
+            </div>
+
+            
+
+            <!-- Tabla -->  
+          </div>
+        </div>
+        
+
+    </div><!-- FIN TAB -->
+
+    <div id="dialogo" class="col s12 scrolled">
+
+        <!-- EN ESTE DIV VA EL VALOR DE D3.JS -->
+
+            <script type="text/javascript"> 
+              FuncionD3();
+         
+            </script>
+
+
+    </div><!-- FIN TAB -->
+<div id="mensajes" class="" >
+
+  <div class="col s12 ">
+    <div class="col s6 ">
+       <div class="col s1"><br><i class=" material-icons light-green-text">search</i></div>
+        <div class="col s6 input-field"><input type="text" name="busqueda" ng-model="busquedamensaje">
+    <label for="busqueda"> Buscar mensaje</label></div></div>
+
+  </div>
+  <br>
+  <!-- scroll-glue-right-->
+    <div  class=" col s11 conscroll "scroll-glue  >
+ <br>
+    <div class="row " ng-repeat="x in mensajes | filter:busquedamensaje" > 
+      <div ng-if="x.cssvalue">
+          <div class="col s8 offset-s4 bubble2">
+   
+              <div class="col s11"><h6>{{x.createdAt | date:'M/d/yyyy HH:mm:ss'}}</h6></div>
+              <div class="col s1 "tooltipped data-position="right" data-delay="50" data-tooltip="Unir al Kanban"> <a modal href="#modalmensajekanban" ng-click="seleccionar(x)" class="btn-floating light-green valign-wrapper"  ><img src="/images/kanbanicon.png"height="33px" width="33px" ></a></div>
+            
+            <div class=" col s11">
+              <div class=" col s2" >
+                <div class="col s12"><img ng-src="{{x.usuario.imgurl}}" alt=""  class="circle responsive-img"></div>
+                <div class="col s12 offset-s1"><span class="white-text center"> {{x.usuario.initials}}</span> </div>
+              </div>
+              <div class=" col s10 ">
+                <div class="col s12"><span class="white-text"> {{x.tipo}}</span></div>
+                <div class="col s12 textito"><h6 class=""> {{x.name}}</h6></div>
+              </div>
+            </div>
+            <div class=" col s1 " tooltipped data-position="right" data-delay="50" data-tooltip="Responder"><br>
+              <a  modal ng-click="seleccionar(x)" href="#modal2" class="btn-floating waves-effect waves-light light-green modal-trigger"><i class="small material-icons ">reply</i> </a>
+            </div>
+            
+               
+                 
+        
+
+          </div>
+      </div><!--fin ng-if-->
+      
+      <div ng-if="x.cssvalue==false">
+          <div class=" col s8 offset-s1 bubble">
+            <div class="col s11">
+              <h6>{{x.createdAt | date:'M/d/yyyy HH:mm:ss'}}</h6>
+            </div>
+               <div class="col s1 "tooltipped data-position="right" data-delay="50" data-tooltip="Unir al Kanban"> <a modal  href="#modalmensajekanban" ng-click="seleccionar(x)"class="btn-floating light-green valign-wrapper"  ><img src="/images/kanbanicon.png"height="33px" width="33px" ></a></div>
+            <div class="col s11">
+              <div class=" col s2">
+                <div class="col s12"><img ng-src="{{x.usuario.imgurl}}" alt=""  class="circle responsive-img"></div>
+                <div class="col s12 offset-s1"><span class="white-text center"> {{x.usuario.initials}}</span> </div>
+              </div>
+              <div class=" col s10">
+                <div class="col s12"><span class="white-text"> {{x.tipo}}</span></div>
+                <div class="col s12 textito"><h6 class=""> {{x.name}}</h6></div>
+               
+              </div>
+            
+            </div>
+             <div class=" col s1 " tooltipped data-position="right" data-delay="50" data-tooltip="Responder"><br>
+              <a  modal ng-click="seleccionar(x)" href="#modal2" class="btn-floating waves-effect waves-light light-green modal-trigger"><i class="small material-icons ">reply</i> </a>
+            </div>
+
+          </div>
+      </div><!--fin ng-if-->
+
+
+    </div><!-- fin ng-repeat-->
+
+
+
+   <div id="modal2" class="modal bottom-sheet">
+    <div class="modal-content">
+      <div class="col s12">
+        <div class="col s6 ">  <h6>{{seleccionado.createdAt | date:'M/d/yyyy HH:mm:ss'}}</h6></div>
+         <div class="col s2 offset-s4 ">  <button class="btn-flat green white-text" ng-click="sendMessage()" ng-disabled="isDisabled" ng-show="formmensaje.$valid"> Responder</button></div> 
+      </div>
+     
+    <div class="row">
+      <div class="col s6 card heightmodal2">
+        <div class="col s12">
+          <div class="col s2"> <img ng-src="{{seleccionado.usuario.imgurl}}" class="responsive-img circle"></div>
+          <div class="col s6"> <h6>{{seleccionado.usuario.firstname}} ({{seleccionado.usuario.initials}}) Dijo:</h6></div>
+        </div>
+          <div class="col s12 ">
+            <h6 class="">{{seleccionado.name}}</h6>
+          </div>
+          
+       
+      </div>
+
+      <div class=" col s6 card heightmodal2" ng-cloak >
+         <div class="col s12">
+          <div class="col s2"> <img ng-src="{{miusuario.imgurl}}" class="responsive-img circle"></div>
+          <div class="col s4"> <p>{{miusuario.firstname}}({{miusuario.initials}}) </p></div>
+          <div class="col s6"> <selectize config='myConfig3' options='tiposdialogo' ng-model="inputdialogo"></selectize></div>
+        </div>
+        <div class="col s12  ">
+          
+            <form name="formmensaje" novalidate>
+            <div class="input-field col s12">
+            <textarea id="textarea1" class="materialize-textarea" ng-model="respuesta" ng-minlength="5" ng-maxlength="500" ng-required="true"></textarea>
+            <label for="textarea1">Ingrese una respuesta</label>
+            </div>
+         
+
+         <div class="col s12">
+
+          <div ng-messages="formmensaje.respuesta.$error" role="alert" class="red-text" >
+            <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
+            <div ng-message="minlength">Mínimo 5 caracteres</div> 
+            <div ng-message ="maxlength">Respuesta muy larga</div>
+            <div ng-show="formmensaje.respuesta.$valid"><i class="small material-icons light-green-text">done</i></div>
+          </div>
+         </div>
+         
+          </form>
+        
+      
+    </div>
+
+    </div>
+
+
+  </div>
+  </div>
+  </div>
+
+
+<!-- Modal Structure -->
+
+
+
+</div>
+    </div><!-- FIN TAB -->
+
+    <div id="kanban" class="col s12" ng-cloak>
+      <br>
+      
+          <div class="col s3 ">
+               <div class=" col s12 contenedorkanbanheader"><div class="col s10"> NUEVA</div> <div class="col s1"><a class="modal-trigger " href="#modal1"> <i class="material-icons light-green-text prefix tooltipped" data-position="top" data-delay="50" data-tooltip="Crear Tarea">add_circle</i></a></div></div>
+               <div class="col s12 contenedorkanbanheader"> <div class="col s1"><br><i class="material-icons light-green-text prefix">search</i></div><div class="col 11"><input type="text" ng-model="filtro1"></div></div>
+            <div id="new"  class=" col s12 contenedorkanban" data-drop="true" ng-model='list1' data-jqyoui-options="optionsList1" jqyoui-droppable="{multiple:true, onDrop:'onDrop'}">
+              
+              <div id="kanban1" class =" kanbanbubble  hoverable" ng-repeat="item in list1 | filter:filtro1" ng-show="item.title" data-drag="{{item.drag}}" data-jqyoui-options="{helper: 'clone'}" ng-model="list1" jqyoui-draggable="{index: {{$index}},animate:true}"> 
+                <div class="row">
+                <div class="kanbanred col s12" ng-if="item.associated==true && item.element!=''">
+                <div class="col s12  white-text"> <h6> {{item.element}}</h6></div>
+                <!--<div class="col s2 ">  <i class="material-icons black-text prefix">edit_mode</i></div>--> </div>
+                <!--<div class="col s2"><i class="material-icons black-text prefix">visibility</i></div>-->
+                <div class=" col s4 "> 
+                  <div ng-show="item.usuario.imgurl" class="col s12"><br><img class="circle" height="40px" width="40px" ng-src="{{item.usuario.imgurl}}"></div> 
+                  <div class="col s12"> {{item.usuario.initials}}</div>
+                </div>
+                  <div class="col s8 textito"> <h6>{{item.title}} </h6> </div>  
+                </div>
+       
+              </div>
+             
+            </div>
+          </div>
+
+          <div class=" col s3 ">
+   <div class=" col s12 contenedorkanbanheader">HACIENDO</div>
+   <div class="col s12 contenedorkanbanheader"> <div class="col s1"><br><i class="material-icons light-green-text prefix">search</i></div><div id="doing"  class="col 11"><input type="text" ng-model="filtro2" ></div></div>
+      <div class=" col s12 contenedorkanban" data-drop="true" ng-model='list2' data-jqyoui-options="optionsList2" jqyoui-droppable="{multiple:true, onDrop:'onDrop'}">
+              
+              <div class ="  kanbanbubble hoverable" ng-repeat="item in list2 | filter:filtro2" ng-show="item.title" data-drag="{{item.drag}}" data-jqyoui-options="{helper: 'clone'}" ng-model="list2" jqyoui-draggable="{index: {{$index}},animate:true}"> 
+                <div class="row">
+                <div class="kanbanred col s12" ng-if="item.associated==true && item.element!=''">
+                <div class="col s12  white-text"> <h6> {{item.element}}</h6></div>
+                <!--<div class="col s2 ">  <i class="material-icons black-text prefix">edit_mode</i></div>--> </div>
+             <div class=" col s4 "> 
+                  <div ng-show="item.usuario.imgurl" class="col s12"><br><img class="circle" height="40px" width="40px" ng-src="{{item.usuario.imgurl}}"></div>
+                  <div class="col s12"> {{item.usuario.initials}}</div>
+                </div>
+                <div class="col s8 textito"> <h6>{{item.title}}</h6> </div>
+                </div>
+       
+              </div>
+             
+            </div>
+          </div>
+
+          <div class="col s3 ">
+             <div class=" col s12 contenedorkanbanheader">EN PRUEBAS</div>
+             <div class="col s12 contenedorkanbanheader"> <div class="col s1"><br><i class="material-icons light-green-text prefix">search</i></div><div class="col 11"><input type="text" ng-model="filtro3"></div></div>
+              <div id="testing"  class=" col s12 contenedorkanban" data-drop="true" ng-model='list3' data-jqyoui-options="optionsList3" jqyoui-droppable="{multiple:true, onDrop:'onDrop'}">
+              
+              <div class =" kanbanyellow kanbanbubble hoverable" ng-repeat="item in list3 | filter:filtro3" ng-show="item.title" data-drag="{{item.drag}}" data-jqyoui-options="{helper: 'clone'}" ng-model="list3" jqyoui-draggable="{index: {{$index}},animate:true}"> 
+                <div class="row">
+               <div class="kanbanred col s12" ng-if="item.associated==true && item.element!=''">
+                <div class="col s12  white-text"> <h6> {{item.element}}</h6></div>
+                <!--<div class="col s2 ">  <i class="material-icons black-text prefix">edit_mode</i></div>--> </div>
+                <div class=" col s4 "> 
+                  <div ng-show="item.usuario.imgurl" class="col s12"><br><img class="circle" height="40px" width="40px" ng-src="{{item.usuario.imgurl}}"></div>
+                  <div class="col s12"> {{item.usuario.initials}}</div>
+                </div>
+                <div class="col s8 textito"> <h6>{{item.title}}</h6> </div>
+                </div>
+       
+              </div>
+             
+            </div> 
+          </div>
+
+          <div  class="col s3 ">
+            <div class=" col s12 contenedorkanbanheader">TERMINADA</div>
+            <div class="col s12 contenedorkanbanheader"> <div class="col s1"><br><i class="material-icons light-green-text prefix">search</i></div><div class="col 11"><input type="text" ng-model="filtro4"></div></div>
+              <div id="done" class=" col s12 contenedorkanban" data-drop="true" ng-model='list4' data-jqyoui-options="optionsList4" jqyoui-droppable="{multiple:true, onDrop:'onDrop'}">
+              
+              <div class =" kanbanyellow kanbanbubble hoverable" ng-repeat="item in list4 |filter:filtro4" ng-show="item.title" data-drag="{{item.drag}}" data-jqyoui-options="{helper: 'clone'}" ng-model="list4" jqyoui-draggable="{index: {{$index}},animate:true}"> 
+                <div class="row">
+                <div class="kanbanred col s12" ng-if="item.associated==true && item.element!=''">
+                <div class="col s12  white-text"> <h6> {{item.element}}</h6></div>
+                <!--<div class="col s2 ">  <i class="material-icons black-text prefix">edit_mode</i></div>--> </div>
+               <div class=" col s4 "> 
+                  <div ng-show="item.usuario.imgurl" class="col s12"><br><img class="circle" height="40px" width="40px" ng-src="{{item.usuario.imgurl}}"></div>
+                  <div class="col s12"> {{item.usuario.initials}}</div>
+                </div>
+                <div class="col s8 textito"> <h6>{{item.title}}</h6> </div>
+                </div>
+       
+              </div>
+             
+            </div>
+          </div>
+    </div><!-- FIN TAB -->
+
+
+  <!-- MODALES-->
+    <div id="modal1" class="modal modal-fixed-footer">
+    <div class="modal-content">
+      <h4 class="green-text"> Crear una nueva Tarea</h4>
+      <form  novalidate name="creartareaform">
+
+        
+          <div class="row">
+            <div class="col s1">
+                <br><i class="small material-icons green-text">mode_edit</i>
+            </div>
+            <div class= "col s6 input-field">
+              <input type="text" name="nuevatarea" class="input-area" length="130" ng-model="nuevatarea" ng-minlength="3" ng-maxlength="130" ng-required="true">
+              <label for="nuevatarea"> Tarea</label>
+            </div>
+            <div ng-messages="creartareaform.nuevatarea.$error" role="alert" class="col s5 centerme red-text" >
+              <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
+              <div ng-message="minlength">Mínimo 3 caracteres</div> 
+              <div ng-message ="maxlength">Tarea demasiada larga</div>
+              <div ng-show="creartareaform.nuevatarea.$valid"><i class="small material-icons light-green-text">done</i></div>
+            </div>
+          </div><!-- FIN DIV row1-->
+          <div class="row">
+             <div class="col s1">
+               <br><i class="small material-icons green-text">search</i>
+             </div>
+             <div class="col s8">
+               <selectize config='myConfig2' options='misparticipantes' ng-model="inputdatos2"></selectize>
+             </div>
+          </div><!-- FIN DIV row2-->
+        
+
+      </form>
+    </div><!-- FIN DIV Modal content-->
+ 
+    <div class="modal-footer">
+       <a href="#!" ng-click="creartarea()" class="modal-action modal-close waves-effect waves-green btn-flat " ng-show="creartareaform.$valid">Aceptar</a>
+      <a href="#!" ng-click="" class="modal-action modal-close waves-effect waves-green btn-flat ">Cancelar</a>
+     
+    </div><!-- FIN DIV FOOTER-->
+  </div> <!-- FIN DIV ID-->
+
+ <!-- Modal Structure -->
+  <div id="modaleditproject" class="modal">
+    <h4 class="green-text"> Editar el proyecto</h4>
+    <div class="modal-content">
+        <div class="row " >
+          <form name="formeditarprojecto" novalidate>
+          <div class="row">
+            <div class="col s1">
+                <br><i class="prefix small material-icons green-text">mode_edit</i>
+            </div>
+            <div class="col s6 input-field">
+            <input id="name_project" type="text"  name="name_project" ng-model="name_project" ng-minlength="3" ng-maxlength="25" placeholder="{{miproyecto.name}}" >
+            <label for="name_project"   >Nombre del projecto</label> 
+            </div>
+          <div ng-messages="formeditarprojecto.name_project.$error" role="alert" class="col s5 centerme red-text" >
+            <div ng-message="minlength">Mínimo 3 caracteres</div> 
+            <div ng-message ="maxlength">Nombre muy largo</div>
+          </div>
+        </div>
+   
+          <div class="row">
+            <div class="col s1">
+                <br><i class="prefix small material-icons green-text">date_range</i>
+            </div>
+            <div class="col s6">
+             <input type="text" input-date
+                type="text"
+                name="created"
+                id="inputCreated"
+                ng-model="finish_date_project"
+                container="body"
+                format="dd/mm/yyyy"
+                months-full="{{ month }}"
+                months-short="{{ monthShort }}"
+                weekdays-full="{{ weekdaysFull }}"
+                weekdays-short="{{ weekdaysShort }}"
+                weekdays-letter="{{ weekdaysLetter }}"
+                disable="disable"
+                min="{{ minDate }}"
+                max="{{ maxDate }}"
+                today="Hoy"
+                clear="Limpiar"
+                close="Cerrar"
+                select-years="15"
+                on-start="onStart()"
+                on-render="onRender()"
+                on-open="onOpen()"
+                on-close="onClose()"
+                on-set="onSet()"
+                on-stop="onStop()" 
+                placeholder="{{miproyecto.finish_date | date:'M/d/yyyy'}}"
+                >
+              <label for="finishdate"   >Fecha límite del proyecto</label> 
+          </div>
+          <div class="col s5">
+            
+          </div>
+          </div>
+      
+          </form>
+          </div>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat " ng-show="formeditarprojecto.$valid" ng-click="editproject()">Aceptar</a>
+      <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
+    </div>
+  </div>
+
+
+
+    <div id="modalmensajekanban" class="modal modal-fixed-footer">
+    <div class="modal-content">
+      <h4 class="green-text"> Crear una nueva Tarea asociada</h4>
+      <form  novalidate name="creartareaform">
+
+        
+          <div class="row">
+            <div class="col s1">
+                <br><i class="small material-icons green-text">mode_edit</i>
+            </div>
+            <div class= "col s6 input-field">
+              <input type="text" name="nuevatarea" class="input-area" length="130" ng-model="nuevatarea" ng-minlength="3" ng-maxlength="130" ng-required="true">
+              <label for="nuevatarea"> Tarea</label>
+            </div>
+            <div ng-messages="creartareaform.nuevatarea.$error" role="alert" class="col s5 centerme red-text" >
+              <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
+              <div ng-message="minlength">Mínimo 3 caracteres</div> 
+              <div ng-message ="maxlength">Tarea demasiada larga</div>
+              <div ng-show="creartareaform.nuevatarea.$valid"><i class="small material-icons light-green-text">done</i></div>
+            </div>
+          </div><!-- FIN DIV row1-->
+          <div class="row">
+             <div class="col s1">
+               <br><i class="small material-icons green-text">search</i>
+             </div>
+             <div class="col s8">
+               <selectize config='myConfig2' options='misparticipantes' ng-model="inputdatos2"></selectize>
+             </div>
+          </div><!-- FIN DIV row2-->
+        
+
+      </form>
+    </div><!-- FIN DIV Modal content-->
+ 
+    <div class="modal-footer">
+       <a href="#!" ng-click="creartareaconmensaje()" class="modal-action modal-close waves-effect waves-green btn-flat " ng-show="creartareaform.$valid">Aceptar</a>
+      <a href="#!" ng-click="" class="modal-action modal-close waves-effect waves-green btn-flat ">Cancelar</a>
+     
+    </div><!-- FIN DIV FOOTER-->
+  </div> <!-- FIN DIV ID-->
+
+
+
+
+
+
+
+  </div><!-- FIN CONTENEDOR DIV -->
+
+
+
+
+
+
+
+
+ 

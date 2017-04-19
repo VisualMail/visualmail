@@ -1,0 +1,62 @@
+
+<div class = "row">
+  <div class ="col s12 center">
+      <h1 class="header center green-text">Visual Mail</h1>
+  </div>
+  <div class="col s12 center">
+     <h5 class="header light-green-text"> Gestiona tus proyectos de forma ágil</h5>
+  </div>
+  <div class="row col s4 offset-s4">
+      <div class = "col s8 offset-s2  ">
+      <div class="card-image ">
+        <img src="images/iconobig.png" alt="" class="responsive-img">
+      </div>
+    </div>
+    <div class="row center">
+          <% if (!session.authenticated) {%>
+    <div class="col s12">  <a href="/user/signup/" id="download-button" class="btn-large waves-effect light-green white-text ">
+            Registrate</a></div>
+    <div class="col s12"> <span class="green-text">o Inicia sesión</span><a href="/session/login"> aquí </a></div>
+    <%} else{%>
+     <div class="col s12">  <a href="/user/view/<%=session.User.id%>" id="download-button" class="btn-large waves-effect light-green white-text ">
+            Mis proyectos</a></div>
+    <% }%>
+  </div>
+  </div>
+</div>
+
+  <div class="container">
+    <div class="section">
+
+      
+      <div class="row">
+        <div class="col s12 m4">
+          <div class="icon-block">
+            <h2 class="center brown-text"><i class="material-icons">flash_on</i></h2>
+            <h5 class="center">Comunicación ágil</h5>
+
+            <p class="light"> La aplicación contiene una interfaz de comunicación novedosa que permite llevar la deriva de la comunicación dentro de un proyecto</p>
+          </div>
+        </div>
+
+        <div class="col s12 m4">
+          <div class="icon-block">
+            <h2 class="center brown-text"><i class="material-icons">group</i></h2>
+            <h5 class="center">Trabajo en equipo</h5>
+
+            <p class="light">Los equipos de desarrollo se pueden comunicar y establecer tareas en un tablero kanban</p>
+          </div>
+        </div>
+
+        <div class="col s12 m4">
+          <div class="icon-block">
+            <h2 class="center brown-text"><i class="material-icons">settings</i></h2>
+            <h5 class="center">Experiencia de usuario</h5>
+
+            <p class="light">Visual Mail es una apliación enfocada en la usabilidad</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>

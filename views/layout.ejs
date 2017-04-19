@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html ng-app="app">
+  <head>
+    <title><%=typeof title == 'undefined' ? 'Visual Mail' : title%></title>
+
+    <!-- Viewport mobile tag for sensible mobile support -->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+
+
+
+    <!--
+        Stylesheets and Preprocessors
+        ==============================
+
+        You can always bring in CSS files manually with `<link>` tags, or asynchronously
+        using a solution like AMD (RequireJS).  Or, if you like, you can take advantage
+        of Sails' conventional asset pipeline (boilerplate Gruntfile).
+
+        By default, stylesheets from your `assets/styles` folder are included
+        here automatically (between STYLES and STYLES END). Both CSS (.css) and LESS (.less)
+        are supported. In production, your styles will be minified and concatenated into
+        a single file.
+
+        To customize any part of the built-in behavior, just edit `tasks/pipeline.js`.
+        For example, here are a few things you could do:
+
+            + Change the order of your CSS files
+            + Import stylesheets from other directories
+            + Use a different or additional preprocessor, like SASS, SCSS or Stylus
+    -->
+   
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <!--STYLES-->
+    <link rel="stylesheet" href="/styles/importer.css">
+    <link rel="stylesheet" href="/styles/materialize.css">
+    <link rel="stylesheet" href="/styles/selectize.css">
+    <link rel="stylesheet" href="/styles/selectize.default.css">
+    <link rel="stylesheet" href="/styles/style.css">
+    <!--STYLES END-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+    <!--SCRIPTS-->
+    <script src="/js/dependencies/sails.io.js"></script>
+    <script src="/js/dependencies/jquery/jquery.js"></script>
+    <script src="/js/dependencies/jquery/jquery-ui.min.js"></script>
+    <script src="/js/dependencies/jquery/jquery.contextMenu.js"></script>
+    <script src="/js/dependencies/jquery/jquery.ui.position.min.js"></script>
+    <script src="/js/dependencies/jquery/microplugin.js"></script>
+    <script src="/js/dependencies/jquery/sifter.js"></script>
+    <script src="/js/Javascript/d3-transform.js"></script>
+    <script src="/js/Javascript/d3.min.js"></script>
+    <script src="/js/Javascript/fisheye.js"></script>
+    <script src="/js/Javascript/init.js"></script>
+    <script src="/js/Javascript/materialize.js"></script>
+    <script src="/js/Javascript/selectize.js"></script>
+    <script src="/js/dependencies/angular/angular.min.js"></script>
+    <script src="/js/dependencies/angular/angular-messages.js"></script>
+    <script src="/js/dependencies/angular/angular-compare.js"></script>
+    <script src="/js/dependencies/angular/angular-dragdrop.min.js"></script>
+    <script src="/js/dependencies/angular/angular-materialize.js"></script>
+    <script src="/js/dependencies/angular/angular-rut-validator.js"></script>
+    <script src="/js/dependencies/angular/angular-selectize.js"></script>
+    <script src="/js/src/app.js"></script>
+    <script src="/js/src/compareTo.js"></script>
+    <script src="/js/src/scrollglue.js"></script>
+    <script src="/js/src/Controller/CreateProjectController.js"></script>
+    <script src="/js/src/Controller/LoginController.js"></script>
+    <script src="/js/src/Controller/RecoverPageCtrl.js"></script>
+    <script src="/js/src/Controller/RecoverPassController.js"></script>
+    <script src="/js/src/Controller/editUserController.js"></script>
+    <script src="/js/src/Controller/editprojectController.js"></script>
+    <script src="/js/src/Controller/signupController.js"></script>
+    <!--SCRIPTS END-->
+<script>
+  $(document).ready(function(){
+$('.button-collapse').sideNav({
+      menuWidth: 300, // Default is 240
+      edge: 'left', // Choose the horizontal origin
+      closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
+    }
+  );
+  $('.dropdown-button').dropdown({
+      inDuration: 300,
+      outDuration: 225,
+      constrain_width: true, // Does not change width of dropdown to that of the activator
+      hover: false, // Activate on hover
+      gutter: 0, // Spacing from edge
+      belowOrigin: true, // Displays dropdown below the button
+      alignment: 'right' // Displays dropdown with edge aligned to the left of button
+    }
+  );
+
+
+  });
+
+
+</script>
+
+
+
+
+
+
+
+
+    <% if (session.authenticated) {%>
+    <!-- SIDENAV -->
+  
+   <ul id="slide-out" class="side-nav green darken-2">
+    <li  class="green darken-2 row"> 
+      
+          <div class="col s4 offset-s4">
+            <br><img src="<%=session.User.imgurl%>" alt="" class="circle responsive-img" > </div> 
+<li class="center"> <span class="white-text "> <%= session.User.firstname %> <%= session.User.lastname%></span></li>
+    </li>
+        <li>  <div class="divider black"></div> </li>
+        <li class="green darken-2">
+          <a class="white-text" href="/user/view/<%=session.User.id%>">  Mis Proyectos</a>
+        </li>
+        <li class="green darken-2"> <a class="white-text" href="/session/logout/"> Cerrar sesión</a> </li>
+      </ul>
+
+<!--NAV BAR -->
+
+ <div class="green darken-2 navbar-fixed">  
+    <div class="row">
+      <div class=" col s3">
+        <div class ="col s1">
+          <br>
+        <a href="#" data-activates="slide-out" class="button-collapse"> <i class="small material-icons light-green-text">view_headline</i></a> 
+        </div>
+        <div class ="col s1 offset-s1">
+          <br>
+        <a href="/user/view/<%=session.User.id%>" class="button"> <i class="small material-icons light-green-text">home</i></a> 
+        </div>
+         <!--<a href="/user/view/<%=session.User.id%>"  class=" responsive-img brand-logo "><img src="/images/iconosmall2.png" ></a>-->
+      </div><!-- icono sidenav-->
+      <div class="col s9">
+        
+          <div class="row col s6">
+            <div>
+              
+            </div>
+          </div>
+          <div class=" col s6 ">
+            <div class=" col s4">
+              <div class="col s6 offset-s6">
+                 <br>
+              <a href="/session/help"><i class= "right light-green-text small material-icons prefix">
+             live_help</i></a>
+              </div>
+             
+            </div>
+            
+          <div href='#' data-activates='dropdown1' class ="row col s6 green darken-2 z-depth-1  card dropdown-button" data-belowOrigin="true"> 
+          <div class="col s9 ">
+             <h6 class="white-text align-text"><span>Bienvenido : <%=session.User.firstname%></span></h6>
+          </div>     
+          <div class= " col s3 ">
+        
+              <img src="<%=session.User.imgurl%>" alt="" class="circle" height="40px" width="40px">
+            
+          </div>
+          
+          
+                 
+            </div>
+         
+          </div><!--card panel -->
+          
+       
+     </div> <!--   <a class="white-text" href="/session/logout/"> Cerrar sesión</a>-->
+
+  </div>
+  </div>
+   
+    <!-- Dropdown Structure -->
+  
+  <ul id='dropdown1' class='dropdown-content'>
+     <li class="divider green darken-4"></li>
+     <li class="green darken-2 white-text"> <a class="white-text" href="/user/view/<%=session.User.id%>">Mis Proyectos</a> </li>
+     
+   
+    <li class="green darken-2 white-text "> <a class="white-text" href="/user/edit/<%=session.User.id%>">Editar perfil</a> </li>
+  
+     <li class="divider green darken-4"></li>
+    <li class="green darken-2 white-text"><a class="white-text" href="/session/logout/"> Cerrar sesión</a></li>
+  </ul>  
+
+
+
+    <%} else{%>
+    <nav class="navbar-fixed green darken-2">
+    <div class="container">
+      <a href="/" class=" brand-logo "><img src="/images/iconosmall2.png">
+       <ul class="right hide-on-med-and-down ">
+        <li ><a class = "white-text" href="/user/signup/">Registrate</a></li>
+        <li><a class = "white-text" href="/session/login/">Iniciar Sesión</a></li>
+        </ul>
+    </div>
+    </nav>
+    <%}%>      
+  </head>
+
+
+  <main>
+
+
+    
+    <%- body %>
+
+
+
+
+
+
+  </main>
+       <!-- FOOTER -->
+ <footer class="page-footer green darken-2">
+    <div class="container">
+    
+        <div class="container">
+          <h5 class="white-text center-align">Visual Mail</h5>
+          <p class="grey-text text-lighten-4 center-align">
+            Visual Mail es un proyecto de titulación de Matías Quinteros, alumno del Departamento de Ingeniería Informática de la Universidad de Santiago
+            de Chile
+          </p>
+        </div>
+
+
+
+    </div>
+
+
+    <div class="footer-copyright">
+      <div class="container">
+       <a class="brown-text text-lighten-3" href="/">Visual Mail 2016</a>
+      </div>
+    </div>
+  </footer>
+</html>
