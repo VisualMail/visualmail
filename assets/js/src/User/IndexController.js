@@ -103,142 +103,153 @@
         }; 
 
         function onBtnCrearProyectoClick(){ 
-            $http.defaults.withCredentials = true; 
-            
-            // Inicio POST para la creacion del Proyecto  
-            $http({ 
-                method: "POST", 
-                url: "/project/create", 
-                headers: { 
-                    "Content-Type": "application/json", 
-                    "X-CSRF-TOKEN": vm.csrfToken 
-                }, 
-                data: { 
-                    owner_email: vm.miUsuario.email, // Email del usuario que crea el proyecto 
-                    participants: vm.miUsuario.id, // El id del usuario 
-                    name: vm.projectName, // El nombre del proyecto
-                    finish_date: vm.projectDate, // La fecha de término 
-                    roles: [] //roles no implementado 
-                } 
-            }).then(function(respuestaProject) { 
-                var rp = respuestaProject.data; 
 
-                // En caso de error mostrar el mensaje 
-                if(rp.project === false) { 
-                    setMensaje(rp.mensaje); 
-                    return; 
-                } 
-                
-                // Inicio POST para la creacion del Mensaje 
-                // Si el servidor ejecuta correctamente el procedimiento 
-                // entonces se crea un post para crear el mensaje inicial 
+            if(!vm.guardando) { 
+                $http.defaults.withCredentials = true; 
+                vm.guardando = true; 
+
+                // Inicio POST para la creacion del Proyecto  
                 $http({ 
                     method: "POST", 
-                    url: "/mensaje/create", 
+                    url: "/project/create", 
                     headers: { 
                         "Content-Type": "application/json", 
                         "X-CSRF-TOKEN": vm.csrfToken 
                     }, 
                     data: { 
-                        name: "Inicio del nuevo proyecto " + rp.project.name, // El texto del mensaje + nombre del proyecto 
-                        project_id: rp.project.id, // El id del proyecto 
-                        tipo: "Mensaje Inicial", // El tipo del mensaje inicial ya que no es un elemento dialogico 
-                        position: [0], // La posicion del mensaje en Dialog 
-                        numero_hijos: 0, // Su numero de hijos 
-                        session: 0, // El valor de sesion inicial 
-                        parent: "", // El padre por defecto = vacio 
-                        root: true, // La raiz 
-                        usuario: vm.miUsuario.id, //el id del usuario 
-                        nodoPadreId: 0, 
-                        sessionId: 0, 
-                        nodoNivel: 0, 
-                        nodoPadreNivel: 0, 
-                        nodoPadreSessionId: 0
-                    }
-                }).then(function(respuestaMensaje) { 
-                    var rm = respuestaMensaje.data; 
-                    
+                        owner_email: vm.miUsuario.email, // Email del usuario que crea el proyecto 
+                        participants: vm.miUsuario.id, // El id del usuario 
+                        name: vm.projectName, // El nombre del proyecto
+                        finish_date: vm.projectDate, // La fecha de término 
+                        roles: [] //roles no implementado 
+                    } 
+                }).then(function(respuestaProject) { 
+                    var rp = respuestaProject.data; 
+
                     // En caso de error mostrar el mensaje 
-                    if(rm.mensaje === false) { 
-                        setMensaje(rm.mensajeError); 
+                    if(!rp.procedimiento) { 
+                        setMensaje(rp.mensaje); 
+                        vm.guardando = false; 
                         return; 
                     } 
                     
-                    // Inicio POST para la creacion del Diálogo 
-                    // Se repiten los valores del mensaje para el inicio de Dialog ya que es un JSON con formato d3.js  
+                    // Inicio POST para la creacion del Mensaje 
+                    // Si el servidor ejecuta correctamente el procedimiento 
+                    // entonces se crea un post para crear el mensaje inicial 
                     $http({ 
                         method: "POST", 
-                        url: "/dialogo/create", 
+                        url: "/mensaje/create", 
                         headers: { 
                             "Content-Type": "application/json", 
                             "X-CSRF-TOKEN": vm.csrfToken 
                         }, 
                         data: { 
-                            //Se repiten los valores del mensaje para el inicio de Dialog ya que es un JSON con formato d3.js 
-                            project: rp.project.id, 
-                            name: "Inicio del nuevo proyecto " + rp.project.name, 
-                            root: true, 
-                            children: [], // Aquí van, en un futuro, los mensajes hijos 
-                            session: 0, 
-                            numero_hijos: 0, 
-                            session_actual: 0, 
-                            ultimo_session_email: vm.miUsuario.email, // El último usuario que realizo un mensaje 
-                            usuario: vm.miUsuario, // El objeto usuario 
-                            idmensaje: rm.mensaje.id, // El 'id' del mensaje creado 
-                            parent_ultimo_respondido: rm.mensaje.id, // El padre 'id' del mensaje (es el mismo para el primer caso) 
-                        } 
-                    }).then(function(respuestaDialogo) { 
-                        var rd = respuestaDialogo.data; 
+                            name: "Inicio del nuevo proyecto " + rp.project.name, // El texto del mensaje + nombre del proyecto 
+                            project_id: rp.project.id, // El id del proyecto 
+                            tipo: "Mensaje Inicial", // El tipo del mensaje inicial ya que no es un elemento dialogico 
+                            position: [0], // La posicion del mensaje en Dialog 
+                            numero_hijos: 0, // Su numero de hijos 
+                            session: 0, // El valor de sesion inicial 
+                            parent: "", // El padre por defecto = vacio 
+                            root: true, // La raiz 
+                            usuario: vm.miUsuario.id, //el id del usuario 
+                            nodoPadreId: 0, 
+                            sessionId: 0, 
+                            nodoNivel: 0, 
+                            nodoPadreNivel: 0, 
+                            nodoPadreSessionId: 0
+                        }
+                    }).then(function(respuestaMensaje) { 
+                        var rm = respuestaMensaje.data; 
                         
                         // En caso de error mostrar el mensaje 
-                        if(rd.dialogo === false) { 
-                            setMensaje(rd.mensaje); 
+                        if(rm.mensaje === false) { 
+                            setMensaje(rm.mensajeError); 
+                            vm.guardando = false; 
                             return; 
-                        }
+                        } 
                         
-                        // Inicio POST para la creacion del kanban 
+                        // Inicio POST para la creacion del Diálogo 
+                        // Se repiten los valores del mensaje para el inicio de Dialog ya que es un JSON con formato d3.js  
                         $http({ 
                             method: "POST", 
-                            url: "/kanban/create", 
-                            headers: {
+                            url: "/dialogo/create", 
+                            headers: { 
                                 "Content-Type": "application/json", 
                                 "X-CSRF-TOKEN": vm.csrfToken 
                             }, 
                             data: { 
-                                project_id: rp.project.id, // Id del proyecto 
-                                project: rp.project.id, // Id del proyecto 
-                                name: "kanban: " + rp.project.name, // Nombre del proyecto 
+                                //Se repiten los valores del mensaje para el inicio de Dialog ya que es un JSON con formato d3.js 
+                                project: rp.project.id, 
+                                name: "Inicio del nuevo proyecto " + rp.project.name, 
+                                root: true, 
+                                children: [], // Aquí van, en un futuro, los mensajes hijos 
+                                session: 0, 
+                                numero_hijos: 0, 
+                                session_actual: 0, 
+                                ultimo_session_email: vm.miUsuario.email, // El último usuario que realizo un mensaje 
+                                usuario: vm.miUsuario, // El objeto usuario 
+                                idmensaje: rm.mensaje.id, // El 'id' del mensaje creado 
+                                parent_ultimo_respondido: rm.mensaje.id, // El padre 'id' del mensaje (es el mismo para el primer caso) 
                             } 
-                        }).then(function(respuestaKanban) {
-                            var rk = respuestaKanban.data; 
+                        }).then(function(respuestaDialogo) { 
+                            var rd = respuestaDialogo.data; 
                             
                             // En caso de error mostrar el mensaje 
-                            if(rk.kanban === false){ 
-                                setMensaje(rk.mensaje); 
+                            if(rd.dialogo === false) { 
+                                setMensaje(rd.mensaje); 
+                                vm.guardando = false; 
                                 return; 
-                            } 
+                            }
+                            
+                            // Inicio POST para la creacion del kanban 
+                            $http({ 
+                                method: "POST", 
+                                url: "/kanban/create", 
+                                headers: {
+                                    "Content-Type": "application/json", 
+                                    "X-CSRF-TOKEN": vm.csrfToken 
+                                }, 
+                                data: { 
+                                    project_id: rp.project.id, // Id del proyecto 
+                                    project: rp.project.id, // Id del proyecto 
+                                    name: "kanban: " + rp.project.name, // Nombre del proyecto 
+                                } 
+                            }).then(function(respuestaKanban) {
+                                var rk = respuestaKanban.data; 
+                                
+                                // En caso de error mostrar el mensaje 
+                                if(rk.kanban === false){ 
+                                    setMensaje(rk.mensaje); 
+                                    vm.guardando = false; 
+                                    return; 
+                                } 
 
-                            // Se agrega a la lista de proyectos en la primera posicion, 
-                            // el proyecto recién creado 
-                            vm.misProyectos.splice(0, 0, rp.project); 
+                                // Se agrega a la lista de proyectos en la primera posicion, 
+                                // el proyecto recién creado 
+                                vm.misProyectos.splice(0, 0, rp.project); 
 
-                            // Mostrar el mensaje 
-                            setMensaje("Se ha creado el nuevo proyecto"); 
+                                // Mostrar el mensaje 
+                                vm.guardando = false; 
+                                setMensaje(rp.mensaje); 
+                            }); 
+                            // Fin POST para la creacion del kanban 
+
                         }); 
-                        // Fin POST para la creacion del kanban 
+                        // Fin POST para la creacion del Diálogo 
 
                     }); 
-                    // Fin POST para la creacion del Diálogo 
+                    // Fin POST para la creacion del Mensaje 
 
                 }); 
-                // Fin POST para la creacion del Mensaje 
+                // Fin POST para la creacion del Proyecto 
 
-            }); 
-            // Fin POST para la creacion del Proyecto 
+            }
+
         }; 
-    }; 
 
-    function setMensaje(mensaje) { 
-        Materialize.toast("<span>" + mensaje + "</span>", 5000); 
+        function setMensaje(mensaje) { 
+            Materialize.toast("<span>" + mensaje + "</span>", 5000); 
+        }; 
     }; 
 })(); 

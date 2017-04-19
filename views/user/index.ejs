@@ -111,7 +111,7 @@
                     <div class="row col s6">
                         <button class="btn waves-effect waves" type="button" 
                             ng-click="vm.onBtnCrearProyectoClick()" 
-                            ng-disabled="!vm.formCrearProyecto.$valid">
+                            ng-disabled="!vm.formCrearProyecto.$valid || vm.guardando">
                             Crear
                         </button>
                     </div>

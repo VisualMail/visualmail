@@ -103,25 +103,49 @@ module.exports = {
 	**/
 	create: function(req, res, next) { 
 		// Verificar si no existe un proyecto con el mismo nombre 
-		//Mensaje.find({ project_id: req.param("id") }).populate("usuario").exec(function(err, mensaje) { 
-		Project.create(req.allParams(), function ProjectCreated(err, project) { 
+		Project.find({ where: { name: req.param("name"), owner_email: req.session.User.email }}, function(err, result) { 
 
-			//var data = req.allParams();
-			// Verificar si existe un error
-			if(err) {
-				// req.session dura el tiempo de la sesion hasta que el browser cierra
-				// Se actualiza la variable flash y se entrega json con formato
+			// Verificar si existe un error 
+			if(err) { 
 				req.session.flash = { err: err };
 				return res.json({ 
-					project: false, 
-					mensaje: "Se produjo un error al conectarse con el objeto 'project'"
+					procedimiento: false, 
+					mensaje: "Se produjo un error al verificar el objeto 'project'"
 				});
 			}
+
+			// Si el nombre está duplicado
+			if(result.length > 0) { 
+				return res.json({ 
+					procedimiento: false, 
+					mensaje: "Ya existe un proyecto con el mismo nombre registrado por el usuario"
+				});	
+			} 
+
+			//Mensaje.find({ project_id: req.param("id") }).populate("usuario").exec(function(err, mensaje) { 
+			Project.create(req.allParams(), function ProjectCreated(err, project) { 
+
+				//var data = req.allParams();
+				// Verificar si existe un error
+				if(err) {
+					// req.session dura el tiempo de la sesion hasta que el browser cierra
+					// Se actualiza la variable flash y se entrega json con formato
+					req.session.flash = { err: err };
+					return res.json({ 
+						procedimiento: false, 
+						mensaje: "Se produjo un error al conectarse con el objeto 'project'"
+					});
+				}
 			
-			// Si no hay error se deja vacía la variable flash y se retorna 'user' como json
-			req.session.flash = { };
-			return res.json({ project: project });
-		});
+				// Si no hay error se deja vacía la variable flash y se retorna 'user' como json
+				req.session.flash = { };
+				return res.json({ 
+					procedimiento: true, 
+					mensaje: "Nuevo proyecto registrado", 
+					project: project 
+				});
+			}); 
+		}); 
 	},
 
 	/**

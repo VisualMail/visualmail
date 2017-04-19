@@ -31,7 +31,6 @@ module.exports.policies = {
   user:{ 
     create: "flash", 
     edit: ['flash','sessionAuth'], 
-    view: ['flash','sessionAuth'], 
     '*': "sessionAuth" 
   }, 
   project:{ 
