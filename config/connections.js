@@ -57,14 +57,10 @@ module.exports.connections = {
   *                                                                          *
   ***************************************************************************/
 
-  /*someMongodbServer: { 
+  someMongodbServer: { 
     adapter: "sails-mongo", 
     url: "mongodb://visualmail:visualmail2017@ds053216.mlab.com:53216/visualmaildb" 
-  },*/
-  someMongodbServer: { 
-    adapter: 'sails-mongo',
-    url: 'mongodb://matias:prueba@ds017514.mlab.com:17514/visualmailtest'
-  }
+  },
   
 /*  someMongodbServer: { 
     adapter: 'sails-mongo', 
