@@ -63,7 +63,7 @@ function mapaDialogoDibujar(nodoMensaje) {
 			// Verificar en que posición se encuentra el nodo 
 			// Si es mayor al ancho del mapa, actualizar el ancho del mapa 
 			if((circleWidth + (v.sessionId * 100) + 200) > totalWidth) 
-				totalWidth = circleWidth + (v.sessionId * 100) + 200; 
+				totalWidth = circleWidth + (v.sessionId * 100) + 600; 
 		}
 
 		// Establecer los datos para dibujar el nodo que representa al mensaje 
