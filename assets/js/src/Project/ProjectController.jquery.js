@@ -12,6 +12,8 @@ $(document).ready(function() {
     // Iniciar los datos del tablero kanban
     kanbanBoardInit(); 
 
+    $("[data-circle='dialogo']")
+
     // Iniciar el menú contextual de cada nodo del mapa del diálogo
     $(function() { 
         $.contextMenu({ 
@@ -44,6 +46,7 @@ $(document).ready(function() {
                         n.attr("data-circle-navigate", ""); 
                         n = $("[data-line-navigate=ok]"); 
                         n.attr("stroke", "#797979"); 
+                        n.attr("stroke-width", "1"); 
                         n.attr("data-line-navigate", ""); 
 
                         scope.$apply(function () { 

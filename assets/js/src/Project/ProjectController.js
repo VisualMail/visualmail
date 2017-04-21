@@ -182,8 +182,14 @@
 					vm.miMensaje[i]["cssvalue"] = !vm.miMensajeIntercalar; 
 					vm.miMensajeIntercalar = !vm.miMensajeIntercalar; 
 				}
-                
+
+                // Dibujar el mapa del diálogo
                 mapaDialogoDibujar(vm.miMensaje);
+
+                // Establecer el primer mensaje como el mensaje anclado 
+                vm.miMensajeAnclado = vm.miMensaje[0]; 
+                $anclar = true; 
+                iniciarMensajeAnclado(); 
             });
 
             // Obtener las tareas del tablero Kanban
@@ -414,19 +420,32 @@
                 n.attr("data-circle-navigate", ""); 
                 n = $("[data-line-navigate=ok]"); 
                 n.attr("stroke", "#797979"); 
+                n.attr("stroke-width", "1"); 
                 n.attr("data-line-navigate", ""); 
             }
 
             // Si el mensaje 'nodo navegar' existe 
             // marcar el borde y el color al nuevo 'nodo navegar' 
             if(vm.miMensajeAncladoNavegar !== "") {
-                n = $("[data-nodo-id=" + vm.miMensajeAncladoNavegar.nodoId + "]");
-                n.attr("stroke", "#18ffff"); 
-                n.attr("stroke-width", "4"); 
-                n.attr("data-circle-navigate", "ok"); 
-                n = $("[data-line-nodo-id=" + vm.miMensajeAncladoNavegar.nodoId + "]"); 
-                n.attr("stroke", "#18ffff"); 
-                n.attr("data-line-navigate", "ok"); 
+                var nodoNavegarId = vm.miMensajeAncladoNavegar.nodoId; 
+                var nodoNavegarOk = false; 
+
+                do { 
+                    if(!nodoNavegarOk) { 
+                        n = $("[data-nodo-id=" + vm.miMensajeAncladoNavegar.nodoId + "]"); 
+                        n.attr("stroke", "#18ffff"); 
+                        n.attr("stroke-width", "5"); 
+                        n.attr("data-circle-navigate", "ok"); 
+                        nodoNavegarOk = true; 
+                    } 
+
+                    n = $("[data-line-nodo-id=" + nodoNavegarId + "]"); 
+                    n.attr("stroke", "#18ffff");
+                    n.attr("stroke-width", "4"); 
+                    n.attr("data-line-navigate", "ok"); 
+                    nodoNavegarId = parseInt($("[data-nodo-id=" + nodoNavegarId + "]").attr("data-nodo-parent-id")); 
+                    i++;
+                } while(nodoNavegarId !== vm.miMensajeAnclado.nodoId); 
             }
 
             $scope.$apply(); 
