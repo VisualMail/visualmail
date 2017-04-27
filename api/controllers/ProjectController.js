@@ -79,7 +79,7 @@ module.exports = {
 				sectionStyles:
 					"<link href='/js/dependencies/jquery-contextmenu-2.4.1/jquery.contextMenu.min.css' rel='stylesheet' type='text/css' />" + 
 					"<link href='/js/dependencies/selectize-0.12.4/css/selectize.default.css' rel='stylesheet' type='text/css' />", 
-				sectionScripts: 	
+				sectionScripts: 
 					"<script type='text/javascript' src='/js/dependencies/jquery-contextmenu-2.4.1/jquery.contextMenu.min.js'></script>" + 
 					"<script type='text/javascript' src='/js/dependencies/d3-4.8.0/js/d3.min.js'></script>" + 
 					"<script type='text/javascript' src='/js/dependencies/selectize-0.12.4/js/standalone/selectize.min.js'></script>" + 

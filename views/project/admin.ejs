@@ -92,73 +92,89 @@
 		<!-- Inicio Mapa del diálogo -->
 		<div id="dialogo" class="col s12">
 
+			<div class="row">
+				<div class="input-field col s12 m4 l4">
+					<select id="selectFiltrarUsuario">
+						<option value="" disabled selected>Seleccionar un usuario</option>
+						<option value="0">Sin filtro</option>
+					</select>
+					<label>Filtrar diálogo</label>
+				</div>
+				<div class="input-field col s12 m4 l4 offset-l3">
+					<h6>Duración del diálogo:&nbsp;{{ vm.tiempoDialogo }} min.</h6>
+				</div>
+			</div>
+
 			<div id="main" class="main">
 			</div>
 
 			<div class="resizable-panel-container" ng-show="vm.miMensajeAnclado.id">
 				<div class="resizable-panel-left">
-
-					<div class="row">
-						<div class="col s12 m2 l2"> 
-							<img alt="Usuario" class="circle responsive-img" ng-src="{{ vm.miMensajeAnclado.usuario.imgurl }}" />
-						</div>
-						<div class="col s12 m10 l10">
-							<div class="row">
-								<div class="col s12 m12 l9">
-									<h6>{{ vm.miMensajeAnclado.createdAt | date:'M/d/yyyy HH:mm:ss' }}</h6>
-									<p><strong>{{ vm.miMensajeAnclado.usuario.firstname }} ({{ vm.miMensajeAnclado.usuario.initials }})</strong> dijo:</p>
-								</div>
-								<div class="col s12 m12 l3">
-																	
-									<span tooltipped 
-										data-delay="50" 
-										data-position="left" 
-										data-tooltip="Mensaje anclado">
-										<span class="mensaje-anclar-icon">
-											<img alt="Kanban" src="/images/anchor-small.png" style="height: 33px; width: 33px;" />
-										</span>
-									</span>
-									<span tooltipped 
-										data-delay="50" 
-										data-position="left" 
-										data-tooltip="Unir al Kanban">
-										<a class="btn-floating light-green valign-wrapper" href="#modalMensajeKanban" modal 
-											ng-click="vm.miMensajeSeleccionado = vm.miMensajeAnclado">
-											<img alt="Kanban" height="33px" src="/images/kanbanicon.png" width="33px" />
-										</a>
-									</span>
-									<span tooltipped 
-										data-delay="50" 
-										data-position="left" 
-										data-tooltip="Responder">
-										<a class="btn-floating waves-effect waves-light light-green modal-trigger" href="#modalMensaje" modal 
-											ng-click="vm.miMensajeSeleccionado = vm.miMensajeAnclado">
-											<i class="small material-icons ">reply</i>
-										</a>
-									</span>
-								
-								</div>
-							</div>
-							<div class="row">
-								<div class="mensaje-anclar-card">
-									<p>{{ vm.miMensajeAnclado.name }}</p>
-								</div>
-							</div>
-						</div>
-					</div>
-					
-  				</div>
-  				<div class="resizable-panel-right">
-  					<div ng-show="vm.miMensajeAncladoNavegar != ''">
+					<div ng-if="vm.miMensajeAnclado !== ''">
 						<div class="row">
 							<div class="col s12 m2 l2"> 
-								<img alt="Usuario" class="circle responsive-img" ng-src="{{ vm.miMensajeAncladoNavegar.usuario.imgurl }}" />
+								<img alt="Usuario" class="circle responsive-img" ng-src="{{ vm.miMensajeAnclado !== '' ? vm.miMensajeAnclado.usuario.imgurl : '' }}" />
 							</div>
 							<div class="col s12 m10 l10">
 								<div class="row">
 									<div class="col s12 m12 l9">
-										<h6>{{ vm.miMensajeAncladoNavegar.createdAt | date:'M/d/yyyy HH:mm:ss' }}</h6>
-										<p><strong>{{ vm.miMensajeAncladoNavegar.usuario.firstname }} ({{ vm.miMensajeAncladoNavegar.usuario.initials }})</strong> dijo:</p>
+										<h6>{{ (vm.miMensajeAnclado !== "" ? vm.miMensajeAnclado.createdAt : "") | date:'M/d/yyyy HH:mm:ss'; }}</h6>
+										<p><strong>
+											{{ vm.miMensajeAnclado !== "" ? vm.miMensajeAnclado.usuario.firstname : ""; }}&nbsp;
+											({{ vm.miMensajeAnclado !== "" ? vm.miMensajeAnclado.usuario.initials : ""; }})</strong> dijo:</p>
+									</div>
+									<div class="col s12 m12 l3">							
+										<span tooltipped 
+											data-delay="50" 
+											data-position="left" 
+											data-tooltip="Mensaje anclado">
+											<span class="mensaje-anclar-icon">
+												<img alt="Kanban" src="/images/anchor-small.png" style="height: 33px; width: 33px;" />
+											</span>
+										</span>
+										<span tooltipped 
+											data-delay="50" 
+											data-position="left" 
+											data-tooltip="Unir al Kanban">
+											<a class="btn-floating light-green valign-wrapper" href="#modalMensajeKanban" modal 
+												ng-click="vm.miMensajeSeleccionado = vm.miMensajeAnclado;">
+												<img alt="Kanban" height="33px" src="/images/kanbanicon.png" width="33px" />
+											</a>
+										</span>
+										<span tooltipped 
+											data-delay="50" 
+											data-position="left" 
+											data-tooltip="Responder">
+											<a class="btn-floating waves-effect waves-light light-green modal-trigger" href="#modalMensaje" modal 
+												ng-click="vm.miMensajeSeleccionado = vm.miMensajeAnclado;">
+												<i class="small material-icons ">reply</i>
+											</a>
+										</span>
+									</div>
+								</div>
+								<div class="row">
+									<div class="mensaje-anclar-card">
+										<p ng-if="vm.miMensajeAnclado.tipo !== ''"><strong>Tipo de mensaje</strong>: {{ vm.miMensajeAnclado.tipo }}.</p>
+										<p>{{ vm.miMensajeAnclado !== "" ? vm.miMensajeAnclado.name : ""; }}</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+  				</div>
+				<div class="resizable-panel-right">
+  					<div ng-if="vm.miMensajeAncladoNavegar !== ''">
+						<div class="row">
+							<div class="col s12 m2 l2"> 
+								<img alt="Usuario" class="circle responsive-img" ng-src="{{ vm.miMensajeAncladoNavegar !== '' ? vm.miMensajeAncladoNavegar.usuario.imgurl : '' }}" />
+							</div>
+							<div class="col s12 m10 l10">
+								<div class="row">
+									<div class="col s12 m12 l9">
+										<h6>{{ (vm.miMensajeAncladoNavegar !== "" ? vm.miMensajeAncladoNavegar.createdAt : "") | date:'M/d/yyyy HH:mm:ss' }}</h6>
+										<p><strong>
+											{{ vm.miMensajeAncladoNavegar !== "" ? vm.miMensajeAncladoNavegar.usuario.firstname : "" }}&nbsp;
+											({{ vm.miMensajeAncladoNavegar !== "" ? vm.miMensajeAncladoNavegar.usuario.initials : "" }})</strong> dijo:</p>
 									</div>
 									<div class="col s12 m12 l3">
 										<span tooltipped 
@@ -167,7 +183,7 @@
 											data-tooltip="Unir al Kanban">
 											<a class="btn-floating light-green valign-wrapper" href="#modalMensajeKanban" 
 												modal 
-												ng-click="vm.miMensajeSeleccionado = vm.miMensajeAncladoNavegar">
+												ng-click="vm.miMensajeSeleccionado = vm.miMensajeAncladoNavegar;">
 												<img alt="Kanban" height="33px" src="/images/kanbanicon.png" width="33px" />
 											</a>
 										</span>
@@ -177,7 +193,7 @@
 											data-tooltip="Responder">
 											<a class="btn-floating waves-effect waves-light light-green modal-trigger" href="#modalMensaje" 
 												modal 
-												ng-click="vm.miMensajeSeleccionado = vm.miMensajeAncladoNavegar">
+												ng-click="vm.miMensajeSeleccionado = vm.miMensajeAncladoNavegar;">
 												<i class="small material-icons">reply</i>
 											</a>
 										</span>
@@ -185,9 +201,17 @@
 								</div>
 								<div class="row">
 									<div class="mensaje-anclar-card">
-										<p>{{ vm.miMensajeAncladoNavegar.name }}</p>
+										<p ng-if="vm.miMensajeAncladoNavegar.tipo !== ''"><strong>Tipo de mensaje</strong>: {{ vm.miMensajeAncladoNavegar.tipo }}.</p>
+										<p>{{ vm.miMensajeAncladoNavegar !== "" ? vm.miMensajeAncladoNavegar.name : ""; }}</p>
 									</div>
 								</div>
+							</div>
+						</div>
+					</div>
+					<div ng-if="vm.miMensajeAncladoNavegar === ''">
+						<div class="row">
+							<div class="col s12 m12 l12">
+								<p class="text-center">No existe(n) respuesta(s) para el mensaje anclado</p>
 							</div>
 						</div>
 					</div>

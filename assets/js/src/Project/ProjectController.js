@@ -5,9 +5,9 @@
 	angular
 		.module("VisualMailApp")
 		.controller("ProjectController", ProjectController); 
-    ProjectController.$inject = ["$scope", "$http"]; 
+    ProjectController.$inject = ["$scope", "$http", "$filter"]; 
 
-	function ProjectController($scope, $http) { 
+	function ProjectController($scope, $http, $filter) { 
         var vm = this; 
 
         // Inicio variables usuario 
@@ -89,6 +89,7 @@
         vm.getQueryString = getQueryString; 
         vm.iniciarMensajeAnclado = iniciarMensajeAnclado; 
         vm.iniciarMensajeNavegar = iniciarMensajeNavegar; 
+        vm.iniciarTiempoDialogo = iniciarTiempoDialogo; 
         vm.onActualizarTareaIndice = onActualizarTareaIndice; 
         vm.onBtnActualizarProyectoClick = onBtnActualizarProyectoClick; 
         vm.onBtnAgregarParticipanteClick = onBtnAgregarParticipanteClick; 
@@ -164,6 +165,13 @@
                         if(bandera === 0) 
                             vm.miListaUsuarios.push(usuarios.data.arr[i]); 
                     } 
+
+                    $.each(vm.miListaParticipantes, function(key, value) { 
+                        $("#selectFiltrarUsuario").append(
+                            "<option value=\"" + value.id + "\" data-icon=\"" + value.imgurl + "\" class=\"left circle\">" + value.firstname + " " + value.lastname + "</option>");
+                    }); 
+
+                    $("select").material_select();
                 });
       		});
 
@@ -187,9 +195,12 @@
                 mapaDialogoDibujar(vm.miMensaje);
 
                 // Establecer el primer mensaje como el mensaje anclado 
-                vm.miMensajeAnclado = vm.miMensaje[0]; 
                 $anclar = true; 
+                onMensajeAnclarClick(vm.miMensaje[0].nodoId); 
                 iniciarMensajeAnclado(); 
+
+                // Iniciar el tiempo del diálogo 
+                vm.iniciarTiempoDialogo(); 
             });
 
             // Obtener las tareas del tablero Kanban
@@ -400,6 +411,11 @@
                 var c = $("[data-nodo-id=" + vm.miMensajeAnclado.nodoId + "]");
                 c.attr("stroke", "#000"); 
                 c.attr("stroke-width", "5"); 
+                
+                vm.miMensajeAncladoFinal = false; 
+
+                if(vm.miMensajeAnclado.nodoId > 1 && $("[data-nodo-parent-id=" + vm.miMensajeAnclado.nodoId + "]").length === 0)
+                    vm.miMensajeAncladoFinal = true; 
             } 
         };
 
@@ -408,7 +424,7 @@
         * @description :: Iniciar el 'nodo navegar' 
         * @param :: {boolean} iniciar, variable para verificar si se inicia el dibujo del mensaje navegar  
         **/
-        function iniciarMensajeNavegar(iniciar) {
+        function iniciarMensajeNavegar(iniciar, actualizar) {
             var n; 
 
             // Si se deben iniciar los controles (nodo y línea)
@@ -444,11 +460,22 @@
                     n.attr("stroke-width", "4"); 
                     n.attr("data-line-navigate", "ok"); 
                     nodoNavegarId = parseInt($("[data-nodo-id=" + nodoNavegarId + "]").attr("data-nodo-parent-id")); 
-                    i++;
                 } while(nodoNavegarId !== vm.miMensajeAnclado.nodoId); 
             }
 
-            $scope.$apply(); 
+            if(actualizar) 
+                $scope.$apply(); 
+        }; 
+
+
+        function iniciarTiempoDialogo() { 
+            var date2 = new Date(vm.miMensaje[vm.miMensaje.length - 1].createdAt); 
+            var date1 = new Date(vm.miMensaje[0].createdAt); 
+            var timeDiff = Math.abs(date2.getTime() - date1.getTime()); 
+            vm.tiempoDialogo = Math.ceil(timeDiff / (1000 * 60)); 
+            /*var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
+            console.log(diffDays); 
+            console.log(diffDays);*/
         }; 
 
         /**
@@ -460,7 +487,6 @@
         * @param :: {integer} newIndex, el índice donde se posiciona la tarea 
         **/
         function onActualizarTareaIndice(tareaId, newColumn, newCell, newIndex) { 
-
             // Actualizar el indice da la tarea 
             $http({ 
                 method: "POST", 
@@ -478,7 +504,6 @@
                 }
             })
             .then(function(respuesta) { 
-
                 // Verificar si la respuesta desde el servidor es error 
                 if(!respuesta.data.procedimiento) 
                     setMensaje(respuesta.data.mensaje); 
@@ -829,9 +854,12 @@
         /**
         * @method :: onMensajeAnclarClick 
         * @description :: Establecer el 'nodo anclado' 
-        * @param :: {integer} nodoId, identificador del nodo que representa al nodo 
+        * @param :: {integer} nodoId, identificador del nodo 
         **/
         function onMensajeAnclarClick(nodoId) { 
+            // Iniciar el mensaje navegar 
+            vm.miMensajeAncladoNavegar = ""; 
+
             // Si se debe anclar, Buscar en la lista de mensajes el mensaje anclado 
             // a través del id del nodo que identifica al mensaje, caso contrario 
             // iniciar el mensaje anclado 
@@ -843,11 +871,24 @@
                         return false; 
                     } 
                 }); 
+                
+                vm.miMensajeAncladoFinal = false; 
+
+                if(vm.miMensajeAnclado.nodoId > 1 && $("[data-nodo-parent-id=" + vm.miMensajeAnclado.nodoId + "]").length === 0) 
+                    vm.miMensajeAncladoFinal = true; 
+                else {
+
+                    $.each(vm.miMensaje, function(key, value) {
+                        if(value.nodoPadreId === vm.miMensajeAnclado.nodoId) {
+                            vm.miMensajeAncladoNavegar = value;
+                            return false;
+                        }
+                    });
+                    
+                    vm.iniciarMensajeNavegar(true); 
+                } 
             } else 
                 vm.miMensajeAnclado = "";
-
-            // Iniciar el mensaje navegar 
-            vm.miMensajeAncladoNavegar = ""; 
 
             // En el caso de anclar el mensaje, dibujar el ancla 
             mapaDialogoDibujarAncla($anclar, vm.miMensajeAnclado); 
@@ -928,6 +969,7 @@
             
             vm.iniciarMensajeAnclado(); 
             vm.iniciarMensajeNavegar(false); 
+            iniciarTiempoDialogo(); 
 
             // Actualizar el controlador
             $scope.$apply();
@@ -1130,9 +1172,9 @@
                     if(vm.miMensajeAncladoNavegar !== "") { 
 
                         // Si el mensaje siguiente es el padre, iniciar el mensaje por el cuál navegó el usuario 
-                        if(vm.miMensajeAncladoNavegar.nodoPadreId === vm.miMensajeAnclado.nodoId) 
-                            vm.miMensajeAncladoNavegar = ""; 
-                        else {
+                        if(vm.miMensajeAncladoNavegar.nodoPadreId !== vm.miMensajeAnclado.nodoId) 
+                            //vm.miMensajeAncladoNavegar = ""; 
+                        {
 
                             // Verificar por cada mensaje, el mensaje que está a la izquierda del mensaje actual 
                             $.each(vm.miMensaje, function(key, value) { 
@@ -1159,7 +1201,7 @@
                 }
 
                 // Iniciar los controles 
-                vm.iniciarMensajeNavegar(iniciarControles); 
+                vm.iniciarMensajeNavegar(iniciarControles, true); 
             }
         }
 	};

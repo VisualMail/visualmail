@@ -11,9 +11,7 @@ $(document).ready(function() {
 
     // Iniciar los datos del tablero kanban
     kanbanBoardInit(); 
-
-    $("[data-circle='dialogo']")
-
+    
     // Iniciar el menú contextual de cada nodo del mapa del diálogo
     $(function() { 
         $.contextMenu({ 
@@ -38,22 +36,7 @@ $(document).ready(function() {
                         if(scope.vm.miMensajeAnclado !== "") 
                             $anclar = nodoId !== scope.vm.miMensajeAnclado.nodoId;
 
-                        $("[data-circle=dialogo]").attr("stroke", ""); 
-                        $("[data-circle=dialogo]").attr("stroke-width", ""); 
-                        var n = $("[data-circle-navigate=ok]");
-                        n.attr("stroke", ""); 
-                        n.attr("stroke-width", ""); 
-                        n.attr("data-circle-navigate", ""); 
-                        n = $("[data-line-navigate=ok]"); 
-                        n.attr("stroke", "#797979"); 
-                        n.attr("stroke-width", "1"); 
-                        n.attr("data-line-navigate", ""); 
-
-                        scope.$apply(function () { 
-                            scope.vm.onMensajeAnclarClick(nodoId); 
-                        });
-
-                        scope.vm.iniciarMensajeAnclado(); 
+                        onAnclar(nodoId, scope); 
                         break; 
                     default: 
                         break; 
@@ -93,3 +76,66 @@ $(document).ready(function() {
     // Presentar la vista
     $("#ProjectControllerMain").fadeIn(200); 
 }); 
+
+$("#selectFiltrarUsuario").on("change", function() {
+    var s = $(this); 
+    var svg = $("#main > svg"); 
+
+    if(s.val() !== "0") { 
+        svg.find("circle").css("fill-opacity", "0.3"); 
+        svg.find("circle").css("stroke-opacity", "0.3"); 
+        svg.find("line").css("stroke-opacity", "0.3"); 
+        svg.find("path").css("stroke-opacity", "0.3"); 
+
+        var h = $("[data-header-usuario-id='" + s.val() + "']"); 
+        h.css("fill-opacity", "1"); 
+        h.css("stroke-opacity", "1"); 
+
+        $.each(h, function(key, value) { 
+            var n = $("[data-nodo-session-id=" + $(value).attr("data-header-session-id") + "]"); 
+            n.css("fill-opacity", "1"); 
+            n.css("stroke-opacity", "1"); 
+        }); 
+    } else { 
+        svg.find("circle").css("fill-opacity", "1"); 
+        svg.find("circle").css("stroke-opacity", "1"); 
+        svg.find("line").css("stroke-opacity", "1"); 
+        svg.find("path").css("stroke-opacity", "1"); 
+    }
+}); 
+
+/**
+* @method :: onAnclar
+* @description :: Llama a las funciones para anclar el mensaje.
+* @param :: {integer} nodoId, identificador del nodo. 
+* @param :: {Object} scope, Objeto que contiene el "scope" de angular.
+**/
+function onAnclar(nodoId, scope) { 
+    $("[data-circle=dialogo]").attr("stroke", ""); 
+    $("[data-circle=dialogo]").attr("stroke-width", ""); 
+    var n = $("[data-circle-navigate=ok]"); 
+    n.attr("stroke", ""); 
+    n.attr("stroke-width", ""); 
+    n.attr("data-circle-navigate", ""); 
+    n = $("[data-line-navigate=ok]"); 
+    n.attr("stroke", "#797979"); 
+    n.attr("stroke-width", "1"); 
+    n.attr("data-line-navigate", ""); 
+    
+    scope.$apply(function () { 
+        scope.vm.onMensajeAnclarClick(nodoId); 
+    }); 
+    
+    scope.vm.iniciarMensajeAnclado(); 
+}; 
+
+/**
+* @method :: onNodoClick
+* @description :: Ancla el mensaje al momento que el usuario hace clic en un nodo.
+* @param :: {integer} nodoId, identificador del nodo 
+**/
+function onNodoClick(nodoId) { 
+    var scope = angular.element(document.getElementById("ProjectControllerMain")).scope(); 
+    $anclar = true; 
+    onAnclar(nodoId, scope); 
+}; 

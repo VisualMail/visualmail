@@ -9,7 +9,6 @@ var lineHeight = 102;
 // Variable para manejar los mensajes anclados 
 var $anclar = false;
 
-
 /**
 * @method :: mapaDialogoDibujar 
 * @description :: Se encarga de dibujar el mapa del diálogo 
@@ -41,7 +40,7 @@ function mapaDialogoDibujar(nodoMensaje) {
 			sessionIdAux = v.sessionId;
 
 			// Dibujar la línea del diálogo 
-			mapaDialogoDibujarSesion(imageI, v.usuario.imgurl, v.usuario.initials, v.sessionId, svgContainer); 
+			mapaDialogoDibujarSesion(v.usuario.id, imageI, v.usuario.imgurl, v.usuario.initials, v.sessionId, svgContainer); 
 
 			// Incrementar el índice de la imagen que se dibuja en cada sesión 
 			imageI++;
@@ -108,7 +107,7 @@ function mapaDialogoAgregarNodo(mensaje) {
 	// Verificar si existe la línea que representa a la sesión en la que se encuentra el mensaje 
 	// Si no existe, dibujar la sesión 
 	if(!$("[data-header-session-id='" + mensaje.sessionId + "']").length) 
-		mapaDialogoDibujarSesion(mensaje.sessionId, mensaje.usuario.imgurl, mensaje.usuario.initials, mensaje.sessionId, svgContainer); 
+		mapaDialogoDibujarSesion(mensaje.usuario.id, mensaje.sessionId, mensaje.usuario.imgurl, mensaje.usuario.initials, mensaje.sessionId, svgContainer); 
 
 	// Establecer la altura del nodo 
 	var y2 = circleHeight + (mensaje.nodoNivel * 40); 
@@ -188,6 +187,7 @@ function mapaDialogoDibujarLinea(svgContainer, data) {
 **/
 function mapaDialogoDibujarNodo(svgContainer, data) {
 	var circle = svgContainer.append("circle")
+		.attr("onclick", "onNodoClick(" + data.nodoId + ")")
 		.attr("data-circle", "dialogo")
 		.attr("data-circle-navigate", "")
 		.attr("data-nodo-id", data.nodoId)
@@ -205,6 +205,47 @@ function mapaDialogoDibujarNodo(svgContainer, data) {
 		.attr("data-tooltip", 
 			(data.tipo ? '"' + data.tipo +  '". ' : "") + 
 			(data.name.length > 50 ? data.name.substring(0, 50) + "..." : data.name));
+
+	// Verificar el tipo de mensaje 
+	if(data.tipo !== "") { 
+		var imagenTipo = ""; 
+
+		if($.trim(data.tipo) === "Duda o Alternativa") 
+			imagenTipo = "da-small.png"; 
+		else if($.trim(data.tipo) === "Normas comunes") 
+			imagenTipo = "nc-small.png"; 
+		else if($.trim(data.tipo) === "Compromiso individual") 
+			imagenTipo = "ci-small.png"; 
+		else if($.trim(data.tipo) === "Acuerdos de Coordinación") 
+			imagenTipo = "ci-small.png"; 
+		else if($.trim(data.tipo) === "Desacuerdo o Brecha") 
+			imagenTipo = "db-small.png"; 
+		else 
+			return; 
+
+		// Establecer los parámetros del tipo de mensaje 
+		var defPattern = svgContainer.append("svg:defs")
+			.append("svg:pattern")
+			.attr("id", "nodoTipo" + data.nodoId)
+			.attr("height", 20)
+			.attr("width", 20)
+			.append("svg:image")
+			.attr("x", 0)
+			.attr("y", 0)
+			.attr("height", 21)
+			.attr("width", 21)
+			.attr("xlink:href", "/images/" + imagenTipo); 
+
+		// Dibujar el contenedor del tipo de mensaje 
+		var sessionCircle = svgContainer.append("circle")
+			.attr("fill", "url(#nodoTipo" + data.nodoId + ")")
+			.attr("data-nodo-session-id", data.sessionId)
+			.attr("stroke", "black")
+			.attr("stroke-width", "0")
+			.attr("cx", circleWidth + (data.sessionId * 100) - 17)
+			.attr("cy", circleHeight + (data.nodoNivel * 40) - 15)
+			.attr("r", 15);
+	}
 }
 
 /**
@@ -216,7 +257,7 @@ function mapaDialogoDibujarNodo(svgContainer, data) {
 * @param :: {Object} sessionId, la sesión que se dibujará en el mapa
 * @param :: {Object} svgContainer, objeto svg que contiene el mapa del diálogo
 **/
-function mapaDialogoDibujarSesion(imageI, imgurl, initials, sessionId, svgContainer) {
+function mapaDialogoDibujarSesion(usuarioId, imageI, imgurl, initials, sessionId, svgContainer) {
 	// Dibujar la línea de la sesión 
 	var sessionLine = svgContainer.append("line") 
 		.attr("x1", circleWidth + (sessionId * 100)) 
@@ -241,6 +282,7 @@ function mapaDialogoDibujarSesion(imageI, imgurl, initials, sessionId, svgContai
 
 	// Dibujar el circulo que contiene la imagen del usuario 
 	var sessionCircle = svgContainer.append("circle")
+		.attr("data-header-usuario-id", usuarioId)
 		.attr("data-header-session-id", sessionId)
 		.attr("fill", "url(#image" + imageI + ")")
 		.attr("stroke", "black")
@@ -330,6 +372,7 @@ function mapaDialogoDibujarAncla(anclar, data) {
 		// Dibujar el contenedor de la imagen del ancla 
 		var sessionCircle = svgContainer.append("circle")
 			.attr("data-nodo-anchor-id", "anchor")
+			.attr("data-nodo-session-id", data.sessionId)
 			.attr("fill", "url(#imageAnchor)")
 			.attr("stroke", "black")
 			.attr("stroke-width", "0")
