@@ -56,13 +56,13 @@ function mapaDialogoDibujar(nodoMensaje) {
 
 			// Si la altura establecida es mayor al tamaño total del mapa del diálogo 
 			// actualizar la altura del mapa 
-			if(y2 > totalHeight) 
+			if((y2 + 80) > totalHeight) 
 				totalHeight = y2 + 80; 
 
 			// Verificar en que posición se encuentra el nodo 
 			// Si es mayor al ancho del mapa, actualizar el ancho del mapa 
 			if((circleWidth + (v.sessionId * 100) + 200) > totalWidth) 
-				totalWidth = circleWidth + (v.sessionId * 100) + 600; 
+				totalWidth = circleWidth + (v.sessionId * 100) + 200; 
 		}
 
 		// Establecer los datos para dibujar el nodo que representa al mensaje 
@@ -131,6 +131,23 @@ function mapaDialogoAgregarNodo(mensaje) {
 
 	// Dibujar el nuevo nodo 
 	mapaDialogoDibujarNodo(svgContainer, data); 
+
+	// Verificar en que posición se encuentra el nodo 
+	var svgWidth = parseInt(svgContainer.attr("width")); 
+
+	// Si es mayor al ancho del mapa, actualizar el ancho del mapa 
+	if((circleWidth + (mensaje.sessionId * 100) + 200) > svgWidth) 
+		svgWidth = circleWidth + (mensaje.sessionId * 100) + 200; 
+
+	// Si la altura establecida es mayor al tamaño total del mapa del diálogo 
+	// actualizar la altura del mapa 
+	var svgHeight = parseInt(svgContainer.attr("height")); 
+	
+	if((y2 + 80) > svgHeight) 
+		svgHeight = y2 + 80; 
+
+	svgContainer.attr("height", svgHeight); 
+	svgContainer.attr("width", svgWidth); 
 
 	// Iniciar los tooltips de los nodos del mapa 
 	$(".tooltipped").tooltip({ delay: 50 }); 
