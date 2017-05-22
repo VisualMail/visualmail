@@ -26,25 +26,29 @@ function kanbanBoardInit() {
 	kanbanBoard.on("dragstart", function(e) { 
 		// Almacenar el elemento HTML que contiene a la tarea 
 		hideMe = e.target; 
-
+		
 		// Almacenar el "id" del elemento HTML que contiene a la tarea para enviarlo a través de los eventos 
-		e.originalEvent.dataTransfer.setData("kanbanBoardTask", e.target.id); 
+		//e.originalEvent.dataTransfer.setData("kanbanBoardTask", e.target.id); 
 
 		// Almacenar el "id" de la celda que contiene al elemento HTML de la tarea para enviarlo a través de los eventos 
-		e.originalEvent.dataTransfer.setData("kanbanBoardCell", e.target.parentNode.id); 
+		//e.originalEvent.dataTransfer.setData("kanbanBoardCell", e.target.parentNode.id); 
 
 		// Agregar el efecto de mover la tarea 
-		e.originalEvent.dataTransfer.effectAllowed = "move"; 
+		//e.originalEvent.dataTransfer.effectAllowed = "move"; 
 	}); 
 
 	// Al finalizar el "drag"
 	kanbanBoard.on("dragend", function(e) { 
 		// Hacer visible al elemento HTML que contiene a la tarea 
-		e.target.style.visibility = "visible"; 
+		//e.target.style.visibility = "visible"; 
+		$("#" + e.target.id).attr("style", "opacity: 0.2"); 
+
+		if(hideMe)
+			hideMe = null;  
 	}); 
 
 	// Variable auxiliar para verificar lo último que ingresó 
-	var lastEnterd; 
+	var lastEntered; 
 
 	// Al entrar en el elemento HTML que contiene a la tarea al "drag"
 	kanbanBoard.on("dragenter", function(e) { 
@@ -54,7 +58,7 @@ function kanbanBoardInit() {
 			hideMe.style.visibility = "hidden"; 
 
 			// Borrar la variable auxiliar 
-			hideMe = null;  
+			//hideMe = null;  
 		} 
 
 		// Almacenar el elemento HTML de la tarea 
@@ -111,13 +115,17 @@ function kanbanBoardInit() {
 
     // Al soltar el elemento HTML que contiene la tarea en el destino  
 	kanbanBoard.on("drop", function(e) { 
+		console.log(hideMe);
 		// Obtener los destinos (celda o columna) 
 		var sectionTask = closestWithClass(e.target, 'kanbanBoardCell'); 
 		var sectionColumn = closestWithClass(e.target, 'kanbanBoardColumn'); 
 
 		// Obtener el elemento HTML que contiene a la tarea y la celda origen de este elemento 
-		var task = $("#" + e.originalEvent.dataTransfer.getData("kanbanBoardTask")); 
-		var oldCell = $("#" + e.originalEvent.dataTransfer.getData("kanbanBoardCell")); 
+		//var task = $("#" + e.originalEvent.dataTransfer.getData("kanbanBoardTask")); 
+		//var oldCell = $("#" + e.originalEvent.dataTransfer.getData("kanbanBoardCell")); 
+
+		var task = $("#" + hideMe.id); 
+		var oldCell = $("#" + hideMe.parentNode.id); 
 		var tareaId = task.attr("id"); 
 
 		// Obtener el "scope" desde angular 

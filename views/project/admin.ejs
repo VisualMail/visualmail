@@ -1,3 +1,14 @@
+<div class="row" id="ProjectControllerCargando">
+	<div class="container">
+		<br />
+		<div class="row center">
+			        <div class="card-panel white lighten-5 z-depth-1">
+
+			<img src="/images/cargando.gif" alt="cargando" />
+			        </div>
+		</div>
+	</div>
+</div>
 <div id="ProjectControllerMain" ng-controller="ProjectController as vm" style="display: none; padding-top: .2em;">
 
 	<!-- Inicio contenido -->
@@ -105,8 +116,12 @@
 				</div>
 			</div>
 
+			<!-- Inicio del mapa del diálogo -->
 			<div id="main" class="main">
+				<div class="svg-session"></div>
+				<div class="svg-mapa"></div>
 			</div>
+			<!-- Fin del mapa del diálogo -->
 
 			<div class="resizable-panel-container" ng-show="vm.miMensajeAnclado.id">
 				<div class="resizable-panel-left">

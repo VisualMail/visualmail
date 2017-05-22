@@ -201,6 +201,8 @@
 
                 // Iniciar el tiempo del diálogo 
                 vm.iniciarTiempoDialogo(); 
+                $("#ProjectControllerCargando").fadeOut(200); 
+                $("#ProjectControllerMain").fadeIn(200); 
             });
 
             // Obtener las tareas del tablero Kanban
@@ -849,6 +851,8 @@
                 vm.miKanbanColumn3 = listaAuxDestino; 
             else if(newColumn === 4) 
                 vm.miKanbanColumn4 = listaAuxDestino; 
+
+            setMensaje("Tarea actualizada"); 
         }; 
 
         /**
@@ -1014,6 +1018,8 @@
                         else if(value.tipo === vm.miKanbanTipoTarea[3]) // Terminada 
                             vm.miKanbanColumn4.push(value); 
                     }); 
+
+                    setMensaje("Tarea actualizada"); 
                 } else { 
                     var column = 0, newColumn = 0;  
 
@@ -1029,8 +1035,6 @@
                     vm.onKanbanBoardUpdateColumn(column, newColumn, data.newIndex, data.newCell, data.obj); 
                 }
             }); 
-            
-            setMensaje("Tarea actualizada"); 
         }; 
 
         /**

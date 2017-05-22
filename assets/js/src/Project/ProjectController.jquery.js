@@ -65,6 +65,7 @@ $(document).ready(function() {
             var originalHeight = 270; 
             var finalHeight = (ui.size.height > originalHeight ? (ui.size.height - originalHeight) : 0); 
             $("#main").css("height", topHeight - (finalHeight > 0 ? finalHeight : 0)); 
+            $("#main .svg-mapa").css("height", topHeight - (finalHeight > 0 ? finalHeight : 0)); 
         }
     }); 
     $(".resizable-panel-left").resizable({ 
@@ -73,13 +74,11 @@ $(document).ready(function() {
         resizeHeight: false 
     }); 
 
-    // Presentar la vista
-    $("#ProjectControllerMain").fadeIn(200); 
 }); 
 
 $("#selectFiltrarUsuario").on("change", function() {
     var s = $(this); 
-    var svg = $("#main > svg"); 
+    var svg = $("#main > .svg-mapa, #main > .svg-session"); 
 
     if(s.val() !== "0") { 
         svg.find("circle").css("fill-opacity", "0.3"); 

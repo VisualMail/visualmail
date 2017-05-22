@@ -8,7 +8,6 @@
 var bcrypt = require("bcrypt");
 
 module.exports = { 
-
 	/**
 	* @method :: actualizarpass (POST)
 	* @description :: Actualiza una contraseña
