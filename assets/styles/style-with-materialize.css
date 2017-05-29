@@ -51,3 +51,7 @@ main { flex: 1 0 auto !important; }
 .tabs .indicator { background: #8BC34A !important; }
 .tabs .tab a.active { background-color: #c8e6c9 !important; } 
 .toast { background: #8BC34A !important; }
+
+.table-ng > thead > tr > th > .ng-table-header { cursor: pointer !important; padding: 15px 0 0 !important; }
+.table-ng > thead > tr > th { padding: 0 15px 0 0 !important; }
+.table-ng > thead > tr > th { padding: 0 15px 0 0 !important; }

@@ -287,7 +287,7 @@ module.exports = {
 		res.view({ 
 			title: "Registrarse", 
 			sectionScripts: 
-				"<script src='/js/dependencies/jscolor-2.0.4/js/jscolor.min.js'></script>" + 
+				"<script src='/js/dependencies/jscolor/2.0.4/js/jscolor.min.js'></script>" + 
 				"<script src='/js/src/Session/SignUpController.js'></script>" 
 		});
 	},

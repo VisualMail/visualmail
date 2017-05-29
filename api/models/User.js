@@ -57,6 +57,11 @@ module.exports = {
 			type: "string"
 		},
 
+		// Rol
+		rol: { 
+			type: "integer"
+		}, 
+
 		// Relación muchos a muchos con proyecto
 		projects: { 
 			dominant: true,

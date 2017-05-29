@@ -35,10 +35,11 @@
         <!-- Fin referencias externas -->
 
         <!-- Inicio estilos CSS -->
-        <link rel="stylesheet" href="/js/dependencies/jquery-ui-1.12.1/jquery-ui.min.css" />
-        <link rel="stylesheet" href="/js/dependencies/materialize-0.98.2/css/materialize.min.css" />
+        <link rel="stylesheet" href="/js/dependencies/jquery-ui/1.12.1/jquery-ui.min.css" />
+        <link rel="stylesheet" href="/js/dependencies/materializecss/0.98.2/css/materialize.min.css" />
         <link rel="stylesheet" href="/styles/style-with-materialize.css" />
         <%- typeof sectionStyles != "undefined" ? sectionStyles : "" %>
+        <%- typeof sectionHead != "undefined" ? sectionHead : "" %>
         <!-- Fin estilos CSS -->
 
     </head>
@@ -57,6 +58,9 @@
 				</li>
 			</li>
 			<li>  <div class="divider black"></div> </li>
+            <% if(session.User.rol === 1) { %>
+            <li class="green darken-2"><a class="white-text" href="/user/admin">Administrar usuarios</a></li>
+            <% } %>
 			<li class="green darken-2"><a class="white-text" href="/user/index">Mis Proyectos</a></li>
 			<li class="green darken-2"><a class="white-text" href="/session/help">Ayuda</a></li>
 			<li class="green darken-2"><a class="white-text" href="/session/logout">Cerrar sesión</a></li>
@@ -89,6 +93,9 @@
 		        	<ul id="userMenu" class="dropdown-content main-user-menu">
     					<li><a href="#!">Bienvenido : <%=session.User.firstname%></a></li>
     					<li class="divider"></li>
+                        <% if(session.User.rol === 1) { %>
+                        <li><a href="/user/admin">Administrar usuarios</a></li>
+                        <% } %>
     					<li><a href="/user/index">Mis Proyectos</a></li>
     					<li><a href="/user/edit">Mi perfil</a></li>
     					<li><a href="/session/logout">Cerrar sesión</a></li>
@@ -178,14 +185,14 @@
 		<!-- Fin Pie de página -->
 
         <!-- Inicio Scripts -->
-        <script src="/js/dependencies/jquery-3.2.1/js/jquery-3.2.1.min.js"></script>
-        <script src="/js/dependencies/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-        <script src="/js/dependencies/materialize-0.98.2/js/materialize.min.js"></script>
+        <script src="/js/dependencies/jquery/3.2.1/js/jquery.min.js"></script>
+        <script src="/js/dependencies/jquery-ui/1.12.1/jquery-ui.min.js"></script>
+        <script src="/js/dependencies/materializecss/0.98.2/js/materialize.min.js"></script>
         <script src="/js/style-with-materialize.js"></script>
 
-        <script src="/js/dependencies/angularjs-1.6.4/js/angular.min.js"></script>
-        <script src="/js/dependencies/angular-materialize-0.2.2/js/angular-materialize.min.js"></script>
-        <script src="/js/dependencies/angular-messages-1.6.4/js/angular-messages.min.js"></script>
+        <script src="/js/dependencies/angular/1.6.4/js/angular.min.js"></script>
+        <script src="/js/dependencies/angular-materialize/0.2.2/js/angular-materialize.min.js"></script>
+        <script src="/js/dependencies/angular-messages/1.6.4/js/angular-messages.min.js"></script>
         <script src="/js/src/Directives/compareTo.js"></script>
         <script src="/js/src/Directives/scrollglue.js"></script>
         <script src="/js/src/app.js"></script>
