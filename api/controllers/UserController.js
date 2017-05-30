@@ -34,6 +34,7 @@ module.exports = {
 				}); 
 			} 
 
+			// Actualizar el usuario 
 			User.update({ 
 				id: id
 			}, 
@@ -51,12 +52,14 @@ module.exports = {
 					mensaje: "Usuario actualizado!" 
 				}); 
 			}).catch(function(err) { 
+				// En caso de que exista un error en la actualización de datos 
 				return res.json({ 
 					procedimiento: false, 
 					mensaje: "¡Se produjo un error en la Base de Datos al actualizar el usuario!" 
 				}); 
 			}); 
 		}).catch(function(err) { 
+			// En caso de que exista un error en la verificación del correo electrónico 
 			return res.json({ 
 				procedimiento: false, 
 				mensaje: "¡Se produjo un error en la Base de Datos al buscar el correo del usuario!" 
@@ -288,50 +291,7 @@ module.exports = {
 				mensaje: "No se produjo ningún cambio" 
 			});
 		}
-	},
-
-	/**
-	* @method :: actualizarpass (POST)
-	* @description :: Actualiza una contraseña
-	* @param :: {Object} req, request element de sails
-	* @param :: {Objetct} res, de la vista ejs del servidor
-	* @param :: {Objetct} next, para continuar en caso de error
-	*/
-	actualizarpass: function(req, res) {
-		
-		// Variable temporal para guardar la contraseña cifrada
-		var nuevo;
-
-		require("bcrypt").hash(req.param("password"), 10, function passwordEncrypted(err, password) { 
-
-			// Verificar si existe un error
-    		if(err) 
-    			return res.json({ 
-					procedimiento: false, 
-					mensaje: "Se produjo un error al conectarse con el objeto 'bcrypt'" 
-				});
-    		
-    		// Almacenar en 'nuevo' la contraseña cifrada
-    		nuevo = password; 
-
-    		// Buscar el usuario por su 'id' y actualizar la nueva contraseña
-    		User.update(req.session.User.id, { password: nuevo }).exec(function userUpdatedPass(err) {
-
-    			// Verificar si existe un error
-				if(err) 
-					return res.json({ 
-						procedimiento: false, 
-						mensaje: "Se produjo un error al actualizar la contraseña" 
-					}); 
-					
-				// Si no hay error retorna la opción con valor verdadero en formato JSON
-				return res.json({ 
-					procedimiento: true, 
-					mensaje: "Contraseña actualizada"
-				});
-			});
-  		});
-	},
+	}, 
 
 	/**
 	* @method :: edit (VIEW)
@@ -344,7 +304,9 @@ module.exports = {
 		// Redirigir a la vista 'user/edit'
 		return res.view({ 
 			title: "Editar mi perfil", 
-			sectionScripts: "<script src='/js/src/User/EditController.js'></script>"
+			sectionScripts: 
+				"<script src='/js/dependencies/jscolor/2.0.4/js/jscolor.min.js'></script>" + 
+				"<script src='/js/src/User/EditController.js'></script>" 
 		});
 	}, 
 
@@ -521,5 +483,102 @@ module.exports = {
 			// Retornar el json con los datos del usuario y los proyectos asociados
 			return res.json({ user: user }); 
 		});
-	} 
+	}, 
+
+	/**
+	* @method :: password (VIEW)
+	* @description :: Controla la vista principal para la modificación de la contraseña
+	* @param :: {Object} req, request element de sails
+	* @param :: {Objetct} res, de la vista ejs del servidor
+	* @param :: {Objetct} next, para continuar en caso de error
+	**/
+	password: function(req, res, next) { 
+		return res.view({ 
+			title: "Modificar contraseña" 
+		}); 
+	}, 
+
+	/**
+	* @method :: passwordActualizar (POST)
+	* @description :: Actualiza una contraseña
+	* @param :: {Object} req, request element de sails
+	* @param :: {Objetct} res, de la vista ejs del servidor
+	* @param :: {Objetct} next, para continuar en caso de error
+	*/
+	passwordActualizar: function(req, res, next) { 
+		// Establecer los datos 
+		var user = req.session.User; 
+		var userPassword = req.param("userPassword"); 
+		var userPasswordNew = req.param("userPasswordNew"); 
+		var userPasswordConfirm = req.param("userPasswordConfirm"); 
+
+		// Verificar si la nueva contraseña no es igual a la actual 
+		if(userPassword === userPasswordNew) { 
+			req.session.passwordMessage = { result: false, message: "¡La nueva contraseña debe ser distinta de la actual!" }; 
+			return res.redirect("/user/password"); 
+		} 
+
+		// Verificar si la nueva contraseña coincide 
+		if(userPasswordNew !== userPasswordConfirm) { 
+			req.session.passwordMessage = { result: false, message: "¡La nueva contraseña no coincide!" }; 
+			return res.redirect("/user/password"); 
+		} 
+
+		// Buscar el usuario actual 
+		User.findOne(user.id).then(function(result) { 
+			// Verificar si no existe el usuario
+			if(!result) { 
+				req.session.passwordMessage = { result: false, message: "¡El usuario no existe!" }; 
+				return res.redirect("/user/password"); 
+			} 
+			
+			// Si no hay error, comparar la contraseña con la contraseña almacenada 
+			var bcrypt = require("bcrypt");
+			var passwordMessage = bcrypt.compare(userPassword, result.password).then(function(result) { 
+				var message = ""; 
+
+				//Verificar si es la contraseña del usuario
+				if(!result) 
+					message = "¡La contraseña del usuario es incorrecta!"; 
+				
+				return { result: result, message: message }; 
+			}).catch(function(err) { 
+				sails.log(err); 
+				req.session.passwordMessage = { result: false, message: "¡Error al comparar la contraseña actual!" }; 
+				return res.redirect("/user/password"); 
+			}); 
+
+			// Cifrar la nueva contraseña 
+			userPasswordNew = bcrypt.hash(userPasswordNew, 10).then(function(result) { 
+				return result; 
+			}).catch(function(err) { 
+				sails.log(err); 
+				req.session.passwordMessage = { result: false, message: "¡Error al cifrar la nueva contraseña!" }; 
+				return res.redirect("/user/password"); 
+			}); 
+
+			return [passwordMessage, userPasswordNew]; 
+		}).spread(function(passwordMessage, userPasswordNew) { 
+			// Si no es la contraseña del usuario 
+			if(!passwordMessage.result) { 
+				req.session.passwordMessage = passwordMessage; 
+				return res.redirect("/user/password"); 
+			}
+
+			// Actualizar la contraseña en la base de datos 
+			User.update(user.id, { password: userPasswordNew }).then(function(result) { 
+				passwordMessage.message = "¡Contraseña actualizada!"; 
+				req.session.passwordMessage = passwordMessage; 
+				return res.redirect("/user/password"); 
+			}).catch(function(err) { 
+				sails.log(err); 
+				req.session.passwordMessage = { result: false, message: "¡Error en la Base de Datos!" }; 
+				return res.redirect("/user/password"); 
+			}); 
+		}).catch(function(err) { 
+			sails.log(err); 
+			req.session.passwordMessage = { result: false, message: "¡Error en la Base de Datos!" }; 
+			return res.redirect("/user/password"); 
+		}); 
+	},
 };

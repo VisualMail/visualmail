@@ -14,12 +14,11 @@
         vm.imgurl = ""; 
         vm.initials = ""; 
         vm.lastname = ""; 
+        vm.color = ""; 
 
         vm.getUsuarioProyectos = getUsuarioProyectos; 
         vm.onBtnEditCancelClick = onBtnEditCancelClick; 
-        vm.onBtnEditGuardarClick = onBtnEditGuardarClick; 
-        vm.onBtnPassActualizarClick = onBtnPassActualizarClick; 
-        vm.onBtnPassCancelClick = onBtnPassCancelClick; 
+        vm.onBtnEditGuardarClick = onBtnEditGuardarClick;
         vm.setMensaje = setMensaje; 
 
         init(); 
@@ -63,6 +62,7 @@
             vm.imgurl = ""; 
             vm.initials = ""; 
             vm.lastname = ""; 
+            vm.color = ""; 
         }; 
 
         function onBtnEditGuardarClick() { 
@@ -81,7 +81,8 @@
                     firstname: vm.firstname, 
                     lastname: vm.lastname, 
                     imgurl: vm.imgurl, 
-                    initials: vm.initials 
+                    initials: vm.initials, 
+                    color: vm.color 
                 }
             }).then(function(respuesta) { 
                 var d = respuesta.data; 
@@ -93,31 +94,6 @@
                 }
             });
             // Fin POST actualizar datos 
-        }; 
-
-        function onBtnPassActualizarClick() { 
-            $http.defaults.withCredentials = true; 
-            
-            $http({ 
-                method: "POST", 
-                url: "/user/actualizarpass", 
-                headers: { 
-                    "Content-Type": "application/json", 
-                    "X-CSRF-TOKEN": vm.csrfToken 
-                }, 
-                data: { 
-                    password: vm.password 
-                } 
-            }).then(function(respuesta) {  
-                var d = respuesta.data; 
-                setMensaje(d.mensaje); 
-                onBtnPassCancelClick(); 
-            });
-        }; 
-
-        function onBtnPassCancelClick() {
-            vm.password = ""; 
-            vm.confirmpassword = ""; 
         }; 
 
         function setMensaje(mensaje) { 

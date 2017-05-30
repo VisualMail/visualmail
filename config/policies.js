@@ -29,6 +29,7 @@ module.exports.policies = {
   // '*': true,
   '*': 'flash', 
   user:{ 
+    password: "sessionAuth",
     create: "flash", 
     edit: ['flash','sessionAuth'], 
     admin: ['sessionAuth', 'adminAuth'], 

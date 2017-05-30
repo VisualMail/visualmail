@@ -1,5 +1,5 @@
 <div class="boxer" id="vistaPrincipal" ng-controller="EditController as vm">
-    <div class=" container">
+    <div class="container">
         <div class="row card-panel" id="contenedor_form">
             
             <!-- Inicio editar perfil -->
@@ -54,7 +54,7 @@
                     </div>
                 </div>
                 
-                <div class= "col s12">
+                <div class="col s12">
                     <div class="input-field col s7 offset-s1">
                         <input capitalize class="tooltipped" id="initials" name="initials" placeholder="{{ vm.miUsuario.initials }}" type="text" 
                             data-delay="50" 
@@ -75,6 +75,19 @@
                 </div>
                 
                 <div class="col s12">
+                    <div class="col s7 offset-s1 input-field tooltipped" 
+                        data-delay="50" 
+                        data-position="top" 
+                        data-tooltip="Selecciona un color de interacción">
+                        <input class="jscolor" id="color" name="color" placeholder="{{ vm.miUsuario.color }}" type="text" 
+                            ng-style="{ 'background-color': vm.color ? '#' + vm.userColor : (vm.miUsuario.color ? '#' + vm.miUsuario.color : 'none') }"
+                            ng-model="vm.color" 
+                            ng-required="true" />
+                            <label for="color">Color de interacción</label>
+                    </div>
+                </div>
+                
+                <div class="col s12">
                     <div class="col s3 offset-s1">
                         <button class="waves-effect waves-light btn-large light-green" type="button" 
                             ng-click="vm.onBtnEditGuardarClick()" 
@@ -87,66 +100,6 @@
                 </div>
             </form>
             <!-- Fin editar perfil -->
-
-            <!-- Inicio editar contraseña -->
-            <form name="vm.formPassword" novalidate="novalidate">
-                
-                <div class="col s12">
-                    <div class="col s8 offset-s1">
-                        <h3 class="green-text"> Cambiar contraseña</h3>
-                        <h6 class="green-text"> Ingrese la nueva contraseña. </h6>
-                    </div>
-                </div>
-                
-                <div class="col s12">
-                    <div class="input-field col s7 offset-s1">
-                        <input class="tooltipped" id="password" name="password" type="password" 
-                            data-delay="50" 
-                            data-position="top" 
-                            data-tooltip="Ingrese un valor alfanúmerico, mínimo 6 carácteres" 
-                            ng-maxlength="20" 
-                            ng-minlength="6" 
-                            ng-model="vm.password" 
-                            ng-pattern="/^[a-zA-Z0-9]*$/" 
-                            ng-required="true" />
-                        <label for="password">Contraseña</label>
-                    </div>
-                    <div class="col s4 centerme red-text" role="alert" ng-messages="vm.formPassword.password.$error">
-                        <div ng-message ="required"><i class="small material-icons red-green-text">error_outline</i></div>
-                        <div ng-message="pattern">Formato no válido</div>
-                        <div ng-message="minlength">Mínimo 6 caracteres</div>
-                        <div ng-message ="maxlength">Contraseña muy larga</div>
-                        <div ng-show="vm.formPassword.password.$valid"><i class="small material-icons light-green-text">done</i></div>
-                    </div>
-                </div>
-                
-                <div class="col s12">
-                    <div class="input-field col s7 offset-s1">
-                        <input compare-to="vm.password" id="confirmpassword" name="confirmpassword" type="password" 
-                            ng-model="vm.confirmpassword" 
-                            ng-required="true" />
-                        <label for="confirmpassword">Confirmar Contraseña</label>
-                    </div>
-                    <div class="col s4 centerme red-text" role="alert" ng-messages="vm.formPassword.confirmpassword.$error">
-                        <div ng-message ="required"> <i class="small material-icons red-green-text">error_outline</i></div>
-                        <div ng-message="compareTo">La contraseña no coincide</div>
-                        <div ng-show="vm.formPassword.confirmpassword.$valid"><i class="small material-icons light-green-text">done</i></div>
-                    </div>
-                </div>
-                
-                <div class="col s12">
-                    <div class="col s3 offset-s1">
-                        <button class="waves-effect waves-light btn-large" type="button" 
-                            ng-click="vm.onBtnPassActualizarClick()" 
-                            ng-disabled="!vm.formPassword.$valid">Actualizar contraseña</button>
-                    </div>
-                    <div class="col s1 offset-s1">
-                        <button class="waves-effect waves-light btn-large" type="button" 
-                            ng-click="vm.onBtnPassCancelClick()">Cancelar</button>
-                    </div>
-                </div>
-            </form>
-            <!-- Fin editar contraseña -->
         
         </div>
     </div>

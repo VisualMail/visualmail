@@ -87,6 +87,7 @@
 
         // Inicio funciones 
         vm.getQueryString = getQueryString; 
+        vm.iniciarLineaDialogo = iniciarLineaDialogo; 
         vm.iniciarMensajeAnclado = iniciarMensajeAnclado; 
         vm.iniciarMensajeNavegar = iniciarMensajeNavegar; 
         vm.iniciarTiempoDialogo = iniciarTiempoDialogo; 
@@ -138,8 +139,7 @@
                     url: "/project/getOne", 
                     method: "GET", 
                     params: { id: vm.miProyectoId } 
-                })
-                .then(function(proyecto) {
+                }).then(function(proyecto) {
                     
                     // Obtener el proyecto y la lista de participantes
                     vm.miProyecto = proyecto.data.project; 
@@ -180,8 +180,7 @@
                url: "/mensaje/getMessages", 
                method: "GET", 
                params: { id: vm.miProyectoId } 
-            })
-            .then(function(resultado) { 
+            }).then(function(resultado) { 
                 vm.miMensaje = resultado.data.mensaje; 
                 vm.miSessionId = vm.miMensaje[vm.miMensaje.length - 1].sessionId + 1;
 
@@ -196,7 +195,7 @@
 
                 // Establecer el primer mensaje como el mensaje anclado 
                 $anclar = true; 
-                onMensajeAnclarClick(vm.miMensaje[0].nodoId); 
+                vm.onMensajeAnclarClick(vm.miMensaje[0].nodoId); 
                 iniciarMensajeAnclado(); 
 
                 // Iniciar el tiempo del diálogo 
@@ -210,8 +209,7 @@
 				url: "/tarea/getTareas/", 
 				method: "GET", 
 				params: { id: vm.miProyectoId } 
-            })
-            .then(function(resultado) { 
+            }).then(function(resultado) { 
 
             	// Si existe error
             	if(resultado.data.tarea === "false") 
@@ -402,7 +400,32 @@
                 return "";
 
             return decodeURIComponent(results[2].replace(/\+/g, " "));
-        };
+        }; 
+
+        /**
+        * @method :: iniciarLineaDialogo  
+        * @description :: Ilumina la línea del diálogo  
+        * @param :: {nodoId} name, nombre de la variable 
+        **/
+        function iniciarLineaDialogo(nodoId) { 
+            var n = $("[data-line-nodo-id=" + nodoId + "]"); 
+            n.attr("stroke", "#18ffff"); 
+            n.attr("stroke-width", "4"); 
+            n.attr("data-line-navigate", "ok"); 
+            n = $("[data-nodo-id=" + nodoId + "]"); 
+            nodoId = parseInt(n.attr("data-nodo-parent-id")); 
+
+            if(nodoId === 0) { 
+                n = $("[data-line-navigate=ok]"); 
+                n.attr("stroke", "#797979"); 
+                n.attr("stroke-width", "1"); 
+                n.attr("data-line-navigate", ""); 
+                return; 
+            } else if(nodoId === vm.miMensajeAnclado.nodoId)
+                return; 
+            else 
+                vm.iniciarLineaDialogo(nodoId); 
+        }; 
 
         /**
         * @method :: iniciarMensajeAnclado 
@@ -426,7 +449,7 @@
         * @description :: Iniciar el 'nodo navegar' 
         * @param :: {boolean} iniciar, variable para verificar si se inicia el dibujo del mensaje navegar  
         **/
-        function iniciarMensajeNavegar(iniciar, actualizar) {
+        function iniciarMensajeNavegar(iniciar, actualizar, accion) {            
             var n; 
 
             // Si se deben iniciar los controles (nodo y línea)
@@ -440,36 +463,125 @@
                 n.attr("stroke", "#797979"); 
                 n.attr("stroke-width", "1"); 
                 n.attr("data-line-navigate", ""); 
-            }
+            } 
 
-            // Si el mensaje 'nodo navegar' existe 
-            // marcar el borde y el color al nuevo 'nodo navegar' 
-            if(vm.miMensajeAncladoNavegar !== "") {
-                var nodoNavegarId = vm.miMensajeAncladoNavegar.nodoId; 
-                var nodoNavegarOk = false; 
+            // Si el usuario presionó una tecla
+            if(accion) { 
+                var nodo = vm.miMensajeAncladoNavegar === "" ? vm.miMensajeAnclado : vm.miMensajeAncladoNavegar; 
+                var nodoId = 0; 
+                var nodoPadreId = 0; 
+                var nodoNivel = 0; 
+                
+                switch(accion) { 
+                    case "Arriba": 
+                        nodoNivel = nodo.nodoNivel; 
+                        nodoPadreId = nodo.nodoPadreId; 
+                        
+                        n = $("[data-nodo-parent-id=" + nodoPadreId + "]"); 
 
-                do { 
-                    if(!nodoNavegarOk) { 
-                        n = $("[data-nodo-id=" + vm.miMensajeAncladoNavegar.nodoId + "]"); 
-                        n.attr("stroke", "#18ffff"); 
-                        n.attr("stroke-width", "5"); 
-                        n.attr("data-circle-navigate", "ok"); 
-                        nodoNavegarOk = true; 
-                    } 
+                        $.each(n, function(key, value) { 
+                            var v = $(value); 
+                            var nid = parseInt(v.attr("data-nodo-id")); 
 
-                    n = $("[data-line-nodo-id=" + nodoNavegarId + "]"); 
-                    n.attr("stroke", "#18ffff");
-                    n.attr("stroke-width", "4"); 
-                    n.attr("data-line-navigate", "ok"); 
-                    nodoNavegarId = parseInt($("[data-nodo-id=" + nodoNavegarId + "]").attr("data-nodo-parent-id")); 
-                } while(nodoNavegarId !== vm.miMensajeAnclado.nodoId); 
-            }
+                            if(nid === nodo.nodoId) 
+                                return false; 
+                            
+                            nodoId = nid; 
+                        }); 
+
+                        if(nodoId === vm.miMensajeAnclado.nodoId) { 
+                            nodoId = 0; 
+                            vm.miMensajeAncladoNavegar = ""; 
+                        }
+
+                        break; 
+                    case "Abajo": 
+                        nodoNivel = nodo.nodoNivel; 
+                        nodoPadreId = nodo.nodoPadreId; 
+                        
+                        n = $("[data-nodo-parent-id=" + nodoPadreId + "]"); 
+
+                        $.each(n, function(key, value) { 
+                            var v = $(value); 
+                            var nid = parseInt(v.attr("data-nodo-id")); 
+                            var nn = parseInt(v.attr("data-nodo-nivel")); 
+
+                            if(nn > nodoNivel) { 
+                                nodoId = nid; 
+                                return false; 
+                            } 
+                        }); 
+
+                        if(nodoId === vm.miMensajeAnclado.nodoId) { 
+                            nodoId = 0; 
+                            vm.miMensajeAncladoNavegar = ""; 
+                        }
+
+                        break; 
+                    case "Izquierda": 
+                        n = $("[data-nodo-id=" + nodo.nodoPadreId + "]"); 
+
+                        if(n.length === 0) 
+                            break; 
+
+                        nodoId = parseInt(n.attr("data-nodo-id")); 
+
+                        if(nodoId === vm.miMensajeAnclado.nodoId) { 
+                            nodoId = 0; 
+
+                            if(vm.miMensajeAnclado.nodoPadreId === 0) 
+                                break; 
+                            
+                            vm.miMensajeAncladoNavegar = ""; 
+                        }
+
+                        break; 
+                    case "Derecha": 
+                        n = $("[data-nodo-parent-id=" + nodo.nodoId + "][data-nodo-nivel=" + nodo.nodoNivel + "]"); 
+
+                        if(n.length === 0) 
+                            break; 
+
+                        nodoId = parseInt(n.attr("data-nodo-id"));
+
+                        if(nodoId === vm.miMensajeAnclado.nodoId) { 
+                            nodoId = 0; 
+                            vm.miMensajeAncladoNavegar = ""; 
+                        }
+                        
+                        break; 
+                    default: 
+                        break; 
+                } 
+
+                if(nodoId > 0) { 
+                    $.each(vm.miMensaje, function(key, value) { 
+                        if(value.nodoId === nodoId) { 
+                            vm.miMensajeAncladoNavegar = value; 
+                            return false; 
+                        } 
+                    }); 
+                } 
+
+                if(vm.miMensajeAncladoNavegar !== "") { 
+                    n = $("[data-nodo-id=" + vm.miMensajeAncladoNavegar.nodoId + "]"); 
+                    n.attr("stroke", "#18ffff"); 
+                    n.attr("stroke-width", "5"); 
+                    n.attr("data-circle-navigate", "ok"); 
+
+                    if(vm.miMensajeAncladoNavegar.sessionId > vm.miMensajeAnclado.sessionId) 
+                        vm.iniciarLineaDialogo(vm.miMensajeAncladoNavegar.nodoId); 
+                } 
+            } 
 
             if(actualizar) 
                 $scope.$apply(); 
         }; 
-
-
+        
+        /**
+        * @method :: iniciarTiempoDialogo 
+        * @description :: Presenta el tiempo del diálogo 
+        **/
         function iniciarTiempoDialogo() { 
             var date2 = new Date(vm.miMensaje[vm.miMensaje.length - 1].createdAt); 
             var date1 = new Date(vm.miMensaje[0].createdAt); 
@@ -878,19 +990,11 @@
                 
                 vm.miMensajeAncladoFinal = false; 
 
+                // Verificar si el mensaje anclado tiene hijos
                 if(vm.miMensajeAnclado.nodoId > 1 && $("[data-nodo-parent-id=" + vm.miMensajeAnclado.nodoId + "]").length === 0) 
                     vm.miMensajeAncladoFinal = true; 
-                else {
-
-                    $.each(vm.miMensaje, function(key, value) {
-                        if(value.nodoPadreId === vm.miMensajeAnclado.nodoId) {
-                            vm.miMensajeAncladoNavegar = value;
-                            return false;
-                        }
-                    });
-                    
-                    vm.iniciarMensajeNavegar(true); 
-                } 
+                else 
+                    vm.iniciarMensajeNavegar(true, false, "Derecha"); 
             } else 
                 vm.miMensajeAnclado = "";
 
@@ -917,7 +1021,6 @@
             else if(modal === 2) 
                 $("#modalMensajeKanban").modal("open"); 
         };
-
 
         /**
         * @method :: onSocketMensajeNuevo 
@@ -970,10 +1073,28 @@
             vm.miMensajeIntercalar = !vm.miMensajeIntercalar; 
             vm.miMensaje.push(nuevoMensaje); 
             mapaDialogoAgregarNodo(nuevoMensaje); 
-            
             vm.iniciarMensajeAnclado(); 
-            vm.iniciarMensajeNavegar(false); 
-            iniciarTiempoDialogo(); 
+
+            if($anclar) { 
+                if(vm.miMensajeAnclado.nodoId === nuevoMensaje.nodoPadreId) { 
+                    vm.miMensajeAncladoNavegar = nuevoMensaje; 
+                    var n = $("[data-circle-navigate=ok]"); 
+                    n.attr("stroke", ""); 
+                    n.attr("stroke-width", ""); 
+                    n.attr("data-circle-navigate", ""); 
+                    n = $("[data-line-navigate=ok]"); 
+                    n.attr("stroke", "#797979"); 
+                    n.attr("stroke-width", "1"); 
+                    n.attr("data-line-navigate", ""); 
+                    n = $("[data-nodo-id=" + vm.miMensajeAncladoNavegar.nodoId + "]"); 
+                    n.attr("stroke", "#18ffff"); 
+                    n.attr("stroke-width", "5"); 
+                    n.attr("data-circle-navigate", "ok"); 
+                    vm.iniciarLineaDialogo(vm.miMensajeAncladoNavegar.nodoId); 
+                } 
+            }
+
+            vm.iniciarTiempoDialogo(); 
 
             // Actualizar el controlador
             $scope.$apply();
@@ -1095,118 +1216,37 @@
         **/
         io.socket.get("/project/conectar_socket", { project_id: vm.miProyectoId }, function gotResponse(body, response) { 
         	console.log("El servidor respondió con código " + response.statusCode + " y datos: ", body); 
-        });
+        }); 
 
         /**
         * @method :: document.onkeydown 
         * @description :: Verifica la tecla de navegación que envía el usuario 
         **/
         document.onkeydown = function checkKey(e) {
+            // Si no existe un mensaje anclado omitir
+            if(!$anclar) 
+                return; 
 
-            // Si existe un mensaje anclado capturar la tecla 
-            if($anclar) {
-                e = e || window.event;
+            e = e || window.event;
 
-                // Si no es una tecla de navegación retornar 
-                if([37, 38, 39, 40].indexOf(e.keyCode) > -1) 
-                    e.preventDefault();
+            // Si no es una tecla de navegación retornar 
+            if([37, 38, 39, 40].indexOf(e.keyCode) > -1) 
+                e.preventDefault(); 
+            else 
+                return; 
 
-                var iniciarControles = true; 
-
-                if (e.keyCode == "38") {
-                    // Tecla Flecha Arriba 
-
-                    // En 'upMsg' se asigna el nodo más próximo 
-                    var upMsg = ""; 
-
-                    // Si el usuario ya navegó por el diálogo 
-                    if(vm.miMensajeAncladoNavegar !== "") {
-
-                        // Si el mensaje no está en el nivel 0 
-                        if(vm.miMensajeAncladoNavegar.nodoNivel > 0) {
-
-                            // Verificar por cada mensaje, el mensaje que está arriba del mensaje actual 
-                            $.each(vm.miMensaje, function(key, value) {
-
-                                // Si es el mensaje (nodo) hermano que está próximo, asignar 
-                                if(value.nodoId !== vm.miMensajeAncladoNavegar.nodoId && 
-                                    value.nodoPadreId === vm.miMensajeAncladoNavegar.nodoPadreId && 
-                                    value.nodoNivel < vm.miMensajeAncladoNavegar.nodoNivel) 
-                                    upMsg = value;  
-
-                            });
-
-                            // Si la variable 'upMsg' posee el mensaje próximo, asignar
-                            if(upMsg !== "")
-                                vm.miMensajeAncladoNavegar = upMsg; 
-
-                        } else // Se limpiará el mensaje por el cual navegó el usuario 
-                            iniciarControles = false;
-                    }
-                } else if (e.keyCode == "40") { 
-                    // Tecla Flecha Abajo 
-
-                    // Si el usuario ya navegó por el diálogo 
-                    if(vm.miMensajeAncladoNavegar !== "") { 
-
-                        // Se limpiará el mensaje por el cual navegó el usuario 
-                        iniciarControles = false; 
-
-                        // Verificar por cada mensaje, el mensaje que está debajo del mensaje actual 
-                        $.each(vm.miMensaje, function(key, value) { 
-
-                            // Si es el mensaje (nodo) hermano que está próximo, asignar 
-                            if(value.nodoId !== vm.miMensajeAncladoNavegar.nodoId && 
-                                value.nodoPadreId === vm.miMensajeAncladoNavegar.nodoPadreId && 
-                                value.nodoNivel > vm.miMensajeAncladoNavegar.nodoNivel) { 
-
-                                // Asignar 
-                                vm.miMensajeAncladoNavegar = value; 
-
-                                // Se iniciará el mensaje por el cuál navegó el usuario 
-                                iniciarControles = true;
-                                return false; 
-                            } 
-                        });
-                    }
-                } else if (e.keyCode == "37") { 
-                    // Tecla Flecha Izquierda 
-
-                    // Si el usuario ya navegó por el diálogo 
-                    if(vm.miMensajeAncladoNavegar !== "") { 
-
-                        // Si el mensaje siguiente es el padre, iniciar el mensaje por el cuál navegó el usuario 
-                        if(vm.miMensajeAncladoNavegar.nodoPadreId !== vm.miMensajeAnclado.nodoId) 
-                            //vm.miMensajeAncladoNavegar = ""; 
-                        {
-
-                            // Verificar por cada mensaje, el mensaje que está a la izquierda del mensaje actual 
-                            $.each(vm.miMensaje, function(key, value) { 
-                                if(value.nodoId === vm.miMensajeAncladoNavegar.nodoPadreId) {
-                                    vm.miMensajeAncladoNavegar = value; 
-                                    return false; 
-                                } 
-                            });
-                        }
-                    }
-                } else if (e.keyCode == "39") {
-                    // Tecla Flecha Derecha 
-
-                    // Si el usuario no ha navegado, asignar el mensaje anclado 
-                    var mensajeReferencia = (vm.miMensajeAncladoNavegar === "") ? vm.miMensajeAnclado : vm.miMensajeAncladoNavegar; 
-
-                    // Verificar por cada mensaje, el mensaje que está a la derecha del mensaje actual 
-                    $.each(vm.miMensaje, function(key, value) {
-                        if(value.nodoPadreId === mensajeReferencia.nodoId) {
-                            vm.miMensajeAncladoNavegar = value;
-                            return false;
-                        }
-                    });
-                }
-
-                // Iniciar los controles 
-                vm.iniciarMensajeNavegar(iniciarControles, true); 
-            }
+            var accion = ""; 
+            
+            if (e.keyCode == "38")  
+                accion = "Arriba"; 
+            else if (e.keyCode == "40") 
+                accion = "Abajo"; 
+            else if (e.keyCode == "37") 
+                accion = "Izquierda"; 
+            else if (e.keyCode == "39") 
+                accion = "Derecha"; 
+            
+            vm.iniciarMensajeNavegar(true, true, accion); 
         }
 	};
 

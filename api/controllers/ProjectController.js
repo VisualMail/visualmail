@@ -76,7 +76,7 @@ module.exports = {
 			// Retornar la vista con los valores del proyecto
 			return res.view({
 				title: "Proyecto: " + project.name,
-				sectionStyles:
+				sectionHead:
 					"<link href='/js/dependencies/jquery-contextmenu/2.4.1/jquery.contextMenu.min.css' rel='stylesheet' type='text/css' />" + 
 					"<link href='/js/dependencies/selectize/0.12.4/css/selectize.default.css' rel='stylesheet' type='text/css' />", 
 				sectionScripts: 

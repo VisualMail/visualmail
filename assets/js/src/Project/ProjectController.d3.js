@@ -155,13 +155,12 @@ function mapaDialogoAgregarNodo(mensaje) {
 		svgHeight = y2 + 80; 
 
 	svgSession.attr("width", svgWidth); 
+	
 	var m = $("#main > .svg-mapa"); 
 	m.find("svg")
 		.attr("height", svgHeight)
 		.attr("width", svgWidth); 
 	m.attr("style", "heigth: " + svgHeight + "px; width: " + svgWidth + "px;"); 
-	//svgMapa.attr("height", svgHeight); 
-	//svgMapa.attr("width", svgWidth); 
 
 	// Iniciar los tooltips de los nodos del mapa 
 	$(".tooltipped").tooltip({ delay: 50 }); 
