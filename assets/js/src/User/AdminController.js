@@ -123,7 +123,7 @@
                 vm.userImgUrl = item.imgurl; 
                 vm.userInitials = item.initials; 
                 vm.userLastName = item.lastname; 
-                vm.userRol = (item.rol ? item.rol : "2"); 
+                vm.userRol = (item.rol ? item.rol.toString() : "2"); 
             }
             
             $("#modalUser").modal("open"); 
