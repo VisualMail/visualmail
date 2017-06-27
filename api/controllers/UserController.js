@@ -159,6 +159,7 @@ module.exports = {
 		var initials = req.param("initials");
 		var color = req.param("color"); 
 		var rol = req.param("rol"); 
+		var password = req.param("password"); 
 
 		// Verificar que no exista el correo electrónico del usuario 
 		User.find({
@@ -171,6 +172,7 @@ module.exports = {
 				}); 
 			} 
 
+			// Crear el usuario 
 			User.create({ 
 				firstname: firstname, 
 				lastname: lastname, 
@@ -178,7 +180,7 @@ module.exports = {
 				imgurl: imgurl, 
 				initials: initials, 
 				color: color, 
-				password: firstname[0] + lastname, 
+				password: password, 
 				rol: rol 
 			}).then(function(respuesta) { 
 				return res.json({ 
@@ -579,6 +581,42 @@ module.exports = {
 			sails.log(err); 
 			req.session.passwordMessage = { result: false, message: "¡Error en la Base de Datos!" }; 
 			return res.redirect("/user/password"); 
+		}); 
+	},
+
+	/**
+	* @method :: passwordActualizarUsuario (POST)
+	* @description :: Actualiza una contraseña de un usuario 
+	* @param :: {Object} req, request element de sails
+	* @param :: {Objetct} res, de la vista ejs del servidor
+	*/
+	passwordActualizarUsuario: function(req, res) { 
+		// Establecer los datos 
+		var id = req.param("id"); 
+		var userPasswordNew = req.param("userPasswordNew"); 
+
+		// Cifrar la nueva contraseña 
+		require("bcrypt").hash(userPasswordNew, 10).then(function(result) { 
+			// Actualizar la contraseña en la base de datos 
+			User.update(id, { password: result }).then(function(r) { 
+				return res.json({ 
+					procedimiento: true, 
+					mensaje: "Contraseña actualizada"  
+				}); 
+			}).catch(function(err) { 
+				sails.log(err); 
+				return res.json({ 
+					procedimiento: true, 
+					mensaje: "¡Error en la Base de Datos!" 
+				}); 
+			}); 
+
+		}).catch(function(err) { 
+			sails.log(err); 
+			return res.json({ 
+				procedimiento: true, 
+				mensaje: "¡Error al cifrar la nueva contraseña!" 
+			}); 
 		}); 
 	},
 };

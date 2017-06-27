@@ -30,7 +30,10 @@
 
         vm.getDatos = getDatos; 
         vm.onBtnModalUserClick = onBtnModalUserClick; 
+        vm.onBtnPasswordCerrarClick = onBtnPasswordCerrarClick; 
+        vm.onBtnPasswordGuardarClick = onBtnPasswordGuardarClick; 
         vm.onBtnUserGuardarClick = onBtnUserGuardarClick; 
+        vm.onBtnUserPasswordClick = onBtnUserPasswordClick; 
         vm.setMensaje = setMensaje; 
 
         init(); 
@@ -105,8 +108,16 @@
         **/
         function onBtnModalUserClick(proceso, item) { 
             vm.proceso = proceso; 
+            vm.userPassword = ""; 
 
             if(proceso === "Insert") { 
+                vm.formUser.userColor.$pristine = true; 
+                vm.formUser.userEmail.$pristine = true; 
+                vm.formUser.userFirstName.$pristine = true; 
+                vm.formUser.userInitials.$pristine = true; 
+                vm.formUser.userLastName.$pristine = true; 
+                vm.formUser.userRol.$pristine = true; 
+
                 vm.userColor = ""; 
                 vm.userEmail = ""; 
                 vm.userFirstName = ""; 
@@ -127,6 +138,49 @@
             }
             
             $("#modalUser").modal("open"); 
+        }; 
+
+        /**
+        * @method :: onBtnPasswordCerrarClick 
+        * @description :: Cierra el modal para modificar la contraseña 
+        **/
+        function onBtnPasswordCerrarClick() { 
+            $("#modalUser").modal("open"); 
+            $("#modalPassword").modal("close"); 
+        }; 
+
+        /**
+        * @method :: onBtnPasswordGuardarClick 
+        * @description :: Guarda la contraseña del usuario seleccionado 
+        **/
+        function onBtnPasswordGuardarClick() { 
+            if(vm.procesando) 
+                return; 
+
+            vm.procesando = true; 
+
+            $http({ 
+                method: "POST", 
+                url: "passwordActualizarUsuario", 
+                headers: { 
+                    "Content-Type": "application/json", 
+                    "X-CSRF-TOKEN": vm.csrfToken 
+                }, 
+                data: { 
+                    id: vm.userId, 
+                    userPasswordNew: vm.passwordUser 
+                } 
+            }).then(function(res) { 
+                var d = res.data; 
+                setMensaje(d.mensaje); 
+                vm.procesando = false; 
+                vm.passwordUser = ""; 
+                vm.passwordUserConfirm = ""; 
+            }).catch(function(err) { 
+                vm.procesando = false; 
+                setMensaje("Se produjo un error en el procedimiento '/csrfToken'"); 
+                console.log(err); 
+            }); 
         }; 
 
         /**
@@ -154,7 +208,8 @@
                     imgurl: vm.userImgUrl, 
                     initials: vm.userInitials, 
                     color: vm.userColor, 
-                    rol: parseInt(vm.userRol) 
+                    rol: parseInt(vm.userRol), 
+                    password: vm.userPassword 
                 } 
             }).then(function(res) { 
                 var d = res.data; 
@@ -171,6 +226,20 @@
                 setMensaje("Se produjo un error en el procedimiento '/csrfToken'"); 
                 console.log(err); 
             }); 
+        }; 
+
+        /*
+        * @method :: onBtnUserPasswordClick 
+        * @description :: Mustra el modal pop-up para modificar la contraseña 
+        **/
+        function onBtnUserPasswordClick() { 
+            vm.passwordUser = ""; 
+            vm.passwordUserConfirm = ""; 
+            vm.formPassword.passwordUser.$pristine = true; 
+            vm.formPassword.passwordUserConfirm.$pristine = true; 
+
+            $("#modalUser").modal("close"); 
+            $("#modalPassword").modal("open"); 
         }; 
 
         /**

@@ -41,9 +41,11 @@
                                     ng-maxlength="15" 
                                     ng-minlength="3" 
                                     ng-model="vm.userFirstName" 
-                                    ng-pattern="/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u" />
+                                    ng-pattern="/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u" 
+                                    ng-required="true" />
                                 <label for="userFirstName">Nombre(s) (Requerido)</label>
-                                <div class="red-text" role="alert" ng-messages="vm.formUser.userFirstName.$error">
+                                <div class="red-text" role="alert" ng-messages="!vm.formUser.userFirstName.$pristine && vm.formUser.userFirstName.$error">
+                                    <span ng-message="required">Requerido</span>
                                     <span ng-message="minlength">Mínimo 3 caracteres</span>
                                     <span ng-message="maxlength">Nombre muy largo</span>
                                     <span ng-message="pattern">Formato no válido</span>
@@ -57,9 +59,11 @@
                                     ng-maxlength="30" 
                                     ng-minlength="3" 
                                     ng-model="vm.userLastName" 
-                                    ng-pattern="/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u" />
+                                    ng-pattern="/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u" 
+                                    ng-required="true" />
                                 <label for="userLastName">Apellido(s) (Requerido)</label>
-                                <div class="red-text" role="alert" ng-messages="vm.formUser.userLastName.$error">
+                                <div class="red-text" role="alert" ng-messages="!vm.formUser.userLastName.$pristine && vm.formUser.userLastName.$error">
+                                    <span ng-message="required">Requerido</span>
                                     <span ng-message="minlength">Mínimo 3 caracteres</span> 
                                     <span ng-message="maxlength">Apellido muy largo</span>
                                     <span ng-message="pattern">Formato no válido</span>
@@ -78,10 +82,8 @@
                                     <option value="2">Usuario</option>
                                     <option value="1">Administrador</option>
                                 </select>
-                                <div class="red-text" role="alert" ng-messages="!vm.formUser.userRol.$pristine && vm.userRol === '-1'">
-                                    <span ng-message="minlength">3 caracteres</span>
-                                    <span ng-message="maxlength">No pueden ser más de 3 carácteres</span>
-                                    <span ng-message="pattern">Formato no válido</span>
+                                <div class="red-text" role="alert" ng-if="!vm.formUser.userRol.$pristine && vm.userRol === '-1'">
+                                    <span>Requerido</span>
                                 </div>
                             </div>
                         </div>
@@ -97,7 +99,8 @@
                                     ng-pattern="/^[a-zA-Z]+$/" 
                                     ng-required="true" />
                                 <label for="userInitials">Iniciales (Requerido)</label>
-                                <div class="red-text" role="alert" ng-messages="vm.formUser.userInitials.$error">
+                                <div class="red-text" role="alert" ng-messages="!vm.formUser.userInitials.$pristine && vm.formUser.userInitials.$error">
+                                    <span ng-message="required">Requerido</span>
                                     <span ng-message="minlength">3 caracteres</span>
                                     <span ng-message="maxlength">No pueden ser más de 3 carácteres</span>
                                     <span ng-message="pattern">Formato no válido</span>
@@ -117,9 +120,30 @@
                                     ng-pattern="/^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i" 
                                     ng-required="true" />
                                 <label for="userEmail">Email (Requerido)</label>
-                                <div class="red-text" role="alert" ng-messages="vm.formUser.userEmail.$error">
+                                <div class="red-text" role="alert" ng-messages="!vm.formUser.userEmail.$pristine && vm.formUser.userEmail.$error">
+                                    <span ng-message="required">Requerido</span>
                                     <span ng-message="email">Formato no válido</span>
                                     <span ng-message="pattern">Formato no válido</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col s12 m6 l6" ng-if="vm.proceso === 'Insert'">
+                            <div class="col s12 input-field">
+                                <input class="tooltipped" id="userPassword" name="userPassword" type="password"
+                                    data-delay="50" 
+                                    data-position="top" 
+                                    data-tooltip="Contraseña de inicio de sesión" 
+                                    ng-maxlength="20" 
+                                    ng-minlength="6" 
+                                    ng-model="vm.userPassword" 
+                                    ng-pattern="/^[a-zA-Z0-9]*$/" 
+                                    ng-required="vm.proceso === 'Insert'" />
+                                <label for="userPassword">Contraseña (Requerido)</label>
+                                <div class="red-text" role="alert" ng-messages="!vm.formUser.userPassword.$pristine && vm.formUser.userPassword.$error">
+                                    <span ng-message="required">Requerido</span>
+                                    <span ng-message="pattern">Formato no válido</span>
+                                    <span ng-message="minlength">Mínimo 6 caracteres</span>
+                                    <span ng-message="maxlength">Contraseña muy larga</span>
                                 </div>
                             </div>
                         </div>
@@ -137,37 +161,104 @@
                                 data-delay="50" 
                                 data-position="top" 
                                 data-tooltip="Selecciona un color de interacción">
-                                <input class="jscolor" id="color" name="color" placeholder="#FFFFFF" type="text" 
+                                <input class="jscolor" id="userColor" name="userColor" placeholder="#FFFFFF" type="text" 
                                     ng-style="{ 'background-color': vm.userColor ? '#' + vm.userColor : 'none' }"
                                     ng-model="vm.userColor" 
                                     ng-required="true" />
-                                <label for="color">Color de interacción</label>
+                                <label for="userColor">Color de interacción</label>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col s12">
-                            <blockquote> 
-                                La contraseña del usuario es el primer caracter del nombre y el apellido (con espacios). Ej: Pedro Infante contraseña <strong>pinfante</strong>
-                            </blockquote>
-                        </div>
-                    </div>
-
+                    </div> 
                 </div>
                 <div class="row">
                     <div class="col s12 right-align"> 
                         <button class="modal-action modal-close waves-effect waves-light btn blue darken-1">Cerrar</button>&nbsp;
+                        <button class="waves-effect waves-light btn teal darken-1" type="submit" 
+                            ng-click="vm.onBtnUserPasswordClick()" 
+                            ng-if="vm.proceso !== 'Insert'">Modificar contraseñar</button>&nbsp;
                         <button class="waves-effect waves-light btn green darken-1" type="submit" 
                             ng-click="vm.onBtnUserGuardarClick()" 
                             ng-disabled="!vm.formUser.$valid || vm.userRol === '-1'">Guardar</button>
                     </div>
                 </div>
-
-
             </div> 
         </form> 
     </div>
     <!-- Fin modal user -->
+
+    <!-- Inicio modal password -->
+    <div id="modalPassword" class="modal"> 
+        <form name="vm.formPassword"> 
+            <div class="modal-content"> 
+                <h4>Modificar contraseña</h4> 
+                <div class="card-panel">
+
+                    <div class="row">
+                        <div class="col s12 m6 l6">
+                            <div class="col s12 input-field">
+                                <input class="tooltipped" id="passwordUser" name="passwordUser" type="password"
+                                    data-delay="50" 
+                                    data-position="top" 
+                                    data-tooltip="Contraseña de inicio de sesión" 
+                                    ng-maxlength="20" 
+                                    ng-minlength="6" 
+                                    ng-model="vm.passwordUser" 
+                                    ng-pattern="/^[a-zA-Z0-9]*$/" 
+                                    ng-required="true" />
+                                <label for="passwordUser">Contraseña (Requerido)</label>
+                                <div class="red-text" role="alert" ng-messages="!vm.formPassword.passwordUser.$pristine && vm.formPassword.passwordUser.$error">
+                                    <span ng-message="required">Requerido</span>
+                                    <span ng-message="pattern">Formato no válido</span>
+                                    <span ng-message="minlength">Mínimo 6 caracteres</span>
+                                    <span ng-message="maxlength">Contraseña muy larga</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col s12 m6 l6">
+                            <div class="col s12 input-field">
+                                <input class="tooltipped" id="passwordUserConfirm" name="passwordUserConfirm" type="password"
+                                    data-delay="50" 
+                                    data-position="top" 
+                                    data-tooltip="Confirmar contraseña de inicio de sesión" 
+                                    ng-maxlength="20" 
+                                    ng-minlength="6" 
+                                    ng-model="vm.passwordUserConfirm" 
+                                    ng-pattern="/^[a-zA-Z0-9]*$/" 
+                                    ng-required="true" />
+                                <label for="passwordUserConfirm">Confirmar Contraseña (Requerido)</label>
+                                <div class="red-text" role="alert" ng-messages="!vm.formPassword.passwordUserConfirm.$pristine && vm.formPassword.passwordUserConfirm.$error">
+                                    <span ng-message="required">Requerido</span>
+                                    <span ng-message="pattern">Formato no válido</span>
+                                    <span ng-message="minlength">Mínimo 6 caracteres</span>
+                                    <span ng-message="maxlength">Contraseña muy larga</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                    
+                    <div class="row" ng-if="vm.passwordUser !== vm.passwordUserConfirm"> 
+                        <div class="col s12 m6"> 
+                            <div class="card red darken-1"> 
+                                <div class="card-content white-text">  
+                                    <p>Confirmar la contraseña, debe coincidir con la contraseña ingresada</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col s12 right-align"> 
+                        <button class="modal-action waves-effect waves-light btn blue darken-1"
+                            ng-click="vm.onBtnPasswordCerrarClick()">Cerrar</button>&nbsp; 
+                        <button class="waves-effect waves-light btn green darken-1" type="submit" 
+                            ng-click="vm.onBtnPasswordGuardarClick()" 
+                            ng-disabled="!vm.formPassword.$valid">Guardar</button>
+                    </div>
+                </div>
+            </div> 
+        </form> 
+    </div>
+    <!-- Fin modal password -->
 
 </div>
