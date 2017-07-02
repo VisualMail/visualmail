@@ -13,44 +13,10 @@ $(document).ready(function() {
     kanbanBoardInit(); 
     
     // Iniciar el menú contextual de cada nodo del mapa del diálogo
-    $(function() { 
-        $.contextMenu({ 
-            selector: ".context-menu-one", 
-            callback: function(key, options) { 
-                var nodoId = parseInt($(this[0]).attr("data-nodo-id"));
-                var scope = angular.element(document.getElementById("ProjectControllerMain")).scope();
-                switch(key) {
-                    case "reply":
-                        scope.$apply(function () { 
-                            scope.vm.onMensajeModalShow(nodoId, 1); 
-                        });
-                        break;
-                    case "add":
-                        scope.$apply(function () { 
-                            scope.vm.onMensajeModalShow(nodoId, 2); 
-                        });
-                        break;
-                    case "anchor":
-                        $anclar = true; 
+    $(function() { contextMenuMapaInit(); }); 
+    $(function() { contextMenuMensajeInit(); }); 
 
-                        if(scope.vm.miMensajeAnclado !== "") 
-                            $anclar = nodoId !== scope.vm.miMensajeAnclado.nodoId;
 
-                        onAnclar(nodoId, scope); 
-                        break; 
-                    default: 
-                        break; 
-                } 
-            }, 
-            items: { 
-                "reply": { name: "Responder", icon: "edit" }, 
-                "add": { name: "Añadir al Kanban", icon: "add" }, 
-                "anchor": { name: "Anclar/Desanclar", icon: "paste" }, 
-                "sep1": "---------", 
-                "quit": { name: "Cancelar", icon: function() { return "context-menu-icon context-menu-icon-quit"; } } 
-            } 
-        });
-    }); 
     $(".resizable-panel-container").resizable({ 
         handles: "n", 
         classes: { "ui-resizable-n": "resizable-splitter-horizontal" }, 
@@ -138,3 +104,105 @@ function onNodoClick(nodoId) {
     $anclar = true; 
     onAnclar(nodoId, scope); 
 }; 
+
+/**
+* @method :: contextMenuMapaInit
+* @description :: Inicia el sub-menú del mapa cuando el usuario hace clic derecho.
+**/
+function contextMenuMapaInit() { 
+    $.contextMenu({ 
+        selector: ".context-menu-one", 
+        callback: function(key, options) { 
+            var nodoId = parseInt($(this[0]).attr("data-nodo-id")); 
+            var scope = angular.element(document.getElementById("ProjectControllerMain")).scope(); 
+            
+            switch(key) { 
+                case "reply": 
+                    scope.$apply(function () { 
+                        scope.vm.onMensajeModalShow(nodoId, 1); 
+                    });
+                    break; 
+                case "add": 
+                    scope.$apply(function () { 
+                        scope.vm.onMensajeModalShow(nodoId, 2); 
+                    }); 
+                    break; 
+                case "anchor": 
+                    $anclar = true; 
+                    
+                    if(scope.vm.miMensajeAnclado !== "") 
+                        $anclar = nodoId !== scope.vm.miMensajeAnclado.nodoId; 
+                        
+                    onAnclar(nodoId, scope); 
+                    break; 
+                default: 
+                    break; 
+            } 
+        }, 
+        items: { 
+            "reply": { name: "Responder", icon: "edit" }, 
+            "add": { name: "Añadir al Kanban", icon: "add" }, 
+            "anchor": { name: "Anclar/Desanclar", icon: "paste" }, 
+            "sep1": "---------", 
+            "quit": { name: "Cancelar", icon: function() { return "context-menu-icon context-menu-icon-quit"; } } 
+        } 
+    });
+}; 
+
+/**
+* @method :: contextMenuMensajeInit
+* @description :: Inicia el sub-menú del mensaje cuando el usuario hace clic derecho.
+**/
+function contextMenuMensajeInit() { 
+    $.contextMenu({ 
+        selector: ".context-menu-mensaje", 
+        callback: function(key, options) { 
+            /*var nodoId = parseInt($(this[0]).attr("data-nodo-id")); 
+            var scope = angular.element(document.getElementById("ProjectControllerMain")).scope(); 
+            
+            switch(key) { 
+                case "reply": 
+                    scope.$apply(function () { 
+                        scope.vm.onMensajeModalShow(nodoId, 1); 
+                    });
+                    break; 
+                case "add": 
+                    scope.$apply(function () { 
+                        scope.vm.onMensajeModalShow(nodoId, 2); 
+                    }); 
+                    break; 
+                case "anchor": 
+                    $anclar = true; 
+                    
+                    if(scope.vm.miMensajeAnclado !== "") 
+                        $anclar = nodoId !== scope.vm.miMensajeAnclado.nodoId; 
+                        
+                    onAnclar(nodoId, scope); 
+                    break; 
+                default: 
+                    break; 
+            } */
+        }, 
+        items: { 
+            "reply": { name: "Responder", icon: "edit" }, 
+            "add": { name: "Añadir al Kanban", icon: "add" }, 
+            "anchor": { name: "Anclar/Desanclar", icon: "paste" }, 
+            "sep1": "---------", 
+            "quit": { name: "Cancelar", icon: function() { return "context-menu-icon context-menu-icon-quit"; } } 
+        } 
+    });
+}; 
+
+/*
+$('#showSelected').on('click', function(){
+
+    var text = "";
+    if (window.getSelection) {
+        text = window.getSelection().toString();
+    } else if (document.selection && document.selection.type != "Control") {
+        text = document.selection.createRange().text;
+    }
+
+    alert(text);       
+});
+*/

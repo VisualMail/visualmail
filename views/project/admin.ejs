@@ -132,13 +132,13 @@
 							</div>
 							<div class="col s12 m10 l10">
 								<div class="row">
-									<div class="col s12 m12 l9">
+									<div class="col s12 m12 l8">
 										<h6>{{ (vm.miMensajeAnclado !== "" ? vm.miMensajeAnclado.createdAt : "") | date:'M/d/yyyy HH:mm:ss'; }}</h6>
 										<p><strong>
 											{{ vm.miMensajeAnclado !== "" ? vm.miMensajeAnclado.usuario.firstname : ""; }}&nbsp;
 											({{ vm.miMensajeAnclado !== "" ? vm.miMensajeAnclado.usuario.initials : ""; }})</strong> dijo:</p>
 									</div>
-									<div class="col s12 m12 l3">							
+									<div class="col s12 m12 l4 right-align">							
 										<span tooltipped 
 											data-delay="50" 
 											data-position="left" 
@@ -170,7 +170,7 @@
 								<div class="row">
 									<div class="mensaje-anclar-card">
 										<p ng-if="vm.miMensajeAnclado.tipo !== ''"><strong>Tipo de mensaje</strong>: {{ vm.miMensajeAnclado.tipo }}.</p>
-										<p>{{ vm.miMensajeAnclado !== "" ? vm.miMensajeAnclado.name : ""; }}</p>
+										<p class="context-menu-mensaje">{{ vm.miMensajeAnclado !== "" ? vm.miMensajeAnclado.name : ""; }}</p>
 									</div>
 								</div>
 							</div>
@@ -191,7 +191,7 @@
 											{{ vm.miMensajeAncladoNavegar !== "" ? vm.miMensajeAncladoNavegar.usuario.firstname : "" }}&nbsp;
 											({{ vm.miMensajeAncladoNavegar !== "" ? vm.miMensajeAncladoNavegar.usuario.initials : "" }})</strong> dijo:</p>
 									</div>
-									<div class="col s12 m12 l3">
+									<div class="col s12 m12 l3 right-align">
 										<span tooltipped 
 											data-delay="50" 
 											data-position="left" 
