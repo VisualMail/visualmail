@@ -157,36 +157,32 @@ function contextMenuMensajeInit() {
     $.contextMenu({ 
         selector: ".context-menu-mensaje", 
         callback: function(key, options) { 
-            /*var nodoId = parseInt($(this[0]).attr("data-nodo-id")); 
             var scope = angular.element(document.getElementById("ProjectControllerMain")).scope(); 
-            
+
             switch(key) { 
                 case "reply": 
                     scope.$apply(function () { 
-                        scope.vm.onMensajeModalShow(nodoId, 1); 
+                        scope.vm.onMostrarMensajeDialogo(); 
+                    });
+                    break; 
+                case "mark": 
+                    scope.$apply(function () { 
+                        scope.vm.onMostrarMensajeDialogo(); 
                     });
                     break; 
                 case "add": 
-                    scope.$apply(function () { 
-                        scope.vm.onMensajeModalShow(nodoId, 2); 
-                    }); 
-                    break; 
-                case "anchor": 
-                    $anclar = true; 
-                    
-                    if(scope.vm.miMensajeAnclado !== "") 
-                        $anclar = nodoId !== scope.vm.miMensajeAnclado.nodoId; 
-                        
-                    onAnclar(nodoId, scope); 
+                    //scope.$apply(function () { 
+                      //  scope.vm.onMensajeModalShow(nodoId, 2); 
+                    //}); 
                     break; 
                 default: 
                     break; 
-            } */
+            }
         }, 
         items: { 
             "reply": { name: "Responder", icon: "edit" }, 
+            "mark": { name: "Marcar mensaje", icon: "copy" }, 
             "add": { name: "Añadir al Kanban", icon: "add" }, 
-            "anchor": { name: "Anclar/Desanclar", icon: "paste" }, 
             "sep1": "---------", 
             "quit": { name: "Cancelar", icon: function() { return "context-menu-icon context-menu-icon-quit"; } } 
         } 

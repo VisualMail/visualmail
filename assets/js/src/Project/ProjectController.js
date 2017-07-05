@@ -1247,7 +1247,56 @@
                 accion = "Derecha"; 
             
             vm.iniciarMensajeNavegar(true, true, accion); 
-        }
+        };
+
+        /*********************************************** */
+        vm.mensajeDialogo = ""; 
+        vm.onBtnMensajeDialogoCrearClick = onBtnMensajeDialogoCrearClick; 
+
+        function onBtnMensajeDialogoCrearClick() { 
+
+        }; 
+
+        vm.onMostrarMensajeDialogo = onMostrarMensajeDialogo; 
+
+        function onMostrarMensajeDialogo() { 
+            var s = window.getSelection(); 
+            var p = $(s.baseNode.parentNode); 
+            
+            if(p.attr("id") !== "mensajeContenido") 
+                return; 
+                
+            /*var text = ""; 
+            if(window.getSelection) { text = window.getSelection().toString(); } 
+            else if(document.selection && document.selection.type != "Control") { text = document.selection.createRange().text; } 
+            alert(text); */ 
+            
+            if(s.rangeCount && s.getRangeAt) { 
+                var span = document.createElement("span"); 
+                span.style.fontWeight = "bold"; 
+                span.style.color = "green";
+                    span.setAttribute("compa", "Hola Mundo"); 
+                    range = s.getRangeAt(0).cloneRange(); 
+                    range.surroundContents(span); 
+            } 
+            
+            document.desingMode = "on"; 
+            
+            if(range) { 
+                s.removeAllRanges(); 
+                s.addRange(range); 
+            }
+
+            document.execCommand("ForeColor", false, "red"); 
+            document.designMode = "off"; 
+            console.log(range);  
+
+
+            vm.mensajeDialogo = window.getSelection().toString(); 
+
+            $("#modalMensajeDialogo").modal("open"); 
+
+        }; 
 	};
 
 })(); 

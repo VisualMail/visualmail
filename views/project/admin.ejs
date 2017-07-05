@@ -170,7 +170,8 @@
 								<div class="row">
 									<div class="mensaje-anclar-card">
 										<p ng-if="vm.miMensajeAnclado.tipo !== ''"><strong>Tipo de mensaje</strong>: {{ vm.miMensajeAnclado.tipo }}.</p>
-										<p class="context-menu-mensaje">{{ vm.miMensajeAnclado !== "" ? vm.miMensajeAnclado.name : ""; }}</p>
+										<p id="mensajeContenido" class="context-menu-mensaje">{{ vm.miMensajeAnclado !== "" ? vm.miMensajeAnclado.name : ""; }}</p>
+										<button class="btn" type="button" ng-click="vm.onBtnTempClick()">Temp</button>
 									</div>
 								</div>
 							</div>
@@ -686,6 +687,41 @@
 		</div>
 	</div>
 	<!-- Fin modal mensaje -->
+
+	<!-- Inicio Modal Mensaje Diálogo -->
+	<div class="modal modal-fixed-footer" id="modalMensajeDialogo">
+		<div class="modal-content">
+			<h4 class="green-text">Agregar un elemento del diálogo</h4>
+			<form name="formMensajeDialogo" novalidate> 
+				
+				<div class="row"> 
+					<div class="col s12"> 
+						<p><strong>Marcar mensaje</strong>: {{ vm.mensajeDialogo }}</p> 
+					</div> 
+				</div> 
+
+				<div class="row"> 
+					<div class="col s12 m8 l8"> 
+						<selectize class="selectize-input-mensaje" config="vm.miMensajeSelectizeConfig" id="mensajeSelectize" options="vm.miMensajeTipoDialogo" ng-model="vm.miMensajeInputDialogo"></selectize> 
+					</div> 
+				</div> 
+
+			</form>
+		</div>
+		<div class="modal-footer">
+			<a class="btn-flat modal-action modal-close waves-effect waves-green" href="#!" 
+				ng-click="vm.onBtnMensajeDialogoCrearClick()" 
+				ng-show="vm.formMensajeDialogo.$valid">Aceptar</a>
+			<a class="btn-flat modal-action modal-close waves-effect waves-green" href="#!" 
+				ng-click="">Cancelar</a>
+		</div>
+	</div>
+	<!-- Fin Modal Mensaje Diálogo -->
+
+
+
+
+
 
 	<!-- Inicio modal mensaje kanban -->
 	<div class="modal modal-fixed-footer" id="modalMensajeKanban">
