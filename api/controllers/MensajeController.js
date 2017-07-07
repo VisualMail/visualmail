@@ -132,4 +132,52 @@ module.exports = {
 			}
 		});
 	},
+
+	/**
+	* @method :: marcar (POST)
+	* @description :: Crea un registro con el texto marcado 
+	* @param :: {Object} req, request element de sails
+	* @param :: {Objetct} res, de la vista ejs del servidor
+	* @param :: {Objetct} next, para continuar en caso de error
+	**/
+	marcar: function(req, res, next) { 
+		// Obtener los datos 
+		var marca = req.param("marca"); 
+		var tipo = req.param("tipo"); 
+		var mensaje = req.param("mensaje"); 
+        var mensajeId = mensaje.id; 
+		var usuario = req.session.User; 
+        
+		// Guardar la marca del mensaje 
+		MensajeMarca.create({ 
+			marca: marca, 
+			tipo: tipo, 
+			mensajeId: mensajeId, 
+			usuario: usuario 
+		}).then(function(result) { 
+			// Retornar error 
+			if(!result) { 
+				return res.json({ 
+					proc: false, 
+					msj: "¡No se almacenó la información!", 
+				}); 
+			} 
+
+			// Retorno del mensaje marca 
+			return res.json({ 
+				proc: true, 
+				msj: "¡Texto marcado!", 
+				mensajeMarca: result 
+			}); 
+
+		}).catch(function(err) { 
+			sails.log(err); 
+			// Existe un error 
+			return res.json({ 
+				proc: false, 
+				msj: "¡Se produjo un error al almacenar la 'marca' del texto!", 
+				err: err 
+			});
+		}); 
+	},
 };

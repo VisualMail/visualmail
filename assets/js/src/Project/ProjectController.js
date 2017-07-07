@@ -5,9 +5,9 @@
 	angular
 		.module("VisualMailApp")
 		.controller("ProjectController", ProjectController); 
-    ProjectController.$inject = ["$scope", "$http", "$filter"]; 
+    ProjectController.$inject = ["$scope", "$http", "$filter", "$sce"]; 
 
-	function ProjectController($scope, $http, $filter) { 
+	function ProjectController($scope, $http, $filter, $sce) { 
         var vm = this; 
 
         // Inicio variables usuario 
@@ -557,6 +557,7 @@
                 if(nodoId > 0) { 
                     $.each(vm.miMensaje, function(key, value) { 
                         if(value.nodoId === nodoId) { 
+                            value.name = $sce.trustAsHtml(value.name); 
                             vm.miMensajeAncladoNavegar = value; 
                             return false; 
                         } 
@@ -983,6 +984,7 @@
 
                 $.each(vm.miMensaje, function(key, value) { 
                     if(parseInt(value.nodoId) === nodoId) { 
+                        value.name = $sce.trustAsHtml(value.name); 
                         vm.miMensajeAnclado = value; 
                         return false; 
                     } 
@@ -1077,6 +1079,7 @@
 
             if($anclar) { 
                 if(vm.miMensajeAnclado.nodoId === nuevoMensaje.nodoPadreId) { 
+                    nuevoMensaje.name = $sce.trustAsHtml(value.name); 
                     vm.miMensajeAncladoNavegar = nuevoMensaje; 
                     var n = $("[data-circle-navigate=ok]"); 
                     n.attr("stroke", ""); 
@@ -1250,35 +1253,60 @@
         };
 
         /*********************************************** */
-        vm.mensajeDialogo = ""; 
-        vm.onBtnMensajeDialogoCrearClick = onBtnMensajeDialogoCrearClick; 
-
-        function onBtnMensajeDialogoCrearClick() { 
-
-        }; 
-
+        vm.miMensajeDialogo = ""; 
+        vm.miMensajeDialogoId = ""; 
+        vm.miMensajeDialogoSelection = ""; 
+        vm.miMensajeMarcarDialogo = ""; 
+        vm.miMensajeResponderDialogo = ""; 
+        vm.miMensajeResponderTexto = ""; 
+        vm.onBtnMensajeMarcarClick = onBtnMensajeMarcarClick; 
+        vm.onBtnMensajeResponderClick = onBtnMensajeResponderClick; 
         vm.onMostrarMensajeDialogo = onMostrarMensajeDialogo; 
 
-        function onMostrarMensajeDialogo() { 
-            var s = window.getSelection(); 
-            var p = $(s.baseNode.parentNode); 
-            
-            if(p.attr("id") !== "mensajeContenido") 
+        /** 
+        * @method :: onBtnMensajeMarcarClick (Event) 
+        * @description :: Guarda la marca del mensaje 
+        **/ 
+        function onBtnMensajeMarcarClick() { 
+            // Si está procesando retornar 
+            if(vm.procesando) 
                 return; 
-                
-            /*var text = ""; 
-            if(window.getSelection) { text = window.getSelection().toString(); } 
-            else if(document.selection && document.selection.type != "Control") { text = document.selection.createRange().text; } 
-            alert(text); */ 
+
+            vm.procesando = true; 
+
+            // Guardar 
+            $http({ 
+                method: "POST", 
+                url: "/mensaje/marcar", 
+                headers: { 
+                    "Content-Type": "application/json", 
+                    "X-CSRF-TOKEN": vm.csrfToken 
+                }, 
+                data: { 
+                    marca: vm.miMensajeDialogo, 
+                    tipo: vm.miMensajeMarcarDialogo, 
+                    mensaje: vm.miMensajeDialogoId 
+                }
+            }).then(function(res) { 
+                var d = res.data; 
+
+            var range = document.createRange(); 
+            range.setStart(vm.miMensajeDialogoSelection[0][0], vm.miMensajeDialogoSelection[0][1]); 
+            range.setEnd(vm.miMensajeDialogoSelection[1][0], vm.miMensajeDialogoSelection[1][1]); 
+            var s = window.getSelection();
+            s.removeAllRanges(); 
+            s.addRange(range); 
+
+            var span = document.createElement("span"); 
             
-            if(s.rangeCount && s.getRangeAt) { 
-                var span = document.createElement("span"); 
-                span.style.fontWeight = "bold"; 
-                span.style.color = "green";
-                    span.setAttribute("compa", "Hola Mundo"); 
-                    range = s.getRangeAt(0).cloneRange(); 
-                    range.surroundContents(span); 
-            } 
+            if(!s.rangeCount || !s.getRangeAt) 
+                return; 
+            
+            span.style.fontWeight = "bold"; 
+            span.style.color = "green"; 
+            span.setAttribute("data-marca", "1"); 
+            range = s.getRangeAt(0).cloneRange(); 
+            range.surroundContents(span); 
             
             document.desingMode = "on"; 
             
@@ -1289,13 +1317,55 @@
 
             document.execCommand("ForeColor", false, "red"); 
             document.designMode = "off"; 
-            console.log(range);  
+            console.log($(".context-menu-mensaje-anclado").html()); 
 
 
-            vm.mensajeDialogo = window.getSelection().toString(); 
 
-            $("#modalMensajeDialogo").modal("open"); 
 
+
+
+
+                setMensaje(d.msj); 
+                vm.procesando = false; 
+            }).catch(function(err) { 
+                setMensaje("¡Se produjo un error!"); 
+                console.log(err); 
+                vm.procesando = false; 
+            }); 
+        }; 
+
+        function onBtnMensajeResponderClick() { 
+
+        }; 
+
+        /** 
+        * @method :: onMostrarMensajeDialogo (Event) 
+        * @description :: Muestra el cuadro del diálogo para marcar o responder un mensaje 
+        * @param :: {string} key, tipo de evento 
+        * @param :: {Object} mensaje, objeto que contiene los datos del mensaje  
+        **/ 
+        function onMostrarMensajeDialogo(key, mensaje) { 
+            // Obtener el texto seleccionado             
+            var s = window.getSelection(); 
+
+            // Si el texto está vacío retornar 
+            if(s.toString() === "") 
+                return; 
+
+            // Almacenar los datos 
+            vm.miMensajeDialogo = s.toString(); 
+            vm.miMensajeDialogoId = mensaje; 
+            vm.miMensajeDialogoSelection = window.getSelection().getRangeAt(0); 
+            vm.miMensajeDialogoSelection = [ 
+                [vm.miMensajeDialogoSelection.startContainer, vm.miMensajeDialogoSelection.startOffset], 
+                [vm.miMensajeDialogoSelection.endContainer, vm.miMensajeDialogoSelection.endOffset] 
+            ]; 
+
+            // Asignar el tipo de evento 
+            if(key === "mark") 
+                $("#modalMensajeMarcar").modal("open"); 
+            else if (key === "reply") 
+                $("#modalMensajeResponder").modal("open"); 
         }; 
 	};
 

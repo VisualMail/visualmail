@@ -14,7 +14,7 @@ $(document).ready(function() {
     
     // Iniciar el menú contextual de cada nodo del mapa del diálogo
     $(function() { contextMenuMapaInit(); }); 
-    $(function() { contextMenuMensajeInit(); }); 
+    $(function() { contextMenuMensajePanelInit(); }); 
 
 
     $(".resizable-panel-container").resizable({ 
@@ -152,42 +152,55 @@ function contextMenuMapaInit() {
 /**
 * @method :: contextMenuMensajeInit
 * @description :: Inicia el sub-menú del mensaje cuando el usuario hace clic derecho.
+* @param :: {string} key, identificador del nodo 
+* @param :: {Object} options, datos del contenedor del texto 
+* @param :: {Object} mensaje, datos del mensaje que se responde 
 **/
-function contextMenuMensajeInit() { 
-    $.contextMenu({ 
-        selector: ".context-menu-mensaje", 
-        callback: function(key, options) { 
-            var scope = angular.element(document.getElementById("ProjectControllerMain")).scope(); 
+function contextMenuMensajeInit(key, options, mensaje) { 
+    // Si se 'marca el mensaje' o se 'responde' 
+    if(key === "mark" || key === "reply") { 
+        // Obtener el texto seleccionado 
+        var scope = angular.element(document.getElementById("ProjectControllerMain")).scope(); 
+        mensaje = mensaje === "anclado" ? scope.vm.miMensajeAnclado : scope.vm.miMensajeAncladoNavegar; 
 
-            switch(key) { 
-                case "reply": 
-                    scope.$apply(function () { 
-                        scope.vm.onMostrarMensajeDialogo(); 
-                    });
-                    break; 
-                case "mark": 
-                    scope.$apply(function () { 
-                        scope.vm.onMostrarMensajeDialogo(); 
-                    });
-                    break; 
-                case "add": 
-                    //scope.$apply(function () { 
-                      //  scope.vm.onMensajeModalShow(nodoId, 2); 
-                    //}); 
-                    break; 
-                default: 
-                    break; 
-            }
+        // Mostrar el PopUp 
+        scope.$apply(function () { 
+            scope.vm.onMostrarMensajeDialogo(key, mensaje); 
+        });
+    }
+}
+
+/**
+* @method :: contextMenuMensajePanelInit
+* @description :: Inicia el sub-menú del mensaje cuando el usuario hace clic derecho.
+**/
+function contextMenuMensajePanelInit() { 
+    var items = { 
+        "mark": { name: "Marcar mensaje", icon: "copy" }, 
+        "reply": { name: "Responder", icon: "edit" }, 
+        "add": { name: "Añadir al Kanban", icon: "add" }, 
+        "sep1": "---------", 
+        "quit": { name: "Cancelar", icon: function() { return "context-menu-icon context-menu-icon-quit"; } } 
+    }; 
+
+    $.contextMenu({ 
+        selector: ".context-menu-mensaje-anclado", 
+        callback: function(key, options) { 
+            contextMenuMensajeInit(key, options, "anclado"); 
         }, 
-        items: { 
-            "reply": { name: "Responder", icon: "edit" }, 
-            "mark": { name: "Marcar mensaje", icon: "copy" }, 
-            "add": { name: "Añadir al Kanban", icon: "add" }, 
-            "sep1": "---------", 
-            "quit": { name: "Cancelar", icon: function() { return "context-menu-icon context-menu-icon-quit"; } } 
-        } 
+        items: items 
+    });
+
+    $.contextMenu({ 
+        selector: ".context-menu-mensaje-navegar", 
+        callback: function(key, options) { 
+            contextMenuMensajeInit(key, options, "navegar"); 
+        }, 
+        items: items 
     });
 }; 
+
+
 
 /*
 $('#showSelected').on('click', function(){

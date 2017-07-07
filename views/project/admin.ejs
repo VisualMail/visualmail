@@ -170,8 +170,7 @@
 								<div class="row">
 									<div class="mensaje-anclar-card">
 										<p ng-if="vm.miMensajeAnclado.tipo !== ''"><strong>Tipo de mensaje</strong>: {{ vm.miMensajeAnclado.tipo }}.</p>
-										<p id="mensajeContenido" class="context-menu-mensaje">{{ vm.miMensajeAnclado !== "" ? vm.miMensajeAnclado.name : ""; }}</p>
-										<button class="btn" type="button" ng-click="vm.onBtnTempClick()">Temp</button>
+										<p class="context-menu-mensaje-anclado" ng-bind-html="vm.miMensajeAnclado.name"></p>
 									</div>
 								</div>
 							</div>
@@ -218,7 +217,7 @@
 								<div class="row">
 									<div class="mensaje-anclar-card">
 										<p ng-if="vm.miMensajeAncladoNavegar.tipo !== ''"><strong>Tipo de mensaje</strong>: {{ vm.miMensajeAncladoNavegar.tipo }}.</p>
-										<p>{{ vm.miMensajeAncladoNavegar !== "" ? vm.miMensajeAncladoNavegar.name : ""; }}</p>
+										<p class="context-menu-mensaje-navegar" ng-bind-html="vm.miMensajeAncladoNavegar.name"></p>
 									</div>
 								</div>
 							</div>
@@ -688,35 +687,97 @@
 	</div>
 	<!-- Fin modal mensaje -->
 
-	<!-- Inicio Modal Mensaje Diálogo -->
-	<div class="modal modal-fixed-footer" id="modalMensajeDialogo">
+	<!-- Inicio Modal Mensaje Marcar -->
+	<div class="modal modal-fixed-footer" id="modalMensajeMarcar">
 		<div class="modal-content">
-			<h4 class="green-text">Agregar un elemento del diálogo</h4>
-			<form name="formMensajeDialogo" novalidate> 
+			<h4 class="green-text">Marcar mensaje</h4>
+			<form name="formMensajeMarcar" novalidate> 
 				
 				<div class="row"> 
 					<div class="col s12"> 
-						<p><strong>Marcar mensaje</strong>: {{ vm.mensajeDialogo }}</p> 
+						<label>Responder a</label>
+						<p><span class="chip">{{ vm.miMensajeDialogo }}</span></p> 
 					</div> 
 				</div> 
 
 				<div class="row"> 
 					<div class="col s12 m8 l8"> 
-						<selectize class="selectize-input-mensaje" config="vm.miMensajeSelectizeConfig" id="mensajeSelectize" options="vm.miMensajeTipoDialogo" ng-model="vm.miMensajeInputDialogo"></selectize> 
+						<label>Seleccionar un elemento del diálogo</label>
+						<selectize class="selectize-input-mensaje" config="vm.miMensajeSelectizeConfig" id="mensajeSelectize" options="vm.miMensajeTipoDialogo" ng-model="vm.miMensajeMarcarDialogo"></selectize> 
 					</div> 
 				</div> 
 
 			</form>
 		</div>
 		<div class="modal-footer">
-			<a class="btn-flat modal-action modal-close waves-effect waves-green" href="#!" 
-				ng-click="vm.onBtnMensajeDialogoCrearClick()" 
-				ng-show="vm.formMensajeDialogo.$valid">Aceptar</a>
+			<a class="btn-flat modal-action waves-effect waves-green" href="#!" 
+				ng-click="vm.onBtnMensajeMarcarClick()" 
+				ng-show="vm.miMensajeMarcarDialogo">Aceptar</a>
 			<a class="btn-flat modal-action modal-close waves-effect waves-green" href="#!" 
 				ng-click="">Cancelar</a>
 		</div>
 	</div>
-	<!-- Fin Modal Mensaje Diálogo -->
+	<!-- Fin Modal Mensaje Marcar -->
+
+	<!-- Inicio Modal Mensaje Respuesta -->
+	<div class="modal modal-fixed-footer" id="modalMensajeResponder">
+		<div class="modal-content">
+			<h4 class="green-text">Responder a texto de mensaje</h4>
+			<form name="vm.formMensajeResponder" novalidate> 
+				
+				<div class="row"> 
+					<div class="col s12"> 
+						<label>Responder a</label>
+						<p><span class="chip">{{ vm.miMensajeDialogo }}</span></p> 
+					</div> 
+				</div> 
+
+				<div class="row"> 
+					<div class="col s12 m8 l8"> 
+						<label>Seleccionar un elemento del diálogo</label>
+						<selectize class="selectize-input-mensaje" config="vm.miMensajeSelectizeConfig" id="mensajeSelectize" options="vm.miMensajeTipoDialogo" ng-model="vm.miMensajeResponderDialogo"></selectize> 
+					</div> 
+				</div> 
+				
+				<div class="row">
+					<div class="input-field col s11"> 
+						<textarea class="materialize-textarea" id="mensajeResponderTexto" name="mensajeResponderTexto" 
+							ng-maxlength="500" 
+							ng-minlength="5" 
+							ng-model="vm.miMensajeResponderTexto" 
+							ng-required="true">
+						</textarea> 
+						<label for="mensajeRespuesta">Ingrese una respuesta (mínimo 5 caracteres, máximo 500 caracteres)</label> 
+					</div> 
+					<div class="col s1 input-field"> 
+						<br /> 
+						<span ng-show="vm.formMensajeResponder.mensajeResponderTexto.$valid"> 
+							<i class="small material-icons light-green-text">done</i> 
+						</span> 
+						<span ng-show="!vm.formMensajeResponder.mensajeResponderTexto.$valid"> 
+							<i class="small material-icons red-text">error_outline</i> 
+						</span> 
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="modal-footer">
+			<a class="btn-flat modal-action modal-close waves-effect waves-green" href="#!" 
+				ng-click="vm.onBtnMensajeResponderClick()" 
+				ng-show="vm.formMensajeResponder.$valid">Aceptar</a>
+			<a class="btn-flat modal-action modal-close waves-effect waves-green" href="#!" 
+				ng-click="">Cancelar</a>
+		</div>
+	</div>
+	<!-- Fin Modal Mensaje Respuesta -->
+
+
+
+
+
+
+
+
 
 
 
