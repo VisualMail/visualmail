@@ -5,9 +5,9 @@
 	angular
 		.module("VisualMailApp")
 		.controller("ProjectController", ProjectController); 
-    ProjectController.$inject = ["$scope", "$http", "$filter", "$sce"]; 
+    ProjectController.$inject = ["$scope", "$http", "$filter"]; 
 
-	function ProjectController($scope, $http, $filter, $sce) { 
+	function ProjectController($scope, $http, $filter) { 
         var vm = this; 
 
         // Inicio variables usuario 
@@ -557,7 +557,7 @@
                 if(nodoId > 0) { 
                     $.each(vm.miMensaje, function(key, value) { 
                         if(value.nodoId === nodoId) { 
-                            value.name = $sce.trustAsHtml(value.name); 
+                            //value.name = $sce.trustAsHtml(value.name); 
                             vm.miMensajeAncladoNavegar = value; 
                             return false; 
                         } 
@@ -984,7 +984,7 @@
 
                 $.each(vm.miMensaje, function(key, value) { 
                     if(parseInt(value.nodoId) === nodoId) { 
-                        value.name = $sce.trustAsHtml(value.name); 
+                        //value.name = $sce.trustAsHtml(value.name); 
                         vm.miMensajeAnclado = value; 
                         return false; 
                     } 
@@ -1079,7 +1079,7 @@
 
             if($anclar) { 
                 if(vm.miMensajeAnclado.nodoId === nuevoMensaje.nodoPadreId) { 
-                    nuevoMensaje.name = $sce.trustAsHtml(value.name); 
+                    //nuevoMensaje.name = $sce.trustAsHtml(value.name); 
                     vm.miMensajeAncladoNavegar = nuevoMensaje; 
                     var n = $("[data-circle-navigate=ok]"); 
                     n.attr("stroke", ""); 
@@ -1290,43 +1290,61 @@
             }).then(function(res) { 
                 var d = res.data; 
 
-            var range = document.createRange(); 
-            range.setStart(vm.miMensajeDialogoSelection[0][0], vm.miMensajeDialogoSelection[0][1]); 
-            range.setEnd(vm.miMensajeDialogoSelection[1][0], vm.miMensajeDialogoSelection[1][1]); 
-            var s = window.getSelection();
-            s.removeAllRanges(); 
-            s.addRange(range); 
-
-            var span = document.createElement("span"); 
-            
-            if(!s.rangeCount || !s.getRangeAt) 
-                return; 
-            
-            span.style.fontWeight = "bold"; 
-            span.style.color = "green"; 
-            span.setAttribute("data-marca", "1"); 
-            range = s.getRangeAt(0).cloneRange(); 
-            range.surroundContents(span); 
-            
-            document.desingMode = "on"; 
-            
-            if(range) { 
+                if(!d.proc) { 
+                    setMensaje(d.msj); 
+                    vm.procesando = false; 
+                    return; 
+                } 
+                
+                // Dar formato al mensaje 
+                var range = document.createRange(); 
+                range.setStart(vm.miMensajeDialogoSelection[0][0], vm.miMensajeDialogoSelection[0][1]); 
+                range.setEnd(vm.miMensajeDialogoSelection[1][0], vm.miMensajeDialogoSelection[1][1]); 
+                var s = window.getSelection();
                 s.removeAllRanges(); 
                 s.addRange(range); 
-            }
 
-            document.execCommand("ForeColor", false, "red"); 
-            document.designMode = "off"; 
-            console.log($(".context-menu-mensaje-anclado").html()); 
+                var span = document.createElement("span"); 
+            
+                if(!s.rangeCount || !s.getRangeAt) 
+                    return; 
 
+                span.setAttribute("data-marca", d.mensajeMarca.marcaId); 
+                span.className = "marcar"; 
+                range = s.getRangeAt(0).cloneRange(); 
+                range.surroundContents(span); 
+            
+                document.desingMode = "on"; 
+            
+                if(range) { 
+                    s.removeAllRanges(); 
+                    s.addRange(range); 
+                }
 
+                document.designMode = "off"; 
+                vm.miMensajeDialogoId.name = $(".context-menu-mensaje-anclado").html(); 
 
-
-
-
-
-                setMensaje(d.msj); 
-                vm.procesando = false; 
+                // Actualizar el mensaje 
+                $http({ 
+                    method: "POST", 
+                    url: "/mensaje/actualizarContenido", 
+                    headers: { 
+                        "Content-Type": "application/json", 
+                        "X-CSRF-TOKEN": vm.csrfToken 
+                    }, 
+                    data: { 
+                        mensaje: vm.miMensajeDialogoId 
+                    }
+                }).then(function(r) { 
+                    var d = r.data; 
+                    setMensaje(d.msj); 
+                    vm.procesando = false; 
+                }).catch(function(err) { 
+                    setMensaje("¡Se produjo un error!"); 
+                    console.log(err); 
+                    vm.procesando = false; 
+                    $("#modalMensajeMarcar").modal("open"); 
+                }); 
             }).catch(function(err) { 
                 setMensaje("¡Se produjo un error!"); 
                 console.log(err); 

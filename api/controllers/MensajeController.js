@@ -4,7 +4,48 @@
 * @description :: Logica del servidor para manejar mensajes
 * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
 **/
-module.exports = {
+module.exports = { 
+	/**
+	* @method :: actualizarContenido (POST)
+	* @description :: Actualiza el contenido del mensaje 
+	* @param :: {Object} req, request element de sails
+	* @param :: {Objetct} res, de la vista ejs del servidor
+	* @param :: {Objetct} next, para continuar en caso de error
+	**/
+	actualizarContenido: function(req, res, next) { 
+		// Obtener los parámetros
+		var mensaje = req.param("mensaje"); 
+
+		// Actualizar el contenido del mensaje 
+		Mensaje.update({ 
+			id: mensaje.id 
+		}, { 
+			name: mensaje.name 
+		}).then(function(result) { 
+			// Retornar error 
+			if(!result) { 
+				return res.json({ 
+					proc: false, 
+					msj: "¡No se almacenó la información!", 
+				}); 
+			} 
+
+			// Retornar el Ok
+			return res.json({ 
+				proc: true, 
+				msj: "Mensaje actualizado" 
+			}); 
+
+		}).catch(function(err) { 
+			// Existe un error en actualizar el mensaje 
+			sails.log(err); 
+			return res.json({ 
+				proc: false, 
+				msj: "¡Se produjo un error al actualizar el mensaje!", 
+				err: err 
+			});
+		}); 
+	}, 
 
 	/**
 	* @method :: create (POST)
@@ -147,7 +188,7 @@ module.exports = {
 		var mensaje = req.param("mensaje"); 
         var mensajeId = mensaje.id; 
 		var usuario = req.session.User; 
-        
+		
 		// Guardar la marca del mensaje 
 		MensajeMarca.create({ 
 			marca: marca, 
@@ -162,14 +203,13 @@ module.exports = {
 					msj: "¡No se almacenó la información!", 
 				}); 
 			} 
-
-			// Retorno del mensaje marca 
+			
+			// Retornar ok 
 			return res.json({ 
 				proc: true, 
 				msj: "¡Texto marcado!", 
 				mensajeMarca: result 
 			}); 
-
 		}).catch(function(err) { 
 			sails.log(err); 
 			// Existe un error 
