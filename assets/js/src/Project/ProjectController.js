@@ -1434,102 +1434,61 @@
 					    "Content-Type": "application/json", 
 					    "X-CSRF-TOKEN": vm.csrfToken 
 				    }, 
-				data: { 
-					dialogos: vm.miProyecto.dialogos[0].id, 
-					usuario: vm.miUsuario.id, 
-					project_id: vm.miProyecto.id, 
-					name: vm.miMensajeRespuesta, 
-            		tipo: vm.miMensajeTipoSeleccionado, 
-            		position: mensajePosicion, 
-            		root: false, 
-            		numero_hijos: 0, 
-            		parent: vm.miMensajeSeleccionado.id, 
-                    nodoPadreId: vm.miMensajeSeleccionado.nodoId,
-                    sessionId: vm.miSessionId,
-                    nodoNivel: vm.miMensajeSeleccionado.numero_hijos + vm.miMensajeSeleccionado.nodoNivel,
-                    nodoPadreNivel: vm.miMensajeSeleccionado.nodoNivel,
-                    nodoPadreSessionId: vm.miMensajeSeleccionado.sessionId
-            	}
-            })
-            .then(function(respuesta) { 
-                var mensajeTemporal = respuesta.data.mensaje;
-                mensajeTemporal["usuario"] = vm.miUsuario; 
-
-                // Se manda el POST para unir el mensaje nuevo con el anterior 
-                $http({ 
-                    method: "POST", 
-                    url: "/mensaje/unir", 
-                    headers: { 
-                        "Content-Type": "application/json", 
-                        "X-CSRF-TOKEN": vm.csrfToken 
-                    }, 
                     data: { 
-                        id: vm.miMensajeSeleccionado.id, 
-                        idunion: mensajeTemporal.id 
-                    } 
-                }).then(function(datamensaje) {
-                    // Ahora se agrega el mensaje creado en el dialogo 
-                    // Manda el POST para añadirlo al dialogo 
+					    dialogos: vm.miProyecto.dialogos[0].id, 
+					    usuario: vm.miUsuario.id, 
+					    project_id: vm.miProyecto.id, 
+					    name: vm.miMensajeResponderTexto, 
+            		    tipo: vm.miMensajeMarcarDialogo, 
+            		    position: mensajePosicion, 
+            		    root: false, 
+            		    numero_hijos: 0, 
+            		    parent: vm.miMensajeDialogoId.id, 
+                        nodoPadreId: vm.miMensajeDialogoId.nodoId, 
+                        sessionId: vm.miSessionId, 
+                        nodoNivel: vm.miMensajeDialogoId.numero_hijos + vm.miMensajeDialogoId.nodoNivel, 
+                        nodoPadreNivel: vm.miMensajeDialogoId.nodoNivel, 
+                        nodoPadreSessionId: vm.miMensajeDialogoId.sessionId 
+            	    } 
+                }).then(function(respuesta) { 
+                    var mensajeTemporal = respuesta.data.mensaje;
+                    mensajeTemporal["usuario"] = vm.miUsuario; 
+
+                    // Se manda el POST para unir el mensaje nuevo con el anterior 
                     $http({ 
                         method: "POST", 
-                        url: "/dialogo/update_dialogo", 
+                        url: "/mensaje/unir", 
                         headers: { 
                             "Content-Type": "application/json", 
                             "X-CSRF-TOKEN": vm.csrfToken 
                         }, 
                         data: { 
-                            id: vm.miProyecto.dialogos[0].id, 
-                            mensaje: mensajeTemporal
+                            id: vm.miMensajeSeleccionado.id, 
+                            idunion: mensajeTemporal.id 
                         } 
-                    })
-                    .then(function(datadialogoupdate) { 
-                        vm.miMensajeRespuesta = ""; 
-                        var $select = $('#mensajeSelectize').selectize();
-                        var control = $select[0].selectize;
-                        control.clear();
-                        $("#modalMensaje").modal("close");
+                    }).then(function(datamensaje) {
+                        // Ahora se agrega el mensaje creado en el dialogo 
+                        // Manda el POST para añadirlo al dialogo 
+                        $http({ 
+                            method: "POST", 
+                            url: "/dialogo/update_dialogo", 
+                            headers: { 
+                                "Content-Type": "application/json", 
+                                "X-CSRF-TOKEN": vm.csrfToken 
+                            }, 
+                            data: { 
+                                id: vm.miProyecto.dialogos[0].id, 
+                                mensaje: mensajeTemporal
+                            } 
+                        }).then(function(datadialogoupdate) { 
+                            vm.miMensajeRespuesta = ""; 
+                            var $select = $('#mensajeSelectize').selectize();
+                            var control = $select[0].selectize;
+                            control.clear();
+                            $("#modalMensaje").modal("close");
+                        }); 
                     }); 
-                });
-            });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                $http({ 
-                    method: "POST", 
-                    url: "/mensaje/actualizarContenido", 
-                    headers: { 
-                        "Content-Type": "application/json", 
-                        "X-CSRF-TOKEN": vm.csrfToken 
-                    }, 
-                    data: { 
-                        mensaje: vm.miMensajeDialogoId 
-                    }
-                }).then(function(r) { 
-                    var d = r.data; 
-                    setMensaje(d.msj); 
-                    vm.procesando = false; 
-                }).catch(function(err) { 
-                    setMensaje("¡Se produjo un error!"); 
-                    console.log(err); 
-                    vm.procesando = false; 
-                    $("#modalMensajeMarcar").modal("open"); 
-                }); 
+                });  
             }).catch(function(err) { 
                 setMensaje("¡Se produjo un error!"); 
                 console.log(err); 
