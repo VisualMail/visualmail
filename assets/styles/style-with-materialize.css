@@ -56,7 +56,7 @@ main { flex: 1 0 auto !important; }
 .table-ng > thead > tr > th { padding: 0 15px 0 0 !important; }
 .table-ng > thead > tr > th { padding: 0 15px 0 0 !important; }
 
-.marcar {  font-weight: bold; text-decoration: underline; }
+.marcar { cursor: pointer; font-weight: bold; text-decoration: underline; }
 
 /* Source: https://fonts.googleapis.com/icon?family=Material+Icons */
 /* fallback */

@@ -77,7 +77,7 @@ function mapaDialogoDibujar(nodoMensaje) {
 			color: v.usuario.color, 
 			cx: circleWidth + (v.sessionId * 100), 
 			cy: y2, 
-			name: v.name, 
+			name: v.namePlain, 
 			tipo: v.tipo 
 		});
 	}); 
@@ -130,7 +130,7 @@ function mapaDialogoAgregarNodo(mensaje) {
 		color: mensaje.usuario.color, 
 		cx: circleWidth + (mensaje.sessionId * 100), 
 		cy: y2, 
-		name: mensaje.name, 
+		name: mensaje.namePlain, 
 		tipo: mensaje.tipo 
 	}; 
 
@@ -309,7 +309,7 @@ function mapaDialogoDibujarSesion(usuarioId, imageI, imgurl, initials, sessionId
 		.attr("y", 0)
 		.attr("height", 44)
 		.attr("width", 44)
-		.attr("xlink:href", imgurl); 
+		.attr("xlink:href", imgurl ? imgurl : "/images/profile.jpg"); 
 
 	// Dibujar el circulo que contiene la imagen del usuario 
 	var sessionCircle = svgHeader.append("circle")

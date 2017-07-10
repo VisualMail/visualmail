@@ -128,7 +128,7 @@
 					<div ng-if="vm.miMensajeAnclado !== ''">
 						<div class="row">
 							<div class="col s12 m2 l2"> 
-								<img alt="Usuario" class="circle responsive-img" ng-src="{{ vm.miMensajeAnclado !== '' ? vm.miMensajeAnclado.usuario.imgurl : '' }}" />
+								<img alt="Usuario" class="circle responsive-img" ng-src="{{ vm.miMensajeAnclado !== '' ? (vm.miMensajeAnclado.usuario.imgurl ? vm.miMensajeAnclado.usuadio.imgurl : '/images/profile.jpg') : '' }}" />
 							</div>
 							<div class="col s12 m10 l10">
 								<div class="row">
@@ -181,7 +181,7 @@
   					<div ng-if="vm.miMensajeAncladoNavegar !== ''">
 						<div class="row">
 							<div class="col s12 m2 l2"> 
-								<img alt="Usuario" class="circle responsive-img" ng-src="{{ vm.miMensajeAncladoNavegar !== '' ? vm.miMensajeAncladoNavegar.usuario.imgurl : '' }}" />
+								<img alt="Usuario" class="circle responsive-img" ng-src="{{ vm.miMensajeAncladoNavegar !== '' ? (vm.miMensajeAncladoNavegar.usuario.imgurl ? vm.miMensajeAncladoNavegar.usuario.imgurl : '/images/profile.jpg') : '' }}" />
 							</div>
 							<div class="col s12 m10 l10">
 								<div class="row">
@@ -217,7 +217,7 @@
 								<div class="row">
 									<div class="mensaje-anclar-card">
 										<p ng-if="vm.miMensajeAncladoNavegar.tipo !== ''"><strong>Tipo de mensaje</strong>: {{ vm.miMensajeAncladoNavegar.tipo }}.</p>
-										<p class="context-menu-mensaje-navegar" ng-bind-html="vm.miMensajeAncladoNavegar.name"></p>
+										<!--<p class="context-menu-mensaje-navegar" ng-bind-html="vm.miMensajeAncladoNavegar.name"></p>-->
 									</div>
 								</div>
 							</div>
@@ -617,7 +617,7 @@
 							<div class="card-content">
 								<div class="row">
 									<div class="col s12 m2 l2">
-										<img alt="Usuario" class="circle responsive-img" ng-src="{{ vm.miMensajeSeleccionado.usuario.imgurl }}" />
+										<img alt="Usuario" class="circle responsive-img" ng-src="{{ vm.miMensajeSeleccionado.usuario.imgurl ? vm.miMensajeSeleccionado.usuario.imgurl : '/images/profile.jpg' }}" />
 									</div>
 									<div class="col s12 m10 l0">
 										<h6>{{ vm.miMensajeSeleccionado.createdAt | date:'M/d/yyyy HH:mm:ss' }}</h6>
@@ -625,7 +625,7 @@
 									</div>
 								</div>
 								<div class="mensaje-card">
-									<p>{{ vm.miMensajeSeleccionado.name }}</p>
+									<!--<p class="context-menu-mensaje-navegar" ng-bind-html="vm.miMensajeSeleccionado.name"></p>-->
 								</div>
 							</div>
 							<div class="card-action">
@@ -703,7 +703,7 @@
 				<div class="row"> 
 					<div class="col s12 m8 l8"> 
 						<label>Seleccionar un elemento del diálogo</label>
-						<selectize class="selectize-input-mensaje" config="vm.miMensajeSelectizeConfig" id="mensajeSelectize" options="vm.miMensajeTipoDialogo" ng-model="vm.miMensajeMarcarDialogo"></selectize> 
+						<selectize class="selectize-input-mensaje" config="vm.miMensajeSelectizeConfig" id="mensajeMarcarSelectize" options="vm.miMensajeTipoDialogo" ng-model="vm.miMensajeMarcarDialogo"></selectize> 
 					</div> 
 				</div> 
 
@@ -735,7 +735,7 @@
 				<div class="row"> 
 					<div class="col s12 m8 l8"> 
 						<label>Seleccionar un elemento del diálogo</label>
-						<selectize class="selectize-input-mensaje" config="vm.miMensajeSelectizeConfig" id="mensajeSelectize" options="vm.miMensajeTipoDialogo" ng-model="vm.miMensajeResponderDialogo"></selectize> 
+						<selectize class="selectize-input-mensaje" config="vm.miMensajeSelectizeConfig" id="mensajeResponderSelectize" options="vm.miMensajeTipoDialogo" ng-model="vm.miMensajeResponderDialogo"></selectize> 
 					</div> 
 				</div> 
 				

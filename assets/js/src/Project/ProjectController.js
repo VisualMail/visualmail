@@ -5,9 +5,9 @@
 	angular
 		.module("VisualMailApp")
 		.controller("ProjectController", ProjectController); 
-    ProjectController.$inject = ["$scope", "$http", "$filter"]; 
+    ProjectController.$inject = ["$scope", "$http", "$filter", "$sce"]; 
 
-	function ProjectController($scope, $http, $filter) { 
+	function ProjectController($scope, $http, $filter, $sce) { 
         var vm = this; 
 
         // Inicio variables usuario 
@@ -378,6 +378,13 @@
                     vm.miMensajeTipoSeleccionado = value; 
                 } 
             }; 
+
+            $(document).ready(function() { 
+                $(".marcar").on("click", function() { 
+                    var a = $(this)[0]; 
+                    console.log(a); 
+                }); 
+            }); 
         }; 
 
         /**
@@ -767,6 +774,7 @@
 					usuario: vm.miUsuario.id, 
 					project_id: vm.miProyecto.id, 
 					name: vm.miMensajeRespuesta, 
+                    namePlain: vm.miMensajeRespuesta, 
             		tipo: vm.miMensajeTipoSeleccionado, 
             		position: mensajePosicion, 
             		root: false, 
@@ -984,7 +992,7 @@
 
                 $.each(vm.miMensaje, function(key, value) { 
                     if(parseInt(value.nodoId) === nodoId) { 
-                        //value.name = $sce.trustAsHtml(value.name); 
+                        value.name = $sce.trustAsHtml(value.name); 
                         vm.miMensajeAnclado = value; 
                         return false; 
                     } 
@@ -1274,7 +1282,7 @@
 
             vm.procesando = true; 
 
-            // Guardar 
+            // Guardar la marca del mensaje 
             $http({ 
                 method: "POST", 
                 url: "/mensaje/marcar", 
@@ -1288,8 +1296,10 @@
                     mensaje: vm.miMensajeDialogoId 
                 }
             }).then(function(res) { 
+                // Obtener la respuesta 
                 var d = res.data; 
 
+                // Si tiene error retornar 
                 if(!d.proc) { 
                     setMensaje(d.msj); 
                     vm.procesando = false; 
@@ -1302,27 +1312,37 @@
                 range.setEnd(vm.miMensajeDialogoSelection[1][0], vm.miMensajeDialogoSelection[1][1]); 
                 var s = window.getSelection();
                 s.removeAllRanges(); 
-                s.addRange(range); 
-
-                var span = document.createElement("span"); 
-            
+                s.addRange(range);  
+                
+                // Si no existe el rango retornar 
                 if(!s.rangeCount || !s.getRangeAt) 
                     return; 
 
-                span.setAttribute("data-marca", d.mensajeMarca.marcaId); 
-                span.className = "marcar"; 
-                range = s.getRangeAt(0).cloneRange(); 
-                range.surroundContents(span); 
+                // Verificar si se está respondiendo una misma marca 
+                if(s.focusNode.parentNode.getAttribute("data-marca")) { 
+                    // Actualizar la marca con el nuevo 'id' almacenado 
+                    var dm = s.focusNode.parentNode.getAttribute("data-marca"); 
+                    $(s.focusNode.parentNode).attr("data-marca", dm + "," + d.mensajeMarca.marcaId); 
+                } else { 
+                    // Crear la marca en el texto del mensaje 
+                    var span = document.createElement("span"); 
+                    span.setAttribute("data-marca", d.mensajeMarca.marcaId); 
+                    span.className = "marcar"; 
+                    range = s.getRangeAt(0).cloneRange(); 
+                    range.surroundContents(span); 
+                    document.desingMode = "on"; 
             
-                document.desingMode = "on"; 
-            
-                if(range) { 
-                    s.removeAllRanges(); 
-                    s.addRange(range); 
-                }
+                    if(range) { 
+                        s.removeAllRanges(); 
+                        s.addRange(range); 
+                    }
 
-                document.designMode = "off"; 
-                vm.miMensajeDialogoId.name = $(".context-menu-mensaje-anclado").html(); 
+                    document.designMode = "off"; 
+                } 
+
+                // Actualizar en el texto del mensaje 
+                var msjTemp = $(".context-menu-mensaje-anclado").html(); 
+                vm.miMensajeDialogoId.name = $sce.trustAsHtml(msjTemp); 
 
                 // Actualizar el mensaje 
                 $http({ 
@@ -1333,17 +1353,25 @@
                         "X-CSRF-TOKEN": vm.csrfToken 
                     }, 
                     data: { 
-                        mensaje: vm.miMensajeDialogoId 
+                        id: vm.miMensajeDialogoId.id, 
+                        name: msjTemp  
                     }
                 }).then(function(r) { 
+                    // Obtener la respuesta 
                     var d = r.data; 
                     setMensaje(d.msj); 
                     vm.procesando = false; 
+
+                    // Iniciar controles 
+                    vm.miMensajeMarcarDialogo = ""; 
+                    var $select = $('#mensajeMarcarSelectize').selectize(); 
+                    var control = $select[0].selectize; 
+                    control.clear(); 
+                    $("#modalMensajeMarcar").modal("close"); 
                 }).catch(function(err) { 
                     setMensaje("¡Se produjo un error!"); 
                     console.log(err); 
                     vm.procesando = false; 
-                    $("#modalMensajeMarcar").modal("open"); 
                 }); 
             }).catch(function(err) { 
                 setMensaje("¡Se produjo un error!"); 
@@ -1352,6 +1380,10 @@
             }); 
         }; 
 
+        /** 
+        * @method :: onBtnMensajeResponderClick (Event) 
+        * @description :: Guarda una respuesta a la marca de un mensaje 
+        **/ 
         function onBtnMensajeResponderClick() { 
             // Si está procesando retornar 
             if(vm.procesando) 
@@ -1369,12 +1401,14 @@
                 }, 
                 data: { 
                     marca: vm.miMensajeDialogo, 
-                    tipo: vm.miMensajeMarcarDialogo, 
+                    tipo: vm.miMensajeResponderDialogo, 
                     mensaje: vm.miMensajeDialogoId 
                 }
             }).then(function(res) { 
+                // Obtener la respuesta 
                 var d = res.data; 
 
+                // Si existe error retornar 
                 if(!d.proc) { 
                     setMensaje(d.msj); 
                     vm.procesando = false; 
@@ -1387,27 +1421,37 @@
                 range.setEnd(vm.miMensajeDialogoSelection[1][0], vm.miMensajeDialogoSelection[1][1]); 
                 var s = window.getSelection();
                 s.removeAllRanges(); 
-                s.addRange(range); 
-
-                var span = document.createElement("span"); 
-            
+                s.addRange(range);  
+                
+                // Si no existe el rango retornar 
                 if(!s.rangeCount || !s.getRangeAt) 
                     return; 
 
-                span.setAttribute("data-marca", d.mensajeMarca.marcaId); 
-                span.className = "marcar"; 
-                range = s.getRangeAt(0).cloneRange(); 
-                range.surroundContents(span); 
+                // Verificar si se está respondiendo una misma marca 
+                if(s.focusNode.parentNode.getAttribute("data-marca")) { 
+                    // Actualizar la marca con el nuevo 'id' almacenado 
+                    var dm = s.focusNode.parentNode.getAttribute("data-marca"); 
+                    $(s.focusNode.parentNode).attr("data-marca", dm + "," + d.mensajeMarca.marcaId); 
+                } else { 
+                    // Crear la marca en el texto del mensaje 
+                    var span = document.createElement("span"); 
+                    span.setAttribute("data-marca", d.mensajeMarca.marcaId); 
+                    span.className = "marcar"; 
+                    range = s.getRangeAt(0).cloneRange(); 
+                    range.surroundContents(span); 
+                    document.desingMode = "on"; 
             
-                document.desingMode = "on"; 
-            
-                if(range) { 
-                    s.removeAllRanges(); 
-                    s.addRange(range); 
-                }
+                    if(range) { 
+                        s.removeAllRanges(); 
+                        s.addRange(range); 
+                    }
 
-                document.designMode = "off"; 
-                vm.miMensajeDialogoId.name = $(".context-menu-mensaje-anclado").html(); 
+                    document.designMode = "off"; 
+                } 
+
+                // Actualizar en el texto del mensaje 
+                var msjTemp = $(".context-menu-mensaje-anclado").html(); 
+                vm.miMensajeDialogoId.name = $sce.trustAsHtml(msjTemp); 
 
                 // Actualizar el mensaje 
                 // Arreglo que almacena la posición del nuevo mensaje
@@ -1427,6 +1471,7 @@
                 if(vm.miMensajeDialogoId.sessionId === vm.miSessionId)
                     vm.miSessionId++;
 
+                // Guardar el mensaje 
 			    $http({
 				    method: "POST", 
 				    url: "/mensaje/marcarResponder", 
@@ -1435,23 +1480,24 @@
 					    "X-CSRF-TOKEN": vm.csrfToken 
 				    }, 
                     data: { 
-					    dialogos: vm.miProyecto.dialogos[0].id, 
-					    usuario: vm.miUsuario.id, 
-					    project_id: vm.miProyecto.id, 
-					    name: vm.miMensajeResponderTexto, 
-            		    tipo: vm.miMensajeMarcarDialogo, 
-            		    position: mensajePosicion, 
-            		    root: false, 
-            		    numero_hijos: 0, 
-            		    parent: vm.miMensajeDialogoId.id, 
+                        name: vm.miMensajeResponderTexto, 
+                        respuestaMarca: vm.miMensajeDialogo, 
+                        respuestaMarcaId: d.mensajeMarca.id, 
+                        tipo: vm.miMensajeResponderDialogo, 
+                        position: mensajePosicion, 
+                        project_id: vm.miProyecto.id, 
+                        parent: vm.miMensajeDialogoId.id, 
                         nodoPadreId: vm.miMensajeDialogoId.nodoId, 
                         sessionId: vm.miSessionId, 
                         nodoNivel: vm.miMensajeDialogoId.numero_hijos + vm.miMensajeDialogoId.nodoNivel, 
                         nodoPadreNivel: vm.miMensajeDialogoId.nodoNivel, 
-                        nodoPadreSessionId: vm.miMensajeDialogoId.sessionId 
+                        nodoPadreSessionId: vm.miMensajeDialogoId.sessionId, 
+                        dialogos: vm.miProyecto.dialogos[0].id, 
+                        mensajeMarcado: vm.miMensajeDialogoId 
             	    } 
-                }).then(function(respuesta) { 
-                    var mensajeTemporal = respuesta.data.mensaje;
+                }).then(function(resMensaje) { 
+                    // Retorna el nuevo mensaje 
+                    var mensajeTemporal = resMensaje.data.mensaje;
                     mensajeTemporal["usuario"] = vm.miUsuario; 
 
                     // Se manda el POST para unir el mensaje nuevo con el anterior 
@@ -1463,10 +1509,10 @@
                             "X-CSRF-TOKEN": vm.csrfToken 
                         }, 
                         data: { 
-                            id: vm.miMensajeSeleccionado.id, 
+                            id: vm.miMensajeDialogoId.id, 
                             idunion: mensajeTemporal.id 
                         } 
-                    }).then(function(datamensaje) {
+                    }).then(function(resUnir) {
                         // Ahora se agrega el mensaje creado en el dialogo 
                         // Manda el POST para añadirlo al dialogo 
                         $http({ 
@@ -1480,20 +1526,37 @@
                                 id: vm.miProyecto.dialogos[0].id, 
                                 mensaje: mensajeTemporal
                             } 
-                        }).then(function(datadialogoupdate) { 
-                            vm.miMensajeRespuesta = ""; 
-                            var $select = $('#mensajeSelectize').selectize();
+                        }).then(function(resUpdate) { 
+                            vm.miMensajeResponderTexto = ""; 
+                            vm.miMensajeResponderDialogo = ""; 
+                            var $select = $('#mensajeResponderSelectize').selectize();
                             var control = $select[0].selectize;
                             control.clear();
-                            $("#modalMensaje").modal("close");
+                            $("#modalMensajeResponder").modal("close");
+                        }).catch(function(err) { 
+                            // Error 'Update Diálogo' 
+                            setMensaje("¡Se produjo un error!"); 
+                            console.log(err); 
+                            vm.procesando = false; 
                         }); 
+                    }).catch(function(err) { 
+                        // Error 'Unir' 
+                        setMensaje("¡Se produjo un error!"); 
+                        console.log(err); 
+                        vm.procesando = false; 
                     }); 
-                });  
+                }).catch(function(err) { 
+                    // Error 'Marca responder' 
+                    setMensaje("¡Se produjo un error!"); 
+                    console.log(err); 
+                    vm.procesando = false; 
+                }); 
             }).catch(function(err) { 
+                // Error 'Marcar' 
                 setMensaje("¡Se produjo un error!"); 
                 console.log(err); 
                 vm.procesando = false; 
-            });
+            }); 
         }; 
 
         /** 
@@ -1511,7 +1574,7 @@
                 return; 
 
             // Almacenar los datos 
-            vm.miMensajeDialogo = s.toString(); 
+            vm.miMensajeDialogo = $.trim(s.toString()); 
             vm.miMensajeDialogoId = mensaje; 
             vm.miMensajeDialogoSelection = window.getSelection().getRangeAt(0); 
             vm.miMensajeDialogoSelection = [ 
@@ -1526,5 +1589,6 @@
                 $("#modalMensajeResponder").modal("open"); 
         }; 
 	};
+
 
 })(); 

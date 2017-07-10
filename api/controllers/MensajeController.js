@@ -14,13 +14,14 @@ module.exports = {
 	**/
 	actualizarContenido: function(req, res, next) { 
 		// Obtener los parámetros
-		var mensaje = req.param("mensaje"); 
+		var id = req.param("id"); 
+		var name = req.param("name"); 
 
 		// Actualizar el contenido del mensaje 
 		Mensaje.update({ 
-			id: mensaje.id 
+			id: id 
 		}, { 
-			name: mensaje.name 
+			name: name 
 		}).then(function(result) { 
 			// Retornar error 
 			if(!result) { 
@@ -229,10 +230,85 @@ module.exports = {
 	* @param :: {Objetct} next, para continuar en caso de error
 	**/
 	marcarResponder: function(req, res, next) { 
+		// Obtener los parámetros
+		var mensajeMarcado = req.param("mensajeMarcado"); 
 
-		
+		// Actualizar el contenido del mensaje 
+		Mensaje.update({ id: mensajeMarcado.id }, { name: mensajeMarcado.name }).then(function(resultActualizar) { 
+			// Retornar error 
+			if(!resultActualizar) { 
+				return res.json({ 
+					proc: false, 
+					msj: "¡No se almacenó la información!", 
+				}); 
+			} 
 
+			// Obtener el mensaje 
+			var msj = { 
+				name: req.param("name"), 
+				namePlain: req.param("name"), 
+				respuestaMarca: req.param("respuestaMarca"), 
+				respuestaMarcaId: req.param("respuestaMarcaId"), 
+				tipo: req.param("tipo"), 
+				position: req.param("position"), 
+				project_id: req.param("project_id"), 
+				numero_hijos: 0, 
+				root: false, 
+				parent: req.param("parent"), 
+				usuario: req.session.User, 
+				nodoPadreId: req.param("nodoPadreId"), 
+				sessionId: req.param("sessionId"), 
+				nodoNivel: req.param("nodoNivel"), 
+				nodoPadreNivel: req.param("nodoPadreNivel"), 
+				nodoPadreSessionId: req.param("nodoPadreSessionId") 
+			}; 
 
+			// Crear el mensaje 
+			Mensaje.create(msj).then(function(mensaje) { 
+				// Retornar error 
+				if(!mensaje) { 
+					return res.json({ 
+						proc: false, 
+						msj: "¡No se almacenó la información!" 
+					}); 
+				} 
 
+				var mensajeUser = mensaje; 
+
+				// Enviar a todos los usuarios del proyecto 
+				User.findOne(mensaje.usuario).exec(function(err, user) { 
+					// Verificar si existe un error 
+					if(err || !user) 
+						return; 
+
+					// En caso de no haber error, eliminar la contraseña y asignar el usuario al mensaje 
+					delete user.password; 
+					mensajeUser["usuario"] = user; 
+					mensajeUser.save(); 
+
+					// Si no es el mensaje inicial o el primer hijo, verificar la posición 
+					if(mensajeUser.nodoId > 1) 
+						Mensaje.setMensajePosicion(mensajeUser, req); 
+				});
+
+				return res.json({ mensaje: mensaje }); 
+			}).catch(function(err) { 
+				sails.log(err); 
+				// Existe un error 
+				return res.json({ 
+					proc: false, 
+					msj: "¡Se produjo un error al almacenar la 'respuesta de la marca' del texto!", 
+					err: err 
+				}); 
+			}); 
+		}).catch(function(err) { 
+			// Existe un error en actualizar el mensaje 
+			sails.log(err); 
+			return res.json({ 
+				proc: false, 
+				msj: "¡Se produjo un error al actualizar el mensaje!", 
+				err: err 
+			});
+		}); 
 	}
 };

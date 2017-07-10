@@ -145,6 +145,7 @@
                         }, 
                         data: { 
                             name: "Inicio del nuevo proyecto " + rp.project.name, // El texto del mensaje + nombre del proyecto 
+                            namePlain: "Inicio del nuevo proyecto " + rp.project.name, // El texto del mensaje + nombre del proyecto 
                             project_id: rp.project.id, // El id del proyecto 
                             tipo: "Mensaje Inicial", // El tipo del mensaje inicial ya que no es un elemento dialogico 
                             position: [0], // La posicion del mensaje en Dialog 

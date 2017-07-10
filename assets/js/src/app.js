@@ -4,7 +4,7 @@
     angular
         .module("VisualMailApp", [
             "ngMessages", 
-            "ngSanitize", 
+            //"ngSanitize", 
             "ui.materialize"
         ])
         .directive("capitalize", function() { 
