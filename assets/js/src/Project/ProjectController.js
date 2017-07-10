@@ -738,7 +738,7 @@
 		**/
 		function onBtnMensajeEnviarClick() { 
 
-			// Arrego que almacena la posición del nuevo mensaje
+			// Arreglo que almacena la posición del nuevo mensaje
 			var mensajePosicion = []; 
 
             // Por cada valor de 'position' del mensaje seleccionado a responder se copia 
@@ -1353,7 +1353,188 @@
         }; 
 
         function onBtnMensajeResponderClick() { 
+            // Si está procesando retornar 
+            if(vm.procesando) 
+                return; 
 
+            vm.procesando = true; 
+
+            // Guardar mensaje marcado 
+            $http({ 
+                method: "POST", 
+                url: "/mensaje/marcar", 
+                headers: { 
+                    "Content-Type": "application/json", 
+                    "X-CSRF-TOKEN": vm.csrfToken 
+                }, 
+                data: { 
+                    marca: vm.miMensajeDialogo, 
+                    tipo: vm.miMensajeMarcarDialogo, 
+                    mensaje: vm.miMensajeDialogoId 
+                }
+            }).then(function(res) { 
+                var d = res.data; 
+
+                if(!d.proc) { 
+                    setMensaje(d.msj); 
+                    vm.procesando = false; 
+                    return; 
+                } 
+
+                // Dar formato al mensaje 
+                var range = document.createRange(); 
+                range.setStart(vm.miMensajeDialogoSelection[0][0], vm.miMensajeDialogoSelection[0][1]); 
+                range.setEnd(vm.miMensajeDialogoSelection[1][0], vm.miMensajeDialogoSelection[1][1]); 
+                var s = window.getSelection();
+                s.removeAllRanges(); 
+                s.addRange(range); 
+
+                var span = document.createElement("span"); 
+            
+                if(!s.rangeCount || !s.getRangeAt) 
+                    return; 
+
+                span.setAttribute("data-marca", d.mensajeMarca.marcaId); 
+                span.className = "marcar"; 
+                range = s.getRangeAt(0).cloneRange(); 
+                range.surroundContents(span); 
+            
+                document.desingMode = "on"; 
+            
+                if(range) { 
+                    s.removeAllRanges(); 
+                    s.addRange(range); 
+                }
+
+                document.designMode = "off"; 
+                vm.miMensajeDialogoId.name = $(".context-menu-mensaje-anclado").html(); 
+
+                // Actualizar el mensaje 
+                // Arreglo que almacena la posición del nuevo mensaje
+			    var mensajePosicion = []; 
+
+                // Por cada valor de 'position' del mensaje seleccionado a responder se copia 
+			    for(var i = 0; i < vm.miMensajeDialogoId.position.length; i++) 
+				    mensajePosicion.push(vm.miMensajeDialogoId.position[i]); 
+
+			    // Ingresar el valor que le corresponde al nuevo mensaje en 'position'
+			    mensajePosicion.push(vm.miMensajeDialogoId.numero_hijos); 
+
+			    // Para realizar el post con csrf 
+			    $http.defaults.withCredentials = true; 
+
+                // Si el mensaje no tiene sesión, actualizar mi sesión
+                if(vm.miMensajeDialogoId.sessionId === vm.miSessionId)
+                    vm.miSessionId++;
+
+			    $http({
+				    method: "POST", 
+				    url: "/mensaje/marcarResponder", 
+				    headers: { 
+					    "Content-Type": "application/json", 
+					    "X-CSRF-TOKEN": vm.csrfToken 
+				    }, 
+				data: { 
+					dialogos: vm.miProyecto.dialogos[0].id, 
+					usuario: vm.miUsuario.id, 
+					project_id: vm.miProyecto.id, 
+					name: vm.miMensajeRespuesta, 
+            		tipo: vm.miMensajeTipoSeleccionado, 
+            		position: mensajePosicion, 
+            		root: false, 
+            		numero_hijos: 0, 
+            		parent: vm.miMensajeSeleccionado.id, 
+                    nodoPadreId: vm.miMensajeSeleccionado.nodoId,
+                    sessionId: vm.miSessionId,
+                    nodoNivel: vm.miMensajeSeleccionado.numero_hijos + vm.miMensajeSeleccionado.nodoNivel,
+                    nodoPadreNivel: vm.miMensajeSeleccionado.nodoNivel,
+                    nodoPadreSessionId: vm.miMensajeSeleccionado.sessionId
+            	}
+            })
+            .then(function(respuesta) { 
+                var mensajeTemporal = respuesta.data.mensaje;
+                mensajeTemporal["usuario"] = vm.miUsuario; 
+
+                // Se manda el POST para unir el mensaje nuevo con el anterior 
+                $http({ 
+                    method: "POST", 
+                    url: "/mensaje/unir", 
+                    headers: { 
+                        "Content-Type": "application/json", 
+                        "X-CSRF-TOKEN": vm.csrfToken 
+                    }, 
+                    data: { 
+                        id: vm.miMensajeSeleccionado.id, 
+                        idunion: mensajeTemporal.id 
+                    } 
+                }).then(function(datamensaje) {
+                    // Ahora se agrega el mensaje creado en el dialogo 
+                    // Manda el POST para añadirlo al dialogo 
+                    $http({ 
+                        method: "POST", 
+                        url: "/dialogo/update_dialogo", 
+                        headers: { 
+                            "Content-Type": "application/json", 
+                            "X-CSRF-TOKEN": vm.csrfToken 
+                        }, 
+                        data: { 
+                            id: vm.miProyecto.dialogos[0].id, 
+                            mensaje: mensajeTemporal
+                        } 
+                    })
+                    .then(function(datadialogoupdate) { 
+                        vm.miMensajeRespuesta = ""; 
+                        var $select = $('#mensajeSelectize').selectize();
+                        var control = $select[0].selectize;
+                        control.clear();
+                        $("#modalMensaje").modal("close");
+                    }); 
+                });
+            });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                $http({ 
+                    method: "POST", 
+                    url: "/mensaje/actualizarContenido", 
+                    headers: { 
+                        "Content-Type": "application/json", 
+                        "X-CSRF-TOKEN": vm.csrfToken 
+                    }, 
+                    data: { 
+                        mensaje: vm.miMensajeDialogoId 
+                    }
+                }).then(function(r) { 
+                    var d = r.data; 
+                    setMensaje(d.msj); 
+                    vm.procesando = false; 
+                }).catch(function(err) { 
+                    setMensaje("¡Se produjo un error!"); 
+                    console.log(err); 
+                    vm.procesando = false; 
+                    $("#modalMensajeMarcar").modal("open"); 
+                }); 
+            }).catch(function(err) { 
+                setMensaje("¡Se produjo un error!"); 
+                console.log(err); 
+                vm.procesando = false; 
+            });
         }; 
 
         /** 

@@ -13,6 +13,21 @@
         // Texto del mensaje 
         name: { 
             type: "string" 
+        },
+        
+        // Texto plano 
+        namePlain: { 
+            type: "string"
+        }, 
+
+        // Si el mensaje responde a una marca de un mensaje 
+        respuestaMarca: { 
+            type: "string"
+        }, 
+
+        // Id de la marca de un mensaje 
+        respuestaMarcaId: { 
+            type: "string"
         }, 
 
         // Representa el tipo del mensaje: duda, compromiso, acuerdo, etc 

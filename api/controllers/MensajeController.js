@@ -220,4 +220,19 @@ module.exports = {
 			});
 		}); 
 	},
+
+	/**
+	* @method :: marcarResponder (POST)
+	* @description :: Crea un mensaje con respuesta al texto marcado 
+	* @param :: {Object} req, request element de sails
+	* @param :: {Objetct} res, de la vista ejs del servidor
+	* @param :: {Objetct} next, para continuar en caso de error
+	**/
+	marcarResponder: function(req, res, next) { 
+
+		
+
+
+
+	}
 };
