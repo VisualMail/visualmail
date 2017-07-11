@@ -123,6 +123,7 @@
 			</div>
 			<!-- Fin del mapa del diálogo -->
 
+			<!-- Inicio panel mensaje -->
 			<div class="resizable-panel-container" ng-show="vm.miMensajeAnclado.id">
 				<div class="resizable-panel-left">
 					<div ng-if="vm.miMensajeAnclado !== ''">
@@ -170,7 +171,8 @@
 								<div class="row">
 									<div class="mensaje-anclar-card">
 										<p ng-if="vm.miMensajeAnclado.tipo !== ''"><strong>Tipo de mensaje</strong>: {{ vm.miMensajeAnclado.tipo }}.</p>
-										<p class="context-menu-mensaje-anclado" ng-bind-html="vm.miMensajeAnclado.name"></p>
+										<p ng-if="vm.miMensajeAnclado.respuestaMarca !== ''"><strong>Respuesta a</strong>: {{ vm.miMensajeAnclado.respuestaMarca }}.</p>
+										<p class="context-menu-mensaje-anclado" ng-bind-html="vm.miMensajeAncladoName"></p>
 									</div>
 								</div>
 							</div>
@@ -217,7 +219,8 @@
 								<div class="row">
 									<div class="mensaje-anclar-card">
 										<p ng-if="vm.miMensajeAncladoNavegar.tipo !== ''"><strong>Tipo de mensaje</strong>: {{ vm.miMensajeAncladoNavegar.tipo }}.</p>
-										<!--<p class="context-menu-mensaje-navegar" ng-bind-html="vm.miMensajeAncladoNavegar.name"></p>-->
+										<p ng-if="vm.miMensajeAncladoNavegar.respuestaMarca !== ''"><strong>Respuesta a</strong>: {{ vm.miMensajeAncladoNavegar.respuestaMarca }}.</p>
+										<p class="context-menu-mensaje-navegar" ng-bind-html="vm.miMensajeAncladoNavegarName"></p> 
 									</div>
 								</div>
 							</div>
@@ -233,6 +236,8 @@
 				</div>
 
 			</div>
+			<!-- Fin panel mensaje -->
+
 		</div>
 		<!-- Fin Mapa del diálogo -->
 
@@ -277,7 +282,7 @@
 						<div class="col s11">
 							<div class="col s2">
 								<div class="col s12">
-									<img alt="Usuario" class="circle responsive-img" ng-src="{{ mensaje.usuario.imgurl }}" />
+									<img alt="Usuario" class="circle responsive-img" ng-src="{{ mensaje.usuario.imgurl ? mensaje.usuario.imgurl : '/images/profile.jpg' }}" />
 								</div>
 								<div class="col s12 offset-s1"><span class="white-text center">{{ mensaje.usuario.initials }}</span></div>
 							</div>
@@ -295,7 +300,7 @@
 							<a class="btn-floating waves-effect waves-light light-green modal-trigger" href="#modalMensaje" 
 								modal 
 								ng-click="vm.miMensajeSeleccionado = mensaje">
-								<i class="small material-icons ">reply</i>
+								<i class="small material-icons">reply</i>
 							</a>
 						</div>
 					</div>

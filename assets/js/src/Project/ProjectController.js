@@ -44,6 +44,7 @@
 		]; 
 		vm.miMensajeTipoSeleccionado = ""; 
         vm.miMensajeAnclado = "";
+        vm.miMensajeAncladoName = ""; 
         vm.miMensajeAncladoNavegar = "";
         // Fin variables mensaje
 
@@ -564,8 +565,9 @@
                 if(nodoId > 0) { 
                     $.each(vm.miMensaje, function(key, value) { 
                         if(value.nodoId === nodoId) { 
-                            //value.name = $sce.trustAsHtml(value.name); 
                             vm.miMensajeAncladoNavegar = value; 
+                            vm.miMensajeAncladoNavegarName = $sce.trustAsHtml(vm.miMensajeAncladoNavegar.name); 
+                            //$(".context-menu-mensaje-navegar").html(vm.miMensajeAncladoNavegar.name); 
                             return false; 
                         } 
                     }); 
@@ -992,8 +994,9 @@
 
                 $.each(vm.miMensaje, function(key, value) { 
                     if(parseInt(value.nodoId) === nodoId) { 
-                        value.name = $sce.trustAsHtml(value.name); 
                         vm.miMensajeAnclado = value; 
+                        //$(".context-menu-mensaje-anclado").html(vm.miMensajeAnclado.name); 
+                        vm.miMensajeAncladoName = $sce.trustAsHtml(vm.miMensajeAnclado.name); 
                         return false; 
                     } 
                 }); 
@@ -1087,8 +1090,10 @@
 
             if($anclar) { 
                 if(vm.miMensajeAnclado.nodoId === nuevoMensaje.nodoPadreId) { 
-                    //nuevoMensaje.name = $sce.trustAsHtml(value.name); 
                     vm.miMensajeAncladoNavegar = nuevoMensaje; 
+                    vm.miMensajeAncladoNavegarName = $sce.trustAsHtml(nuevoMensaje.name); 
+                    //$(".context-menu-mensaje-navegar").html(vm.miMensajeAncladoNavegar.name); 
+
                     var n = $("[data-circle-navigate=ok]"); 
                     n.attr("stroke", ""); 
                     n.attr("stroke-width", ""); 
@@ -1480,6 +1485,8 @@
 					    "X-CSRF-TOKEN": vm.csrfToken 
 				    }, 
                     data: { 
+                        mensajeMarcadoId: vm.miMensajeDialogoId.id, 
+                        mensajeMarcadoName: msjTemp, 
                         name: vm.miMensajeResponderTexto, 
                         respuestaMarca: vm.miMensajeDialogo, 
                         respuestaMarcaId: d.mensajeMarca.id, 
@@ -1492,8 +1499,7 @@
                         nodoNivel: vm.miMensajeDialogoId.numero_hijos + vm.miMensajeDialogoId.nodoNivel, 
                         nodoPadreNivel: vm.miMensajeDialogoId.nodoNivel, 
                         nodoPadreSessionId: vm.miMensajeDialogoId.sessionId, 
-                        dialogos: vm.miProyecto.dialogos[0].id, 
-                        mensajeMarcado: vm.miMensajeDialogoId 
+                        dialogos: vm.miProyecto.dialogos[0].id 
             	    } 
                 }).then(function(resMensaje) { 
                     // Retorna el nuevo mensaje 

@@ -231,10 +231,11 @@ module.exports = {
 	**/
 	marcarResponder: function(req, res, next) { 
 		// Obtener los parámetros
-		var mensajeMarcado = req.param("mensajeMarcado"); 
+		var mensajeMarcadoId = req.param("mensajeMarcadoId"); 
+		var mensajeMarcadoName = req.param("mensajeMarcadoName"); 
 
 		// Actualizar el contenido del mensaje 
-		Mensaje.update({ id: mensajeMarcado.id }, { name: mensajeMarcado.name }).then(function(resultActualizar) { 
+		Mensaje.update({ id: mensajeMarcadoId }, { name: mensajeMarcadoName }).then(function(resultActualizar) { 
 			// Retornar error 
 			if(!resultActualizar) { 
 				return res.json({ 
