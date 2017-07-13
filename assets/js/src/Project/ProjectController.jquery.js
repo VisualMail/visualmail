@@ -3,6 +3,7 @@
 * @description :: Función iniciar cuando el Documento HTML está listo  
 **/
 $(document).ready(function() { 
+
 	// Iniciar los tooltips 
     $(".tooltipped").tooltip({delay: 50}); 
 

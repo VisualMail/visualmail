@@ -325,5 +325,12 @@ module.exports = {
 				mensaje: "Clave ingresada válida" 
 			});
 		});
-	} 
+	}, 
+
+	temp: function(req, res) { 
+		res.view({ 
+			title: "Temporal", 
+			sectionScripts: "<script src='/js/src/Session/TempController.js'></script>" 
+		});
+	}
 }

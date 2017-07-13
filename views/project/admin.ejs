@@ -95,7 +95,6 @@
             		</div>
 
             	</div>
-
 			</div>
 		</div>
 		<!-- Fin Participantes -->
@@ -128,43 +127,43 @@
 				<div class="resizable-panel-left">
 					<div ng-if="vm.miMensajeAnclado !== ''"> 
 						
-						<div class="card-panel grey lighten-3 z-depth-1"> 
+						<div class="card-panel grey lighten-1 z-depth-1"> 
 							<div class="row valign-wrapper"> 
-								<div class="col s1"> 
+								<div class="col s12 m12 l2"> 
 									<img alt="Usuario" class="circle responsive-img" width="80px" ng-src="{{ vm.miMensajeAnclado !== '' ? (vm.miMensajeAnclado.usuario.imgurl ? vm.miMensajeAnclado.usuario.imgurl : '/images/profile.jpg') : '' }}" /> 
 								</div> 
-								<div class="col s10"> 
+								<div class="col s10 m12 l6"> 
 									<span class="black-text">({{ vm.miMensajeAnclado.usuario.initials }})</span> 
 									<span class="right-align">{{ (vm.miMensajeAnclado !== "" ? vm.miMensajeAnclado.createdAt : "") | date:'M/d/yyyy HH:mm:ss'; }}</span> 
 								</div> 
-									<div class="col s12 m12 l4 right-align">							
-										<span tooltipped 
-											data-delay="50" 
-											data-position="left" 
-											data-tooltip="Mensaje anclado">
-											<span class="mensaje-anclar-icon">
-												<img alt="Kanban" src="/images/anchor-small.png" style="height: 33px; width: 33px;" />
-											</span>
+								<div class="col s12 m12 l4 right-align">							
+									<span tooltipped 
+										data-delay="50" 
+										data-position="left" 
+										data-tooltip="Mensaje anclado">
+										<span class="mensaje-anclar-icon">
+											<img alt="Kanban" src="/images/anchor-small.png" style="height: 33px; width: 33px;" />
 										</span>
+									</span>
+									<span tooltipped 
+										data-delay="50" 
+										data-position="left" 
+										data-tooltip="Unir al Kanban">
+										<a class="btn-floating light-green valign-wrapper" href="#modalMensajeKanban" modal 
+											ng-click="vm.miMensajeSeleccionado = vm.miMensajeAnclado;">
+											<img alt="Kanban" height="33px" src="/images/kanbanicon.png" width="33px" />
+										</a>
+									</span>
 										<span tooltipped 
-											data-delay="50" 
-											data-position="left" 
-											data-tooltip="Unir al Kanban">
-											<a class="btn-floating light-green valign-wrapper" href="#modalMensajeKanban" modal 
-												ng-click="vm.miMensajeSeleccionado = vm.miMensajeAnclado;">
-												<img alt="Kanban" height="33px" src="/images/kanbanicon.png" width="33px" />
-											</a>
-										</span>
-										<span tooltipped 
-											data-delay="50" 
-											data-position="left" 
-											data-tooltip="Responder">
-											<a class="btn-floating waves-effect waves-light light-green modal-trigger" href="#modalMensaje" modal 
-												ng-click="vm.miMensajeSeleccionado = vm.miMensajeAnclado;">
-												<i class="small material-icons ">reply</i>
-											</a>
-										</span>
-									</div>
+										data-delay="50" 
+										data-position="left" 
+										data-tooltip="Responder">
+										<a class="btn-floating waves-effect waves-light light-green modal-trigger" href="#modalMensaje" modal 
+											ng-click="vm.miMensajeSeleccionado = vm.miMensajeAnclado;">
+											<i class="small material-icons">reply</i>
+										</a>
+									</span>
+								</div>
 							</div> 
 							<div class="row"> 
 								<div class="card-panel grey lighten-5 z-depth-1"> 
