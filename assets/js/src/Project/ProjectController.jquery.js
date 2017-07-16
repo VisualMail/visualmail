@@ -41,6 +41,8 @@ $(document).ready(function() {
         resizeHeight: false 
     }); 
 
+    $(".marcar").on("click", function() { console.log("Hola"); }); 
+
 }); 
 
 $("#selectFiltrarUsuario").on("change", function() {

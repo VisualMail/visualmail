@@ -379,13 +379,10 @@
                     vm.miMensajeTipoSeleccionado = value; 
                 } 
             }; 
+        }; 
 
-            $(document).ready(function() { 
-                $(".marcar").on("click", function() { 
-                    var a = $(this)[0]; 
-                    console.log(a); 
-                }); 
-            }); 
+        vm.test = function() { 
+$("#modalMensajeMarcarVer").modal("open"); 
         }; 
 
         /**
@@ -978,6 +975,18 @@
             setMensaje("Tarea actualizada"); 
         }; 
 
+        vm.onMensajeMarcaClick = onMensajeMarcaClick; 
+
+        function onMensajeMarcaClick(dataMarca) { 
+            /*$http({ 
+                url: "/mensaje/getMarcas", 
+                method: "POST", 
+                params: { mensajeId: vm.miMensajeMarcaVer.id } 
+            })*/
+
+            $("#modalMensajeMarcarVer").modal("open"); 
+        }; 
+
         /**
         * @method :: onMensajeAnclarClick 
         * @description :: Establecer el 'nodo anclado' 
@@ -995,8 +1004,12 @@
                 $.each(vm.miMensaje, function(key, value) { 
                     if(parseInt(value.nodoId) === nodoId) { 
                         vm.miMensajeAnclado = value; 
-                        //$(".context-menu-mensaje-anclado").html(vm.miMensajeAnclado.name); 
                         vm.miMensajeAncladoName = $sce.trustAsHtml(vm.miMensajeAnclado.name); 
+                        $(document).ready(function() { 
+                            $(".marcar").on("click", function() { 
+                                vm.onMensajeMarcaClick($(this).attr("data-marca")); 
+                            }); 
+                        }); 
                         return false; 
                     } 
                 }); 

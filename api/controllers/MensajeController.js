@@ -311,5 +311,40 @@ module.exports = {
 				err: err 
 			});
 		}); 
-	}
+	}, 
+
+	/**
+	* @method :: getMarcas (POST) 
+	* @description :: Obtiene las marcas de un mensaje 
+	* @param :: {Object} req, request element de sails
+	* @param :: {Objetct} res, de la vista ejs del servidor
+	* @param :: {Objetct} next, para continuar en caso de error
+	**/
+	getMarcas: function(req, res, next) { 
+		
+		MensajeMarca.find({ mensajeId: req.param("mensajeId") }).then(function(result) { 
+			// Retornar error 
+			if(!result) { 
+				return res.json({ 
+					proc: false, 
+					msj: "¡No se obtuvieron resultados!" 
+				}); 
+			} 
+
+			// Retornar datos 
+			return res.json({ 
+				proc: true, 
+				msj: "", 
+				lista: result 
+			}); 
+		}).catch(function(err) { 
+			// Existe un error en actualizar el mensaje 
+			sails.log(err); 
+			return res.json({ 
+				proc: false, 
+				msj: "¡Se produjo un error al actualizar el mensaje!", 
+				err: err 
+			});
+		}); 
+	}, 
 };
