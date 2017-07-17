@@ -123,13 +123,13 @@
             }); 
 
 			// Obtener el token de csrf 
-			$http.get("/csrfToken").then(function(token) { 
-				vm.csrfToken = token.data._csrf;  
+			$http.get("/csrfToken").then(function(d) { 
+				vm.csrfToken = d.data._csrf;  
 			});
 
 			// Obtener el usuario que inició sesión
-			$http.get("/session/getUser").then(function(resultado) {  
-				vm.miUsuario = resultado.data.user;
+			$http.get("/session/getUser").then(function(d) {  
+				vm.miUsuario = d.data.user;
 			});
             
             // Obtener los usuarios de VisualMail menos mi usuario 
@@ -379,10 +379,6 @@
                     vm.miMensajeTipoSeleccionado = value; 
                 } 
             }; 
-        }; 
-
-        vm.test = function() { 
-$("#modalMensajeMarcarVer").modal("open"); 
         }; 
 
         /**
@@ -769,21 +765,21 @@ $("#modalMensajeMarcarVer").modal("open");
 					"X-CSRF-TOKEN": vm.csrfToken 
 				}, 
 				data: { 
-					dialogos: vm.miProyecto.dialogos[0].id, 
-					usuario: vm.miUsuario.id, 
-					project_id: vm.miProyecto.id, 
-					name: vm.miMensajeRespuesta, 
+                    name: vm.miMensajeRespuesta, 
                     namePlain: vm.miMensajeRespuesta, 
-            		tipo: vm.miMensajeTipoSeleccionado, 
-            		position: mensajePosicion, 
-            		root: false, 
-            		numero_hijos: 0, 
-            		parent: vm.miMensajeSeleccionado.id, 
-                    nodoPadreId: vm.miMensajeSeleccionado.nodoId,
-                    sessionId: vm.miSessionId,
-                    nodoNivel: vm.miMensajeSeleccionado.numero_hijos + vm.miMensajeSeleccionado.nodoNivel,
-                    nodoPadreNivel: vm.miMensajeSeleccionado.nodoNivel,
-                    nodoPadreSessionId: vm.miMensajeSeleccionado.sessionId
+                    tipo: vm.miMensajeTipoSeleccionado, 
+                    position: mensajePosicion, 
+                    project_id: vm.miProyecto.id, 
+                    numero_hijos: 0, 
+                    root: false, 
+                    parent: vm.miMensajeSeleccionado.id, 
+                    usuario: vm.miUsuario.id, 
+                    nodoPadreId: vm.miMensajeSeleccionado.nodoId, 
+                    sessionId: vm.miSessionId, 
+                    nodoNivel: vm.miMensajeSeleccionado.numero_hijos + vm.miMensajeSeleccionado.nodoNivel, 
+                    nodoPadreNivel: vm.miMensajeSeleccionado.nodoNivel, 
+                    nodoPadreSessionId: vm.miMensajeSeleccionado.sessionId, 
+                    dialogos: vm.miProyecto.dialogos[0].id 
             	}
             })
             .then(function(respuesta) { 
@@ -975,18 +971,6 @@ $("#modalMensajeMarcarVer").modal("open");
             setMensaje("Tarea actualizada"); 
         }; 
 
-        vm.onMensajeMarcaClick = onMensajeMarcaClick; 
-
-        function onMensajeMarcaClick(dataMarca) { 
-            /*$http({ 
-                url: "/mensaje/getMarcas", 
-                method: "POST", 
-                params: { mensajeId: vm.miMensajeMarcaVer.id } 
-            })*/
-
-            $("#modalMensajeMarcarVer").modal("open"); 
-        }; 
-
         /**
         * @method :: onMensajeAnclarClick 
         * @description :: Establecer el 'nodo anclado' 
@@ -1007,7 +991,7 @@ $("#modalMensajeMarcarVer").modal("open");
                         vm.miMensajeAncladoName = $sce.trustAsHtml(vm.miMensajeAnclado.name); 
                         $(document).ready(function() { 
                             $(".marcar").on("click", function() { 
-                                vm.onMensajeMarcaClick($(this).attr("data-marca")); 
+                                vm.onMensajeMarcaClick($(this).attr("data-marca"), parseInt($(this).attr("data-nid"))); 
                             }); 
                         }); 
                         return false; 
@@ -1034,10 +1018,13 @@ $("#modalMensajeMarcarVer").modal("open");
         * @param :: {integer} nodoId, identificador del nodo que representa al nodo 
         * @param :: {integer} modal, identificador del elemento modal que se abrirá 
         **/
+        vm.miMensajeSeleccionadoName = ""; 
         function onMensajeModalShow(nodoId, modal) { 
             $.each(vm.miMensaje, function(key, value) { 
                 if(parseInt(value.nodoId) === nodoId) { 
+                    console.log(vm.miMensajeSeleccionadoName); 
                     vm.miMensajeSeleccionado = value; 
+                    vm.miMensajeSeleccionadoName = $sce.trustAsHtml(vm.miMensajeSeleccionado.name); 
                     return false; 
                 } 
             });
@@ -1105,7 +1092,6 @@ $("#modalMensajeMarcarVer").modal("open");
                 if(vm.miMensajeAnclado.nodoId === nuevoMensaje.nodoPadreId) { 
                     vm.miMensajeAncladoNavegar = nuevoMensaje; 
                     vm.miMensajeAncladoNavegarName = $sce.trustAsHtml(nuevoMensaje.name); 
-                    //$(".context-menu-mensaje-navegar").html(vm.miMensajeAncladoNavegar.name); 
 
                     var n = $("[data-circle-navigate=ok]"); 
                     n.attr("stroke", ""); 
@@ -1345,6 +1331,7 @@ $("#modalMensajeMarcarVer").modal("open");
                     // Crear la marca en el texto del mensaje 
                     var span = document.createElement("span"); 
                     span.setAttribute("data-marca", d.mensajeMarca.marcaId); 
+                    span.setAttribute("data-nid", vm.miMensajeDialogoId.nodoId); 
                     span.className = "marcar"; 
                     range = s.getRangeAt(0).cloneRange(); 
                     range.surroundContents(span); 
@@ -1360,7 +1347,6 @@ $("#modalMensajeMarcarVer").modal("open");
 
                 // Actualizar en el texto del mensaje 
                 var msjTemp = $(".context-menu-mensaje-anclado").html(); 
-                vm.miMensajeDialogoId.name = $sce.trustAsHtml(msjTemp); 
 
                 // Actualizar el mensaje 
                 $http({ 
@@ -1385,6 +1371,11 @@ $("#modalMensajeMarcarVer").modal("open");
                     var $select = $('#mensajeMarcarSelectize').selectize(); 
                     var control = $select[0].selectize; 
                     control.clear(); 
+                    $(document).ready(function() { 
+                        $(".marcar").on("click", function() { 
+                            vm.onMensajeMarcaClick($(this).attr("data-marca"), parseInt($(this).attr("data-nid"))); 
+                        }); 
+                    }); 
                     $("#modalMensajeMarcar").modal("close"); 
                 }).catch(function(err) { 
                     setMensaje("¡Se produjo un error!"); 
@@ -1454,6 +1445,7 @@ $("#modalMensajeMarcarVer").modal("open");
                     // Crear la marca en el texto del mensaje 
                     var span = document.createElement("span"); 
                     span.setAttribute("data-marca", d.mensajeMarca.marcaId); 
+                    span.setAttribute("data-nid", vm.miMensajeDialogoId.nodoId); 
                     span.className = "marcar"; 
                     range = s.getRangeAt(0).cloneRange(); 
                     range.surroundContents(span); 
@@ -1469,7 +1461,6 @@ $("#modalMensajeMarcarVer").modal("open");
 
                 // Actualizar en el texto del mensaje 
                 var msjTemp = $(".context-menu-mensaje-anclado").html(); 
-                vm.miMensajeDialogoId.name = $sce.trustAsHtml(msjTemp); 
 
                 // Actualizar el mensaje 
                 // Arreglo que almacena la posición del nuevo mensaje
@@ -1501,6 +1492,7 @@ $("#modalMensajeMarcarVer").modal("open");
                         mensajeMarcadoId: vm.miMensajeDialogoId.id, 
                         mensajeMarcadoName: msjTemp, 
                         name: vm.miMensajeResponderTexto, 
+                        namePlain: vm.miMensajeResponderTexto, 
                         respuestaMarca: vm.miMensajeDialogo, 
                         respuestaMarcaId: d.mensajeMarca.id, 
                         tipo: vm.miMensajeResponderDialogo, 
@@ -1551,6 +1543,12 @@ $("#modalMensajeMarcarVer").modal("open");
                             var $select = $('#mensajeResponderSelectize').selectize();
                             var control = $select[0].selectize;
                             control.clear();
+                            $(document).ready(function() { 
+                                $(".marcar").on("click", function() { 
+                                    vm.onMensajeMarcaClick($(this).attr("data-marca"), parseInt($(this).attr("data-nid"))); 
+                                }); 
+                            }); 
+                            vm.procesando = false; 
                             $("#modalMensajeResponder").modal("close");
                         }).catch(function(err) { 
                             // Error 'Update Diálogo' 
@@ -1607,7 +1605,49 @@ $("#modalMensajeMarcarVer").modal("open");
             else if (key === "reply") 
                 $("#modalMensajeResponder").modal("open"); 
         }; 
-	};
+        
+        vm.onMensajeMarcaClick = onMensajeMarcaClick; 
+        vm.miMensajeMarcaVerLista = []; 
 
+        function onMensajeMarcaClick(dataMarca, nodoId) { 
+            if(vm.procesando)
+                return; 
+
+            vm.procesando = true; 
+
+            // Buscar la(s) marca(s) 
+            $http({ 
+                url: "/mensaje/getMarcas", 
+                method: "POST", 
+                headers: { 
+                    "Content-Type": "application/json", 
+                    "X-CSRF-TOKEN": vm.csrfToken 
+                }, 
+                params: { 
+                    nodoId: nodoId,
+                    projectId: vm.miProyectoId, 
+                    marcaId: dataMarca 
+                } 
+            }).then(function(res) { 
+                // Obtener el resultado 
+                var d = res.data; 
+                vm.procesando = false; 
+
+                // Si existe un error mostrar mensaje 
+                if(!d.proc) { 
+                    setMensaje(d.msj); 
+                    return; 
+                } 
+
+                vm.miMensajeMarcaVerLista = res.data.lista; 
+                $("#modalMensajeMarcarVer").modal("open"); 
+            }).catch(function(err) { 
+                // Error 'Marcar' 
+                setMensaje("¡Se produjo un error!"); 
+                console.log(err); 
+                vm.procesando = false; 
+            }); 
+        }; 
+    };
 
 })(); 

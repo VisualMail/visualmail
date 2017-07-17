@@ -27,8 +27,13 @@
 
         // 'pk' del mensaje 
         mensajeId: {
-            type: 'string'
+            type: "string" 
         },
+
+        // nodo del mensaje 
+        nodoId: { 
+            type: "integer" 
+        }, 
 
         // 'pk' del usuario que realizó el mensaje
         usuario: {

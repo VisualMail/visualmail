@@ -1,16 +1,14 @@
 <div class="row" id="ProjectControllerCargando">
 	<div class="container">
 		<br />
-		<div class="row center">
-			        <div class="card-panel white lighten-5 z-depth-1">
-
-			<img src="/images/cargando.gif" alt="cargando" />
-			        </div>
+		<div class="row center"> 
+			<div class="card-panel white lighten-5 z-depth-1"> 
+				<img src="/images/cargando.gif" alt="cargando" /> 
+			</div>
 		</div>
 	</div>
 </div>
 <div id="ProjectControllerMain" ng-controller="ProjectController as vm" style="display: none; padding-top: .2em;">
-<button type="button" ng-click="vm.test()">Button</button>
 	<!-- Inicio contenido -->
 	<div class="row">
 
@@ -159,7 +157,7 @@
 										data-position="left" 
 										data-tooltip="Responder">
 										<a class="btn-floating waves-effect waves-light light-green modal-trigger" href="#modalMensaje" modal 
-											ng-click="vm.miMensajeSeleccionado = vm.miMensajeAnclado;">
+											ng-click="vm.onMensajeModalShow(vm.miMensajeAnclado.nodoId, 1);">
 											<i class="small material-icons">reply</i>
 										</a>
 									</span>
@@ -180,50 +178,50 @@
   				</div>
 				<div class="resizable-panel-right">
   					<div ng-if="vm.miMensajeAncladoNavegar !== ''">
-						<div class="row">
-							<div class="col s12 m2 l2"> 
-								<img alt="Usuario" class="circle responsive-img" ng-src="{{ vm.miMensajeAncladoNavegar !== '' ? (vm.miMensajeAncladoNavegar.usuario.imgurl ? vm.miMensajeAncladoNavegar.usuario.imgurl : '/images/profile.jpg') : '' }}" />
-							</div>
-							<div class="col s12 m10 l10">
-								<div class="row">
-									<div class="col s12 m12 l9">
-										<h6>{{ (vm.miMensajeAncladoNavegar !== "" ? vm.miMensajeAncladoNavegar.createdAt : "") | date:'M/d/yyyy HH:mm:ss' }}</h6>
-										<p><strong>
-											{{ vm.miMensajeAncladoNavegar !== "" ? vm.miMensajeAncladoNavegar.usuario.firstname : "" }}&nbsp;
-											({{ vm.miMensajeAncladoNavegar !== "" ? vm.miMensajeAncladoNavegar.usuario.initials : "" }})</strong> dijo:</p>
-									</div>
-									<div class="col s12 m12 l3 right-align">
-										<span tooltipped 
-											data-delay="50" 
-											data-position="left" 
-											data-tooltip="Unir al Kanban">
-											<a class="btn-floating light-green valign-wrapper" href="#modalMensajeKanban" 
-												modal 
-												ng-click="vm.miMensajeSeleccionado = vm.miMensajeAncladoNavegar;">
-												<img alt="Kanban" height="33px" src="/images/kanbanicon.png" width="33px" />
-											</a>
-										</span>
-										<span tooltipped 
-											data-delay="50" 
-											data-position="left" 
-											data-tooltip="Responder">
-											<a class="btn-floating waves-effect waves-light light-green modal-trigger" href="#modalMensaje" 
-												modal 
-												ng-click="vm.miMensajeSeleccionado = vm.miMensajeAncladoNavegar;">
-												<i class="small material-icons">reply</i>
-											</a>
-										</span>
-									</div>
+						
+						<div class="card-panel grey lighten-1 z-depth-1"> 
+							<div class="row valign-wrapper"> 
+								<div class="col s12 m12 l2"> 
+									<img alt="Usuario" class="circle responsive-img" ng-src="{{ vm.miMensajeAncladoNavegar !== '' ? (vm.miMensajeAncladoNavegar.usuario.imgurl ? vm.miMensajeAncladoNavegar.usuario.imgurl : '/images/profile.jpg') : '' }}" />
+								</div> 
+								<div class="col s10 m12 l6"> 
+									<span class="black-text">({{ vm.miMensajeAncladoNavegar !== "" ? vm.miMensajeAncladoNavegar.usuario.initials : "" }})</span> 
+									<span class="right-align">{{ (vm.miMensajeAncladoNavegar !== "" ? vm.miMensajeAncladoNavegar.createdAt : "") | date:'M/d/yyyy HH:mm:ss' }}</span> 
+								</div> 
+								<div class="col s12 m12 l4 right-align">							
+									<span tooltipped 
+										data-delay="50" 
+										data-position="left" 
+										data-tooltip="Unir al Kanban">
+										<a class="btn-floating light-green valign-wrapper" href="#modalMensajeKanban" 
+											modal 
+											ng-click="vm.miMensajeSeleccionado = vm.miMensajeAncladoNavegar;">
+											<img alt="Kanban" height="33px" src="/images/kanbanicon.png" width="33px" />
+										</a>
+									</span>
+									<span tooltipped 
+										data-delay="50" 
+										data-position="left" 
+										data-tooltip="Responder">
+										<a class="btn-floating waves-effect waves-light light-green modal-trigger" href="#modalMensaje" 
+											modal 
+											ng-click="vm.onMensajeModalShow(vm.miMensajeAncladoNavegar.nodoId, 1);">
+											<i class="small material-icons">reply</i>
+										</a>
+									</span>
 								</div>
-								<div class="row">
-									<div class="mensaje-anclar-card">
-										<p ng-if="vm.miMensajeAncladoNavegar.tipo !== ''"><strong>Tipo de mensaje</strong>: {{ vm.miMensajeAncladoNavegar.tipo }}.</p>
-										<p ng-if="vm.miMensajeAncladoNavegar.respuestaMarca !== ''"><strong>Respuesta a</strong>: {{ vm.miMensajeAncladoNavegar.respuestaMarca }}.</p>
-										<p class="context-menu-mensaje-navegar" ng-bind-html="vm.miMensajeAncladoNavegarName"></p> 
-									</div>
+							</div> 
+							<div class="row"> 
+								<div class="card-panel grey lighten-5 z-depth-1"> 
+								<div class="mensaje-anclar-navegar-card">
+									<p ng-if="vm.miMensajeAncladoNavegar.tipo !== ''"><strong>Tipo de mensaje</strong>: {{ vm.miMensajeAncladoNavegar.tipo }}.</p>
+									<p ng-if="vm.miMensajeAncladoNavegar.respuestaMarca"><strong>Respuesta a</strong>: {{ vm.miMensajeAncladoNavegar.respuestaMarca }}.</p>
+									<p class="context-menu-mensaje-navegar" ng-bind-html="vm.miMensajeAncladoNavegarName"></p> 
+								</div> 
 								</div>
-							</div>
-						</div>
+							</div> 
+							
+						</div> 
 					</div>
 					<div ng-if="vm.miMensajeAncladoNavegar === ''">
 						<div class="row">
@@ -629,7 +627,7 @@
 									</div>
 								</div>
 								<div class="mensaje-card">
-									<!--<p class="context-menu-mensaje-navegar" ng-bind-html="vm.miMensajeSeleccionado.name"></p>-->
+									<p ng-bind-html="vm.miMensajeSeleccionadoName"></p>
 								</div>
 							</div>
 							<div class="card-action">
@@ -651,7 +649,7 @@
 											<h6><strong>{{ vm.miUsuario.firstname }} ({{ vm.miUsuario.initials }})</strong> responde:</h6>
 										</div>
 										<div class="col s12 m8 l8">
-											<selectize class="selectize-input-mensaje" config="vm.miMensajeSelectizeConfig" id="mensajeSelectize" options="vm.miMensajeTipoDialogo" ng-model="vm.miMensajeInputDialogo"></selectize>
+											<selectize class="selectize-input-mensaje" config="vm.miMensajeSelectizeConfig" id="mensajeSelectize" options="vm.miMensajeTipoDialogo" ng-model="vm.miMensajeTipoSeleccionado"></selectize>
 										</div>
 									</div>
 								</div>
@@ -766,7 +764,7 @@
 			</form>
 		</div>
 		<div class="modal-footer">
-			<a class="btn-flat modal-action modal-close waves-effect waves-green" href="#!" 
+			<a class="btn-flat modal-action waves-effect waves-green" href="#!" 
 				ng-click="vm.onBtnMensajeResponderClick()" 
 				ng-show="vm.formMensajeResponder.$valid">Aceptar</a>
 			<a class="btn-flat modal-action modal-close waves-effect waves-green" href="#!" 
@@ -775,19 +773,38 @@
 	</div>
 	<!-- Fin Modal Mensaje Respuesta -->
 
-	<!-- Inicio Modal Mensaje Respuesta -->
+	<!-- Inicio Modal Marca Ver -->
 	<div class="modal modal-fixed-footer" id="modalMensajeMarcarVer">
 		<div class="modal-content">
-			<h4 class="green-text">Marcas del mensaje</h4>
-			
-			
+			<h4 class="green-text">Marcas del mensaje</h4> 
+			<div class="row"> 
+				<div class="col s12"> 
+					<p><span class="chip">{{ vm.miMensajeMarcaVerLista[0].marca }}</span></p> 
+				</div> 
+				<div class="col s12"> 
+					<table>
+						<thead>
+							<tr>
+								<th>Usuario</th>
+								<th>Lo marcó como</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="item in vm.miMensajeMarcaVerLista">
+								<td>{{ item.usuario.firstname + " " + item.usuario.lastname }}</td>
+								<td>{{ item.tipo }}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div> 
 		</div>
 		<div class="modal-footer">
 			<a class="btn-flat modal-action modal-close waves-effect waves-green" href="#!" 
 				ng-click="">Cancelar</a>
 		</div>
 	</div>
-	<!-- Fin Modal Mensaje Respuesta -->
+	<!-- Fin Modal Marca Ver -->
 
 
 

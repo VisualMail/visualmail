@@ -232,6 +232,8 @@
 
                                 // Mostrar el mensaje 
                                 vm.guardando = false; 
+                                vm.projectName = ""; 
+                                vm.projectDate = ""; 
                                 setMensaje(rp.mensaje); 
                             }); 
                             // Fin POST para la creacion del kanban 

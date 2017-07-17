@@ -56,8 +56,28 @@ module.exports = {
 	* @param :: {Objetct} next, para continuar en caso de error
 	**/
 	create: function(req, res, next) { 
+		// Obtener el mensaje 
+		var msj = { 
+			name: req.param("name"), 
+			namePlain: req.param("name"), 
+			respuestaMarca: req.param("respuestaMarca"), 
+			respuestaMarcaId: req.param("respuestaMarcaId"), 
+			tipo: req.param("tipo"), 
+			position: req.param("position"), 
+			project_id: req.param("project_id"), 
+			numero_hijos: 0, 
+			root: false, 
+			parent: req.param("parent"), 
+			usuario: req.session.User, 
+			nodoPadreId: req.param("nodoPadreId"), 
+			sessionId: req.param("sessionId"), 
+			nodoNivel: req.param("nodoNivel"), 
+			nodoPadreNivel: req.param("nodoPadreNivel"), 
+			nodoPadreSessionId: req.param("nodoPadreSessionId") 
+		}; 
+
         // Crear el mensaje
-		Mensaje.create(req.allParams(), function mensajeCreated(err, mensaje) { 
+		Mensaje.create(msj, function mensajeCreated(err, mensaje) { 
 			// Verificar si existe un error
 			if(err) { 
 				req.session.flash = { err: err }; 
@@ -321,30 +341,60 @@ module.exports = {
 	* @param :: {Objetct} next, para continuar en caso de error
 	**/
 	getMarcas: function(req, res, next) { 
-		
-		MensajeMarca.find({ mensajeId: req.param("mensajeId") }).then(function(result) { 
-			// Retornar error 
+		// Obtener los datos del mensaje principal 
+		var projectId = req.param("projectId"); 
+		var nodoId = req.param("nodoId"); 
+
+		Mensaje.findOne({ project_id: projectId, nodoId: nodoId }).then(function(result) { 
+			// Retornar si no existe el resultado 
 			if(!result) { 
 				return res.json({ 
 					proc: false, 
-					msj: "¡No se obtuvieron resultados!" 
+					msj: "¡No se obtuvieron resultados del mensaje principal!" 
 				}); 
 			} 
 
-			// Retornar datos 
-			return res.json({ 
-				proc: true, 
-				msj: "", 
-				lista: result 
+			// Obtener los identificadores de las marcas 
+			var dataMarca = req.param("marcaId"); 
+			var marcaId = dataMarca.split(","); 
+
+            for(var i = 0; i < marcaId.length; i++) 
+                marcaId[i] = +marcaId[i]; 
+
+			// Obtener la(s) marca(s)
+			MensajeMarca.find({ mensajeId: result.id, marcaId: marcaId }).populate("usuario").then(function(r) { 
+				// Retornar si no existe el resultado 
+				if(!r) { 
+					return res.json({ 
+						proc: false, 
+						msj: "¡No se obtuvieron resultados!" 
+					}); 
+				} 
+
+				// Retornar datos 
+				return res.json({ 
+					proc: true, 
+					msj: "", 
+					lista: r 
+				}); 
+			}).catch(function(err) { 
+				// Existe un error en actualizar el mensaje 
+				sails.log(err); 
+				return res.json({ 
+					proc: false, 
+					msj: "¡Se produjo un error al buscar las marcas!", 
+					err: err 
+				});
 			}); 
 		}).catch(function(err) { 
 			// Existe un error en actualizar el mensaje 
 			sails.log(err); 
 			return res.json({ 
 				proc: false, 
-				msj: "¡Se produjo un error al actualizar el mensaje!", 
+				msj: "¡Se produjo un error al buscar el mensaje principal!", 
 				err: err 
 			});
 		}); 
+
 	}, 
 };
