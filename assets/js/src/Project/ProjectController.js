@@ -104,6 +104,7 @@
         vm.onSocketTareaActualizar = onSocketTareaActualizar; 
         vm.onSocketTareaNueva = onSocketTareaNueva; 
         vm.setMensaje = setMensaje; 
+        vm.miMapaSvgFocus = true; 
         // Fin funciones 
 
         init(); 
@@ -113,6 +114,15 @@
         * @description :: Función inicial que se llama cuando carga el controlador 
         **/
         function init() { 
+            // Desactivar la navegación 
+            $(document).ready(function() { 
+                $("body").on("click", function(e){ 
+                    var cn = e.target.parentNode.className; 
+                    vm.miMapaSvgFocus = cn === "svg-mapa"; 
+                    $(".svg-mapa").css("opacity", vm.miMapaSvgFocus ? "1" : "0.3"); 
+                }); 
+            }); 
+
             // Obtener el 'id' del proyecto 
             vm.miProyectoId = getQueryString("id"); 
             
@@ -1237,9 +1247,9 @@
         * @method :: document.onkeydown 
         * @description :: Verifica la tecla de navegación que envía el usuario 
         **/
-        document.onkeydown = function checkKey(e) {
-            // Si no existe un mensaje anclado omitir
-            if(!$anclar) 
+        document.onkeydown = function checkKey(e) { 
+            // Si no existe un mensaje anclado omitir o no está el foco en el mapa
+            if(!$anclar || !vm.miMapaSvgFocus) 
                 return; 
 
             e = e || window.event;
@@ -1608,6 +1618,8 @@
         
         vm.onMensajeMarcaClick = onMensajeMarcaClick; 
         vm.miMensajeMarcaVerLista = []; 
+        vm.miMensajeMarcarTarea = ""; 
+        vm.miMensajeMarcarTareaResponsable = ""; 
 
         function onMensajeMarcaClick(dataMarca, nodoId) { 
             if(vm.procesando)
@@ -1647,6 +1659,12 @@
                 console.log(err); 
                 vm.procesando = false; 
             }); 
+        }; 
+
+        vm.onBtnMensajeMarcarTareaCrearClick = onBtnMensajeMarcarTareaCrearClick; 
+
+        function onBtnMensajeMarcarTareaCrearClick() { 
+
         }; 
     };
 

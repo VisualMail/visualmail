@@ -58,7 +58,17 @@ module.exports = {
         // Índice de la tarea en la columna 
         index: {
             type: "integer"
-        }
+        }, 
+
+        // Si la tarea corresponde a una marca de un mensaje 
+        respuestaMarca: { 
+            type: "string"
+        }, 
+
+        // Id de la marca de un mensaje 
+        respuestaMarcaId: { 
+            type: "string"
+        }, 
     }, 
 
     /**

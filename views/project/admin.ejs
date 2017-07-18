@@ -116,7 +116,7 @@
 			<!-- Inicio del mapa del diálogo -->
 			<div id="main" class="main">
 				<div class="svg-session"></div>
-				<div class="svg-mapa"></div>
+				<div class="svg-mapa" style="opacity: 0.5"></div>
 			</div>
 			<!-- Fin del mapa del diálogo -->
 
@@ -772,6 +772,54 @@
 		</div>
 	</div>
 	<!-- Fin Modal Mensaje Respuesta -->
+
+	<!-- Inicio modal mensaje marca tarea -->
+	<div class="modal modal-fixed-footer" id="modalMensajeMarcarTarea">
+		<div class="modal-content">
+			<h4 class="green-text">Crear una nueva Tarea asociada</h4>
+			<form name="formMensajeMarcarTarea" novalidate="novalidate">
+				<div class="row">
+					<div class="col s1">
+						<br />
+						<i class="green-text material-icons small">mode_edit</i>
+					</div>
+					<div class= "col s6 input-field">
+						<input class="input-area" length="130" name="mensajeMarcarTarea" type="text" 
+							ng-maxlength="130" 
+							ng-minlength="3" 
+							ng-model="vm.miMensajeMarcarTarea" 
+							ng-required="true" />
+						<label for="mensajeMarcarTarea">Tarea</label>
+					</div>
+					<div class="col s5 centerme red-text" role="alert" ng-messages="formMensajeMarcarTarea.mensajeMarcarTarea.$error">
+						<div ng-message="required"><i class="material-icons red-green-text small">error_outline</i></div>
+						<div ng-message="minlength">Mínimo 3 caracteres</div>
+						<div ng-message="maxlength">Tarea demasiada larga</div>
+						<div ng-show="formMensajeMarcarTarea.mensajeMarcarTarea.$valid"><i class="light-green-text material-icons small">done</i></div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col s1"> 
+						<br />
+						<i class="small material-icons green-text">search</i>
+					</div>
+					<div class="col s8">
+						<selectize 
+							config="vm.miListaParticipantesSelectizeConfig" 
+							options="vm.miListaParticipantes" 
+							ng-model="vm.miMensajeMarcarTareaResponsable"></selectize>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="modal-footer">
+			<a class="btn-flat modal-action modal-close waves-effect waves-green" href="#!" 
+				ng-click="vm.onBtnMensajeMarcarTareaCrearClick()" 
+				ng-show="formMensajeKanban.$valid">Aceptar</a>
+			<a class="btn-flat modal-action modal-close waves-effect waves-green" href="#!" ng-click="">Cancelar</a>
+		</div>
+	</div>
+	<!-- Fin  modal mensaje marca tarea -->
 
 	<!-- Inicio Modal Marca Ver -->
 	<div class="modal modal-fixed-footer" id="modalMensajeMarcarVer">
