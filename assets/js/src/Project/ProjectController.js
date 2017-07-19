@@ -118,7 +118,7 @@
             $(document).ready(function() { 
                 $("body").on("click", function(e){ 
                     var cn = e.target.parentNode.className; 
-                    vm.miMapaSvgFocus = cn === "svg-mapa"; 
+                    vm.miMapaSvgFocus = cn === "svg-mapa" || e.target.parentNode.nodeName === "svg"; 
                     $(".svg-mapa").css("opacity", vm.miMapaSvgFocus ? "1" : "0.3"); 
                 }); 
             }); 
@@ -231,8 +231,10 @@
 
                 // Añadir cada tarea a la columna correspondiente 
                 $.each(vm.miKanbanListaTareas, function(key, value) { 
-                    if(value.tipo === vm.miKanbanTipoTarea[0]) // Nuevas 
+                    if(value.tipo === vm.miKanbanTipoTarea[0]) {// Nuevas 
                         vm.miKanbanColumn1.push(value); 
+                        console.log(value); 
+                    }
                     else if(value.tipo === vm.miKanbanTipoTarea[1]) // Haciendo 
                         vm.miKanbanColumn2.push(value); 
                     else if(value.tipo === vm.miKanbanTipoTarea[2]) // En pruebas 
@@ -839,6 +841,11 @@
         * @description :: Función para mandar POST y crear una tarea
         */
         function onBtnTareaCrearClick(conMensaje) { 
+            // Verificar si está procesando 
+            if(vm.procesando) 
+                return; 
+            
+            vm.procesando = true; 
 
             // Para identificar el usuario seleccionado de Selectize 
             for(var i = 0; i < vm.miListaParticipantes.length; i++) { 
@@ -867,8 +874,7 @@
                 selectedUsuarioTask: vm.miKanbanSelectedUsuarioTask
             }; 
 
-            // Si es una tarea asociada al mensaje
-            // agregar los datos del mensaje 
+            // Si es una tarea asociada al mensaje agregar los datos del mensaje 
             if(conMensaje) { 
                 dataPost.associated = true; 
                 dataPost.element = vm.miMensajeSeleccionado.tipo; 
@@ -883,14 +889,18 @@
                     "X-CSRF-TOKEN": vm.csrfToken 
                 }, 
                 data: dataPost
-            })
-            .then(function(respuesta) { 
+            }).then(function(res) { 
                 // Se reciben los valores del post 
                 vm.miKanbanTareaNueva = ""; 
+                vm.procesando = false; 
 
                 // Verificar si la respuesta desde el servidor es error 
-                if(!respuesta.data.procedimiento) 
-                    setMensaje(respuesta.data.mensaje); 
+                if(!res.data.procedimiento) 
+                    setMensaje(res.data.mensaje); 
+            }).catch(function(err) { 
+                setMensaje("¡Se produjo un error!"); 
+                console.log(err); 
+                vm.procesando = false; 
             }); 
         }; 
 
@@ -1295,6 +1305,7 @@
                 return; 
 
             vm.procesando = true; 
+            var mensaje = vm.miMensajeDialogoId === "anclado" ? vm.miMensajeAnclado : vm.miMensajeAncladoNavegar; 
 
             // Guardar la marca del mensaje 
             $http({ 
@@ -1307,7 +1318,7 @@
                 data: { 
                     marca: vm.miMensajeDialogo, 
                     tipo: vm.miMensajeMarcarDialogo, 
-                    mensaje: vm.miMensajeDialogoId 
+                    mensaje: mensaje  
                 }
             }).then(function(res) { 
                 // Obtener la respuesta 
@@ -1341,7 +1352,7 @@
                     // Crear la marca en el texto del mensaje 
                     var span = document.createElement("span"); 
                     span.setAttribute("data-marca", d.mensajeMarca.marcaId); 
-                    span.setAttribute("data-nid", vm.miMensajeDialogoId.nodoId); 
+                    span.setAttribute("data-nid", mensaje.nodoId); 
                     span.className = "marcar"; 
                     range = s.getRangeAt(0).cloneRange(); 
                     range.surroundContents(span); 
@@ -1356,7 +1367,7 @@
                 } 
 
                 // Actualizar en el texto del mensaje 
-                var msjTemp = $(".context-menu-mensaje-anclado").html(); 
+                var msjTemp = $(".context-menu-mensaje-" + vm.miMensajeDialogoId).html(); 
 
                 // Actualizar el mensaje 
                 $http({ 
@@ -1367,7 +1378,7 @@
                         "X-CSRF-TOKEN": vm.csrfToken 
                     }, 
                     data: { 
-                        id: vm.miMensajeDialogoId.id, 
+                        id: mensaje.id, 
                         name: msjTemp  
                     }
                 }).then(function(r) { 
@@ -1409,6 +1420,7 @@
                 return; 
 
             vm.procesando = true; 
+            var mensaje = vm.miMensajeDialogoId === "anclado" ? vm.miMensajeAnclado : vm.miMensajeAncladoNavegar; 
 
             // Guardar mensaje marcado 
             $http({ 
@@ -1421,7 +1433,7 @@
                 data: { 
                     marca: vm.miMensajeDialogo, 
                     tipo: vm.miMensajeResponderDialogo, 
-                    mensaje: vm.miMensajeDialogoId 
+                    mensaje: mensaje 
                 }
             }).then(function(res) { 
                 // Obtener la respuesta 
@@ -1455,7 +1467,7 @@
                     // Crear la marca en el texto del mensaje 
                     var span = document.createElement("span"); 
                     span.setAttribute("data-marca", d.mensajeMarca.marcaId); 
-                    span.setAttribute("data-nid", vm.miMensajeDialogoId.nodoId); 
+                    span.setAttribute("data-nid", mensaje.nodoId); 
                     span.className = "marcar"; 
                     range = s.getRangeAt(0).cloneRange(); 
                     range.surroundContents(span); 
@@ -1470,24 +1482,24 @@
                 } 
 
                 // Actualizar en el texto del mensaje 
-                var msjTemp = $(".context-menu-mensaje-anclado").html(); 
+                var msjTemp = $(".context-menu-mensaje-" + vm.miMensajeDialogoId).html(); 
 
                 // Actualizar el mensaje 
                 // Arreglo que almacena la posición del nuevo mensaje
 			    var mensajePosicion = []; 
 
                 // Por cada valor de 'position' del mensaje seleccionado a responder se copia 
-			    for(var i = 0; i < vm.miMensajeDialogoId.position.length; i++) 
-				    mensajePosicion.push(vm.miMensajeDialogoId.position[i]); 
+			    for(var i = 0; i < mensaje.position.length; i++) 
+				    mensajePosicion.push(mensaje.position[i]); 
 
 			    // Ingresar el valor que le corresponde al nuevo mensaje en 'position'
-			    mensajePosicion.push(vm.miMensajeDialogoId.numero_hijos); 
+			    mensajePosicion.push(mensaje.numero_hijos); 
 
 			    // Para realizar el post con csrf 
 			    $http.defaults.withCredentials = true; 
 
                 // Si el mensaje no tiene sesión, actualizar mi sesión
-                if(vm.miMensajeDialogoId.sessionId === vm.miSessionId)
+                if(mensaje.sessionId === vm.miSessionId)
                     vm.miSessionId++;
 
                 // Guardar el mensaje 
@@ -1499,7 +1511,7 @@
 					    "X-CSRF-TOKEN": vm.csrfToken 
 				    }, 
                     data: { 
-                        mensajeMarcadoId: vm.miMensajeDialogoId.id, 
+                        mensajeMarcadoId: mensaje.id, 
                         mensajeMarcadoName: msjTemp, 
                         name: vm.miMensajeResponderTexto, 
                         namePlain: vm.miMensajeResponderTexto, 
@@ -1508,12 +1520,12 @@
                         tipo: vm.miMensajeResponderDialogo, 
                         position: mensajePosicion, 
                         project_id: vm.miProyecto.id, 
-                        parent: vm.miMensajeDialogoId.id, 
-                        nodoPadreId: vm.miMensajeDialogoId.nodoId, 
+                        parent: mensaje.id, 
+                        nodoPadreId: mensaje.nodoId, 
                         sessionId: vm.miSessionId, 
-                        nodoNivel: vm.miMensajeDialogoId.numero_hijos + vm.miMensajeDialogoId.nodoNivel, 
-                        nodoPadreNivel: vm.miMensajeDialogoId.nodoNivel, 
-                        nodoPadreSessionId: vm.miMensajeDialogoId.sessionId, 
+                        nodoNivel: mensaje.numero_hijos + mensaje.nodoNivel, 
+                        nodoPadreNivel: mensaje.nodoNivel, 
+                        nodoPadreSessionId: mensaje.sessionId, 
                         dialogos: vm.miProyecto.dialogos[0].id 
             	    } 
                 }).then(function(resMensaje) { 
@@ -1530,7 +1542,7 @@
                             "X-CSRF-TOKEN": vm.csrfToken 
                         }, 
                         data: { 
-                            id: vm.miMensajeDialogoId.id, 
+                            id: mensaje.id, 
                             idunion: mensajeTemporal.id 
                         } 
                     }).then(function(resUnir) {
@@ -1612,12 +1624,14 @@
             // Asignar el tipo de evento 
             if(key === "mark") 
                 $("#modalMensajeMarcar").modal("open"); 
-            else if (key === "reply") 
+            else if(key === "reply") 
                 $("#modalMensajeResponder").modal("open"); 
+            else if(key === "add") 
+                $("#modalMensajeMarcarTarea").modal("open"); 
         }; 
-        
+        /*******************************************************************************************************************/
         vm.onMensajeMarcaClick = onMensajeMarcaClick; 
-        vm.miMensajeMarcaVerLista = []; 
+        vm.miMensajeMarcarVerLista = []; 
         vm.miMensajeMarcarTarea = ""; 
         vm.miMensajeMarcarTareaResponsable = ""; 
 
@@ -1651,7 +1665,7 @@
                     return; 
                 } 
 
-                vm.miMensajeMarcaVerLista = res.data.lista; 
+                vm.miMensajeMarcarVerLista = res.data.lista; 
                 $("#modalMensajeMarcarVer").modal("open"); 
             }).catch(function(err) { 
                 // Error 'Marcar' 
@@ -1664,7 +1678,131 @@
         vm.onBtnMensajeMarcarTareaCrearClick = onBtnMensajeMarcarTareaCrearClick; 
 
         function onBtnMensajeMarcarTareaCrearClick() { 
+            // Verificar si está procesando 
+            if(vm.procesando) 
+                return; 
 
+            vm.procesando = true; 
+            var mensaje = vm.miMensajeDialogoId === "anclado" ? vm.miMensajeAnclado : vm.miMensajeAncladoNavegar; 
+
+            // Guardar la marca del mensaje 
+            $http({ 
+                method: "POST", 
+                url: "/mensaje/marcar", 
+                headers: { 
+                    "Content-Type": "application/json", 
+                    "X-CSRF-TOKEN": vm.csrfToken 
+                }, 
+                data: { 
+                    marca: vm.miMensajeDialogo, 
+                    tipo: "Tarea", 
+                    mensaje: mensaje 
+                }
+            }).then(function(res) { 
+                // Obtener la respuesta 
+                var d = res.data; 
+
+                // Si tiene error retornar 
+                if(!d.proc) { 
+                    setMensaje(d.msj); 
+                    vm.procesando = false; 
+                    return; 
+                } 
+                
+                // Dar formato al mensaje 
+                var range = document.createRange(); 
+                range.setStart(vm.miMensajeDialogoSelection[0][0], vm.miMensajeDialogoSelection[0][1]); 
+                range.setEnd(vm.miMensajeDialogoSelection[1][0], vm.miMensajeDialogoSelection[1][1]); 
+                var s = window.getSelection();
+                s.removeAllRanges(); 
+                s.addRange(range);  
+                
+                // Si no existe el rango retornar 
+                if(!s.rangeCount || !s.getRangeAt) 
+                    return; 
+
+                // Verificar si se está respondiendo una misma marca 
+                if(s.focusNode.parentNode.getAttribute("data-marca")) { 
+                    // Actualizar la marca con el nuevo 'id' almacenado 
+                    var dm = s.focusNode.parentNode.getAttribute("data-marca"); 
+                    $(s.focusNode.parentNode).attr("data-marca", dm + "," + d.mensajeMarca.marcaId); 
+                } else { 
+                    // Crear la marca en el texto del mensaje 
+                    var span = document.createElement("span"); 
+                    span.setAttribute("data-marca", d.mensajeMarca.marcaId); 
+                    span.setAttribute("data-nid", mensaje.nodoId); 
+                    span.className = "marcar"; 
+                    range = s.getRangeAt(0).cloneRange(); 
+                    range.surroundContents(span); 
+                    document.desingMode = "on"; 
+            
+                    if(range) { 
+                        s.removeAllRanges(); 
+                        s.addRange(range); 
+                    }
+
+                    document.designMode = "off"; 
+                } 
+
+                // Actualizar en el texto del mensaje 
+                var msjTemp = $(".context-menu-mensaje-" + vm.miMensajeDialogoId).html(); 
+
+                // Para identificar el usuario seleccionado de Selectize 
+                for(var i = 0; i < vm.miListaParticipantes.length; i++) { 
+                    if(vm.miListaParticipantes[i].id === vm.miKanbanSelectedTask) { 
+                        vm.miKanbanSelectedUsuarioTask = vm.miListaParticipantes[i]; 
+                        break; 
+                    } 
+                } 
+
+                // Se eliminan valores que no se utilizan del usuario 
+                delete vm.miKanbanSelectedUsuarioTask.$$hashKey; 
+                delete vm.miKanbanSelectedUsuarioTask.$order; 
+                delete vm.miKanbanSelectedUsuarioTask.password; 
+
+                // Almacenar los datos que se enviarán al servidor 
+                var dataPost = { 
+                    associated: true, 
+                    drag: true, 
+                    element: vm.miMensajeDialogoId.tipo, 
+                    kanban: vm.miProyecto.kanban[0].id, 
+                    mensajeMarcadoId: mensaje.id, 
+                    mensajeMarcadoName: msjTemp, 
+                    project_id: vm.miProyecto.id, 
+                    selectedUsuarioTask: vm.miKanbanSelectedUsuarioTask, 
+                    respuestaMarca: vm.miMensajeDialogo, 
+                    respuestaMarcaId: d.mensajeMarca.marcaId, 
+                    tipo: "new", 
+                    title: vm.miKanbanTareaNueva, 
+                    usuario: vm.miKanbanSelectedUsuarioTask.id 
+                }; 
+            
+                $http({ 
+                    method: "POST", 
+                    url: "/mensaje/marcarTarea", 
+                    headers: { 
+                        "Content-Type": "application/json", 
+                        "X-CSRF-TOKEN": vm.csrfToken 
+                    }, 
+                    data: dataPost 
+                }).then(function(res) { 
+                    // Se reciben los valores del post 
+                    vm.miKanbanTareaNueva = ""; 
+                    vm.procesando = false; 
+                
+                    // Verificar si la respuesta desde el servidor es error 
+                    if(!res.data.procedimiento) 
+                        setMensaje(res.data.mensaje); 
+                }).catch(function(err) { 
+                    setMensaje("¡Se produjo un error!"); 
+                    console.log(err); 
+                    vm.procesando = false; 
+                }); 
+            }).catch(function(err) { 
+                setMensaje("¡Se produjo un error!"); 
+                console.log(err); 
+                vm.procesando = false; 
+            }); 
         }; 
     };
 

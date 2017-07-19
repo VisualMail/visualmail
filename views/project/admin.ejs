@@ -776,8 +776,16 @@
 	<!-- Inicio modal mensaje marca tarea -->
 	<div class="modal modal-fixed-footer" id="modalMensajeMarcarTarea">
 		<div class="modal-content">
-			<h4 class="green-text">Crear una nueva Tarea asociada</h4>
-			<form name="formMensajeMarcarTarea" novalidate="novalidate">
+			<h4 class="green-text">Crear una nueva Tarea</h4>
+			<form name="formMensajeMarcarTarea" novalidate="novalidate"> 
+				
+				<div class="row"> 
+					<div class="col s12"> 
+						<label>Asociada a</label>
+						<p><span class="chip">{{ vm.miMensajeDialogo }}</span></p> 
+					</div> 
+				</div> 
+
 				<div class="row">
 					<div class="col s1">
 						<br />
@@ -815,7 +823,7 @@
 		<div class="modal-footer">
 			<a class="btn-flat modal-action modal-close waves-effect waves-green" href="#!" 
 				ng-click="vm.onBtnMensajeMarcarTareaCrearClick()" 
-				ng-show="formMensajeKanban.$valid">Aceptar</a>
+				ng-show="formMensajeMarcarTarea.$valid">Aceptar</a>
 			<a class="btn-flat modal-action modal-close waves-effect waves-green" href="#!" ng-click="">Cancelar</a>
 		</div>
 	</div>
@@ -827,7 +835,7 @@
 			<h4 class="green-text">Marcas del mensaje</h4> 
 			<div class="row"> 
 				<div class="col s12"> 
-					<p><span class="chip">{{ vm.miMensajeMarcaVerLista[0].marca }}</span></p> 
+					<p><span class="chip">{{ vm.miMensajeMarcarVerLista[0].marca }}</span></p> 
 				</div> 
 				<div class="col s12"> 
 					<table>
@@ -838,7 +846,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr ng-repeat="item in vm.miMensajeMarcaVerLista">
+							<tr ng-repeat="item in vm.miMensajeMarcarVerLista">
 								<td>{{ item.usuario.firstname + " " + item.usuario.lastname }}</td>
 								<td>{{ item.tipo }}</td>
 							</tr>

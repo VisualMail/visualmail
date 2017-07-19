@@ -334,6 +334,92 @@ module.exports = {
 	}, 
 
 	/**
+	* @method :: marcarTarea (POST)
+	* @description :: Crea una tarea asociada a una marca de un mensaje 
+	* @param :: {Object} req, request element de sails
+	* @param :: {Objetct} res, de la vista ejs del servidor
+	* @param :: {Objetct} next, para continuar en caso de error
+	**/
+	marcarTarea: function(req, res, next) { 
+		// Obtener los parámetros de la marca 
+		var mensajeMarcadoId = req.param("mensajeMarcadoId"); 
+		var mensajeMarcadoName = req.param("mensajeMarcadoName"); 
+
+		// Actualizar el contenido del mensaje 
+		Mensaje.update({ id: mensajeMarcadoId }, { name: mensajeMarcadoName }).then(function(resultActualizar) { 
+			// Retornar error 
+			if(!resultActualizar) { 
+				return res.json({ 
+					proc: false, 
+					msj: "¡No se almacenó la información!", 
+				}); 
+			} 
+
+			// Obtener los parámetros de la tarea  
+			var datos = { 
+				associated: req.param("associated"), 
+				drag: req.param("drag"), 
+				element: req.param("element"), 
+				kanban: req.param("kanban"), 
+				mensaje: mensajeMarcadoId, 
+				project_id: req.param("project_id"), 
+				respuestaMarca: req.param("respuestaMarca"), 
+				respuestaMarcaId: req.param("respuestaMarcaId"), 
+				title: req.param("title"), 
+				tipo: req.param("tipo"), 
+				usuario: req.param("usuario") 
+			}; 
+			
+			//Con todos los parámetros, crear una nueva tarea
+			Tarea.create(datos).then(function(result) {  
+				// Retornar error 
+				if(!result) { 
+					return res.json({ 
+						proc: false, 
+						msj: "¡No se almacenó la información (Nueva Tarea)!", 
+					}); 
+				} 
+			
+				// En caso de no haber error, reiniciar la variable flash 
+				// y crear el objeto retornando un post con la tarea
+				req.session.flash = { }; 
+			
+				// Enviar un broadcast a los usuarios en línea que pertecen al proyecto 
+				sails.sockets.broadcast(
+					req.param("project_id"), 
+					"socket_project_response", { 
+						message: "Mensaje desde el servidor.", 
+						obj: result, 
+						type: "TareaNueva", 
+						selectedUsuarioTask: req.param("selectedUsuarioTask") 
+					}, req); 
+				return res.json({ 
+					procedimiento: true, 
+					mensaje: "",
+					tarea: result 
+				});
+			}).catch(function(err) { 
+				// Existe un error al crear la tarea 
+				sails.log(err); 
+				return res.json({ 
+					proc: false, 
+					msj: "¡Se produjo un error al crear la tarea!", 
+					err: err 
+				});
+			}); 
+		}).catch(function(err) { 
+			// Existe un error en actualizar el mensaje 
+			sails.log(err); 
+			return res.json({ 
+				proc: false, 
+				msj: "¡Se produjo un error al actualizar el mensaje!", 
+				err: err 
+			});
+		}); 
+
+	}, 
+
+	/**
 	* @method :: getMarcas (POST) 
 	* @description :: Obtiene las marcas de un mensaje 
 	* @param :: {Object} req, request element de sails

@@ -160,17 +160,16 @@ function contextMenuMapaInit() {
 * @param :: {Object} mensaje, datos del mensaje que se responde 
 **/
 function contextMenuMensajeInit(key, options, mensaje) { 
+    // Obtener el texto seleccionado 
+    var scope = angular.element(document.getElementById("ProjectControllerMain")).scope(); 
+    
     // Si se 'marca el mensaje' o se 'responde' 
-    if(key === "mark" || key === "reply") { 
-        // Obtener el texto seleccionado 
-        var scope = angular.element(document.getElementById("ProjectControllerMain")).scope(); 
-        mensaje = mensaje === "anclado" ? scope.vm.miMensajeAnclado : scope.vm.miMensajeAncladoNavegar; 
-
-        // Mostrar el PopUp 
+    if(key === "mark" || key === "reply" || key === "add") { 
+        // Mostrar el PopUp del mensaje 
         scope.$apply(function () { 
             scope.vm.onMostrarMensajeDialogo(key, mensaje); 
         });
-    }
+    } 
 }
 
 /**
