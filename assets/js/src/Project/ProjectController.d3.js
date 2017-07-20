@@ -157,6 +157,7 @@ function mapaDialogoAgregarNodo(mensaje) {
 	svgSession.attr("width", svgWidth); 
 	
 	var m = $("#main > .svg-mapa"); 
+	
 	m.find("svg")
 		.attr("height", svgHeight)
 		.attr("width", svgWidth); 

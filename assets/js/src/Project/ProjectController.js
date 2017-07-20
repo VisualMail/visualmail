@@ -1292,8 +1292,14 @@
         vm.miMensajeResponderDialogo = ""; 
         vm.miMensajeResponderTexto = ""; 
         vm.onBtnMensajeMarcarClick = onBtnMensajeMarcarClick; 
+        vm.onBtnMensajeMarcarTareaCrearClick = onBtnMensajeMarcarTareaCrearClick; 
         vm.onBtnMensajeResponderClick = onBtnMensajeResponderClick; 
         vm.onMostrarMensajeDialogo = onMostrarMensajeDialogo; 
+        
+        vm.onMensajeMarcaClick = onMensajeMarcaClick; 
+        vm.miMensajeMarcarVerLista = []; 
+        vm.miMensajeMarcarTarea = ""; 
+        vm.miMensajeMarcarTareaResponsable = ""; 
 
         /** 
         * @method :: onBtnMensajeMarcarClick (Event) 
@@ -1630,11 +1636,6 @@
                 $("#modalMensajeMarcarTarea").modal("open"); 
         }; 
         /*******************************************************************************************************************/
-        vm.onMensajeMarcaClick = onMensajeMarcaClick; 
-        vm.miMensajeMarcarVerLista = []; 
-        vm.miMensajeMarcarTarea = ""; 
-        vm.miMensajeMarcarTareaResponsable = ""; 
-
         function onMensajeMarcaClick(dataMarca, nodoId) { 
             if(vm.procesando)
                 return; 
@@ -1674,8 +1675,6 @@
                 vm.procesando = false; 
             }); 
         }; 
-
-        vm.onBtnMensajeMarcarTareaCrearClick = onBtnMensajeMarcarTareaCrearClick; 
 
         function onBtnMensajeMarcarTareaCrearClick() { 
             // Verificar si está procesando 
@@ -1764,7 +1763,7 @@
                 var dataPost = { 
                     associated: true, 
                     drag: true, 
-                    element: vm.miMensajeDialogoId.tipo, 
+                    element: "", 
                     kanban: vm.miProyecto.kanban[0].id, 
                     mensajeMarcadoId: mensaje.id, 
                     mensajeMarcadoName: msjTemp, 
@@ -1773,7 +1772,7 @@
                     respuestaMarca: vm.miMensajeDialogo, 
                     respuestaMarcaId: d.mensajeMarca.marcaId, 
                     tipo: "new", 
-                    title: vm.miKanbanTareaNueva, 
+                    title: vm.miMensajeMarcarTarea, 
                     usuario: vm.miKanbanSelectedUsuarioTask.id 
                 }; 
             
@@ -1787,12 +1786,20 @@
                     data: dataPost 
                 }).then(function(res) { 
                     // Se reciben los valores del post 
-                    vm.miKanbanTareaNueva = ""; 
+                    vm.miMensajeMarcarTarea = ""; 
                     vm.procesando = false; 
                 
                     // Verificar si la respuesta desde el servidor es error 
-                    if(!res.data.procedimiento) 
+                    if(!res.data.procedimiento) {
                         setMensaje(res.data.mensaje); 
+                        return; 
+                    } 
+                    
+                    $(document).ready(function() { 
+                        $(".marcar").on("click", function() { 
+                            vm.onMensajeMarcaClick($(this).attr("data-marca"), parseInt($(this).attr("data-nid"))); 
+                        }); 
+                    }); 
                 }).catch(function(err) { 
                     setMensaje("¡Se produjo un error!"); 
                     console.log(err); 

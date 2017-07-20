@@ -125,7 +125,7 @@
 				<div class="resizable-panel-left">
 					<div ng-if="vm.miMensajeAnclado !== ''"> 
 						
-						<div class="card-panel grey lighten-1 z-depth-1"> 
+						<div class="card-panel white lighten-1 z-depth-1 resizable-card"> 
 							<div class="row valign-wrapper"> 
 								<div class="col s12 m12 l2"> 
 									<img alt="Usuario" class="circle responsive-img" width="80px" ng-src="{{ vm.miMensajeAnclado !== '' ? (vm.miMensajeAnclado.usuario.imgurl ? vm.miMensajeAnclado.usuario.imgurl : '/images/profile.jpg') : '' }}" /> 
@@ -164,7 +164,7 @@
 								</div>
 							</div> 
 							<div class="row"> 
-								<div class="card-panel grey lighten-5 z-depth-1"> 
+								<div class="card-panel grey lighten-3 z-depth-1"> 
 								<div class="mensaje-anclar-card"> 
 									<p ng-if="vm.miMensajeAnclado.tipo !== ''"><strong>Tipo de mensaje</strong>: {{ vm.miMensajeAnclado.tipo }}.</p> 
 									<p ng-if="vm.miMensajeAnclado.respuestaMarca"><strong>Respuesta a</strong>: {{ vm.miMensajeAnclado.respuestaMarca }}.</p> 
@@ -179,7 +179,7 @@
 				<div class="resizable-panel-right">
   					<div ng-if="vm.miMensajeAncladoNavegar !== ''">
 						
-						<div class="card-panel grey lighten-1 z-depth-1"> 
+						<div class="card-panel white lighten-1 z-depth-1 resizable-card"> 
 							<div class="row valign-wrapper"> 
 								<div class="col s12 m12 l2"> 
 									<img alt="Usuario" class="circle responsive-img" ng-src="{{ vm.miMensajeAncladoNavegar !== '' ? (vm.miMensajeAncladoNavegar.usuario.imgurl ? vm.miMensajeAncladoNavegar.usuario.imgurl : '/images/profile.jpg') : '' }}" />
@@ -212,7 +212,7 @@
 								</div>
 							</div> 
 							<div class="row"> 
-								<div class="card-panel grey lighten-5 z-depth-1"> 
+								<div class="card-panel grey lighten-3 z-depth-1"> 
 								<div class="mensaje-anclar-navegar-card">
 									<p ng-if="vm.miMensajeAncladoNavegar.tipo !== ''"><strong>Tipo de mensaje</strong>: {{ vm.miMensajeAncladoNavegar.tipo }}.</p>
 									<p ng-if="vm.miMensajeAncladoNavegar.respuestaMarca"><strong>Respuesta a</strong>: {{ vm.miMensajeAncladoNavegar.respuestaMarca }}.</p>
