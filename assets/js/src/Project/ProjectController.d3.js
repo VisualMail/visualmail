@@ -96,7 +96,7 @@ function mapaDialogoDibujar(nodoMensaje) {
 	m.find("svg")
 		.attr("height", totalHeight)
 		.attr("width", totalWidth); 
-	m.attr("style", "heigth: " + totalHeight + "px; width: " + totalWidth + "px;"); 
+	m.attr("style", "heigth: " + totalHeight + "px; width: " + (totalWidth > window.screen.availWidth ? totalWidth : window.screen.availWidth) + "px;"); 
 
 	// Iniciar los tooltips de los nodos del mapa 
 	$(".tooltipped").tooltip({ delay: 50 }); 
@@ -161,7 +161,7 @@ function mapaDialogoAgregarNodo(mensaje) {
 	m.find("svg")
 		.attr("height", svgHeight)
 		.attr("width", svgWidth); 
-	m.attr("style", "heigth: " + svgHeight + "px; width: " + svgWidth + "px;"); 
+	m.attr("style", "heigth: " + svgHeight + "px; width: " + (svgWidth > window.screen.availWidth ? svgWidth : window.screen.availWidth) + "px;"); 
 
 	// Iniciar los tooltips de los nodos del mapa 
 	$(".tooltipped").tooltip({ delay: 50 }); 
