@@ -301,5 +301,5 @@ module.exports = {
 	    return res.ok({
 	        message: "Ahora estás conectado al proyecto."
 	    });
-	},
+	}, 
 };

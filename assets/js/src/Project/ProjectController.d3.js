@@ -34,12 +34,21 @@ function mapaDialogoDibujar(nodoMensaje) {
 	// Iniciar una lista para almacenar la información de los nodos 
 	var listaNodos = []; 
 
+	// Almacenar la última session
+	var sessionIdMax = 0; 
+	
+	// Almacenar la altura de las lineas de las sesiones 
+	var ySession = 1024;
+
 	// Iniciar la iteración para buscar cada mensaje 
 	$.each(nodoMensaje, function(k, v) {
 		// Si la sesión ha cambiado 
-		if(sessionIdAux !== v.sessionId) {
+		if(sessionIdAux !== v.sessionId && $("[data-header-session-id=" + v.sessionId + "]").length === 0) {
 			// Alamcenar la nueva sesión en la variable auxiliar 
 			sessionIdAux = v.sessionId;
+			console.log(sessionIdAux);
+			// Almacenar la última session
+			sessionIdMax = sessionIdAux > sessionIdMax ? sessionIdAux : sessionIdMax;
 
 			// Dibujar la línea del diálogo 
 			mapaDialogoDibujarSesion(v.usuario.id, imageI, v.usuario.imgurl, v.usuario.initials, v.sessionId, svgSession, svgMapa); 
@@ -50,6 +59,9 @@ function mapaDialogoDibujar(nodoMensaje) {
 
 		// Establecer la altura tanto del nodo como de la línea que interconecta el nodo con el padre 
 		var y2 = circleHeight + (v.nodoNivel * 40); 
+
+		// Verificar si las lineas de las sesiones están a la misma altura
+		ySession = y2 > ySession ? y2 : ySession;
 
 		// Si no es el nodo inicial 
 		if(v.sessionId > 0) { 
@@ -100,6 +112,12 @@ function mapaDialogoDibujar(nodoMensaje) {
 
 	// Iniciar los tooltips de los nodos del mapa 
 	$(".tooltipped").tooltip({ delay: 50 }); 
+
+	// Almacenar la última sesión 
+	angular.element(document.getElementById("ProjectControllerMain")).scope().vm.miSessionId = sessionIdMax + 1; 
+	
+	// Actualizar la altura de lineas de las sesiones 
+	$("[data-line-type='session']").attr("y2", ySession); 
 } 
 
 /**
@@ -165,6 +183,11 @@ function mapaDialogoAgregarNodo(mensaje) {
 
 	// Iniciar los tooltips de los nodos del mapa 
 	$(".tooltipped").tooltip({ delay: 50 }); 
+
+	// Verificar la altura de la linea de sesión
+	var sessionH = parseInt($("[data-line-type='session']").first().attr("y2"));
+	sessionH = y2 > sessionH ? y2 : sessionH; 
+	$("[data-line-type='session']").attr("y2", sessionH);
 }
 
 /**
@@ -296,6 +319,7 @@ function mapaDialogoDibujarSesion(usuarioId, imageI, imgurl, initials, sessionId
 		.attr("x2", circleWidth + (sessionId * 100)) 
 		.attr("y1", 0) 
 		.attr("y2", 1024) 
+		.attr("data-line-type", "session") 
 		.attr("style", "stroke: #a0a0a0; fill:none; stroke-dasharray: 10 5") 
 		.attr("stroke-width", "0.5"); 
 

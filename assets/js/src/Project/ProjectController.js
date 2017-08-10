@@ -193,7 +193,7 @@
                params: { id: vm.miProyectoId } 
             }).then(function(resultado) { 
                 vm.miMensaje = resultado.data.mensaje; 
-                vm.miSessionId = vm.miMensaje[vm.miMensaje.length - 1].sessionId + 1;
+                //vm.miSessionId = vm.miMensaje[vm.miMensaje.length - 1].sessionId + 1;
 
                // 'miMensajeIntercalar' da un valor intercalado a cada mensaje para presentarlos en formato whatsapp 
 				for(var i = 0; i < vm.miMensaje.length; i++) { 
