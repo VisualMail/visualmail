@@ -6,7 +6,7 @@
         .run(['$templateCache', function($templateCache) { 
             $templateCache.put(
                 'ng-table/filters/text.html', 
-                '<input placeholder="Buscar por" type="text" name="{{name}}" ng-disabled="$filterRow.disabled" ng-model="params.filter()[name]" ng-if="filter == \'text\'" />'); 
+                '<input class="form-control" placeholder="Buscar por" type="text" name="{{name}}" ng-disabled="$filterRow.disabled" ng-model="params.filter()[name]" ng-if="filter == \'text\'" />'); 
             }]);
 
     angular
@@ -51,8 +51,8 @@
                 console.log(err); 
             }); 
             // Fin obtener el token csrf
-            
-             $('.modal').modal();
+
+            $('[data-toggle="tooltip"]').tooltip();             
         }; 
 
         function getDatos() { 
@@ -137,7 +137,7 @@
                 vm.userRol = (item.rol ? item.rol.toString() : "2"); 
             }
             
-            $("#modalUser").modal("open"); 
+            $("#modalUser").modal("show"); 
         }; 
 
         /**
@@ -238,8 +238,8 @@
             vm.formPassword.passwordUser.$pristine = true; 
             vm.formPassword.passwordUserConfirm.$pristine = true; 
 
-            $("#modalUser").modal("close"); 
-            $("#modalPassword").modal("open"); 
+            //$("#modalUser").modal("close"); 
+            $("#modalPassword").modal("show"); 
         }; 
 
         /**

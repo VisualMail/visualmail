@@ -1,264 +1,301 @@
 <div class="container" ng-controller="AdminController as vm">
-    <h3 class="green-text">Administrar usuarios</h3>
-    <div class="row">
-        <div class="col s12 m12 l12 card-panel"> 
-            <table ng-table="vm.tableParams" class="bordered highlight table-ng"> 
-                <tr ng-repeat="row in $data track by row.id"> 
-                    <td data-title="'Nombre'" filter="{firstname: 'text'}" sortable="'firstname'">{{row.firstname}}</td> 
-                    <td data-title="'Apellido'" filter="{lastname: 'text'}" sortable="'lastname'">{{row.lastname}}</td> 
-                    <td data-title="'Correo electrónico'" filter="{email: 'text'}" sortable="'email'">{{row.email}}</td> 
-                    <td data-title="'Rol de usuario'" sortable="'rol'">{{row.rol === 1 ? "Administrador" : "Usuario"}}</td> 
-                    <td>
-                        <span class="btn-floating" style="cursor: default !important; background-color: #{{ row.color }}"></span>
-                    </td>
-                    <td>
-                        <button class="btn-floating waves-effect waves-light teal darken-1" type="button" 
-                            ng-click="vm.onBtnModalUserClick('Update', row)"><i class="material-icons">mode_edit</i></button>
-                    </td>
-                </tr> 
-            </table> 
+    <h3>Administrar usuarios</h3>
+    <hr />
+
+    <div class="form-group"> 
+        <div class="row"> 
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
+                <table class="table table-bordered table-hover table-ng" ng-table="vm.tableParams"> 
+                    <tr ng-repeat="row in $data track by row.id"> 
+                        <td data-title="'Nombre'" filter="{firstname: 'text'}" sortable="'firstname'">{{row.firstname}}</td> 
+                        <td data-title="'Apellido'" filter="{lastname: 'text'}" sortable="'lastname'">{{row.lastname}}</td> 
+                        <td data-title="'Correo electrónico'" filter="{email: 'text'}" sortable="'email'">{{row.email}}</td> 
+                        <td data-title="'Rol de usuario'" sortable="'rol'">{{row.rol === 1 ? "Administrador" : "Usuario"}}</td> 
+                        <td data-title="Color" sortable="'color'">
+                            <button class="btn btn-default" ng-style="{'background-color': '#' + row.color}" type="button">
+                                <span class="glyphicon glyphicon-tag"></span>
+                            </button>
+                            <!--<span ng-style="{'background-color': '#' + row.color}">#{{ row.color }}</span>-->
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-info" type="button" ng-click="vm.onBtnModalUserClick('Update', row)">
+                                <span class="glyphicon glyphicon-edit"></span> Editar usuario
+                            </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-warning" type="button" ng-click="vm.onBtnUserPasswordClick('Update', row)">
+                                <span class="glyphicon glyphicon-exclamation-sign"></span> Modificar contraseña
+                            </button> 
+                        </td>
+                    </tr> 
+                </table> 
+            </div>
         </div>
     </div>
     
     <!-- Inicio botón modal user -->
-    <div class="fixed-action-btn"> 
-        <button class="btn-floating btn-large blue darken-1" type="button" 
-            ng-click="vm.onBtnModalUserClick('Insert')"><i class="large material-icons">add</i></button> 
+    <div class="form-group"> 
+        <div class="row"> 
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
+                <button class="btn btn-primary" type="button" ng-click="vm.onBtnModalUserClick('Insert')"><span class="glyphicon glyphicon-plus-sign"></span> Nuevo usuario</button> 
+            </div> 
+        </div> 
     </div> 
     <!-- Fin botón modal user -->
 
-    <!-- Inicio modal user -->
-    <div id="modalUser" class="modal"> 
-        <form name="vm.formUser"> 
+    <!-- Inicio modal user --> 
+    <div class="modal fade" id="modalUser" tabindex="-1" role="dialog" aria-labelledby="modalUserTitle" aria-hidden="true"> 
+        <div class="modal-dialog" role="document"> 
             <div class="modal-content"> 
-                <h4>{{ vm.proceso === "Insert" ? "Nuevo usuario" : "Modificar usuario" }}</h4> 
-                <div class="card-panel">
-
-                    <div class="row">
-                        <div class="col s12 m6 l6">
-                            <div class="col s12 input-field">
-                                <input id="userFirstName" name="userFirstName" type="text" 
-                                    ng-maxlength="15" 
-                                    ng-minlength="3" 
-                                    ng-model="vm.userFirstName" 
-                                    ng-pattern="/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u" 
-                                    ng-required="true" />
-                                <label for="userFirstName">Nombre(s) (Requerido)</label>
-                                <div class="red-text" role="alert" ng-messages="!vm.formUser.userFirstName.$pristine && vm.formUser.userFirstName.$error">
-                                    <span ng-message="required">Requerido</span>
-                                    <span ng-message="minlength">Mínimo 3 caracteres</span>
-                                    <span ng-message="maxlength">Nombre muy largo</span>
-                                    <span ng-message="pattern">Formato no válido</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col s12 m6 l6">
-                            <div class="col s12 input-field">
-                                <input id="userLastName" name="userLastName" type="text" 
-                                    ng-maxlength="30" 
-                                    ng-minlength="3" 
-                                    ng-model="vm.userLastName" 
-                                    ng-pattern="/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u" 
-                                    ng-required="true" />
-                                <label for="userLastName">Apellido(s) (Requerido)</label>
-                                <div class="red-text" role="alert" ng-messages="!vm.formUser.userLastName.$pristine && vm.formUser.userLastName.$error">
-                                    <span ng-message="required">Requerido</span>
-                                    <span ng-message="minlength">Mínimo 3 caracteres</span> 
-                                    <span ng-message="maxlength">Apellido muy largo</span>
-                                    <span ng-message="pattern">Formato no válido</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col s12 m6 l6">
-                            <div class="col s12">
-                                <label for="userRol">Rol (Requerido)</label>
-                                <select class="browser-default" id="userRol" name="userRol" 
-                                    ng-model="vm.userRol">
-                                    <option value="-1">Seleccionar</option>
-                                    <option value="2">Usuario</option>
-                                    <option value="1">Administrador</option>
-                                </select>
-                                <div class="red-text" role="alert" ng-if="!vm.formUser.userRol.$pristine && vm.userRol === '-1'">
-                                    <span>Requerido</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col s12 m6 l3">
-                            <div class="col s12 input-field">
-                                <input capitalize class="tooltipped" id="userInitials" name="userInitials" type="text" 
-                                    data-delay="50" 
-                                    data-position="top" 
-                                    data-tooltip="Ingresa 3 caracteres con las iniciales del nombre/apellido" 
-                                    ng-maxlength="3" 
-                                    ng-minlength="3" 
-                                    ng-model="vm.userInitials" 
-                                    ng-pattern="/^[a-zA-Z]+$/" 
-                                    ng-required="true" />
-                                <label for="userInitials">Iniciales (Requerido)</label>
-                                <div class="red-text" role="alert" ng-messages="!vm.formUser.userInitials.$pristine && vm.formUser.userInitials.$error">
-                                    <span ng-message="required">Requerido</span>
-                                    <span ng-message="minlength">3 caracteres</span>
-                                    <span ng-message="maxlength">No pueden ser más de 3 carácteres</span>
-                                    <span ng-message="pattern">Formato no válido</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col s12 m6 l6">
-                            <div class="col s12 input-field">
-                                <input class="tooltipped" id="userEmail" name="userEmail" type="email"
-                                    data-delay="50" 
-                                    data-position="top" 
-                                    data-tooltip="hola@visualmail.com" 
-                                    ng-model="vm.userEmail" 
-                                    ng-pattern="/^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i" 
-                                    ng-required="true" />
-                                <label for="userEmail">Email (Requerido)</label>
-                                <div class="red-text" role="alert" ng-messages="!vm.formUser.userEmail.$pristine && vm.formUser.userEmail.$error">
-                                    <span ng-message="required">Requerido</span>
-                                    <span ng-message="email">Formato no válido</span>
-                                    <span ng-message="pattern">Formato no válido</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col s12 m6 l6" ng-if="vm.proceso === 'Insert'">
-                            <div class="col s12 input-field">
-                                <input class="tooltipped" id="userPassword" name="userPassword" type="password"
-                                    data-delay="50" 
-                                    data-position="top" 
-                                    data-tooltip="Contraseña de inicio de sesión" 
-                                    ng-maxlength="20" 
-                                    ng-minlength="6" 
-                                    ng-model="vm.userPassword" 
-                                    ng-pattern="/^[a-zA-Z0-9]*$/" 
-                                    ng-required="vm.proceso === 'Insert'" />
-                                <label for="userPassword">Contraseña (Requerido)</label>
-                                <div class="red-text" role="alert" ng-messages="!vm.formUser.userPassword.$pristine && vm.formUser.userPassword.$error">
-                                    <span ng-message="required">Requerido</span>
-                                    <span ng-message="pattern">Formato no válido</span>
-                                    <span ng-message="minlength">Mínimo 6 caracteres</span>
-                                    <span ng-message="maxlength">Contraseña muy larga</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col s12">
-                            <div class="col s12 m6 l9 input-field">
-                                <input id="imgurl" name="imgurl" type="text" 
-                                    ng-model="vm.userImgUrl" />
-                                <label for="userImgUrl">URL imagen (Opcional)</label>
-                                <!-- pattern="https?://.+"-->
-                            </div>
-                            <div class="col s12 m6 l3 input-field tooltipped" 
-                                data-delay="50" 
-                                data-position="top" 
-                                data-tooltip="Selecciona un color de interacción">
-                                <input class="jscolor" id="userColor" name="userColor" placeholder="#FFFFFF" type="text" 
-                                    ng-style="{ 'background-color': vm.userColor ? '#' + vm.userColor : 'none' }"
-                                    ng-model="vm.userColor" 
-                                    ng-required="true" />
-                                <label for="userColor">Color de interacción</label>
-                            </div>
-                        </div>
+                <form name="vm.formUser">
+                    <div class="modal-header"> 
+                        <h5 class="modal-title" id="modalUser">{{ vm.proceso === "Insert" ? "Nuevo usuario" : "Modificar usuario" }}</h5> 
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button> 
                     </div> 
-                </div>
-                <div class="row">
-                    <div class="col s12 right-align"> 
-                        <button class="modal-action modal-close waves-effect waves-light btn blue darken-1">Cerrar</button>&nbsp;
-                        <button class="waves-effect waves-light btn teal darken-1" type="submit" 
-                            ng-click="vm.onBtnUserPasswordClick()" 
-                            ng-if="vm.proceso !== 'Insert'">Modificar contraseñar</button>&nbsp;
-                        <button class="waves-effect waves-light btn green darken-1" type="submit" 
+                    <div class="modal-body"> 
+                        <div class="form-group"> 
+                            <div class="row"> 
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
+                                    <label ng-class="{ 'text-danger': !vm.formUser.userFirstName.$pristine && vm.formUser.userFirstName.$error }" for="userFirstName">Nombre(s) (Requerido)</label>
+                                    <input id="userFirstName" name="userFirstName" placeholder="Máximo 15 caracteres" type="text" 
+                                        ng-class="{ 
+                                        'form-control': vm.formUser.userFirstName.$pristine || vm.formUser.userFirstName.$valid, 
+                                        'form-control is-invalid': !vm.formUser.userFirstName.$pristine && vm.formUser.userFirstName.$error }" 
+                                        ng-maxlength="15" 
+                                        ng-minlength="3" 
+                                        ng-model="vm.userFirstName" 
+                                        ng-pattern="/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u" 
+                                        ng-required="true" /> 
+                                    <p class="text-danger" role="alert" ng-messages="!vm.formUser.userFirstName.$pristine && vm.formUser.userFirstName.$error"> 
+                                        <strong ng-message="required">Requerido</strong> 
+                                        <strong ng-message="minlength">Mínimo 3 caracteres</strong> 
+                                        <strong ng-message="maxlength">Nombre muy largo</strong> 
+                                        <strong ng-message="pattern">Formato no válido</strong>
+                                    </p> 
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group"> 
+                            <div class="row"> 
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
+                                    <label ng-class="{ 'text-danger': !vm.formUser.userLastName.$pristine && vm.formUser.userLastName.$error }" for="userLastName">Apellido(s) (Requerido)</label> 
+                                    <input id="userLastName" name="userLastName" placeholder="Máximo 30 caracteres" type="text" 
+                                        ng-class="{ 
+                                        'form-control': vm.formUser.userLastName.$pristine || vm.formUser.userLastName.$valid, 
+                                        'form-control is-invalid': !vm.formUser.userLastName.$pristine && vm.formUser.userLastName.$error }" 
+                                        ng-maxlength="30" 
+                                        ng-minlength="3" 
+                                        ng-model="vm.userLastName" 
+                                        ng-pattern="/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u" 
+                                        ng-required="true" /> 
+                                    <p class="text-danger" role="alert" ng-messages="!vm.formUser.userLastName.$pristine && vm.formUser.userLastName.$error"> 
+                                        <strong ng-message="required">Requerido</strong> 
+                                        <strong ng-message="minlength">Mínimo 3 caracteres</strong> 
+                                        <strong ng-message="maxlength">Apellido muy largo</strong> 
+                                        <strong ng-message="pattern">Formato no válido</strong> 
+                                    </p>
+                                </div>
+                            </div>
+                        </div> 
+
+                        <div class="form-group"> 
+                            <div class="row"> 
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"> 
+                                    <label ng-class="{ 'text-danger': !vm.formUser.userRol.$pristine && vm.userRol === '-1' }" for="userRol">Rol (Requerido)</label> 
+                                    <select id="userRol" name="userRol" 
+                                        ng-class="{ 
+                                        'form-control': vm.formUser.userRol.$pristine || vm.userRol !== '-1', 
+                                        'form-control is-invalid': !vm.formUser.userRol.$pristine && vm.userRol === '-1' }" 
+                                        ng-model="vm.userRol">
+                                        <option value="-1">Seleccionar</option>
+                                        <option value="2">Usuario</option>
+                                        <option value="1">Administrador</option>
+                                    </select>
+                                    <p class="text-danger" role="alert" ng-if="!vm.formUser.userRol.$pristine && vm.userRol === '-1'">
+                                        <strong>Requerido</strong>
+                                    </p>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"> 
+                                    <label ng-class="{ 'text-danger': !vm.formUser.userInitials.$pristine && vm.formUser.userInitials.$error }" for="userInitials">Iniciales (Requerido)</label> 
+                                    <input capitalize id="userInitials" name="userInitials" placeholder="Máximo 3 caracteres" type="text" 
+                                        ng-class="{ 
+                                        'form-control': vm.formUser.userInitials.$pristine || vm.formUser.userInitials.$valid, 
+                                        'form-control is-invalid': !vm.formUser.userInitials.$pristine && vm.formUser.userInitials.$error }" 
+                                        data-toggle="tooltip" data-placement="bottom" title="Ingresa 3 caracteres con las iniciales del nombre/apellido"
+                                        ng-maxlength="3" 
+                                        ng-minlength="3" 
+                                        ng-model="vm.userInitials" 
+                                        ng-pattern="/^[a-zA-Z]+$/" 
+                                        ng-required="true" />
+                                    <p class="text-danger" role="alert" ng-messages="!vm.formUser.userInitials.$pristine && vm.formUser.userInitials.$error"> 
+                                        <strong ng-message="required">Requerido</strong>
+                                        <strong ng-message="minlength">3 caracteres</strong>
+                                        <strong ng-message="maxlength">No pueden ser más de 3 carácteres</strong>
+                                        <strong ng-message="pattern">Formato no válido</strong>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group"> 
+                            <div class="row"> 
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
+                                    <label ng-class="{ 'text-danger': !vm.formUser.userEmail.$pristine && vm.formUser.userEmail.$error }" for="userEmail">Email (Requerido)</label>
+                                    <input id="userEmail" name="userEmail" type="email"
+                                        ng-class="{ 
+                                        'form-control': vm.formUser.userEmail.$pristine || vm.formUser.userEmail.$valid, 
+                                        'form-control is-invalid': !vm.formUser.userEmail.$pristine && vm.formUser.userEmail.$error }" 
+                                        data-toggle="tooltip" data-placement="bottom" title="hola@visualmail.com"
+                                        ng-model="vm.userEmail" 
+                                        ng-pattern="/^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i" 
+                                        ng-required="true" />
+                                    <p class="text-danger" role="alert" ng-messages="!vm.formUser.userEmail.$pristine && vm.formUser.userEmail.$error"> 
+                                        <strong ng-message="required">Requerido</strong>
+                                        <strong ng-message="email">Formato no válido</strong>
+                                        <strong ng-message="pattern">Formato no válido</strong>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" ng-if="vm.proceso === 'Insert'"> 
+                            <div class="row"> 
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
+                                    <label ng-class="{ 'text-danger': !vm.formUser.userPassword.$pristine && vm.formUser.userPassword.$error }" for="userPassword">Contraseña (Requerido)</label>
+                                    <input id="userPassword" name="userPassword" placeholder="Mínimo 6 caracteres" type="password"
+                                        ng-class="{ 
+                                        'form-control': vm.formUser.userPassword.$pristine || vm.formUser.userPassword.$valid, 
+                                        'form-control is-invalid': !vm.formUser.userPassword.$pristine && vm.formUser.userPassword.$error }" 
+                                        ng-maxlength="20" 
+                                        ng-minlength="6" 
+                                        ng-model="vm.userPassword" 
+                                        ng-pattern="/^[a-zA-Z0-9]*$/" 
+                                        ng-required="vm.proceso === 'Insert'" />
+                                    <p class="text-danger" role="alert" ng-messages="!vm.formUser.userPassword.$pristine && vm.formUser.userPassword.$error"> 
+                                        <strong ng-message="required">Requerido</strong>
+                                        <strong ng-message="pattern">Formato no válido</strong>
+                                        <strong ng-message="minlength">Mínimo 6 caracteres</strong>
+                                        <strong ng-message="maxlength">Contraseña muy larga</strong>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group"> 
+                            <div class="row"> 
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
+                                    <label for="userImgUrl">URL imagen (Opcional)</label>
+                                    <input class="form-control" id="imgurl" name="imgurl" placeholder="https://..." type="text" 
+                                        ng-model="vm.userImgUrl" /> 
+                                        <!-- pattern="https?://.+"--> 
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group"> 
+                            <div class="row"> 
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"> 
+                                    <label for="userColor">Color de interacción</label>
+                                    <input class="form-control jscolor" id="userColor" name="userColor" placeholder="#FFFFFF" type="text" 
+                                        ng-style="{ 'background-color': vm.userColor ? '#' + vm.userColor : 'none' }"
+                                        ng-model="vm.userColor" 
+                                        ng-required="true" />    
+                                </div> 
+                            </div>
+                        </div> 
+                    </div> 
+                
+                    <div class="modal-footer"> 
+                        <button type="button" class="btn btn-primary" data-dismiss="modal"><span class="glyphicon glyphicon-remove-circle"></span> Cerrar</button> 
+                        <button type="button" class="btn btn-success" 
                             ng-click="vm.onBtnUserGuardarClick()" 
-                            ng-disabled="!vm.formUser.$valid || vm.userRol === '-1'">Guardar</button>
-                    </div>
-                </div>
+                            ng-disabled="!vm.formUser.$valid || vm.userRol === '-1'"><span class="glyphicon glyphicon-save"></span> Guardar</button> 
+                    </div> 
+                </form>
             </div> 
-        </form> 
+        </div> 
     </div>
     <!-- Fin modal user -->
 
     <!-- Inicio modal password -->
-    <div id="modalPassword" class="modal"> 
-        <form name="vm.formPassword"> 
+    <div class="modal fade" id="modalPassword" tabindex="-1" role="dialog" aria-labelledby="modalPasswordTitle" aria-hidden="true"> 
+        <div class="modal-dialog" role="document"> 
             <div class="modal-content"> 
-                <h4>Modificar contraseña</h4> 
-                <div class="card-panel">
-
-                    <div class="row">
-                        <div class="col s12 m6 l6">
-                            <div class="col s12 input-field">
-                                <input class="tooltipped" id="passwordUser" name="passwordUser" type="password"
-                                    data-delay="50" 
-                                    data-position="top" 
-                                    data-tooltip="Contraseña de inicio de sesión" 
-                                    ng-maxlength="20" 
-                                    ng-minlength="6" 
-                                    ng-model="vm.passwordUser" 
-                                    ng-pattern="/^[a-zA-Z0-9]*$/" 
-                                    ng-required="true" />
-                                <label for="passwordUser">Contraseña (Requerido)</label>
-                                <div class="red-text" role="alert" ng-messages="!vm.formPassword.passwordUser.$pristine && vm.formPassword.passwordUser.$error">
-                                    <span ng-message="required">Requerido</span>
-                                    <span ng-message="pattern">Formato no válido</span>
-                                    <span ng-message="minlength">Mínimo 6 caracteres</span>
-                                    <span ng-message="maxlength">Contraseña muy larga</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col s12 m6 l6">
-                            <div class="col s12 input-field">
-                                <input class="tooltipped" id="passwordUserConfirm" name="passwordUserConfirm" type="password"
-                                    data-delay="50" 
-                                    data-position="top" 
-                                    data-tooltip="Confirmar contraseña de inicio de sesión" 
-                                    ng-maxlength="20" 
-                                    ng-minlength="6" 
-                                    ng-model="vm.passwordUserConfirm" 
-                                    ng-pattern="/^[a-zA-Z0-9]*$/" 
-                                    ng-required="true" />
-                                <label for="passwordUserConfirm">Confirmar Contraseña (Requerido)</label>
-                                <div class="red-text" role="alert" ng-messages="!vm.formPassword.passwordUserConfirm.$pristine && vm.formPassword.passwordUserConfirm.$error">
-                                    <span ng-message="required">Requerido</span>
-                                    <span ng-message="pattern">Formato no válido</span>
-                                    <span ng-message="minlength">Mínimo 6 caracteres</span>
-                                    <span ng-message="maxlength">Contraseña muy larga</span>
-                                </div>
-                            </div>
-                        </div>
+                <form name="vm.formPassword"> 
+                    <div class="modal-header"> 
+                        <h5 class="modal-title" id="modalPasswordTitle">Modificar contraseña</h5> 
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button> 
                     </div> 
-                    
-                    <div class="row" ng-if="vm.passwordUser !== vm.passwordUserConfirm"> 
-                        <div class="col s12 m6"> 
-                            <div class="card red darken-1"> 
-                                <div class="card-content white-text">  
-                                    <p>Confirmar la contraseña, debe coincidir con la contraseña ingresada</p>
+                    <div class="modal-body"> 
+                        
+                        <div class="form-group">
+                            <div class="row"> 
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
+                                    <label ng-class="{ 'text-danger': !vm.formPassword.passwordUser.$pristine && vm.formPassword.passwordUser.$error }" for="passwordUser">Contraseña (Requerido)</label>
+                                    <input id="passwordUser" name="passwordUser" placeholder="Mínimo 6 caracteres" type="password"
+                                        ng-class="{ 
+                                        'form-control': vm.formPassword.passwordUser.$pristine || vm.formPassword.passwordUser.$valid, 
+                                        'form-control is-invalid': !vm.formPassword.passwordUser.$pristine && vm.formPassword.passwordUser.$error }" 
+                                        data-toggle="tooltip" data-placement="bottom" title="Contraseña de inicio de sesión"
+                                        ng-maxlength="20" 
+                                        ng-minlength="6" 
+                                        ng-model="vm.passwordUser" 
+                                        ng-pattern="/^[a-zA-Z0-9]*$/" 
+                                        ng-required="true" />
+                                    
+                                    <div class="text-danger" role="alert" ng-messages="!vm.formPassword.passwordUser.$pristine && vm.formPassword.passwordUser.$error">
+                                        <strong ng-message="required">Requerido</strong>
+                                        <strong ng-message="pattern">Formato no válido</strong>
+                                        <strong ng-message="minlength">Mínimo 6 caracteres</strong>
+                                        <strong ng-message="maxlength">Contraseña muy larga</strong>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="row">
-                    <div class="col s12 right-align"> 
-                        <button class="modal-action waves-effect waves-light btn blue darken-1"
-                            ng-click="vm.onBtnPasswordCerrarClick()">Cerrar</button>&nbsp; 
-                        <button class="waves-effect waves-light btn green darken-1" type="submit" 
-                            ng-click="vm.onBtnPasswordGuardarClick()" 
-                            ng-disabled="!vm.formPassword.$valid">Guardar</button>
+                        <div class="form-group">
+                            <div class="row"> 
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
+                                    <label ng-class="{ 'text-danger': !vm.formPassword.passwordUserConfirm.$pristine && vm.formPassword.passwordUserConfirm.$error }" for="passwordUserConfirm">Confirmar Contraseña (Requerido)</label>
+                                    <input class="tooltipped" id="passwordUserConfirm" name="passwordUserConfirm" placeholder="Mínimo 6 caracteres" type="password"
+                                        ng-class="{ 
+                                        'form-control': vm.formPassword.passwordUserConfirm.$pristine || vm.formPassword.passwordUserConfirm.$valid, 
+                                        'form-control is-invalid': !vm.formPassword.passwordUserConfirm.$pristine && vm.formPassword.passwordUserConfirm.$error }" 
+                                        data-toggle="tooltip" data-placement="bottom" title="Confirmar contraseña de inicio de sesión"        
+                                        ng-maxlength="20" 
+                                        ng-minlength="6" 
+                                        ng-model="vm.passwordUserConfirm" 
+                                        ng-pattern="/^[a-zA-Z0-9]*$/" 
+                                        ng-required="true" />
+                                    <p class="text-danger" role="alert" ng-messages="!vm.formPassword.passwordUserConfirm.$pristine && vm.formPassword.passwordUserConfirm.$error">
+                                        <strong ng-message="required">Requerido</strong>
+                                        <strong ng-message="pattern">Formato no válido</strong>
+                                        <strong ng-message="minlength">Mínimo 6 caracteres</strong>
+                                        <strong ng-message="maxlength">Contraseña muy larga</strong>
+                                    </p>
+                                </div>
+                            </div>
+                        </div> 
+
+                        <div class="alert alert-warning" role="alert" ng-if="vm.passwordUser !== vm.passwordUserConfirm">
+                            <strong>¡Atención!</strong> Confirmar la contraseña, debe coincidir con la contraseña ingresada.
+                        </div>
+                        
                     </div>
-                </div>
-            </div> 
-        </form> 
+                    <div class="modal-footer"> 
+                        <button type="button" class="btn btn-primary" data-dismiss="modal"><span class="glyphicon glyphicon-remove-circle"></span> Cerrar</button> 
+                        <button type="button" class="btn btn-success" 
+                            ng-click="vm.onBtnPasswordGuardarClick()" 
+                            ng-disabled="!vm.formPassword.$valid"><span class="glyphicon glyphicon-save"></span> Guardar</button> 
+                    </div> 
+                </form>
+            </div>
+        </div>
     </div>
+
+
+    
     <!-- Fin modal password -->
 
 </div>

@@ -328,23 +328,13 @@ module.exports = {
 	}, 
 
 	temp: function(req, res) { 
-		var project_id = "58f7bcd689bc7104008a36d1"; 
-
-		Mensaje.find({ project_id: project_id }).then(function(result) { 
-			for(var i = 0; i < result.length; i++) { 
-				result[i].namePlain = result[i].name; 
-				result[i].save(); 
-			}
-
-		}).catch(function(err) { 
-			sails.log(err); 
-		}); 
-
 		res.view({ 
-			title: "Temporal", 
+			title: "Administrar", 
+			layout: "shared/default", 
+			sectionHead: "<link href='/js/dependencies/jquery-splitter/0.24.0/css/jquery.splitter.css' rel='stylesheet' type='text/css' />", 
 			sectionScripts: 
-				"<script type='text/javascript' src='/js/dependencies/d3/4.8.0/js/d3.min.js'></script>" +
-				"<script src='/js/src/Session/TempController.js'></script>" 
-		});
+				"<script type='text/javascript' src='/js/dependencies/jquery-splitter/0.24.0/js/jquery.splitter.js'></script>" + 
+				"<script type='text/javascript' src='/js/src/Session/TempController.js'></script>" 
+		}); 
 	}
 }

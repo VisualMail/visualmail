@@ -78,6 +78,7 @@ module.exports = {
 		// Redirigir a la vista 'user/admin'
 		return res.view({ 
 			title: "Administrar usuarios", 
+			layout: "shared/admin", 
 			sectionHead: 
 				"<link href='/js/dependencies/ng-table/2.0.2/css/ng-table.min.css'></script>", 
 			sectionScripts: 
@@ -496,7 +497,8 @@ module.exports = {
 	**/
 	password: function(req, res, next) { 
 		return res.view({ 
-			title: "Modificar contraseña" 
+			title: "Modificar contraseña", 
+			layout: "shared/admin", 
 		}); 
 	}, 
 
