@@ -1,1 +1,184 @@
-<h1>Project</h1>
+<div id="projectMain" style="height: 100%; position: absolute; top: 60px; width: 100%;" ng-controller="IndexController as vm">
+        <select class="js-example-basic-multiple" multiple="multiple">
+                <option value="AL">Alabama</option>
+                  
+                <option value="WY">Wyoming</option>
+                <option value="NY">New York</option>
+              </select>
+    <div class="card text-center"> 
+
+        <!-- Inicio Tab -->
+        <div class="card-header"> 
+            <ul class="nav nav-pills card-header-pills"> 
+                <li class="nav-item"> 
+                    <a ng-class="{ 'nav-link active': vm.activeTab === 1, 'nav-link': vm.activeTab !== 1 }" ng-click="vm.activeTab = 1;" href="#">Proyecto</a> 
+                </li> 
+                <li class="nav-item"> 
+                    <a ng-class="{ 'nav-link active': vm.activeTab === 2, 'nav-link': vm.activeTab !== 2 }" ng-click="vm.activeTab = 2;" href="#">Diálogo</a> 
+                </li> 
+                <li class="nav-item"> 
+                    <a ng-class="{ 'nav-link active': vm.activeTab === 4, 'nav-link': vm.activeTab !== 4 }" ng-click="vm.activeTab = 4;" href="#">Kanban</a> 
+                </li> 
+            </ul> 
+        </div> 
+        <!-- Fin Tab -->
+            
+        <!-- Inicio Proyecto --> 
+        <div class="card-body text-left" ng-show="vm.activeTab === 1"> 
+            <h4 class="card-title text-left">Información del proyecto</h4> 
+            <hr />
+
+            <div class="form-group"> 
+                <div class="row"> 
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
+
+
+
+
+                        <label for="projectUser">Sección padre</label> 
+                        <div> 
+                            <select class="form-control js-example-basic-multiple" id="projectUser" multiple="multiple" name="projectUser"> 
+                            </select> 
+                        </div> 
+                    </div> 
+                </div> 
+            </div>
+
+        </div> 
+        <!-- Fin Proyecto -->
+            
+        <!-- Inicio Diálogo -->
+        <style> 
+            .dialogo-panel-card { 
+                background-color: #FFF; 
+                border: #CCCCCC 1px solid; 
+                border-radius: 5px; 
+                -webkit-border-radius: 5px; 
+                box-shadow: 0 0 3px #999; 
+                -webkit-box-shadow: 0 0 3px #999; 
+                -moz-box-shadow: 0 0 3px #999; 
+                overflow: hidden; 
+                transition: box-shadow 0.4s, border 0.4s; 
+                position: relative; 
+                -webkit-transition: -webkit-box-shadow 0.4s, border 0.4s; 
+            } 
+            .dialogo-main { 
+                height: 100%; 
+                margin: 0; 
+                position: absolute; 
+                right: 0; 
+                width: 100%; 
+            } 
+            .dialogo-panel-top { 
+                height: 100%; 
+                width: 70%; 
+            } 
+            .dialogo-panel-bottom { 
+                height: 100%; 
+                width: 100%; 
+            } 
+        </style> 
+        
+        <div id="dialogo-main" ng-show="vm.activeTab === 2"> 
+            <div class="dialogo-panel-top">Praesent volutpat tellus in eros dapibus elementum. Nam laoreet risus non nulla mollis ac luctus felis dapibus. Pellentesque mattis elementum augue non sollicitudin. Nullam lobortis fermentum elit ac mollis. Nam ac varius risus. Cras faucibus euismod nulla, ac auctor diam rutrum sit amet. 1111111111111111111111111111111111111111111111111111111111111111111</div>  
+            
+            <!-- Inicio Paneles -->
+            <div class="dialogo-panel-bottom"> 
+                <div id="dialogo-panel"> 
+
+                    <!-- Inicio Panel Izquierdo -->
+                    <div class="dialogo-panel-card" id="x"> 
+                        <div style="padding: 0.5em;">
+                            
+                            <div class="input-group"> 
+                                <img alt="profile" class="rounded" style="width: 40px; height: 40px;" src="/images/profile.jpg" /> 
+                                <h4 style="padding: 5px 0 0 15px;">ABC</h4> 
+                                <svg height="40" width="40">
+                                    <circle cx="25" cy="20" r="10" fill="red" />
+                                </svg>
+                            </div>
+                            
+                            <div class="card bg-light mb-3" style="position: absolute; height: 81%; width: 98%"> 
+                                <div class="card-header text-left"> 
+                                    28-Aug-2017 10:03:29 <strong>1/4</strong> 
+                                </div> 
+                                <div class="card-body" style="margin: 0; padding: 0;"> 
+                                    <div style="text-align: left; position: relative; width: 100%; height: 159px; overflow-y: auto;"> 
+                                        <div class="card" style="margin: 5px 0 0 15px; width: 95%;"> 
+                                            <ul class="list-group list-group-flush text-left"> 
+                                                <li class="list-group-item border border-secondary" style="padding: 0 15px 0 15px;"><strong>ELL Duda o Alternativa:</strong></li> 
+                                                <li class="list-group-item border border-secondary" style="padding: 0 15px 0 15px;">¿Cuando inicia el campeonatoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa?</li> 
+                                            </ul> 
+                                        </div>
+                                        <div style="margin: 10px 0 0 15px; width: 95%;">
+                                            Some quick example text to build on the card title and make up the bulk of the card's content. Some quick example text to build on the card title and make up the bulk of the card's content.
+                                        </div>
+                                    </div> 
+                                </div> 
+                                <div class="card-footer"> 
+                                    <button class="btn btn-success btn-block" type="button">Responder</button> 
+                                </div> 
+                                    
+                            </div>
+                        
+                        </div> 
+                    </div> 
+                    <!-- Fin Panel Izquierdo -->
+
+                    <!-- Inicio Panel Derecho -->
+                    <div class="dialogo-panel-card" id="y"> 
+                            <div style="padding: 0.5em;">
+                                    
+                                    <div class="input-group"> 
+                                        <img alt="profile" class="rounded" style="width: 40px; height: 40px;" src="/images/profile.jpg" /> 
+                                        <h4 style="padding: 5px 0 0 15px;">ABC</h4> 
+                                        <svg height="40" width="40">
+                                            <circle cx="25" cy="20" r="10" fill="red" />
+                                        </svg>
+                                    </div>
+                                    
+                                    <div class="card bg-light mb-3" style="position: absolute; height: 81%; width: 98%"> 
+                                        <div class="card-header text-left"> 
+                                            28-Aug-2017 10:03:29 <strong>1/4</strong> 
+                                        </div> 
+                                        <div class="card-body" style="margin: 0; padding: 0;"> 
+                                            <div style="text-align: left; position: relative; width: 100%; height: 159px; overflow-y: auto;"> 
+                                                <div class="card" style="margin: 5px 0 0 15px; width: 95%;"> 
+                                                    <ul class="list-group list-group-flush text-left"> 
+                                                        <li class="list-group-item border border-secondary" style="padding: 0 15px 0 15px;"><strong>ELL Duda o Alternativa:</strong></li> 
+                                                        <li class="list-group-item border border-secondary" style="padding: 0 15px 0 15px;">¿Cuando inicia el campeonatoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa?</li> 
+                                                    </ul> 
+                                                </div>
+                                                <div style="margin: 10px 0 0 15px; width: 95%;">
+                                                    Some quick example text to build on the card title and make up the bulk of the card's content. Some quick example text to build on the card title and make up the bulk of the card's content.
+                                                </div>
+                                            </div> 
+                                        </div> 
+                                        <div class="card-footer"> 
+                                            <button class="btn btn-success btn-block" type="button">Responder</button> 
+                                        </div> 
+                                            
+                                    </div>
+                                
+                                </div> 
+                    </div> 
+                    <!-- Fin Panel Derecho -->
+
+                </div> 
+            </div> 
+            <!-- Fin Paneles -->
+
+            </div>
+        
+        <!-- Fin Diálogo -->
+            
+        <!-- Inicio Kanban -->
+        <div class="card-body" ng-if="vm.activeTab === 4"> 
+            <h4 class="card-title">Información del proyecto</h4> 
+            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p> 
+            <a href="#" class="btn btn-primary">Go somewhere</a> 
+        </div> 
+        <!-- Fin Kanban -->
+            
+    </div>
+</div>

@@ -4768,7 +4768,7 @@ S2.define('select2/defaults',[
           language = Translation.loadPath(name);
         } catch (e) {
           try {
-            // If we couldn't load it, check if it wasn't tfhe full path
+            // If we couldn't load it, check if it wasn't the full path
             name = this.defaults.amdLanguageBase + name;
             language = Translation.loadPath(name);
           } catch (ex) {

@@ -580,10 +580,10 @@ module.exports = {
 	temp: function(req, res) { 
 		res.view({ 
 			title: "Administrar", 
-			layout: "shared/default", 
-			sectionHead: "<link href='/js/dependencies/jquery-splitter/0.24.0/css/jquery.splitter.css' rel='stylesheet' type='text/css' />", 
+			
+			sectionHead: "<link href='/js/dependencies/select2/4.0.3/css/select2.min.css' />", 
 			sectionScripts: 
-				"<script type='text/javascript' src='/js/dependencies/jquery-splitter/0.24.0/js/jquery.splitter.js'></script>" + 
+				"<script type='text/javascript' src='/js/dependencies/select2/4.0.3/js/select2.min.js'></script>" +
 				"<script type='text/javascript' src='/js/src/Session/TempController.js'></script>" 
 		}); 
 	}

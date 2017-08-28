@@ -6,6 +6,44 @@
 **/
 module.exports = { 
 	/**
+	* @method :: getOne (POST)
+	* @description :: Consigue el json de proyecto mas los participantes, dialogos y kanban
+	* @param :: {Object} req, request element de sails
+	* @param :: {Objetct} res, de la vista ejs del servidor
+	* @param :: {Objetct} next, para continuar en caso de error
+	**/
+	getOne: function(req, res, next) { 
+		// LLamar a la función en sails para buscar el proyecto de acuerdo a su 'id' 
+		// y hace un populate a elementos necesarios 
+		Project.findOne(req.param("id"))
+		.populate("participants")
+		.populate("dialogos")
+		.populate("kanban")
+		.then(function(result) { 
+			// Verificar si no existe el proyecto 
+			if(!result) { 
+				return res.json({ 
+					proc: false, 
+					msj: "¡Se produjo un error con el objeto 'project'!" 
+				}); 
+			} 
+			
+			// Caso contrario, de no haber error, retornar el proyecto como json 
+			return res.json({ 
+				proc: true, 
+				msj: "", 
+				project: result 
+			}); 
+		}).catch(function(err) { 
+			sails.log(err); 
+			return res.json({ 
+				proc: true, 
+				msj: "¡Se produjo un error en la base de datos!", 
+			}); 
+		}); 
+	}, 
+
+	/**
 	* @method :: getUserProjects (GET)
 	* @description :: Encuentra todos los proyectos de un usario
 	* @param :: {Object} req, request element de sails
@@ -63,15 +101,20 @@ module.exports = {
 			// Retornar la vista con los valores del proyecto
 			return res.view({
 				title: "Proyecto: " + project.name,
-				layout: "shared/admin", 
+				layout: "shared/project", 
 				sectionHead:
-					"<link href='/js/dependencies/jquery-contextmenu/2.4.1/jquery.contextMenu.min.css' rel='stylesheet' type='text/css' />", 
+					"<link href='/js/dependencies/jquery-contextmenu/2.4.1/jquery.contextMenu.min.css' rel='stylesheet' type='text/css' />" +  
+					"<link href='/js/dependencies/jquery-splitter/0.24.0/css/jquery.splitter.css' rel='stylesheet' type='text/css' />" + 
+					"<link href='/js/dependencies/select2/4.0.3/css/select2.min.css' />", 
 				sectionScripts: 
-					"<script type='text/javascript' src='/js/dependencies/jquery-contextmenu/2.4.1/jquery.contextMenu.min.js'></script>" + 
 					"<script type='text/javascript' src='/js/dependencies/d3/4.8.0/js/d3.min.js'></script>" + 
+					"<script type='text/javascript' src='/js/dependencies/select2/4.0.3/js/select2.min.js'></script>" + 
+					"<script type='text/javascript' src='/js/dependencies/jquery-contextmenu/2.4.1/jquery.contextMenu.min.js'></script>" + 
+					"<script type='text/javascript' src='/js/dependencies/jquery-splitter/0.24.0/js/jquery.splitter.js'></script>" + 
 					"<script type='text/javascript' src='/js/src/Project/IndexController.js'></script>" + 
+					"<script type='text/javascript' src='/js/src/Project/IndexController.jquery.js'></script>" + 
 					"<script src='/js/dependencies/sails.io.js'></script>", 
-				project: project
+				project: project 
 			});
 		});
 	},
@@ -344,37 +387,7 @@ module.exports = {
 		});
 	},
 
-	/**
-	* @method :: getOne (POST)
-	* @description :: Consigue el json de proyecto mas los participantes, dialogos y kanban
-	* @param :: {Object} req, request element de sails
-	* @param :: {Objetct} res, de la vista ejs del servidor
-	* @param :: {Objetct} next, para continuar en caso de error
-	**/
-	getOne: function(req, res, next) {
 
-		// LLamar a la función en sails para buscar el proyecto de acuerdo a su 'id' 
-		// y hace un populate a elementos necesarios
-		Project.findOne(req.param("id")).populate("participants").populate("dialogos").populate("kanban").exec(function(err, project) { 
-		
-			// Verificar si existe un error
-			if(err) 
-				return res.json({ 
-					project: false 
-				}); 
-
-			// Verificar si no existe el proyecto 
-			if(!project) 
-				res.json({ 
-					project: false 
-				}); 
-		
-			// Caso contrario, de no haber error, retornar el proyecto como json
-			return res.json({ 
-				project: project 
-			});
-		});
-	},
 
 	/**
 	* @method :: conectar_socket (POST) 
