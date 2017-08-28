@@ -103,11 +103,11 @@
     					<li><a href="#!">Bienvenido : <%=session.User.firstname%></a></li>
     					<li class="divider"></li>
                         <% if(session.User.rol === 1) { %>
-                        <li><a href="/user/admin">Administrar usuarios</a></li>
+                        <li><a href="/admin/user">Administrar usuarios</a></li>
                         <% } %>
-    					<li><a href="/user/index">Mis Proyectos</a></li>
-    					<li><a href="/user/edit">Mi perfil</a></li>
-                        <li><a href="/user/password">Modificar contraseña</a></li>
+    					<li><a href="/session/index">Mis Proyectos</a></li>
+    					<li><a href="/session/profile">Mi perfil</a></li>
+                        <li><a href="/session/password">Modificar contraseña</a></li>
     					<li><a href="/session/logout">Cerrar sesión</a></li>
   					</ul>
 		        </div>

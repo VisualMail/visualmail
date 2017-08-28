@@ -1,0 +1,107 @@
+<div class="container" ng-controller="IndexController as vm">
+    <h3>Bienvenido <%= session.User.firstname %></h3>
+    <hr />
+    
+    <div class="form-group">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                <div class="card"> 
+                    <h6 class="card-header">Mis proyectos</h6> 
+                    <div class="card-body">
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-search"></span>
+                                        </span>
+                                        <input class="form-control" placeholder="Buscar por nombre del proyecto" type="text" 
+                                            ng-model="vm.buscarProjectsUser">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-primary" type="button"
+                                                ng-click="vm.onBtnNuevoProyectoClick()">
+                                                <span class="glyphicon glyphicon-plus-sign"></span> Nuevo
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
+
+                        <div ng-repeat="item in vm.miProjects.slice().reverse() | filter: vm.buscarProjectsUser">
+                            <div class="card text-white bg-success mb-3" ng-if="item.owner_email === vm.miUser.email" style="cursor: pointer;" 
+                                ng-click="vm.onProjectClick(item.id)">
+                                <div class="card-header">{{ item.name }}</div>
+                                <div class="card-body">
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                <div class="card"> 
+                    <h6 class="card-header">Proyectos en los que participo</h6> 
+                    <div class="card-body">
+        
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-search"></span>
+                                        </span>
+                                        <input class="form-control" placeholder="Buscar por nombre del proyecto" type="text" 
+                                            ng-model="vm.buscarProjectsOthers">
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
+
+                        <div ng-repeat="item in vm.miProjects.slice().reverse() | filter: vm.buscarProjectsOthers">
+                            <div class="card text-white bg-info mb-3" ng-if="item.owner_email !== vm.miUser.email" style="cursor: pointer;" 
+                                ng-click="vm.onProjectClick(item.id)">
+                                <div class="card-header">{{ item.name }}</div>
+                                <div class="card-body">
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalProject" tabindex="-1" role="dialog" aria-labelledby="modalProjectTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form name="vm.formProyect">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalProjectTitle">Nuevo proyecto</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <label for="projectName"
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+</div>

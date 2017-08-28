@@ -5,9 +5,272 @@
 * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
 **/
 
-var bcrypt = require("bcrypt");
+var bcrypt = require("bcryptjs");
 
 module.exports = { 
+	/**
+	* @method :: getUser (View)
+	* @description :: Se encarga de dar los permisos para mostrar vista de login
+	* @param :: {Object} req, request element de sails
+	* @param :: {Objetct} res, de la vista ejs del servidor 
+	**/
+	getUser: function(req, res) {
+		if(req.session.User) 
+			return res.json({ user: req.session.User });
+			
+		return res.json({ user: false });
+	},
+
+	/**
+	* @method :: index (VIEW)
+	* @description :: Muestra la vista principal de la sesión 
+	* @param :: {Object} req, request element de sails
+	* @param :: {Objetct} res, de la vista ejs del servidor
+	* @param :: {Objetct} next, para continuar en caso de error
+	**/
+	index: function(req, res, next) {
+		// Redirigir a la vista 'user/edit'
+		return res.view({ 
+			title: "Mis proyectos", 
+			layout: "shared/admin", 
+			sectionScripts: 
+				"<script src='/js/src/Session/IndexController.js'></script>" 
+		});
+	}, 
+
+	/**
+	* @method :: edit (VIEW)
+	* @description :: Muestra la vista para editar el perfil
+	* @param :: {Object} req, request element de sails
+	* @param :: {Objetct} res, de la vista ejs del servidor
+	* @param :: {Objetct} next, para continuar en caso de error
+	**/
+	profile: function(req, res, next) {
+		// Redirigir a la vista 'user/edit'
+		return res.view({ 
+			title: "Editar mi perfil", 
+			layout: "shared/admin", 
+			sectionScripts: 
+				"<script src='/js/dependencies/jscolor/2.0.4/js/jscolor.min.js'></script>" + 
+				"<script src='/js/src/Session/ProfileController.js'></script>" 
+		});
+	}, 
+
+	/**
+	* @method :: profileUpdate (POST)
+	* @description :: Edita los datos de un usuario de forma asincrona y sin problemas de concurrencia
+	* @param :: {Object} req, request element de sails
+	* @param :: {Objetct} res, de la vista ejs del servidor
+	* @param :: {Objetct} next, para continuar en caso de error
+	**/
+	profileUpdate: function(req, res, next){
+		// Guardar en variables temporales los vales de cambio
+		var nombre = req.param("firstname"); 
+		var apellido = req.param("lastname");
+		var imagenurl = req.param("imgurl");
+		var iniciales = req.param("initials");
+		var id = req.session.User.id; 
+
+		// Iniciarlizar un nuevo objeto
+		var object = { }; 
+		var count = 0;
+		
+		// Por cada elemento a cambiar, revisar si este está vacío o no 
+		// guardar en object, además aumentar el contador
+		if(nombre !== "") {
+			object["firstname"]	= nombre;
+			count++;
+		}
+		
+		if(apellido !== "") {
+			object["lastname"] = apellido;
+			count++;
+		}
+		
+		if(imagenurl !== "") {
+			object["imgurl"] = imagenurl;
+			count++;
+		}
+		
+		if(iniciales !== "") {
+			object["initials"] = iniciales;
+			count++;
+		}
+
+		// Crear el objeto array
+		jsonObj = [];
+
+		// El object queda en formato json
+		jsonObj.push(object); 
+		
+		// Verificar si hubo un cambio
+		if(count >= 1) { 
+			
+			// Actualizar el usuario de acuerdo al 'id' y se entrega como entrada la variable jsonObj
+			User.update({ id: id }, jsonObj[0]).exec(function userupdate(err) { 
+
+				// Verificar si existe un error
+				if(err) { 
+					req.session.flash = { };
+					return res.json({ 
+						proc: false, 
+						msg: "Se produjo un error al conectarse con el objeto 'user'"
+					}); 
+				}
+				
+				// Si no hay error, actualizar los valores de la variable de sesion User, 
+				// si algún parámetro es distinto de nulo 
+				req.session.flash = {}; 
+				
+				if(nombre !== "") 
+					req.session.User.firstname = nombre;
+				
+				if(apellido !== "") 
+					req.session.User.lastname = apellido;
+					
+				if(imagenurl !== "") 
+					req.session.User.imgurl = imagenurl; 
+					
+				if(iniciales !== "") 
+					req.session.User.initials = iniciales; 
+					
+				// Actualizar el mensaje del servidor y retornar un json con el valor de operacion correcta 
+				//req.session.flash = { err: "Se han actualizado los cambios" };
+				return res.json({ proc: true, msg: "¡Se han actualizado los cambios!" });
+			}); 
+		} else {
+
+			// Caso contrario retornar si no hubieron cambios
+			req.session.flash = { };
+			return res.json({ 
+				proc: false, 
+				msg: "¡No se produjo ningún cambio!" 
+			});
+		}
+	}, 
+
+	/**
+	* @method :: password (VIEW)
+	* @description :: Controla la vista principal para la modificación de la contraseña
+	* @param :: {Object} req, request element de sails
+	* @param :: {Objetct} res, de la vista ejs del servidor
+	* @param :: {Objetct} next, para continuar en caso de error
+	**/
+	password: function(req, res, next) { 
+		return res.view({ 
+			title: "Modificar contraseña", 
+			layout: "shared/admin", 
+		}); 
+	}, 
+
+	/**
+	* @method :: passwordActualizar (POST)
+	* @description :: Actualiza una contraseña
+	* @param :: {Object} req, request element de sails
+	* @param :: {Objetct} res, de la vista ejs del servidor
+	* @param :: {Objetct} next, para continuar en caso de error
+	*/
+	passwordUpdate: function(req, res, next) { 
+		// Establecer los datos 
+		var user = req.session.User; 
+		var userPassword = req.param("userPassword"); 
+		var userPasswordNew = req.param("userPasswordNew"); 
+		var userPasswordConfirm = req.param("userPasswordConfirm"); 
+
+		// Verificar si la nueva contraseña no es igual a la actual 
+		if(userPassword === userPasswordNew) { 
+			req.session.passwordMessage = { result: false, message: "¡La nueva contraseña debe ser distinta de la actual!" }; 
+			return res.redirect("/session/password"); 
+		} 
+
+		// Verificar si la nueva contraseña coincide 
+		if(userPasswordNew !== userPasswordConfirm) { 
+			req.session.passwordMessage = { result: false, message: "¡La nueva contraseña no coincide!" }; 
+			return res.redirect("/session/password"); 
+		} 
+
+		// Verificar si la nueva contraseña posee de 6 a 20 caracteres 
+		if(userPasswordNew.length < 6 || userPasswordNew.length > 20) { 
+			req.session.passwordMessage = { result: false, message: "¡La nueva contraseña de poseer mínimo 6 caracteres y máximo 20 caracteres!" }; 
+			return res.redirect("/session/password"); 
+		} 
+
+		// Buscar el usuario actual 
+		User.findOne(user.id).then(function(result) { 
+			// Verificar si no existe el usuario
+			if(!result) { 
+				req.session.passwordMessage = { result: false, message: "¡El usuario no existe!" }; 
+				return res.redirect("/session/password"); 
+			} 
+			
+			// Si no hay error, comparar la contraseña con la contraseña almacenada 
+			var passwordMessage = bcrypt.compare(userPassword, result.password).then(function(result) { 
+				var message = ""; 
+
+				//Verificar si es la contraseña del usuario
+				if(!result) 
+					message = "¡La contraseña del usuario es incorrecta!"; 
+				
+				return { result: result, message: message }; 
+			}).catch(function(err) { 
+				sails.log(err); 
+				req.session.passwordMessage = { result: false, message: "¡Error al comparar la contraseña actual!" }; 
+				return res.redirect("/session/password"); 
+			}); 
+
+			// Cifrar la nueva contraseña 
+			userPasswordNew = bcrypt.hash(userPasswordNew, 10).then(function(result) { 
+				return result; 
+			}).catch(function(err) { 
+				sails.log(err); 
+				req.session.passwordMessage = { result: false, message: "¡Error al cifrar la nueva contraseña!" }; 
+				return res.redirect("/session/password"); 
+			}); 
+
+			return [passwordMessage, userPasswordNew]; 
+		}).spread(function(passwordMessage, userPasswordNew) { 
+			// Si no es la contraseña del usuario 
+			if(!passwordMessage.result) { 
+				req.session.passwordMessage = passwordMessage; 
+				return res.redirect("/session/password"); 
+			}
+
+			// Actualizar la contraseña en la base de datos 
+			User.update(user.id, { password: userPasswordNew }).then(function(result) { 
+				passwordMessage.message = "¡Contraseña actualizada!"; 
+				req.session.passwordMessage = passwordMessage; 
+				return res.redirect("/session/password"); 
+			}).catch(function(err) { 
+				sails.log(err); 
+				req.session.passwordMessage = { result: false, message: "¡Error en la Base de Datos '/User/update'!" }; 
+				return res.redirect("/session/password"); 
+			}); 
+		}).catch(function(err) { 
+			sails.log(err); 
+			req.session.passwordMessage = { result: false, message: "¡Error en la Base de Datos '/User/findOne'!" }; 
+			return res.redirect("/session/password"); 
+		}); 
+	},
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	/**
 	* @method :: actualizarpass (POST)
 	* @description :: Actualiza una contraseña
@@ -62,19 +325,6 @@ module.exports = {
 		res.view({ 
 			sectionScripts: "<script src='/js/src/Session/ForgotPassController.js'></script>", 
 			title: "Recuperar contraseña" });
-	},
-
-	/**
-	* @method :: getUser (View)
-	* @description :: Se encarga de dar los permisos para mostrar vista de login
-	* @param :: {Object} req, request element de sails
-	* @param :: {Objetct} res, de la vista ejs del servidor 
-	**/
-	getUser: function(req, res) {
-		if(req.session.User) 
-			return res.json({ user: req.session.User });
-			
-		return res.json({ user: false });
 	},
 
 	 /**

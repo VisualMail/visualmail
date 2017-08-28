@@ -86,7 +86,7 @@ module.exports = {
 	beforeCreate: function(values,next){
 		
 		// Utilizando bcryptjs recibe el password sin encriptar values.password y valor de configuracion
-		require("bcrypt").hash(values.password, 10, function passwordEncrypted(err, password) { 
+		require("bcryptjs").hash(values.password, 10, function passwordEncrypted(err, password) { 
 
 			// Verificar si existe un error
 			if(err) 

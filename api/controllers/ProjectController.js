@@ -4,7 +4,103 @@
 * @description ::Logica del servidor para manejar Proyectos
 * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
 **/
-module.exports = {
+module.exports = { 
+	/**
+	* @method :: getUserProjects (GET)
+	* @description :: Encuentra todos los proyectos de un usario
+	* @param :: {Object} req, request element de sails
+	* @param :: {Objetct} res, de la vista ejs del servidor
+	* @param :: {Objetct} next, para continuar en caso de error
+	**/
+	getUserProjects: function(req, res) { 
+		var userId = req.session.User.id; 
+		
+		// Buscar un usuario por su 'id' y recupera los proyectos asociados
+		User.findOne({ id: userId }).populate("projects").then(function(result) { 
+			if(!result) { 
+				return res.json({ 
+					proc: false, 
+					msg: "¡Se produjo un error al conectarse con el objeto 'user'!" 
+				});
+			}
+
+			delete result.password; 
+
+			return res.json({ 
+				proc: true, 
+				msg: "", 
+				user: result 
+			}); 
+		}).catch(function(err) { 
+			sails.log("Se produjo un error en 'projet/getUserProjects': ", err); 
+			return res.json({ 
+				proc: false, 
+				msg: "Se produjo un error en la conexión con la base de datos" 
+			}); 
+		}); 
+	},
+
+	/**
+	* @method :: admin (VIEW)
+	* @description :: retorna la vista de administración de proyectos
+	* @param :: {Object} req, request element de sails
+	* @param :: {Objetct} res, de la vista ejs del servidor
+	* @param :: {Objetct} next, para continuar en caso de error
+	**/
+	index: function(req, res, next) {
+		
+		// Llamar a Sails para ir a la vista de edición del proyecto
+		Project.findOne(req.param("id")).populate("participants").exec(function(err, project) {
+			
+			// Verificar si existe un error
+			if(err) 
+				return next(err); 
+
+			// Verificar si no existe el proyecto 
+			if(!project) 
+				return next(); 
+
+			// Retornar la vista con los valores del proyecto
+			return res.view({
+				title: "Proyecto: " + project.name,
+				layout: "shared/admin", 
+				sectionHead:
+					"<link href='/js/dependencies/jquery-contextmenu/2.4.1/jquery.contextMenu.min.css' rel='stylesheet' type='text/css' />", 
+				sectionScripts: 
+					"<script type='text/javascript' src='/js/dependencies/jquery-contextmenu/2.4.1/jquery.contextMenu.min.js'></script>" + 
+					"<script type='text/javascript' src='/js/dependencies/d3/4.8.0/js/d3.min.js'></script>" + 
+					"<script type='text/javascript' src='/js/src/Project/IndexController.js'></script>" + 
+					"<script src='/js/dependencies/sails.io.js'></script>", 
+				project: project
+			});
+		});
+	},
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	/**
 	* @method :: add_user (POST)

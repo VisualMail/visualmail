@@ -5,7 +5,7 @@
   "description": "Gestión de la comunicación en proyectos ágiles",
   "keywords": [],
   "dependencies": {
-    "bcrypt": "^1.0.2",
+    "bcryptjs": "^2.4.3",
     "connect-redis": "^3.2.0",
     "ejs": "2.3.4",
     "grunt": "1.0.1",

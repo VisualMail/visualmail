@@ -11,11 +11,11 @@
 
     angular
         .module("VisualMailApp")
-        .controller("AdminController", AdminController); 
+        .controller("UserController", UserController); 
 
-    AdminController.$inject = ["$http", "$scope", "NgTableParams"]; 
+    UserController.$inject = ["$http", "$scope", "NgTableParams"]; 
 
-    function AdminController($http, $scope, NgTableParams) { 
+    function UserController($http, $scope, NgTableParams) { 
         var vm = this; 
         vm.cantidadPaginas = [10, 50, 100]; 
         vm.proceso = "Insert"; 
@@ -30,11 +30,10 @@
 
         vm.getDatos = getDatos; 
         vm.onBtnModalUserClick = onBtnModalUserClick; 
-        vm.onBtnPasswordCerrarClick = onBtnPasswordCerrarClick; 
         vm.onBtnPasswordGuardarClick = onBtnPasswordGuardarClick; 
         vm.onBtnUserGuardarClick = onBtnUserGuardarClick; 
         vm.onBtnUserPasswordClick = onBtnUserPasswordClick; 
-        vm.setMensaje = setMensaje; 
+        vm.setMessage = setMessage; 
 
         init(); 
 
@@ -47,8 +46,7 @@
                 // Cargar la lisa de datos 
                 getDatos(); 
             }).catch(function(err) { 
-                setMensaje("Se produjo un error en el procedimiento '/csrfToken'"); 
-                console.log(err); 
+                setMessage(false, "Se produjo un error en el procedimiento '/csrfToken'", err); 
             }); 
             // Fin obtener el token csrf
 
@@ -68,7 +66,7 @@
                     // Inicio obtener los datos de los usuarios 
                     return $http({ 
                         method: "POST", 
-                        url: "/user/adminGetDatos", 
+                        url: "/admin/userGetDatos", 
                         headers: { 
                             "Content-Type": "application/json", 
                             "X-CSRF-TOKEN": vm.csrfToken 
@@ -82,16 +80,15 @@
                     }).then(function(res) { 
                         var d = res.data; 
 
-                        if(d.procedimiento) { 
+                        if(d.proc) { 
                             params.total(d.total); 
-                            return d.lista; 
+                            return d.list; 
                         }
 
-                        setMensaje(d.mensaje); 
+                        setMessage(d.proc, d.msg, undefined, "warning"); 
                         return []; 
                     }).catch(function(err) {
-                        setMensaje("Se produjo un error en el procedimiento '/user/getUsuarioActual'"); 
-                        console.log(err); 
+                        setMessage(false, "Se produjo un error en el procedimiento '/admin/userGetDatos'", err); 
                         return []; 
                     }); 
                     // Fin obtener los datos de los usuarios 
@@ -100,24 +97,18 @@
 
             // Iniciar la lista de resultados 
             vm.tableParams = new NgTableParams(paramIniciales, paramConfig); 
+            $("#viewMain").fadeIn(200); 
         }; 
 
         /**
         * @method :: onBtnModalUserClick 
         * @description :: Muestra el formulario del usuario  
         **/
-        function onBtnModalUserClick(proceso, item) { 
-            vm.proceso = proceso; 
+        function onBtnModalUserClick(proc, item) { 
+            vm.proceso = proc; 
             vm.userPassword = ""; 
 
-            if(proceso === "Insert") { 
-                vm.formUser.userColor.$pristine = true; 
-                vm.formUser.userEmail.$pristine = true; 
-                vm.formUser.userFirstName.$pristine = true; 
-                vm.formUser.userInitials.$pristine = true; 
-                vm.formUser.userLastName.$pristine = true; 
-                vm.formUser.userRol.$pristine = true; 
-
+            if(proc === "Insert") { 
                 vm.userColor = ""; 
                 vm.userEmail = ""; 
                 vm.userFirstName = ""; 
@@ -126,6 +117,14 @@
                 vm.userInitials = ""; 
                 vm.userLastName = ""; 
                 vm.userRol = "-1"; 
+
+                vm.formUser.userColor.$pristine = true; 
+                vm.formUser.userEmail.$pristine = true; 
+                vm.formUser.userFirstName.$pristine = true; 
+                vm.formUser.userInitials.$pristine = true; 
+                vm.formUser.userLastName.$pristine = true; 
+                vm.formUser.userPassword.$pristine = true; 
+                vm.formUser.userRol.$pristine = true; 
             } else {
                 vm.userColor = item.color; 
                 vm.userEmail = item.email; 
@@ -141,15 +140,6 @@
         }; 
 
         /**
-        * @method :: onBtnPasswordCerrarClick 
-        * @description :: Cierra el modal para modificar la contraseña 
-        **/
-        function onBtnPasswordCerrarClick() { 
-            $("#modalUser").modal("open"); 
-            $("#modalPassword").modal("close"); 
-        }; 
-
-        /**
         * @method :: onBtnPasswordGuardarClick 
         * @description :: Guarda la contraseña del usuario seleccionado 
         **/
@@ -161,7 +151,7 @@
 
             $http({ 
                 method: "POST", 
-                url: "passwordActualizarUsuario", 
+                url: "/admin/userUpdatePassword", 
                 headers: { 
                     "Content-Type": "application/json", 
                     "X-CSRF-TOKEN": vm.csrfToken 
@@ -171,15 +161,15 @@
                     userPasswordNew: vm.passwordUser 
                 } 
             }).then(function(res) { 
+                $("#modalPassword").modal("hide"); 
                 var d = res.data; 
-                setMensaje(d.mensaje); 
+                setMessage(d.proc, d.msg, undefined, d.proc ? "success" : "warning"); 
                 vm.procesando = false; 
                 vm.passwordUser = ""; 
                 vm.passwordUserConfirm = ""; 
             }).catch(function(err) { 
                 vm.procesando = false; 
-                setMensaje("Se produjo un error en el procedimiento '/csrfToken'"); 
-                console.log(err); 
+                setMessage(false, "Se produjo un error en el procedimiento '/admin/userUpdatePassword'", err); 
             }); 
         }; 
 
@@ -192,10 +182,11 @@
                 return; 
 
             vm.procesando = true; 
-
+            $http.defaults.withCredentials = true; 
+            
             $http({ 
                 method: "POST", 
-                url: vm.proceso === "Insert" ? "/user/guardar" : "/user/actualizar", 
+                url: vm.proceso === "Insert" ? "/admin/userInsert" : "/admin/userUpdate", 
                 headers: { 
                     "Content-Type": "application/json", 
                     "X-CSRF-TOKEN": vm.csrfToken 
@@ -213,18 +204,17 @@
                 } 
             }).then(function(res) { 
                 var d = res.data; 
-                setMensaje(d.mensaje); 
+                setMessage(d.proc, d.msg, undefined, d.proc ? "success" : "warning"); 
                 vm.procesando = false; 
 
-                if(d.procedimiento) { 
-                    $("#modalUser").modal("close"); 
+                if(d.proc) { 
+                    $("#modalUser").modal("hide"); 
                     getDatos(); 
                     return; 
                 } 
             }).catch(function(err) { 
                 vm.procesando = false; 
-                setMensaje("Se produjo un error en el procedimiento '/csrfToken'"); 
-                console.log(err); 
+                setMessage(false, "Se produjo un error en el procedimiento '" + vm.proceso === "Insert" ? "/admin/userInsert" : "/admin/userUpdate" + "'", err); 
             }); 
         }; 
 
@@ -237,18 +227,25 @@
             vm.passwordUserConfirm = ""; 
             vm.formPassword.passwordUser.$pristine = true; 
             vm.formPassword.passwordUserConfirm.$pristine = true; 
-
-            //$("#modalUser").modal("close"); 
             $("#modalPassword").modal("show"); 
         }; 
 
         /**
-        * @method :: setMensaje 
+        * @method :: setMessage 
         * @description :: Despliega un mensaje  
-        * @param :: {string} mensaje, contenido del mensaje  
+        * @param :: {boolean} proc, procedimiento correcto o incorrecto 
+        * @param :: {string} msg, contenido del mensaje  
+        * @param :: {Object} err, error del proceso 
+        * @param :: {string} state, estado del mensaje 
         **/
-        function setMensaje(mensaje) { 
-            Materialize.toast("<span>" + mensaje + "</span>", 2000); 
+        function setMessage(proc, msg, err, state) { 
+            swal(proc ? "¡Datos registrados!" : "¡No se completó la operación!", msg, state ? state : (proc ? "success" : "error")); 
+
+            if (err !== undefined) { 
+                console.debug("Error: " + msg); 
+                console.debug(err); 
+                console.log(err); 
+            } 
         }; 
     }; 
 })(); 
