@@ -16,29 +16,27 @@ module.exports = {
 	create: function(req, res, next) {
 		
 		// Llamar a la función de Sails para crear un objeto Kanban, se piden todos los parámetros requeridos en el GET
-		Kanban.create(req.allParams(), function tableroCreated(err, kanban) { 
-			
-			// Verificar si existe un error, actualizar la variable flash y se entrega json con formato
-			if(err) { 
-				req.session.flash = { err: err }; 
-				return res.json({ 
-                    kanban: false, 
-                    mensaje: "Se produjo un error al conectarse con el objeto 'kanban'"
-                 }); 
-			}
-			
+		Kanban.create(req.allParams()).then(function(result) { 
 			// Si no fue posible crear el objeto, el POST retorna un mensaje de error según formato
-			if(!kanban)
+			if(!result) { 
 				return res.json({ 
-                    kanban: false, 
-                    mensaje: "Se produjo un error al crear el objeto 'kanban'"
-                 });
-			else {
-				// Si no hay error, la variable flash es nula y se retorna el objeto kanban
-				req.session.flash = { };
-				return res.json({ kanban: kanban });
-			}
-		});
+                    proc: false, 
+                    msg: "¡Se produjo un error al crear el objeto 'kanban'!"
+				 });
+			} 
+			
+			return res.json({ 
+				proc: true, 
+				msg: "¡Nuevo registro Kanban almacenado!", 
+				kanban: result 
+			});
+		}).catch(function(err) { 
+            sails.log("Se produjo un error en 'kanban/create: ", err); 
+			return res.json({ 
+				proc: false, 
+				msg: "¡Se produjo un error en la conexión con la base de datos!" 
+            }); 
+        }); 
 	},
 
 	/**

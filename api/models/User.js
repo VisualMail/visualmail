@@ -45,12 +45,7 @@ module.exports = {
 		// URL de la imagen
 		imgurl: { 
 			type: "string"
-		},
-		
-		// RUT
-		rut: {
-			type: "string"
-		},
+		}, 
 
 		// Color 
 		color: {

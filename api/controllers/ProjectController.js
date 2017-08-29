@@ -6,6 +6,56 @@
 **/
 module.exports = { 
 	/**
+	* @method :: create (POST)
+	* @description :: Crea un nuevo proyecto
+	* @param :: {Object} req, request element de sails
+	* @param :: {Objetct} res, de la vista ejs del servidor
+	* @param :: {Objetct} next, para continuar en caso de error
+	**/
+	create: function(req, res, next) { 
+		// Verificar si no existe un proyecto con el mismo nombre 
+		Project.find({ where: { name: req.param("name"), owner_email: req.session.User.email }}).then(function(result) { 
+			// Si el nombre está duplicado
+			if(result.length > 0) { 
+				return res.json({ 
+					proc: false, 
+					msg: "¡Ya existe un proyecto con el mismo nombre registrado por el usuario!"
+				});	
+			} 
+
+			// Crear el proyecto 
+			Project.create(req.allParams()).then(function(resultCreate) { 
+				if(!resultCreate) { 
+					return res.json({ 
+						proc: false, 
+						msg: "¡Se produjo un error con el objeto 'project'!" 
+					}); 
+				}
+
+				return res.json({ 
+					proc: true, 
+					msg: "¡Nuevo proyecto registrado!", 
+					project: resultCreate 
+				});
+
+			}).catch(function(err) { 
+				sails.log(err); 
+				return res.json({ 
+					proc: false, 
+					msg: "¡Se produjo un error en la base de datos al momento de crear el objeto 'project'!"
+				}); 
+			}); 
+
+		}).catch(function(err) { 
+			sails.log(err); 
+			return res.json({ 
+				proc: false, 
+				msg: "¡Se produjo un error en la base de datos al momento de verificar el objeto 'project'!"
+			}); 
+		}); 
+	},
+
+	/**
 	* @method :: getOne (POST)
 	* @description :: Consigue el json de proyecto mas los participantes, dialogos y kanban
 	* @param :: {Object} req, request element de sails
@@ -103,21 +153,32 @@ module.exports = {
 				title: "Proyecto: " + project.name,
 				layout: "shared/project", 
 				sectionHead:
-					"<link href='/js/dependencies/jquery-contextmenu/2.4.1/jquery.contextMenu.min.css' rel='stylesheet' type='text/css' />" +  
-					"<link href='/js/dependencies/jquery-splitter/0.24.0/css/jquery.splitter.css' rel='stylesheet' type='text/css' />" + 
-					"<link href='/js/dependencies/select2/4.0.3/css/select2.min.css' />", 
+					"<link href='/js/dependencies/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css' />" +  
+					"<link href='/js/dependencies/jquery-contextmenu/2.4.1/jquery.contextMenu.css' rel='stylesheet' type='text/css' />" +  
+					"<link href='/js/dependencies/jquery-splitter/0.24.0/css/jquery.splitter.css' rel='stylesheet' type='text/css' />", 
 				sectionScripts: 
+					"<script type='text/javascript' src='/js/dependencies/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js'></script>" + 
+					"<script type='text/javascript' src='/js/dependencies/bootstrap-datepicker/1.7.1/locales/bootstrap-datepicker.es.min.js'></script>" + 
 					"<script type='text/javascript' src='/js/dependencies/d3/4.8.0/js/d3.min.js'></script>" + 
-					"<script type='text/javascript' src='/js/dependencies/select2/4.0.3/js/select2.min.js'></script>" + 
-					"<script type='text/javascript' src='/js/dependencies/jquery-contextmenu/2.4.1/jquery.contextMenu.min.js'></script>" + 
+					"<script type='text/javascript' src='/js/dependencies/jquery-contextmenu/2.4.1/jquery.contextMenu.js'></script>" + 
 					"<script type='text/javascript' src='/js/dependencies/jquery-splitter/0.24.0/js/jquery.splitter.js'></script>" + 
-					"<script type='text/javascript' src='/js/src/Project/IndexController.js'></script>" + 
 					"<script type='text/javascript' src='/js/src/Project/IndexController.jquery.js'></script>" + 
+					"<script type='text/javascript' src='/js/src/Project/IndexController.d3.js'></script>" + 
+					"<script type='text/javascript' src='/js/src/Project/IndexController.kanban.js'></script>" + 
+					"<script type='text/javascript' src='/js/src/Project/IndexController.js'></script>" + 
 					"<script src='/js/dependencies/sails.io.js'></script>", 
 				project: project 
 			});
 		});
 	},
+
+
+
+
+
+
+
+
 
 
 
@@ -233,59 +294,7 @@ module.exports = {
 		});
 	},
 
-	/**
-	* @method :: create (POST)
-	* @description :: Crea un nuevo proyecto
-	* @param :: {Object} req, request element de sails
-	* @param :: {Objetct} res, de la vista ejs del servidor
-	* @param :: {Objetct} next, para continuar en caso de error
-	**/
-	create: function(req, res, next) { 
-		// Verificar si no existe un proyecto con el mismo nombre 
-		Project.find({ where: { name: req.param("name"), owner_email: req.session.User.email }}, function(err, result) { 
 
-			// Verificar si existe un error 
-			if(err) { 
-				req.session.flash = { err: err };
-				return res.json({ 
-					procedimiento: false, 
-					mensaje: "Se produjo un error al verificar el objeto 'project'"
-				});
-			}
-
-			// Si el nombre está duplicado
-			if(result.length > 0) { 
-				return res.json({ 
-					procedimiento: false, 
-					mensaje: "Ya existe un proyecto con el mismo nombre registrado por el usuario"
-				});	
-			} 
-
-			//Mensaje.find({ project_id: req.param("id") }).populate("usuario").exec(function(err, mensaje) { 
-			Project.create(req.allParams(), function ProjectCreated(err, project) { 
-
-				//var data = req.allParams();
-				// Verificar si existe un error
-				if(err) {
-					// req.session dura el tiempo de la sesion hasta que el browser cierra
-					// Se actualiza la variable flash y se entrega json con formato
-					req.session.flash = { err: err };
-					return res.json({ 
-						procedimiento: false, 
-						mensaje: "Se produjo un error al conectarse con el objeto 'project'"
-					});
-				}
-			
-				// Si no hay error se deja vacía la variable flash y se retorna 'user' como json
-				req.session.flash = { };
-				return res.json({ 
-					procedimiento: true, 
-					mensaje: "Nuevo proyecto registrado", 
-					project: project 
-				});
-			}); 
-		}); 
-	},
 
 	/**
 	* @method :: edit (VIEW)

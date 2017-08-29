@@ -6,6 +6,159 @@
 **/
 module.exports = { 
 	/**
+	* @method :: getAllProjectId (POST)
+	* @description :: Obtiene la lista de mensajes asociados a un proyecto
+	* @param :: {Object} req, request element de sails
+	* @param :: {Objetct} res, de la vista ejs del servidor
+	* @param :: {Objetct} next, para continuar en caso de error
+	**/
+	getAllProjectId: function(req, res, next) {
+		// Llamar a la función de Sails para encontrar todos los mensajes segun la 'id' del proyecto 
+		// más los usuarios asociados al mensaje
+		Mensaje.find({ project_id: req.param("id") }).populate("usuario").then(function(result) { 
+			// Si hay error se actualiza la variable flash y se entrega el json con formato de manejo del error
+			if(!result) { 
+				return res.json({ 
+                    proc: false, 
+                    msg: "¡Se produjo un error con el objeto 'mensaje'!" 
+                }); 
+            } 
+            
+            return res.json({ 
+                proc: true, 
+                msg: "", 
+                mensaje: result 
+            }); 
+		}).catch(function(err) { 
+            sails.log("Se produjo un error en 'mensaje/getAllProjectId': ", err); 
+			return res.json({ 
+				proc: false, 
+				msg: "¡Se produjo un error en la conexión con la base de datos!" 
+            }); 
+        }); 
+    },
+	/**
+	* @method :: create (POST)
+	* @description :: Crea un nuevo mensaje
+	* @param :: {Object} req, request element de sails
+	* @param :: {Objetct} res, de la vista ejs del servidor
+	* @param :: {Objetct} next, para continuar en caso de error
+	**/
+	create: function(req, res, next) { 
+		// Obtener el mensaje 
+		var msj = { 
+			name: req.param("name"), 
+			namePlain: req.param("name"), 
+			nodoNivel: req.param("nodoNivel"), 
+			nodoPadreId: req.param("nodoPadreId"), 
+			nodoPadreNivel: req.param("nodoPadreNivel"), 
+			nodoPadreSessionId: req.param("nodoPadreSessionId"), 
+			numero_hijos: 0, 
+			parent: req.param("parent"), 
+			position: req.param("position"), 
+			project_id: req.param("project_id"), 
+			respuestaMarca: req.param("respuestaMarca"), 
+			respuestaMarcaId: req.param("respuestaMarcaId"), 
+			root: false, 
+			session: req.param("session"), 
+			sessionId: req.param("sessionId"), 
+			tipo: req.param("tipo"), 
+			usuario: req.session.User 
+		}; 
+
+        // Crear el mensaje
+		Mensaje.create(msj).then(function(result) { 
+			// Verificar si existe un error
+			if(!result) { 
+				return res.json({ 
+                    proc: false, 
+                    msg: "¡Se produjo un error con el objeto 'mensaje'!" 
+                }); 
+            } 
+
+			var mensajeUser = result;
+
+			// Enviar a todos los usuarios del proyecto
+			User.findOne(result.usuario).then(function(resultUser) { 
+				// Verificar si existe un error
+				if(!resultUser) { 
+					return res.json({ 
+						proc: false, 
+						msg: "¡Se produjo un error con el objeto 'user'!" 
+					}); 
+				} 
+				
+				// En caso de no haber error, eliminar la contraseña y asignar el usuario al mensaje 
+				delete resultUser.password; 
+				mensajeUser["usuario"] = resultUser; 
+				mensajeUser.save(); 
+				
+				// Si no es el mensaje inicial o el primer hijo, verificar la posición 
+				if(mensajeUser.nodoId > 1) 
+					Mensaje.setMensajePosicion(mensajeUser, req); 
+
+				return res.json({ 
+					proc: true, 
+					msg: "¡Mensaje creado!", 
+					mensaje: result 
+				}); 
+			}).catch(function(err) { 
+				sails.log("Se produjo un error en 'mensaje/create/User.findOne': ", err); 
+				return res.json({ 
+					proc: false, 
+					msg: "¡Se produjo un error en la conexión con la base de datos!" 
+				}); 
+			}); 
+		}).catch(function(err) { 
+            sails.log("Se produjo un error en 'mensaje/create/Mensaje.create': ", err); 
+			return res.json({ 
+				proc: false, 
+				msg: "¡Se produjo un error en la conexión con la base de datos!" 
+            }); 
+        }); 
+	},
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	/**
 	* @method :: actualizarContenido (POST)
 	* @description :: Actualiza el contenido del mensaje 
 	* @param :: {Object} req, request element de sails
@@ -47,81 +200,7 @@ module.exports = {
 			});
 		}); 
 	}, 
-
-	/**
-	* @method :: create (POST)
-	* @description :: Crea un nuevo mensaje
-	* @param :: {Object} req, request element de sails
-	* @param :: {Objetct} res, de la vista ejs del servidor
-	* @param :: {Objetct} next, para continuar en caso de error
-	**/
-	create: function(req, res, next) { 
-		// Obtener el mensaje 
-		var msj = { 
-			name: req.param("name"), 
-			namePlain: req.param("name"), 
-			respuestaMarca: req.param("respuestaMarca"), 
-			respuestaMarcaId: req.param("respuestaMarcaId"), 
-			tipo: req.param("tipo"), 
-			position: req.param("position"), 
-			project_id: req.param("project_id"), 
-			numero_hijos: 0, 
-			root: false, 
-			parent: req.param("parent"), 
-			usuario: req.session.User, 
-			nodoPadreId: req.param("nodoPadreId"), 
-			sessionId: req.param("sessionId"), 
-			nodoNivel: req.param("nodoNivel"), 
-			nodoPadreNivel: req.param("nodoPadreNivel"), 
-			nodoPadreSessionId: req.param("nodoPadreSessionId") 
-		}; 
-
-        // Crear el mensaje
-		Mensaje.create(msj, function mensajeCreated(err, mensaje) { 
-			// Verificar si existe un error
-			if(err) { 
-				req.session.flash = { err: err }; 
-				return res.json({ 
-                    mensaje: false, 
-                    mensajeError: "Se produjo un error al conectarse con el objeto 'mensaje'"
-                }); 
-			}
-			
-			// Si el objeto no se pudo crear, retornar json con formato de manejo de error
-			if(!mensaje) { 
-				req.session.flash = { err: err }; 
-				return res.json({ 
-                    mensaje: false, 
-                    mensajeError: "Se produjo un error al crear el objeto 'mensaje'" 
-                }); 
-			}
-			
-			// Se deja la variable flash como vacía ya que no hay error y se retorna el mensaje creado
-			req.session.flash = { };
-			var mensajeUser = mensaje;
-
-			// Enviar a todos los usuarios del proyecto
-			User.findOne(mensaje.usuario).exec(function(err, user) {
-
-				// Verificar si existe un error
-				if(!err && user) {
-					
-					// En caso de no haber error, eliminar la contraseña y asignar el usuario al mensaje
-					delete user.password; 
-					mensajeUser["usuario"] = user; 
-					mensajeUser.save(); 
-
-					// Si no es el mensaje inicial o el primer hijo, verificar la posición 
-					if(mensajeUser.nodoId > 1)
-						Mensaje.setMensajePosicion(mensajeUser, req); 
-				}
-
-				return;
-			});
-
-			return res.json({ mensaje: mensaje });
-		});
-	},
+	
 
 	/**
 	* @method :: getMessages (POST)

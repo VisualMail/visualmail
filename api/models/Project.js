@@ -54,6 +54,11 @@ module.exports = {
 		kanban: { 
 			collection: "kanban", 
 			via: "project" 
-		} 
+		}, 
+
+		// Guarda la descripción breve del proyecto 
+		description: { 
+			type: "string" 
+		}
 	}, 
 }; 

@@ -1,6 +1,44 @@
 body { background-color: #FFFFFF; overflow: hidden; } 
 button { cursor: pointer; } 
 
+.dialogo-panel-card { 
+  background-color: #FFF; 
+  border: #CCCCCC 1px solid; 
+  border-radius: 5px; 
+  -webkit-border-radius: 5px; 
+  box-shadow: 0 0 3px #999; 
+  -webkit-box-shadow: 0 0 3px #999; 
+  -moz-box-shadow: 0 0 3px #999; 
+  overflow: hidden; 
+  transition: box-shadow 0.4s, border 0.4s; 
+  position: relative; 
+  -webkit-transition: -webkit-box-shadow 0.4s, border 0.4s; 
+} 
+.dialogo-main { 
+  height: 100%; 
+  margin: 0; 
+  position: absolute; 
+  right: 0; 
+  width: 100%; 
+} 
+.dialogo-panel-top { 
+  height: 100%; 
+  width: 70%; 
+  overflow-y: auto;
+  position: relative; 
+} 
+.dialogo-panel-bottom { height: 100%; width: 100%; } 
+.svg-session { height: 48px; } 
+.svg-mapa { height: 600px; overflow-x: hidden; position: relative; width: 100%; } 
+
+.kanbanBoardColumn { border: 3px solid #C8E6C9; height:510px; overflow-y: auto; } 
+.kanbanBoardColumn.droppable, .kanbanBoardCell.droppable { border: 2px dashed #666; } 
+.kanbanBoardColumnHeader { background: #C8E6C9; color:#4CAF50; } 
+.kanbanBoardCell { border: 0px solid #666; display: block; margin: 15px 5px 15px 0; padding: 0; width: 100%; } 
+.kanbanBoardTask { background: #FFEB3B; border-radius: 6px; cursor: move; margin: 0px;   padding: 0px; position: relative; height: 100%; width: 100%; word-wrap: break-word; -moz-border-radius: 6px; -webkit-border-radius: 6px; } 
+.kanbanBoardTask:after { border-color: #FFEB3B transparent; border-style: solid; border-width: 0px 0px 0; bottom: -0px; content: ''; cursor: move; display: block; left: 8px; position: absolute; width: 0; z-index: 1; } 
+
+
 #main { height: 100%; margin: 0; min-height: 100%; overflow: hidden; padding: 0; position: absolute; top: 0; width: 100%; } 
 #main-content { box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.5); height: 100%; margin: 0; right: 0; min-height: 100%; overflow-x: hidden; padding-top: 5rem; position: absolute; width: 100%; } 
 #main-menu { height: 100%; right: -100%; overflow-x: hidden; position: fixed; width: 35%; } 
@@ -17,8 +55,14 @@ button { cursor: pointer; }
 .main-logo:hover { opacity: 0.01; } 
 .main-logo-hover { position: absolute; opacity: 1; }
 
-.sortby { background-color: #FFCE6B; }
+/* select2 */
+.select2-selection { border-color: #000000 !important; border-color: rgba(0,0,0,.15) !important; height: 38px !important; } 
+.select2-selection__clear { margin-top: 6px !important; }
+.select2-selection__rendered { 
+  color: #464a4c; font-family: sans-serif !important; font-size: 1rem; font-weight: 400; line-height: 25px !important; } 
+
 .selectedindex { background-color: #ECECEC; }
+.sortby { background-color: #FFCE6B; }
 
 .overflow-border { border: 1px solid #e5e5e5; border-radius: 5px; box-shadow: 0 1px 2px rgba(0,0,0,.05); margin: 0 auto 20px; max-width: 99%; overflow: auto; padding: 5px; position: relative; z-index: 0 ! important; -moz-border-radius: 5px; -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05); -webkit-border-radius: 5px; -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05); } 
 .overflow-noborder { border: none; margin: 0; max-width: 100%; overflow: auto; padding: 0px; position: relative; width: 100%; z-index: 0 ! important; } 
@@ -836,10 +880,27 @@ button { cursor: pointer; }
 /* ng-table pagination */
 .pagination>li{display:inline}.pagination>li>a,.pagination>li>span{position:relative;float:left;padding:6px 12px;margin-left:-1px;line-height:1.42857143;color:#337ab7;text-decoration:none;background-color:#fff;border:1px solid #ddd}.pagination>li:first-child>a,.pagination>li:first-child>span{margin-left:0;border-top-left-radius:4px;border-bottom-left-radius:4px}.pagination>li:last-child>a,.pagination>li:last-child>span{border-top-right-radius:4px;border-bottom-right-radius:4px}.pagination>li>a:focus,.pagination>li>a:hover,.pagination>li>span:focus,.pagination>li>span:hover{color:#23527c;background-color:#eee;border-color:#ddd}.pagination>.active>a,.pagination>.active>a:focus,.pagination>.active>a:hover,.pagination>.active>span,.pagination>.active>span:focus,.pagination>.active>span:hover{z-index:2;color:#fff;cursor:default;background-color:#337ab7;border-color:#337ab7}.pagination>.disabled>a,.pagination>.disabled>a:focus,.pagination>.disabled>a:hover,.pagination>.disabled>span,.pagination>.disabled>span:focus,.pagination>.disabled>span:hover{color:#777;cursor:not-allowed;background-color:#fff;border-color:#ddd}.pagination-lg>li>a,.pagination-lg>li>span{padding:10px 16px;font-size:18px}.pagination-lg>li:first-child>a,.pagination-lg>li:first-child>span{border-top-left-radius:6px;border-bottom-left-radius:6px}.pagination-lg>li:last-child>a,.pagination-lg>li:last-child>span{border-top-right-radius:6px;border-bottom-right-radius:6px}.pagination-sm>li>a,.pagination-sm>li>span{padding:5px 10px;font-size:12px}.pagination-sm>li:first-child>a,.pagination-sm>li:first-child>span{border-top-left-radius:3px;border-bottom-left-radius:3px}.pagination-sm>li:last-child>a,.pagination-sm>li:last-child>span{border-top-right-radius:3px;border-bottom-right-radius:3px} 
 
-/* select2 */
-.select2-selection { border-color: #000000 !important; border-color: rgba(0,0,0,.15) !important; height: 38px !important; } 
-.select2-selection__arrow { top: 8px !important; } 
-.select2-selection__rendered { color: #464a4c; font-family: sans-serif !important; font-size: 1rem; font-weight: 400; line-height: 38px !important; } 
-
 /* puntoticket */
 .bg-danger-light {background-color:#EBCCCC!important}
+
+.context-menu-icon-citar,
+.context-menu-icon-ci,
+.context-menu-icon-ac,
+.context-menu-icon-nc,
+.context-menu-icon-db,
+.context-menu-icon-ta,
+.context-menu-icon-da { 
+  background-position: 4px 2px; 
+  background-repeat: no-repeat; 
+  background-size: 25px; 
+  min-height: 1%; 
+  list-style-type: none; 
+}
+
+.context-menu-icon-citar { background-image: url('../images/icons/page_white_edit.png'); } 
+.context-menu-icon-ci { background-image: url('../images/icons/ci.png'); } 
+.context-menu-icon-ac { background-image: url('../images/icons/ac.png'); } 
+.context-menu-icon-nc { background-image: url('../images/icons/nc.png'); } 
+.context-menu-icon-db { background-image: url('../images/icons/db.png'); } 
+.context-menu-icon-ta { background-image: url('../images/icons/ta.png'); } 
+.context-menu-icon-da { background-image: url('../images/icons/da.png'); } 

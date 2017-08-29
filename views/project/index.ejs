@@ -1,10 +1,5 @@
-<div id="projectMain" style="height: 100%; position: absolute; top: 60px; width: 100%;" ng-controller="IndexController as vm">
-        <select class="js-example-basic-multiple" multiple="multiple">
-                <option value="AL">Alabama</option>
-                  
-                <option value="WY">Wyoming</option>
-                <option value="NY">New York</option>
-              </select>
+<div id="IndexControllerMain" style="height: 100%; position: absolute; top: 60px; width: 100%;" ng-controller="IndexController as vm">
+
     <div class="card text-center"> 
 
         <!-- Inicio Tab -->
@@ -25,62 +20,35 @@
             
         <!-- Inicio Proyecto --> 
         <div class="card-body text-left" ng-show="vm.activeTab === 1"> 
-            <h4 class="card-title text-left">Información del proyecto</h4> 
-            <hr />
+            <div class="container">
+                <h4 class="card-title text-left">Información del proyecto</h4> 
+                <hr />
 
-            <div class="form-group"> 
-                <div class="row"> 
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
-
-
-
-
-                        <label for="projectUser">Sección padre</label> 
-                        <div> 
-                            <select class="form-control js-example-basic-multiple" id="projectUser" multiple="multiple" name="projectUser"> 
-                            </select> 
+                <div class="form-group"> 
+                    <div class="row"> 
+                        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"> 
+                            <label for="projectUser">Sección padre</label> 
+                            <div> 
+                                <select class="js-example-basic-multiple" id="projectUser" multiple="multiple" name="projectUser" style="width: 100%"> 
+                                </select> 
+                            </div> 
                         </div> 
                     </div> 
-                </div> 
-            </div>
-
+                </div>
+            </div> 
         </div> 
         <!-- Fin Proyecto -->
             
         <!-- Inicio Diálogo -->
-        <style> 
-            .dialogo-panel-card { 
-                background-color: #FFF; 
-                border: #CCCCCC 1px solid; 
-                border-radius: 5px; 
-                -webkit-border-radius: 5px; 
-                box-shadow: 0 0 3px #999; 
-                -webkit-box-shadow: 0 0 3px #999; 
-                -moz-box-shadow: 0 0 3px #999; 
-                overflow: hidden; 
-                transition: box-shadow 0.4s, border 0.4s; 
-                position: relative; 
-                -webkit-transition: -webkit-box-shadow 0.4s, border 0.4s; 
-            } 
-            .dialogo-main { 
-                height: 100%; 
-                margin: 0; 
-                position: absolute; 
-                right: 0; 
-                width: 100%; 
-            } 
-            .dialogo-panel-top { 
-                height: 100%; 
-                width: 70%; 
-            } 
-            .dialogo-panel-bottom { 
-                height: 100%; 
-                width: 100%; 
-            } 
-        </style> 
-        
-        <div id="dialogo-main" ng-show="vm.activeTab === 2"> 
-            <div class="dialogo-panel-top">Praesent volutpat tellus in eros dapibus elementum. Nam laoreet risus non nulla mollis ac luctus felis dapibus. Pellentesque mattis elementum augue non sollicitudin. Nullam lobortis fermentum elit ac mollis. Nam ac varius risus. Cras faucibus euismod nulla, ac auctor diam rutrum sit amet. 1111111111111111111111111111111111111111111111111111111111111111111</div>  
+        <div class="text-left" id="dialogo-main" ng-show="vm.activeTab === 2"> 
+            <div id="dialogo-svg" class="dialogo-panel-top">
+                
+			    <!-- Inicio del mapa del diálogo -->
+                <div class="svg-session"></div>
+                <div class="svg-mapa" style="opacity: 0.5"></div>
+                <!-- Fin del mapa del diálogo -->    
+            
+            </div>  
             
             <!-- Inicio Paneles -->
             <div class="dialogo-panel-bottom"> 
@@ -110,7 +78,7 @@
                                                 <li class="list-group-item border border-secondary" style="padding: 0 15px 0 15px;">¿Cuando inicia el campeonatoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa?</li> 
                                             </ul> 
                                         </div>
-                                        <div style="margin: 10px 0 0 15px; width: 95%;">
+                                        <div class="context-menu-mensaje-anclado" style="margin: 10px 0 0 15px; width: 95%;">
                                             Some quick example text to build on the card title and make up the bulk of the card's content. Some quick example text to build on the card title and make up the bulk of the card's content.
                                         </div>
                                     </div> 
@@ -149,7 +117,7 @@
                                                         <li class="list-group-item border border-secondary" style="padding: 0 15px 0 15px;">¿Cuando inicia el campeonatoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa?</li> 
                                                     </ul> 
                                                 </div>
-                                                <div style="margin: 10px 0 0 15px; width: 95%;">
+                                                <div class="context-menu-mensaje-navegar" style="margin: 10px 0 0 15px; width: 95%;">
                                                     Some quick example text to build on the card title and make up the bulk of the card's content. Some quick example text to build on the card title and make up the bulk of the card's content.
                                                 </div>
                                             </div> 
@@ -174,9 +142,176 @@
             
         <!-- Inicio Kanban -->
         <div class="card-body" ng-if="vm.activeTab === 4"> 
-            <h4 class="card-title">Información del proyecto</h4> 
-            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p> 
-            <a href="#" class="btn btn-primary">Go somewhere</a> 
+            
+            <!-- Inicio Lista NUEVA --> 
+            <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"> 
+                
+                <!-- Inicio Título y búsqueda -->
+                <div class="kanbanBoardColumnHeader"> 
+                    <div class="col-lg-10">NUEVA</div> 
+                    <div class="col-lg-2"> 
+                        <button class="btn btn-primary" type="button">Add</button>
+                        
+                    </div> 
+                </div> 
+                <div class="kanbanBoardColumnHeader"> 
+                    <div class="col-lg-12"> 
+                        <input class="form-control" placeholder="Buscar..." type="text" ng-model="vm.miKanbanColumnSearch1" /> 
+                    </div> 
+                </div> 
+                <!-- Fin Título y búsqueda --> 
+                
+                <!-- Inicio Columna --> 
+                <div class="col-lg-12 kanbanBoardColumn" id="kanbanBoardColumn1" data-column-index="1"> 
+                    
+                    <!-- Inicio Celda --> 
+                    <div class="kanbanBoardCell" id="kanbanBoardColumn1Cell{{ item.index }}" 
+                        data-cell-index="{{ item.index }}" 
+                        ng-repeat="item in vm.miKanbanColumn1 | filter: vm.miKanbanColumnSearch1" 
+                        ng-show="item.title"> 
+                        
+                        <!-- Inicio Tarea --> 
+                        <div class="hoverable kanbanBoardTask" draggable="true" id="{{ item.id }}"> 
+                            <div class="row"> 
+                                <div class="col s12 kanbanred" ng-if="item.associated == true && item.element != ''"> 
+                                    <div class="col s12 white-text"><h6>{{ item.element }}</h6></div> 
+                                </div> 
+                                <div class="col s4"> 
+                                    <div class="col s12" ng-show="item.usuario.imgurl">
+                                                
+                                                <!--<img class="circle" height="40px" width="40px" ng-src="{{ item.usuario.imgurl }}">--> 
+                                    </div> 
+                                    <div class="col s12">{{ item.usuario.initials }}</div> 
+                                </div> 
+                                <div class="col s8 textito"><h6>{{ item.title }}</h6></div> 
+                            </div> 
+                        </div> 
+                        <!-- Fin Tarea --> 
+                    
+                    </div> 
+                    <!-- Fin Celda --> 
+                
+                </div> 
+                <!-- Fin Columna --> 
+            
+            </div>
+                    <!-- Fin Lista NUEVA -->
+        
+                    <!-- Inicio Lista HACIENDO -->
+                    <div class="col s3">
+        
+                        <!-- Inicio Título y búsqueda -->
+                        <div class="col s12 kanbanBoardColumnHeader">HACIENDO</div>
+                        <div class="col s12 kanbanBoardColumnHeader">
+                            <div class="col s1">
+                                <br />
+                                <i class="material-icons light-green-text prefix">search</i>
+                            </div>
+                            <div class="col 11">
+                                <input placeholder="Buscar..." type="text" ng-model="vm.miKanbanColumnSearch2" />
+                            </div>
+                        </div>
+                        <!-- Fin Título y búsqueda -->
+        
+                        <!-- Inicio Columna -->
+                        <div class="col s12 kanbanBoardColumn" id="kanbanBoardColumn2" data-column-index="2"> 
+        
+                            <!-- Inicio Celda -->
+                            <div class="kanbanBoardCell" id="kanbanBoardColumn2Cell{{ item.index }}" 
+                                data-cell-index="{{ item.index }}" 
+                                ng-repeat="item in vm.miKanbanColumn2 | filter: vm.miKanbanColumnSearch2" 
+                                ng-show="item.title">
+        
+                                <!-- Inicio Tarea -->
+                                <div class="hoverable kanbanBoardTask" draggable="true" id="{{ item.id }}">
+                                    <div class="row">
+                                        <div class="col s12 kanbanred" 
+                                            ng-if="item.associated == true && item.element != ''">
+                                            <div class="col s12  white-text"> <h6>{{ item.element }}</h6></div>
+                                          </div>
+                                          <div class="col s4"> 
+                                              <div class="col s12" ng-show="item.usuario.imgurl">
+                                                  <br />
+                                                  <img class="circle" height="40px" width="40px" ng-src="{{ item.usuario.imgurl }}">
+                                              </div>
+                                              <div class="col s12">{{ item.usuario.initials }}</div>
+                                          </div>
+                                          <div class="col s8 textito"><h6>{{ item.title }}</h6></div>
+                                      </div>
+                                  </div>
+                                  <!-- Fin Tarea -->
+        
+                              </div>
+                              <!-- Fin Celda -->
+        
+                        </div>
+                        <!-- Fin Columna -->
+        
+                    </div>
+                    <!-- Fin Lista HACIENDO -->
+        
+                    <!-- Inicio Lista EN PRUEBAS -->
+                    <div class="col s3">
+        
+                        <!-- Inicio Título y búsqueda -->
+                        <div class="col s12 kanbanBoardColumnHeader">EN PRUEBAS</div>
+                        <div class="col s12 kanbanBoardColumnHeader">
+                            <div class="col s1">
+                                <br />
+                                <i class="material-icons light-green-text prefix">search</i>
+                            </div>
+                            <div class="col 11">
+                                <input placeholder="Buscar..." type="text" ng-model="vm.miKanbanColumnSearch3" />
+                            </div>
+                        </div>
+                        <!-- Fin Título y búsqueda -->
+        
+                        <!-- Inicio Columna -->
+                        <div class="col s12 kanbanBoardColumn" id="kanbanBoardColumn3" data-column-index="3">
+        
+                            <!-- Inicio Celda -->
+                            <div class="kanbanBoardCell" id="kanbanBoardColumn3Cell{{ item.index }}" 
+                                data-cell-index="{{ item.index }}" 
+                                ng-repeat="item in vm.miKanbanColumn3 | filter: vm.miKanbanColumnSearch3" 
+                                ng-show="item.title">
+        
+                                <!-- Inicio Tarea -->
+                                <div class="hoverable kanbanyellow kanbanBoardTask" draggable="true" id="{{ item.id }}">
+                                    <div class="row">
+                                        <div class="col s12 kanbanred" ng-if="item.associated == true && item.element != ''">
+                                            <div class="col s12  white-text"><h6>{{ item.element }}</h6></div>
+                                        </div>
+                                        <div class="col s4"> 
+                                            <div class="col s12" ng-show="item.usuario.imgurl">
+                                                <br />
+                                                <img class="circle" height="40px" width="40px" ng-src="{{ item.usuario.imgurl }}">
+                                            </div>
+                                            <div class="col s12"> {{item.usuario.initials}}</div>
+                                        </div>
+                                        <div class="col s8 textito"><h6>{{item.title}}</h6></div>
+                                    </div>
+                                </div>
+                                <!-- Fin Tarea -->
+        
+                            </div>
+                            <!-- Fin Celda -->
+        
+                        </div>
+                        <!-- Fin Columna --> 
+        
+                    </div>
+                    <!-- Fin Lista EN PRUEBAS -->
+
+
+
+
+
+
+
+
+
+
+
         </div> 
         <!-- Fin Kanban -->
             

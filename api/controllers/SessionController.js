@@ -33,8 +33,12 @@ module.exports = {
 		return res.view({ 
 			title: "Mis proyectos", 
 			layout: "shared/admin", 
+			sectionHead:
+				"<link href='/js/dependencies/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css' />", 
 			sectionScripts: 
-				"<script src='/js/src/Session/IndexController.js'></script>" 
+				"<script type='text/javascript' src='/js/dependencies/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js'></script>" + 
+				"<script type='text/javascript' src='/js/dependencies/bootstrap-datepicker/1.7.1/locales/bootstrap-datepicker.es.min.js'></script>" + 
+				"<script type='text/javascript' src='/js/src/Session/IndexController.js'></script>" 
 		});
 	}, 
 
@@ -422,7 +426,7 @@ module.exports = {
 					user.imgurl = "/images/profile.jpg";
 			
 				// Redirige a la vista principal
-				res.redirect("/user/index");
+				res.redirect("/session/index");
 			});
 		});
 	},

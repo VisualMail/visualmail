@@ -23,8 +23,8 @@ module.exports = {
 			if(err) { 
 				req.session.flash = { err: err }; 
 				return res.json({ 
-                    dialogo: false, 
-                    mensaje: "Se produjo un error al conectarse con el objeto 'dialogo'"
+					proc: false, 
+                    msg: "Se produjo un error al conectarse con el objeto 'dialogo'"
                 }); 
 			}
 			
@@ -32,8 +32,8 @@ module.exports = {
 			// retorna un error y el json con la configuracion
 			if(!dialogo) 
 				return res.json({ 
-                    dialogo: false, 
-                    mensaje: "Se produjo un error al crear el objeto 'dialogo'"
+                    proc: false, 
+                    msg: "Se produjo un error al crear el objeto 'dialogo'"
                 }); 
 			
 			// En caso de no haber error
@@ -41,7 +41,7 @@ module.exports = {
 			req.session.flash = { }; 
 
 			// Se crea el valor y se retorna un json para el metodo POST
-			return res.json({ dialogo:dialogo }); 
+			return res.json({ proc: true, msg: "", dialogo: dialogo }); 
 		});
 	},
 

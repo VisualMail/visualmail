@@ -5,6 +5,71 @@
 * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
 **/
 module.exports = {
+	/**
+	* @method :: getAllProjectId (GET)
+	* @description :: Busca todas las tareas
+	* @param :: {Object} req, request element de sails
+	* @param  :: {Objetct} res, de la vista ejs del servidor
+	* @param :: {Objetct} next, para continuar en caso de error
+	**/
+	getAllProjectId: function(req, res, next) { 
+		// De acuerdo al id de un proyecto, se buscan todas las tareas asociadas a ese proyecto 
+		// y se hace un populate para obtener el mensaje asociado y el usuario 
+		Tarea.find({ project_id: req.param("id") }).populate("usuario").populate("mensaje").sort("index ASC").then(function(result) { 
+			// Verificar si no existe la tarea 
+			if(!result) { 
+				return res.json({ 
+					proc: false, 
+					msg: "¡Se produjo un error en el objeto 'tarea'!" 
+				}); 
+			}
+
+			// En caso de no existir error se devuelve el json con la lista de tareas 
+			return res.json({ 
+				proc: true, 
+				msg: "", 
+				tarea: result 
+			}); 
+		}).catch(function(err) { 
+			sails.log("Se produjo un error en 'projet/getUserProjects': ", err); 
+			return res.json({ 
+				proc: false, 
+				msg: "Se produjo un error en la conexión con la base de datos" 
+			}); 
+		}); 
+	}, 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	/**
 	* @method :: create (POST)

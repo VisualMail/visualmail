@@ -178,9 +178,13 @@ function contextMenuMensajeInit(key, options, mensaje) {
 **/
 function contextMenuMensajePanelInit() { 
     var items = { 
-        "mark": { name: "Marcar mensaje", icon: "copy" }, 
-        "reply": { name: "Responder", icon: "edit" }, 
-        "add": { name: "Añadir al Kanban", icon: "add" }, 
+        "citar": { name: "Citar mensaje", icon: "copy" }, 
+        "ci": { name: "Responder", icon: "edit" }, 
+        "ac": { name: "Responder", icon: "edit" }, 
+        "nc": { name: "Responder", icon: "edit" }, 
+        "db": { name: "Responder", icon: "edit" }, 
+        "ta": { name: "Responder", icon: "edit" }, 
+        "da": { name: "Responder", icon: "edit" }, 
         "sep1": "---------", 
         "quit": { name: "Cancelar", icon: function() { return "context-menu-icon context-menu-icon-quit"; } } 
     }; 
