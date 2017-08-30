@@ -5,12 +5,16 @@
         .module("VisualMailApp") 
         .controller("IndexController", IndexController); 
     
-    IndexController.$inject = ["$http", "$scope"]; 
+    IndexController.$inject = ["$http", "$scope", "$filter", "$sce"]; 
 
-    function IndexController($http, $scope) { 
+    function IndexController($http, $scope, $filter, $sce) { 
         var vm = this; 
         vm.activeTab = 2; 
         vm.csrfToken = null; 
+        vm.messageToast = ""; 
+        vm.projectUserId = ""; 
+        vm.projectName = ""; 
+        vm.projectDateEnd = ""; 
 
         vm.miKanbanColumn1 = []; 
         vm.miKanbanColumn2 = []; 
@@ -33,7 +37,7 @@
         vm.miUserListaParticipantes = []; 
         
 
-        vm.projectUserId = ""; 
+        
         
 
         vm.getQueryString = getQueryString; 
@@ -53,14 +57,18 @@
             vm.miProjectId = getQueryString("id"); 
 
 			// Obtener el token de csrf 
-			$http.get("/csrfToken").then(function(d) { 
-				vm.csrfToken = d.data._csrf;  
-            });
+			$http.get("/csrfToken").then(function(res) { 
+				vm.csrfToken = res.data._csrf;  
+            }).catch(function(err) { 
+                setMessage(false, "¡Se produjo un error en el procedimiento '/csrfToken'!", null, err); 
+            }); 
             
             // Obtener el usuario que inició sesión
-			$http.get("/session/getUser").then(function(d) {  
-				vm.miUser = d.data.user;
-            });
+			$http.get("/session/getUser").then(function(res) {  
+				vm.miUser = res.data.user;
+            }).catch(function(err) { 
+                setMessage(false, "¡Se produjo un error en el procedimiento '/session/getUser'!", null, err); 
+            }); 
             
             // Iniciar select2 de la lista de usuarios 'project' 
             $("#projectUser").select2();
@@ -70,28 +78,42 @@
             });
             
             // Obtener los usuarios de VisualMail menos mi usuario 
-            $http.get("/user/getAllEmail").then(function(users) { 
+            $http.get("/user/getAllEmail").then(function(resUsers) { 
+                var du = resUsers.data; 
+
+                // Verificar si no existe un error 
+                if(!du.proc) { 
+                    setMessage(du.proc, du.msg, undefined, "warning"); 
+                    return; 
+                }
                 
                 // Obtener la información del proyecto 
                 $http({ 
                     url: "/project/getOne", 
                     method: "GET", 
                     params: { id: vm.miProjectId } 
-                }).then(function(project) { 
+                }).then(function(resProject) { 
+                    var dp = resProject.data; 
+
+                    // Verificar si no existe un error 
+                    if(!dp.proc) { 
+                        setMessage(dp.proc, dp.msg, undefined, "warning"); 
+                        return; 
+                    }
                     
                     // Obtener el proyecto y la lista de participantes 
-                    vm.miProject = project.data.project; 
+                    vm.miProject = dp.project; 
                     vm.miUserListaParticipantes = vm.miProject.participants; 
     
                     // Obtener cada usuario de la lista obtenida 'usuarios' 
-                    for(var i in users.data.users) { 
+                    for(var i in du.users) { 
                         // Iniciar la bandera que permitira almacenar los usuarios candidatos
                         var bandera = 0; 
                         
                         // Verificar cada participante 
                         for(var j in vm.miUserListaParticipantes) { 
                             // Si el usuario ya es participante del proyecto, omitir 'bandera = 1' 
-                            if(users.data.users[i].email === vm.miUserListaParticipantes[j].email) { 
+                            if(du.users[i].email === vm.miUserListaParticipantes[j].email) { 
                                 bandera = 1; 
                                 break; 
                             } 
@@ -99,7 +121,7 @@
                         
                         // Si la bandera permanece en 0, añadir usuario a la lista de candidatos 
                         if(bandera === 0) 
-                            vm.miUserLista.push(users.data.users[i]); 
+                            vm.miUserLista.push(du.users[i]); 
                     } 
 
                     onProjectUserInit(); 
@@ -108,7 +130,11 @@
                         $("#selectFiltrarUsuario").append("<option value=\"" + value.id + "\" data-icon=\"" + value.imgurl + "\" class=\"left circle\">" + value.firstname + " " + value.lastname + "</option>"); 
                     });  
                     $("select").material_select(); */
+                }).catch(function(err) { 
+                    setMessage(false, "¡Se produjo un error en el procedimiento '/project/getOne'!", null, err); 
                 }); 
+            }).catch(function(err) { 
+                setMessage(false, "¡Se produjo un error en el procedimiento '/user/getAllEmail'!", null, err); 
             }); 
 
          	// Obtener los mensajes del proyecto
@@ -116,8 +142,16 @@
                 url: "/mensaje/getAllProjectId", 
                 method: "GET", 
                 params: { id: vm.miProjectId } 
-             }).then(function(resultado) { 
-                 vm.miMensajeLista = resultado.data.mensaje; 
+             }).then(function(res) { 
+                var d = res.data; 
+
+                // Verificar si no existe un error 
+                if(!d.proc) { 
+                    setMessage(d.proc, d.msg, undefined, "warning"); 
+                    return; 
+                } 
+
+                 vm.miMensajeLista = d.mensaje; 
                  //vm.miSessionId = vm.miMensaje[vm.miMensaje.length - 1].sessionId + 1;
  
                 // 'miMensajeIntercalar' da un valor intercalado a cada mensaje para presentarlos en formato whatsapp 
@@ -131,29 +165,33 @@
  
                  // Establecer el primer mensaje como el mensaje anclado 
                  $anclar = true; 
-                 //vm.onMensajeAnclarClick(vm.miMensaje[0].nodoId); 
+                 vm.onMensajeAnclarClick(vm.miMensajeLista[0].nodoId); 
                  //vm.iniciarMensajeAnclado(); 
  
                  // Iniciar el tiempo del diálogo 
                  //vm.iniciarTiempoDialogo(); 
                  //$("#ProjectControllerCargando").fadeOut(200); 
                  //$("#ProjectControllerMain").fadeIn(200); 
-             }); 
-
+            }).catch(function(err) { 
+                setMessage(false, "¡Se produjo un error en el procedimiento '/mensaje/getAllProjectId'!", null, err); 
+            }); 
 
             // Obtener las tareas del tablero Kanban
 			$http({ 
 				url: "/tarea/getAllProjectId/", 
 				method: "GET", 
 				params: { id: vm.miProjectId } 
-            }).then(function(resultado) { 
-
-            	// Si existe error
-            	if(resultado.data.tarea === "false") 
-                    return;
+            }).then(function(res) { 
+                var d = res.data; 
+                
+                // Verificar si no existe un error 
+                if(!d.proc) { 
+                    setMessage(d.proc, d.msg, undefined, "warning"); 
+                    return; 
+                } 
 
                 // Almacenar la lista de tareas
-                vm.miKanbanListaTareas = resultado.data.tarea; 
+                vm.miKanbanListaTareas = d.tarea; 
 
                 // Añadir cada tarea a la columna correspondiente 
                 $.each(vm.miKanbanListaTareas, function(key, value) { 
@@ -167,15 +205,14 @@
                     else if(value.tipo === vm.miKanbanTipoTarea[3]) // Terminada 
                         vm.miKanbanColumn4.push(value); 
                 }); 
+            }).catch(function(err) { 
+                setMessage(false, "¡Se produjo un error en el procedimiento '/tarea/getAllProjectId/'!", null, err); 
             }); 
 
             // Expresión regular para el E-mail
             //var REGEX_EMAIL = 
                 //'([a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@' + 
                 //'(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)'; 
-
-
-
         }; 
 
         /**
@@ -418,125 +455,166 @@
                     newIndex: newIndex, 
                     usuarioId: vm.miUsuario.id 
                 }
-            }).then(function(respuesta) { 
+            }).then(function(res) { 
                 // Verificar si la respuesta desde el servidor es error 
-                if(!respuesta.data.procedimiento) 
-                    setMensaje(respuesta.data.mensaje); 
+                if(!res.data.proc) 
+                    setMessageToast(res.data.msg); 
+            }).catch(function(err) { 
+                setMessage(false, "¡Se produjo un error en el procedimiento '/tarea/updateTipo'!", null, err); 
             }); 
         }; 
 
+        
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        vm.onBtnProjectModalClick = onBtnProjectModalClick; 
+        vm.onBtnProjectGuardarClick = onBtnProjectGuardarClick; 
+        vm.onBtnProjectAgregarParticipanteClick = onBtnProjectAgregarParticipanteClick; 
+
+        function onBtnProjectModalClick() { 
+            vm.projectName = vm.miProject.name; 
+            vm.projectDateEnd = vm.miProject.projectDateEnd; 
+            $("#modalProject").modal("show"); 
+        }; 
+    
         /**
-        * @method :: onBtnActualizarProyectoClick 
+        * @method :: onBtnProjectGuardarClick 
         * @description :: Función para mandar POST que actualiza los datos del proyecto
         **/
-        function onBtnActualizarProyectoClick() { 
+        function onBtnProjectGuardarClick() { 
+            // Verificar que los datos estén correctos 
+            if(vm.projectName === "" && (vm.projectDateEnd === "" || vm.projectDateEnd === null)) 
+                return; 
+            else { 
+                // Actualizar el nombre del proyecto para la vista 
+                if(vm.miProyectoEditar.nombre === "") 
+                    vm.miProyectoEditar.nombre = vm.miProyecto.name; 
+                
+                // Actualizar la fecha para la vista 
+                if((vm.miProyectoEditar.fechaLimite === "" || vm.miProyectoEditar.fechaLimite === null)) 
+                    vm.miProyectoEditar.fechaLimite = vm.miProyecto.finish_date; 
+                
+                $http({ 
+                    method: "POST", 
+                    url: "/project/editarproyecto", 
+                    headers: { 
+                        "Content-Type": "application/json", 
+                        "X-CSRF-TOKEN": vm.csrfToken 
+                    }, 
+                    data: { 
+                        id: vm.miProyecto.id, 
+                        name: vm.miProyectoEditar.nombre, 
+                        finish_date: vm.miProyectoEditar.fechaLimite 
+                    } 
+                }).then(function(resultado) { 
+                    var d = resultado.data; 
+                    
+                    // Desplegar el mensaje 
+                    setMensaje(d.mensaje); 
+                    
+                    // Si el servidor devuelve un valor false retornar
+                    if(!d.procedimiento) 
+                        return; 
+                    
+                    // Se actualizan los datos en el cliente y se limpian los datos
+                    vm.miProyecto.name = vm.miProyectoEditar.nombre; 
+                    vm.miProyecto.finish_date = vm.miProyectoEditar.fechaLimite; 
+                    vm.miProyectoEditar = { nombre: "", fechaLimite: "" }; 
+                }); 
+            }
+        }; 
+        
+        /** 
+         * @method :: onBtnProjectAgregarParticipanteClick 
+         * @description :: Función para agregar un usuario participante 
+         **/ 
+        function onBtnProjectAgregarParticipanteClick() { 
+            $http.defaults.withCredentials = true; 
+            $http({ 
+                method: "POST", 
+                url: "/project/add_user", 
+                headers: { 
+                    "Content-Type": "application/json", 
+                    "X-CSRF-TOKEN": vm.csrfToken 
+                }, 
+                data: { 
+                    email: vm.miListaUsuariosSeleccionado, 
+                    id: vm.miProyectoId 
+                } 
+            }).then(function(data) { 
+                // Es necesario actualizar de parte del cliente el valor de usuarios 
+                // para que estos no sean seleccionados en selectize 
+                // primero para cada usuario ingresado al proyecto 
+                for(var i = 0; i < vm.miListaUsuariosSeleccionado.length; i++) { 
+                    var bandera = 0; 
+                    var position = 0; 
+                    
+                    // Buscar la posición de cada usuario seleccionado por selectize en 'miListaUsuarios' 
+                    for(var j = 0; j < vm.miListaUsuarios.length; j++) { 
+                        if(vm.miListaUsuariosSeleccionado[i] == vm.miListaUsuarios[j].id) { 
+                            bandera = 1; 
+                            position = j; 
+                            break; 
+                        } 
+                    } 
+                    
+                    // Si el elemento es encontrado se actualizan los arreglos 
+                    if(bandera == 1) { 
+                        // 'miListaParticipantes' lo agrega en la primera posicion 
+                        vm.miListaParticipantes.splice(0, 0, vm.miListaUsuarios[position]); 
+                        
+                        // y agrega el elemento a usuarios 
+                        vm.miListaUsuarios.splice(position, 1); 
+                    } 
+                } 
+                
+                //Se manda mensaje al usuario 
+                if(vm.miListaUsuariosSeleccionado.length === 1) 
+                    setMensaje("Se agregó el nuevo usuario al proyecto"); 
+                else if(vm.miListaUsuariosSeleccionado.length >= 2) 
+                    setMensaje("Se agregaron los nuevos usuarios al proyecto"); 
+                
+                //Se actualizan y refrescan los valores de Selectize 
+                vm.miListaUsuariosSelectize.clear(); 
+                vm.miListaUsuariosSelectize.refreshItems(); 
+            }); 
+        };
             
-                        // Verificar que los datos estén correctos
-                        if(vm.miProyectoEditar.nombre === "" && 
-                            (vm.miProyectoEditar.fechaLimite === "" || vm.miProyectoEditar.fechaLimite === null)) 
-                            return; 
-                        else { 
-                            // Actualizar el nombre del proyecto para la vista
-                            if(vm.miProyectoEditar.nombre === "") 
-                                vm.miProyectoEditar.nombre = vm.miProyecto.name;
-            
-                            // Actualizar la fecha para la vista
-                            if((vm.miProyectoEditar.fechaLimite === "" || 
-                                vm.miProyectoEditar.fechaLimite === null)) 
-                                vm.miProyectoEditar.fechaLimite = vm.miProyecto.finish_date; 
-            
-                            $http({ 
-                                method: "POST", 
-                                url: "/project/editarproyecto", 
-                                headers: { 
-                                    "Content-Type": "application/json", 
-                                    "X-CSRF-TOKEN": vm.csrfToken 
-                                }, 
-                                data: { 
-                                    id: vm.miProyecto.id, 
-                                    name: vm.miProyectoEditar.nombre, 
-                                    finish_date: vm.miProyectoEditar.fechaLimite 
-                                } 
-                            }).then(function(resultado) { 
-                                var d = resultado.data; 
-            
-                                // Desplegar el mensaje 
-                                setMensaje(d.mensaje); 
-            
-                                // Si el servidor devuelve un valor false retornar
-                                if(!d.procedimiento) 
-                                    return; 
-                                
-                                // Se actualizan los datos en el cliente y se limpian los datos
-                                vm.miProyecto.name = vm.miProyectoEditar.nombre; 
-                                vm.miProyecto.finish_date = vm.miProyectoEditar.fechaLimite; 
-                                vm.miProyectoEditar = { nombre: "", fechaLimite: "" }; 
-                            }); 
-                        }
-                    };
-            
-                    /**
-                    * @method :: onBtnAgregarParticipanteClick 
-                    * @description :: Función para agregar un usuario participante
-                    **/
-                    function onBtnAgregarParticipanteClick() { 
-                        $http.defaults.withCredentials = true; 
-                        $http({ 
-                            method: "POST", 
-                            url: "/project/add_user", 
-                            headers: { 
-                                "Content-Type": "application/json", 
-                                "X-CSRF-TOKEN": vm.csrfToken 
-                            }, 
-                            data: { 
-                                email: vm.miListaUsuariosSeleccionado, 
-                                id: vm.miProyectoId 
-                            } 
-                        })
-                        .then(function(data) { 
-                            // Es necesario actualizar de parte del cliente el valor de usuarios 
-                            // para que estos no sean seleccionados en selectize 
-                            // primero para cada usuario ingresado al proyecto 
-                            for(var i = 0; i < vm.miListaUsuariosSeleccionado.length; i++) {
-                                var bandera = 0; 
-                                var position = 0; 
-            
-                                // Buscar la posición de cada usuario seleccionado por selectize en 'miListaUsuarios'
-                                for(var j = 0; j < vm.miListaUsuarios.length; j++) { 
-                                    if(vm.miListaUsuariosSeleccionado[i] == vm.miListaUsuarios[j].id) { 
-                                        bandera = 1; 
-                                        position = j; 
-                                        break; 
-                                    } 
-                                } 
-            
-                                // Si el elemento es encontrado se actualizan los arreglos  
-                                if(bandera == 1) { 
-                                    // 'miListaParticipantes' lo agrega en la primera posicion 
-                                    vm.miListaParticipantes.splice(0, 0, vm.miListaUsuarios[position]);
-            
-                                    // y agrega el elemento a usuarios 
-                                    vm.miListaUsuarios.splice(position, 1);
-                                }
-                            }
-            
-                            //Se manda mensaje al usuario 
-                            if(vm.miListaUsuariosSeleccionado.length === 1) 
-                                setMensaje("Se agregó el nuevo usuario al proyecto"); 
-                            else if(vm.miListaUsuariosSeleccionado.length >= 2) 
-                                setMensaje("Se agregaron los nuevos usuarios al proyecto"); 
-            
-                            //Se actualizan y refrescan los valores de Selectize 
-                            vm.miListaUsuariosSelectize.clear(); 
-                            vm.miListaUsuariosSelectize.refreshItems(); 
-                        });
-                    };
-            
-                    /**
-                    * @method :: onBtnMensajeEnviarClick 
-                    * @description ::  Función para mandar POST que crea un nuevo mensaje
-                    **/
-                    function onBtnMensajeEnviarClick() { 
+
+
+
+
+
+
+
+
+
+
+
+        vm.mensajeRespuesta = ""; 
+        vm.onBtnMensajeCancelarClick = onBtnMensajeCancelarClick; 
+
+        function onBtnMensajeCancelarClick() { 
+            vm.mensajeResponder = false; 
+
+        }; 
+
+        /** 
+         * @method :: onBtnMensajeEnviarClick 
+        * @description ::  Función para mandar POST que crea un nuevo mensaje
+        **/ 
+        function onBtnMensajeEnviarClick() { 
             
                         // Arreglo que almacena la posición del nuevo mensaje
                         var mensajePosicion = []; 
@@ -795,11 +873,11 @@
                     if(parseInt(value.nodoId) === nodoId) { 
                         vm.miMensajeAnclado = value; 
                         vm.miMensajeAncladoName = $sce.trustAsHtml(vm.miMensajeAnclado.name); 
-                        $(document).ready(function() { 
+                        /*$(document).ready(function() { 
                             $(".marcar").on("click", function() { 
                                 vm.onMensajeMarcaClick($(this).attr("data-marca"), parseInt($(this).attr("data-nid"))); 
                             }); 
-                        }); 
+                        }); */
                         return false; 
                     } 
                 }); 
@@ -1001,10 +1079,10 @@
         * @description :: Despliega un mensaje  
         * @param :: {boolean} proc, procedimiento correcto o incorrecto 
         * @param :: {string} msg, contenido del mensaje  
-        * @param :: {Object} err, error del proceso 
         * @param :: {string} state, estado del mensaje 
+        * @param :: {Object} err, error del proceso 
         **/
-        function setMessage(proc, msg, err, state) { 
+        function setMessage(proc, msg, state, err) { 
             swal(proc ? "¡Datos registrados!" : "¡No se completó la operación!", msg, state ? state : (proc ? "success" : "error")); 
 
             if (err !== undefined) { 
@@ -1013,6 +1091,18 @@
                 console.log(err); 
             } 
         }; 
+
+        function setMessageToast(message) {
+            vm.messageToast = message; 
+            // Get the snackbar DIV
+            var x = document.getElementById("snackbar"); 
+        
+            // Add the "show" class to DIV
+            x.className = "show";
+        
+            // After 3 seconds, remove the show class from DIV
+            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+        }
 
         /**
         * @method :: io.socket.on 'socket_project_response' 

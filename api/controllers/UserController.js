@@ -15,6 +15,14 @@ module.exports = {
 	getAllEmail: function(req, res, next) { 
 		// Ejecutar la query 
 		User.find().sort("email ASC").then(function(result) { 
+			// Verificar si no existe un error 
+			if(!result) { 
+				return res.json({ 
+					proc: false, 
+					msg: "¡Se produjo un error con el objeto 'user'!" 
+				}); 
+			}
+
 			// En caso de no haber error, crear un arreglo que guardara los datos de usuario 
 			var arr = []; 
 			var i = 0; 
@@ -34,12 +42,16 @@ module.exports = {
 			}); 
 			
 			// Retornar el json con el arreglo 
-			return res.json({ users: arr});
+			return res.json({ 
+				proc: true, 
+				msg: "", 
+				users: arr 
+			});
 		}).catch(function(err) { 
 			sails.log(err); 
 			return res.json({ 
 				proc: true, 
-				msj: "¡Se produjo un error en la base de datos!" 
+				msg: "¡Se produjo un error en la base de datos!" 
 			}); 
 		}); 
 	},

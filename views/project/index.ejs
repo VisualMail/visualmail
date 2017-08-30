@@ -1,5 +1,7 @@
 <div id="IndexControllerMain" style="height: 100%; position: absolute; top: 60px; width: 100%;" ng-controller="IndexController as vm">
 
+    <div id="snackbar">{{ vm.messageToast }}</div>
+
     <div class="card text-center"> 
 
         <!-- Inicio Tab -->
@@ -28,10 +30,18 @@
                     <div class="row"> 
                         <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"> 
                             <label for="projectUser">Sección padre</label> 
-                            <div> 
-                                <select class="js-example-basic-multiple" id="projectUser" multiple="multiple" name="projectUser" style="width: 100%"> 
-                                </select> 
-                            </div> 
+                            <div class="input-group">
+                                <div> 
+                                    <select class="js-example-basic-multiple" id="projectUser" multiple="multiple" name="projectUser" style="width: 100%"> 
+                                    </select> 
+                                </div> 
+                                <span class="input-group-btn">
+                                    <button class="btn btn-primary" type="button" 
+                                        ng-click="vm.onBtnProjectModalClick()">
+                                        <span class="glyphicon glyphicon-edit"></span> Editar proyecto
+                                    </button>
+                                </span>
+                            </div>
                         </div> 
                     </div> 
                 </div>
@@ -58,33 +68,33 @@
                     <div class="dialogo-panel-card" id="x"> 
                         <div style="padding: 0.5em;">
                             
-                            <div class="input-group"> 
-                                <img alt="profile" class="rounded" style="width: 40px; height: 40px;" src="/images/profile.jpg" /> 
-                                <h4 style="padding: 5px 0 0 15px;">ABC</h4> 
+                            <div class="input-group" style="padding: 0 0 5px 0 !important;"> 
+                                <img alt="profile" class="rounded-circle" style="width: 40px; height: 40px;" ng-src="{{ vm.miMensajeAnclado.usuario.imgurl ? vm.miMensajeAnclado.usuario.imgurl : '/images/profile.jpg' }}" /> 
+                                <h4 style="padding: 5px 0 0 15px;">{{ vm.miMensajeAnclado.usuario.initials }}</h4> 
                                 <svg height="40" width="40">
-                                    <circle cx="25" cy="20" r="10" fill="red" />
+                                    <circle cx="25" cy="20" r="10" ng-attr-fill="#{{ vm.miMensajeAnclado.usuario.color }}" />
                                 </svg>
                             </div>
                             
-                            <div class="card bg-light mb-3" style="position: absolute; height: 81%; width: 98%"> 
+                            <div class="card bg-light mb-3" style="position: absolute; height: 79%; width: 98%"> 
                                 <div class="card-header text-left"> 
-                                    28-Aug-2017 10:03:29 <strong>1/4</strong> 
+                                    {{ vm.miMensajeAnclado.createdAt | date: "dd-MMM-yyyy HH:mm:ss" }} <strong>{{ vm.miMensajeAnclado.nodoId + '/' + vm.miMensajeLista.length }}</strong> 
                                 </div> 
                                 <div class="card-body" style="margin: 0; padding: 0;"> 
                                     <div style="text-align: left; position: relative; width: 100%; height: 159px; overflow-y: auto;"> 
-                                        <div class="card" style="margin: 5px 0 0 15px; width: 95%;"> 
+                                        <div class="card" style="margin: 5px 0 0 15px; width: 95%;" ng-show="vm.miMensajeAnclado.tipo !== 'Mensaje Inicial' && vm.miMensajeAnclado.tipo !== 'Citar'"> 
                                             <ul class="list-group list-group-flush text-left"> 
-                                                <li class="list-group-item border border-secondary" style="padding: 0 15px 0 15px;"><strong>ELL Duda o Alternativa:</strong></li> 
-                                                <li class="list-group-item border border-secondary" style="padding: 0 15px 0 15px;">¿Cuando inicia el campeonatoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa?</li> 
+                                                <li class="list-group-item border border-secondary" style="padding: 0 15px 0 15px;"><strong>{{ vm.miMensajeAnclado.usuario.initials }} {{ vm.miMensajeAnclado.tipo }}:</strong></li> 
+                                                <li class="list-group-item border border-secondary" style="padding: 0 15px 0 15px;">{{ vm.miMensajeAnclado.respuestaMarca }}</li> 
                                             </ul> 
                                         </div>
-                                        <div class="context-menu-mensaje-anclado" style="margin: 10px 0 0 15px; width: 95%;">
-                                            Some quick example text to build on the card title and make up the bulk of the card's content. Some quick example text to build on the card title and make up the bulk of the card's content.
+                                        <div class="context-menu-mensaje-anclado" style="margin: 10px 0 0 15px; width: 95%;" ng-bind-html="vm.miMensajeAncladoName">
+                                            
                                         </div>
                                     </div> 
                                 </div> 
                                 <div class="card-footer"> 
-                                    <button class="btn btn-success btn-block" type="button">Responder</button> 
+                                    <button class="btn btn-primary btn-block" type="button" ng-click="vm.mensajeResponder = true;"><span class="glyphicon glyphicon-share-alt"></span> Responder todo</button> 
                                 </div> 
                                     
                             </div>
@@ -95,40 +105,95 @@
 
                     <!-- Inicio Panel Derecho -->
                     <div class="dialogo-panel-card" id="y"> 
-                            <div style="padding: 0.5em;">
-                                    
-                                    <div class="input-group"> 
-                                        <img alt="profile" class="rounded" style="width: 40px; height: 40px;" src="/images/profile.jpg" /> 
-                                        <h4 style="padding: 5px 0 0 15px;">ABC</h4> 
-                                        <svg height="40" width="40">
-                                            <circle cx="25" cy="20" r="10" fill="red" />
-                                        </svg>
-                                    </div>
-                                    
-                                    <div class="card bg-light mb-3" style="position: absolute; height: 81%; width: 98%"> 
+                        <div style="padding: 0.5em;"> 
+                            
+                            <!-- Inicio ver mensaje --> 
+                            <div ng-show="!vm.mensajeResponder">
+                                <div class="input-group"> 
+                                    <img alt="profile" class="rounded" style="width: 40px; height: 40px;" src="/images/profile.jpg" /> 
+                                    <h4 style="padding: 5px 0 0 15px;">ABC</h4> 
+                                    <svg height="40" width="40"> 
+                                        <circle cx="25" cy="20" r="10" fill="red" /> 
+                                    </svg> 
+                                </div> 
+                                
+                                <div class="card bg-light mb-3" style="position: absolute; height: 81%; width: 98%"> 
+                                    <div class="card-header text-left"> 
+                                        28-Aug-2017 10:03:29 <strong>1/4</strong> 
+                                    </div> 
+                                    <div class="card-body" style="margin: 0; padding: 0;"> 
+                                        <div style="text-align: left; position: relative; width: 100%; height: 159px; overflow-y: auto;"> 
+                                            <div class="card" style="margin: 5px 0 0 15px; width: 95%;"> 
+                                                <ul class="list-group list-group-flush text-left"> 
+                                                    <li class="list-group-item border border-secondary" style="padding: 0 15px 0 15px;"><strong>ELL Duda o Alternativa:</strong></li> 
+                                                    <li class="list-group-item border border-secondary" style="padding: 0 15px 0 15px;">¿Cuando inicia el campeonatoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa?</li> 
+                                                </ul> 
+                                            </div> 
+                                            <div class="context-menu-mensaje-navegar" style="margin: 10px 0 0 15px; width: 95%;"> 
+                                                Some quick example text to build on the card title and make up the bulk of the card's content. Some quick example text to build on the card title and make up the bulk of the card's content. 
+                                            </div> 
+                                        </div> 
+                                    </div> 
+                                    <div class="card-footer"> 
+                                        <button class="btn btn-primary btn-block" type="button"><span class="glyphicon glyphicon-share-alt"></span> Responder todo</button> 
+                                    </div>  
+                                </div> 
+                            </div>
+                            <!-- Fin ver mensaje --> 
+
+                            <!-- Inicio responder mensaje -->
+                            <div ng-show="vm.mensajeResponder"> 
+                                <h4 style="padding: 5px 0 5px 15px;">Responder mensaje</h4> 
+                                
+                                <div class="card bg-light mb-3" style="position: absolute; height: 81%; width: 98%"> 
+
+                                    <form name="vm.formMensaje">
+
                                         <div class="card-header text-left"> 
-                                            28-Aug-2017 10:03:29 <strong>1/4</strong> 
+                                            <span class="glyphicon glyphicon-pencil"></span> Ahora puedes responder al mensaje
                                         </div> 
                                         <div class="card-body" style="margin: 0; padding: 0;"> 
                                             <div style="text-align: left; position: relative; width: 100%; height: 159px; overflow-y: auto;"> 
-                                                <div class="card" style="margin: 5px 0 0 15px; width: 95%;"> 
+                                                <div class="card" style="margin: 5px 0 0 15px; width: 95%;" ng-show="vm.ok"> 
                                                     <ul class="list-group list-group-flush text-left"> 
                                                         <li class="list-group-item border border-secondary" style="padding: 0 15px 0 15px;"><strong>ELL Duda o Alternativa:</strong></li> 
                                                         <li class="list-group-item border border-secondary" style="padding: 0 15px 0 15px;">¿Cuando inicia el campeonatoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa?</li> 
                                                     </ul> 
-                                                </div>
-                                                <div class="context-menu-mensaje-navegar" style="margin: 10px 0 0 15px; width: 95%;">
-                                                    Some quick example text to build on the card title and make up the bulk of the card's content. Some quick example text to build on the card title and make up the bulk of the card's content.
+                                                </div> 
+                                                <div style="margin: 15px; height: 80%;"> 
+                                                    <textarea id="mensajeRespuesta" name="mensajeRespuesta" placeholder="Ingresar respuesta" rows="4" style="height: 100%" 
+                                                        ng-class="{ 
+                                                        'form-control': vm.formMensaje.mensajeRespuesta.$pristine || vm.formMensaje.mensajeRespuesta.$valid, 
+                                                        'form-control is-invalid': !vm.formMensaje.mensajeRespuesta.$pristine && !vm.formMensaje.mensajeRespuesta.$valid }" 
+                                                        ng-model="vm.mensajeRespuesta" 
+                                                        ng-maxlength="500" 
+                                                        ng-minlength="5" 
+                                                        ng-required="true"></textarea> 
+                                                    <p class="text-danger" role="alert" ng-messages="!vm.formMensaje.mensajeRespuesta.$pristine && vm.formMensaje.mensajeRespuesta.$error"> 
+                                                        <strong ng-message="minlength">3 caracteres</strong> 
+                                                        <strong ng-message="maxlength">No puede ser más de 500 carácteres</strong> 
+                                                        <strong ng-message="required">Ingresar el contenido del mensaje</strong> 
+                                                    </p> 
                                                 </div>
                                             </div> 
                                         </div> 
                                         <div class="card-footer"> 
-                                            <button class="btn btn-success btn-block" type="button">Responder</button> 
+                                            <div class="row"> 
+                                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"> 
+                                                    <button class="btn btn-success btn-block" type="button"><span class="glyphicon glyphicon-send"></span> Enviar mensaje</button> 
+                                                </div> 
+                                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"> 
+                                                    <button class="btn btn-info btn-block" type="button" ng-click="vm.onBtnMensajeCancelarClick()"><span class="glyphicon glyphicon-remove-sign"></span> Cancelar</button> 
+                                                </div> 
+                                            </div> 
                                         </div> 
-                                            
-                                    </div>
-                                
+                                    
+                                    </form> 
+
                                 </div> 
+                            </div>
+                            <!-- Fin responder mensaje -->
+                        </div> 
                     </div> 
                     <!-- Fin Panel Derecho -->
 
