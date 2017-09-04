@@ -155,7 +155,9 @@ module.exports = {
 				sectionHead:
 					"<link href='/js/dependencies/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css' />" +  
 					"<link href='/js/dependencies/jquery-contextmenu/2.4.1/jquery.contextMenu.css' rel='stylesheet' type='text/css' />" +  
-					"<link href='/js/dependencies/jquery-splitter/0.24.0/css/jquery.splitter.css' rel='stylesheet' type='text/css' />", 
+					"<link href='/js/dependencies/jquery-splitter/0.24.0/css/jquery.splitter.css' rel='stylesheet' type='text/css' />" + 
+					"<link href='/js/dependencies/pickadate.js-master/3.5.6/themes/default.css' />" +   
+					"<link href='/js/dependencies/pickadate.js-master/3.5.6/themes/default.date.css' />",  
 				sectionScripts: 
 					"<script type='text/javascript' src='/js/dependencies/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js'></script>" + 
 					"<script type='text/javascript' src='/js/dependencies/bootstrap-datepicker/1.7.1/locales/bootstrap-datepicker.es.min.js'></script>" + 
@@ -166,6 +168,8 @@ module.exports = {
 					"<script type='text/javascript' src='/js/src/Project/IndexController.d3.js'></script>" + 
 					"<script type='text/javascript' src='/js/src/Project/IndexController.kanban.js'></script>" + 
 					"<script type='text/javascript' src='/js/src/Project/IndexController.js'></script>" + 
+					"<script type='text/javascript' src='/js/dependencies/pickadate.js-master/3.5.6/picker.js'></script>" + 
+					"<script type='text/javascript' src='/js/dependencies/pickadate.js-master/3.5.6/picker.date.js'></script>" + 
 					"<script src='/js/dependencies/sails.io.js'></script>", 
 				project: project 
 			});

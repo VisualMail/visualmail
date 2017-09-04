@@ -57,6 +57,7 @@
         init(); 
 
         function init() { 
+            $('.datepicker').pickadate()
             // Obtener el 'id' del proyecto 
             vm.miProjectId = getQueryString("id"); 
 
@@ -904,7 +905,7 @@
                 }); 
                 
                 // Verificar si el mensaje anclado tiene hijos
-                if(vm.miMensajeAnclado.nodoId <= 1 && $("[data-nodo-parent-id=" + vm.miMensajeAnclado.nodoId + "]").length === 0) 
+                if(vm.miMensajeAnclado.nodoId <= 1 && $("[data-nodo-parent-id=" + vm.miMensajeAnclado.nodoId + "]").length > 0) 
                     vm.iniciarMensajeNavegar(true, false, "Derecha"); 
             } else 
                 vm.miMensajeAnclado = { };
