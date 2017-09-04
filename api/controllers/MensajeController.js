@@ -36,7 +36,8 @@ module.exports = {
 				msg: "¡Se produjo un error en la conexión con la base de datos!" 
             }); 
         }); 
-    },
+	}, 
+	
 	/**
 	* @method :: create (POST)
 	* @description :: Crea un nuevo mensaje
@@ -116,7 +117,47 @@ module.exports = {
 				msg: "¡Se produjo un error en la conexión con la base de datos!" 
             }); 
         }); 
+	}, 
+
+	/** 
+	* @method :: unir (POST) 
+	* @description :: Hace la unión entre mensajes en la parte de los modelos 
+	* @param :: {Object} req, request element de sails 
+	* @param :: {Objetct} res, de la vista ejs del servidor 
+	* @param :: {Objetct} next, para continuar en caso de error 
+	**/ 
+	unir: function(req, res, next) { 
+		// Unir mensaje 
+		Mensaje.findOne(req.param("id")).populate("children").then(function(mensaje) { 
+			// Si hay error retornar 
+			if(!mensaje) { 
+				return res.json({ 
+					proc: false, 
+					msg: "¡Se produjo un error en el objeto 'mensaje'!" 
+				}); 
+			} 
+
+			// Se actualiza el numero de hijos 
+			mensaje.children.add(req.param("idunion"));	
+			mensaje.numero_hijos += 1; 
+			mensaje.save();
+
+			return res.json({ 
+				proc: true, 
+				msg: "", 
+				mensaje: mensaje 
+			}); 
+		}).catch(function(err) { 
+            sails.log("Se produjo un error en 'mensaje/unir/Mensaje.findOne': ", err); 
+			return res.json({ 
+				proc: false, 
+				msg: "¡Se produjo un error en la conexión con la base de datos!" 
+            }); 
+        }); 
 	},
+
+
+
 
 
 
@@ -228,47 +269,6 @@ module.exports = {
 			} else { 
 				// Si no hay error se deja la variable flash como vacia ya que no hay error y se retornan los mensajes
 				req.session.flash = { };
-				return res.json({ mensaje: mensaje });
-			}
-		});
-	},
-
-	/**
-	* @method :: unir (POST)
-	* @description :: Hace la unión entre mensajes en la parte de los modelos
-	* @param :: {Object} req, request element de sails
-	* @param :: {Objetct} res, de la vista ejs del servidor
-	* @param :: {Objetct} next, para continuar en caso de error
-	**/
-	unir: function(req, res, next) { 
-		
-		// Estoy uniendo
-		Mensaje.findOne(req.param("id")).populate("children").exec(function(err, mensaje) { 
-
-			// Si hay error se actualiza la variable flash y se entrega el json con formato de manejo del error
-			if(err) { 
-				req.session.flash = { err: err }; 
-				return res.json({ mensaje: "false" });
-			}
-
-			// Si hay error se actualiza la variable flash y se entrega el json con formato de manejo del error
-			if(!mensaje) {
-				req.session.flash = { err: err }; 
-				return res.json({ mensaje: "false" }); 
-			}
-			else { 
-				// Si no hay error
-				// se deja la variable flash como vacía ya que no hay error y se retornan los mensajes
-				// se añade el mensaje a children de mensaje
-				req.session.flash = { };
-				mensaje.children.add(req.param("idunion"));	
-
-				// Se actualiza el numero de hijos 
-				mensaje.numero_hijos += 1; 
-
-				// Se guarda en la base de datos
-				mensaje.save(function(err) { });
-
 				return res.json({ mensaje: mensaje });
 			}
 		});

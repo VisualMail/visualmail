@@ -43,7 +43,7 @@ function contextMenuMapaInit() {
                 case "anchor": 
                     $anclar = true; 
                     
-                    if(scope.vm.miMensajeAnclado !== "") 
+                    if(scope.vm.miMensajeAnclado.nodoId) 
                         $anclar = nodoId !== scope.vm.miMensajeAnclado.nodoId; 
                         
                     onAnclar(nodoId, scope); 
@@ -136,6 +136,7 @@ function onAnclar(nodoId, scope) {
     n.attr("stroke-width", "1"); 
     n.attr("data-line-navigate", ""); 
     
+    var scope = angular.element(document.getElementById("IndexControllerMain")).scope(); 
     scope.$apply(function () { 
         scope.vm.onMensajeAnclarClick(nodoId); 
     }); 
@@ -149,7 +150,7 @@ function onAnclar(nodoId, scope) {
 * @param :: {integer} nodoId, identificador del nodo 
 **/
 function onNodoClick(nodoId) { 
-    var scope = angular.element(document.getElementById("ProjectControllerMain")).scope(); 
+    var scope = angular.element(document.getElementById("IndexControllerMain")).scope(); 
     $anclar = true; 
     onAnclar(nodoId, scope); 
 }; 

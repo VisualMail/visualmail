@@ -12,6 +12,8 @@
         vm.activeTab = 2; 
         vm.csrfToken = null; 
         vm.messageToast = ""; 
+        vm.mensajeRespuesta = ""; 
+        vm.mensajeRespuestaTipo = ""; 
         vm.projectUserId = ""; 
         vm.projectName = ""; 
         vm.projectDateEnd = ""; 
@@ -28,6 +30,8 @@
         vm.miKanbanTipoTarea = ["new", "doing", "testing", "done"]; 
         vm.miMapaSvgFocus = true; 
         vm.miMensajeIntercalar = true; 
+        vm.miMensajeAnclado = { }; 
+        vm.miMensajeAncladoNavegar = { }; 
         vm.miMensajeLista = []; 
         vm.miProject = { }; 
         vm.miProjectId = ""; 
@@ -166,7 +170,7 @@
                  // Establecer el primer mensaje como el mensaje anclado 
                  $anclar = true; 
                  vm.onMensajeAnclarClick(vm.miMensajeLista[0].nodoId); 
-                 //vm.iniciarMensajeAnclado(); 
+                 vm.iniciarMensajeAnclado(); 
  
                  // Iniciar el tiempo del diálogo 
                  //vm.iniciarTiempoDialogo(); 
@@ -263,11 +267,11 @@
         }; 
 
         /**
-        * @method :: iniciarMensajeAnclado 
+        * @method :: iniciarMensajeAnclado F
         * @description :: Iniciar el 'nodo anclado'  
         **/
         function iniciarMensajeAnclado() { 
-            if(!$anclar || vm.miMensajeAnclado === "") { 
+            if(!$anclar || !vm.miMensajeAnclado.nodoId) { 
                 var m = $("#main > .svg-mapa"); 
                 m.find("svg").attr("height", 600); 
                 $("#main").css("height", "600px");
@@ -304,7 +308,7 @@
 
             // Si el usuario presionó una tecla
             if(accion) { 
-                var nodo = vm.miMensajeAncladoNavegar === "" ? vm.miMensajeAnclado : vm.miMensajeAncladoNavegar; 
+                var nodo = !vm.miMensajeAncladoNavegar.nodoId ? vm.miMensajeAnclado : vm.miMensajeAncladoNavegar; 
                 var nodoId = 0; 
                 var nodoPadreId = 0; 
                 var nodoNivel = 0; 
@@ -328,7 +332,7 @@
 
                         if(nodoId === vm.miMensajeAnclado.nodoId) { 
                             nodoId = 0; 
-                            vm.miMensajeAncladoNavegar = ""; 
+                            vm.miMensajeAncladoNavegar = { }; 
                         }
 
                         break; 
@@ -351,7 +355,7 @@
 
                         if(nodoId === vm.miMensajeAnclado.nodoId) { 
                             nodoId = 0; 
-                            vm.miMensajeAncladoNavegar = ""; 
+                            vm.miMensajeAncladoNavegar = { }; 
                         }
 
                         break; 
@@ -369,7 +373,7 @@
                             if(vm.miMensajeAnclado.nodoPadreId === 0) 
                                 break; 
                             
-                            vm.miMensajeAncladoNavegar = ""; 
+                            vm.miMensajeAncladoNavegar = { }; 
                         }
 
                         break; 
@@ -383,7 +387,7 @@
 
                         if(nodoId === vm.miMensajeAnclado.nodoId) { 
                             nodoId = 0; 
-                            vm.miMensajeAncladoNavegar = ""; 
+                            vm.miMensajeAncladoNavegar = { }; 
                         }
                         
                         break; 
@@ -402,7 +406,7 @@
                     }); 
                 } 
 
-                if(vm.miMensajeAncladoNavegar !== "") { 
+                if(vm.miMensajeAncladoNavegar.nodoId) { 
                     n = $("[data-nodo-id=" + vm.miMensajeAncladoNavegar.nodoId + "]"); 
                     n.attr("stroke", "#18ffff"); 
                     n.attr("stroke-width", "5"); 
@@ -604,6 +608,8 @@
 
         vm.mensajeRespuesta = ""; 
         vm.onBtnMensajeCancelarClick = onBtnMensajeCancelarClick; 
+        vm.onBtnMensajeEnviarClick = onBtnMensajeEnviarClick; 
+        vm.onSocketMensajeNuevo = onSocketMensajeNuevo;
 
         function onBtnMensajeCancelarClick() { 
             vm.mensajeResponder = false; 
@@ -611,94 +617,109 @@
         }; 
 
         /** 
-         * @method :: onBtnMensajeEnviarClick 
+        * @method :: onBtnMensajeEnviarClick 
         * @description ::  Función para mandar POST que crea un nuevo mensaje
         **/ 
         function onBtnMensajeEnviarClick() { 
+            // Si se está procesando retornar 
+            if(vm.procesando) 
+                return; 
+
+            vm.procesando = true; 
+
+            // Arreglo que almacena la posición del nuevo mensaje 
+            var mensajePosicion = []; 
             
-                        // Arreglo que almacena la posición del nuevo mensaje
-                        var mensajePosicion = []; 
+            // Por cada valor de 'position' del mensaje seleccionado a responder se copia 
+            for(var i = 0; i < vm.miMensajeAnclado.position.length; i++) 
+                mensajePosicion.push(vm.miMensajeAnclado.position[i]); 
             
-                        // Por cada valor de 'position' del mensaje seleccionado a responder se copia 
-                        for(var i = 0; i < vm.miMensajeSeleccionado.position.length; i++) 
-                            mensajePosicion.push(vm.miMensajeSeleccionado.position[i]); 
+            // Ingresar el valor que le corresponde al nuevo mensaje en 'position' 
+            mensajePosicion.push(vm.miMensajeAnclado.numero_hijos); 
+
+            // Si el mensaje no tiene sesión, actualizar mi sesión 
+            if(vm.miMensajeAnclado.sessionId === vm.miSessionId) 
+                vm.miSessionId++; 
             
-                        // Ingresar el valor que le corresponde al nuevo mensaje en 'position'
-                        mensajePosicion.push(vm.miMensajeSeleccionado.numero_hijos); 
-            
-                        // Para realizar el post con csrf 
-                        $http.defaults.withCredentials = true; 
-            
-                        // Si el mensaje no tiene sesión, actualizar mi sesión
-                        if(vm.miMensajeSeleccionado.sessionId === vm.miSessionId)
-                            vm.miSessionId++;
-            
-                        $http({
-                            method: "POST", 
-                            url: "/mensaje/create", 
-                            headers: { 
-                                "Content-Type": "application/json", 
-                                "X-CSRF-TOKEN": vm.csrfToken 
-                            }, 
-                            data: { 
-                                name: vm.miMensajeRespuesta, 
-                                namePlain: vm.miMensajeRespuesta, 
-                                tipo: vm.miMensajeTipoSeleccionado, 
-                                position: mensajePosicion, 
-                                project_id: vm.miProyecto.id, 
-                                numero_hijos: 0, 
-                                root: false, 
-                                parent: vm.miMensajeSeleccionado.id, 
-                                usuario: vm.miUsuario.id, 
-                                nodoPadreId: vm.miMensajeSeleccionado.nodoId, 
-                                sessionId: vm.miSessionId, 
-                                nodoNivel: vm.miMensajeSeleccionado.numero_hijos + vm.miMensajeSeleccionado.nodoNivel, 
-                                nodoPadreNivel: vm.miMensajeSeleccionado.nodoNivel, 
-                                nodoPadreSessionId: vm.miMensajeSeleccionado.sessionId, 
-                                dialogos: vm.miProyecto.dialogos[0].id 
-                            }
-                        })
-                        .then(function(respuesta) { 
-                            var mensajeTemporal = respuesta.data.mensaje;
-                            mensajeTemporal["usuario"] = vm.miUsuario; 
-            
-                            // Se manda el POST para unir el mensaje nuevo con el anterior 
-                            $http({ 
-                                method: "POST", 
-                                url: "/mensaje/unir", 
-                                headers: { 
-                                    "Content-Type": "application/json", 
-                                    "X-CSRF-TOKEN": vm.csrfToken 
-                                }, 
-                                data: { 
-                                    id: vm.miMensajeSeleccionado.id, 
-                                    idunion: mensajeTemporal.id 
-                                } 
-                            }).then(function(datamensaje) {
-                                // Ahora se agrega el mensaje creado en el dialogo 
-                                // Manda el POST para añadirlo al dialogo 
-                                $http({ 
-                                    method: "POST", 
-                                    url: "/dialogo/update_dialogo", 
-                                    headers: { 
-                                        "Content-Type": "application/json", 
-                                        "X-CSRF-TOKEN": vm.csrfToken 
-                                    }, 
-                                    data: { 
-                                        id: vm.miProyecto.dialogos[0].id, 
-                                        mensaje: mensajeTemporal
-                                    } 
-                                })
-                                .then(function(datadialogoupdate) { 
-                                    vm.miMensajeRespuesta = ""; 
-                                    var $select = $('#mensajeSelectize').selectize();
-                                    var control = $select[0].selectize;
-                                    control.clear();
-                                    $("#modalMensaje").modal("close");
-                                }); 
-                            });
-                        });
-                    }; 
+            // Para realizar el post con csrf 
+            $http.defaults.withCredentials = true; 
+            $http({ 
+                method: "POST", 
+                url: "/mensaje/create", 
+                headers: { 
+                    "Content-Type": "application/json", 
+                    "X-CSRF-TOKEN": vm.csrfToken 
+                }, 
+                data: { 
+                    name: vm.mensajeRespuesta, 
+                    namePlain: vm.mensajeRespuesta, 
+                    nodoNivel: vm.miMensajeAnclado.numero_hijos + vm.miMensajeAnclado.nodoNivel, 
+                    nodoPadreId: vm.miMensajeAnclado.nodoId, 
+                    nodoPadreNivel: vm.miMensajeAnclado.nodoNivel, 
+                    nodoPadreSessionId: vm.miMensajeAnclado.sessionId, 
+                    numero_hijos: 0, 
+                    parent: "", // El padre por defecto = vacio 
+                    position: mensajePosicion, 
+                    project_id: vm.miProjectId, 
+                    root: false, 
+                    session: 0, 
+                    sessionId: vm.miSessionId, 
+                    tipo: vm.mensajeRespuestaTipo, 
+                    usuario: vm.miUser.id 
+                } 
+            }).then(function(res) { 
+                var d = res.data;
+
+                // Si existe error 
+                if(!d.proc) { 
+                    setMessage(d.proc, d.msg, "warning"); 
+                    return; 
+                } 
+                
+                var mensajeTemporal = d.mensaje; 
+                mensajeTemporal["usuario"] = vm.miUser; 
+                
+                // Se manda el POST para unir el mensaje nuevo con el anterior 
+                $http({ 
+                    method: "POST", 
+                    url: "/mensaje/unir", 
+                    headers: { 
+                        "Content-Type": "application/json", 
+                        "X-CSRF-TOKEN": vm.csrfToken 
+                    }, 
+                    data: { 
+                        id: vm.miMensajeAnclado.id, 
+                        idunion: mensajeTemporal.id 
+                    } 
+                }).then(function(datamensaje) {
+                    // Ahora se agrega el mensaje creado en el dialogo 
+                    // Manda el POST para añadirlo al dialogo 
+                    $http({ 
+                        method: "POST", 
+                        url: "/dialogo/update_dialogo", 
+                        headers: { 
+                            "Content-Type": "application/json", 
+                            "X-CSRF-TOKEN": vm.csrfToken 
+                        }, 
+                        data: { 
+                            id: vm.miProject.dialogos[0].id, 
+                            mensaje: mensajeTemporal
+                        } 
+                    }).then(function(datadialogoupdate) { 
+                        vm.procesando = false; 
+                    }).catch(function(err) { 
+                        vm.procesando = false; 
+                        setMessage(false, "¡Se produjo un error en el procedimiento '/tarea/updateTipo'!", null, err); 
+                    }); 
+                }).catch(function(err) { 
+                    vm.procesando = false; 
+                    setMessage(false, "¡Se produjo un error en el procedimiento '/tarea/updateTipo'!", null, err); 
+                }); 
+            }).catch(function(err) { 
+                vm.procesando = false; 
+                setMessage(false, "¡Se produjo un error en el procedimiento '/tarea/updateTipo'!", null, err); 
+            }); 
+        }; 
 
         /**
         * @method :: onBtnTareaCrearClick 
@@ -862,7 +883,7 @@
         **/
         function onMensajeAnclarClick(nodoId) { 
             // Iniciar el mensaje navegar 
-            vm.miMensajeAncladoNavegar = ""; 
+            vm.miMensajeAncladoNavegar = { }; 
 
             // Si se debe anclar, Buscar en la lista de mensajes el mensaje anclado 
             // a través del id del nodo que identifica al mensaje, caso contrario 
@@ -886,7 +907,7 @@
                 if(vm.miMensajeAnclado.nodoId <= 1 && $("[data-nodo-parent-id=" + vm.miMensajeAnclado.nodoId + "]").length === 0) 
                     vm.iniciarMensajeNavegar(true, false, "Derecha"); 
             } else 
-                vm.miMensajeAnclado = "";
+                vm.miMensajeAnclado = { };
 
             // En el caso de anclar el mensaje, dibujar el ancla 
             mapaDialogoDibujarAncla($anclar, vm.miMensajeAnclado); 
@@ -928,13 +949,13 @@
             var actualizarNodos = data.actualizarNodos; 
 
             // Si un nuevo usuario creo el mensaje, actualizar mi sesión
-            if(vm.miUsuario.id !== nuevoMensaje.usuario.id) 
+            if(vm.miUser.id !== nuevoMensaje.usuario.id) 
                 vm.miSessionId = nuevoMensaje.sessionId + 1; 
 
             var dibujado = false; 
 
             // Verificar cada mensaje 
-            $.each(vm.miMensaje, function(key, value) { 
+            $.each(vm.miMensajeLista, function(key, value) { 
 
                 // Si encuentra el mensaje padre 
                 // actualizar el número de hijos 
@@ -965,14 +986,14 @@
 
             nuevoMensaje["cssvalue"] = !vm.miMensajeIntercalar; 
             vm.miMensajeIntercalar = !vm.miMensajeIntercalar; 
-            vm.miMensaje.push(nuevoMensaje); 
+            vm.miMensajeLista.push(nuevoMensaje); 
             mapaDialogoAgregarNodo(nuevoMensaje); 
             vm.iniciarMensajeAnclado(); 
 
             if($anclar) { 
                 if(vm.miMensajeAnclado.nodoId === nuevoMensaje.nodoPadreId) { 
                     vm.miMensajeAncladoNavegar = nuevoMensaje; 
-                    vm.miMensajeAncladoNavegarName = $sce.trustAsHtml(nuevoMensaje.name); 
+                    //vm.miMensajeAncladoNavegarName = $sce.trustAsHtml(nuevoMensaje.name); 
 
                     var n = $("[data-circle-navigate=ok]"); 
                     n.attr("stroke", ""); 
@@ -994,7 +1015,7 @@
 
             // Actualizar el controlador
             $scope.$apply();
-            setMensaje("Nuevo mensaje en el diálogo"); 
+            setMessageToast("Nuevo mensaje en el diálogo"); 
         }; 
 
         /**
@@ -1104,6 +1125,15 @@
             setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
         }
 
+
+        /**
+        * @method :: io.socket.get 
+        * @description :: Inicializa la conexión con el soket io
+        **/
+        io.socket.get("/project/conectar_socket", { project_id: vm.miProjectId }, function gotResponse(body, response) { 
+        	console.log("El servidor respondió con código " + response.statusCode + " y datos: ", body); 
+        }); 
+
         /**
         * @method :: io.socket.on 'socket_project_response' 
         * @description :: Recibe la respuesta del servidor cuando se envía un mensaje o una tarea 
@@ -1126,14 +1156,6 @@
                     break; 
             } 
         });
-
-        /**
-        * @method :: io.socket.get 
-        * @description :: Inicializa la conexión con el soket io
-        **/
-        io.socket.get("/project/conectar_socket", { project_id: vm.miProjectId }, function gotResponse(body, response) { 
-        	console.log("El servidor respondió con código " + response.statusCode + " y datos: ", body); 
-        }); 
 
         /**
         * @method :: document.onkeydown 
