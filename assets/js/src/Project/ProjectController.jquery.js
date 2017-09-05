@@ -97,6 +97,18 @@ function onAnclar(nodoId, scope) {
     scope.vm.iniciarMensajeAnclado(); 
 }; 
 
+function onMensajeAnclarResponder(responder) { 
+    $anclar = true; 
+    
+    if(scope.vm.miMensajeAnclado !== "") 
+        $anclar = nodoId !== scope.vm.miMensajeAnclado.nodoId; 
+        
+    onAnclar(nodoId, scope); 
+
+    if(responder) 
+        vm.mensajeResponder = true; 
+}; 
+
 /**
 * @method :: onNodoClick
 * @description :: Ancla el mensaje al momento que el usuario hace clic en un nodo.
@@ -120,23 +132,14 @@ function contextMenuMapaInit() {
             var scope = angular.element(document.getElementById("ProjectControllerMain")).scope(); 
             
             switch(key) { 
-                case "reply": 
-                    scope.$apply(function () { 
-                        scope.vm.onMensajeModalShow(nodoId, 1); 
-                    });
-                    break; 
                 case "add": 
                     scope.$apply(function () { 
                         scope.vm.onMensajeModalShow(nodoId, 2); 
                     }); 
                     break; 
+                case "reply":
                 case "anchor": 
-                    $anclar = true; 
-                    
-                    if(scope.vm.miMensajeAnclado !== "") 
-                        $anclar = nodoId !== scope.vm.miMensajeAnclado.nodoId; 
-                        
-                    onAnclar(nodoId, scope); 
+                    onMensajeAnclarResponder(key === "reply"); 
                     break; 
                 default: 
                     break; 

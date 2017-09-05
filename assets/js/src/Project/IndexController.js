@@ -614,7 +614,9 @@
 
         function onBtnMensajeCancelarClick() { 
             vm.mensajeResponder = false; 
-
+            vm.mensajeRespuesta = ""; 
+            vm.mensajeRespuestaTipo = ""; 
+            vm.formMensaje.mensajeRespuesta.$pristine = true; 
         }; 
 
         /** 
@@ -885,6 +887,7 @@
         function onMensajeAnclarClick(nodoId) { 
             // Iniciar el mensaje navegar 
             vm.miMensajeAncladoNavegar = { }; 
+            vm.onBtnMensajeCancelarClick(); 
 
             // Si se debe anclar, Buscar en la lista de mensajes el mensaje anclado 
             // a través del id del nodo que identifica al mensaje, caso contrario 
@@ -913,6 +916,10 @@
             // En el caso de anclar el mensaje, dibujar el ancla 
             mapaDialogoDibujarAncla($anclar, vm.miMensajeAnclado); 
         };
+
+
+
+
 
         function onProjectUserInit() { 
             var s = $("#projectUser"); 

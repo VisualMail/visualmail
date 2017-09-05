@@ -952,3 +952,8 @@ However, delay the fade out process for 2.5 seconds */
   from {top: 30px; opacity: 1;}
   to {top: 0; opacity: 0;}
 }
+
+
+.context-menu-list, .context-menu-root { 
+  z-index: 99999 !important; 
+}

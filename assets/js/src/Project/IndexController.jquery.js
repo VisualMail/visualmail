@@ -30,23 +30,14 @@ function contextMenuMapaInit() {
             var scope = angular.element(document.getElementById("IndexControllerMain")).scope(); 
             
             switch(key) { 
-                case "reply": 
-                    scope.$apply(function () { 
-                        scope.vm.onMensajeModalShow(nodoId, 1); 
-                    });
-                    break; 
                 case "add": 
                     scope.$apply(function () { 
                         scope.vm.onMensajeModalShow(nodoId, 2); 
                     }); 
                     break; 
+                case "reply":
                 case "anchor": 
-                    $anclar = true; 
-                    
-                    if(scope.vm.miMensajeAnclado.nodoId) 
-                        $anclar = nodoId !== scope.vm.miMensajeAnclado.nodoId; 
-                        
-                    onAnclar(nodoId, scope); 
+                    onMensajeAnclarResponder(nodoId, scope, key === "reply"); 
                     break; 
                 default: 
                     break; 
@@ -124,7 +115,7 @@ function contextMenuMensajePanelInit() {
 * @param :: {integer} nodoId, identificador del nodo. 
 * @param :: {Object} scope, Objeto que contiene el "scope" de angular.
 **/
-function onAnclar(nodoId, scope) { 
+function onAnclar(nodoId, scope, responder) { 
     $("[data-circle=dialogo]").attr("stroke", ""); 
     $("[data-circle=dialogo]").attr("stroke-width", ""); 
     var n = $("[data-circle-navigate=ok]"); 
@@ -136,12 +127,21 @@ function onAnclar(nodoId, scope) {
     n.attr("stroke-width", "1"); 
     n.attr("data-line-navigate", ""); 
     
-    var scope = angular.element(document.getElementById("IndexControllerMain")).scope(); 
     scope.$apply(function () { 
         scope.vm.onMensajeAnclarClick(nodoId); 
+        scope.vm.mensajeResponder = responder; 
     }); 
     
     scope.vm.iniciarMensajeAnclado(); 
+}; 
+
+function onMensajeAnclarResponder(nodoId, scope, responder) { 
+    $anclar = true; 
+    
+    if(scope.vm.miMensajeAnclado !== "") 
+        $anclar = nodoId !== scope.vm.miMensajeAnclado.nodoId; 
+        
+    onAnclar(nodoId, scope, responder); 
 }; 
 
 /**
@@ -152,5 +152,5 @@ function onAnclar(nodoId, scope) {
 function onNodoClick(nodoId) { 
     var scope = angular.element(document.getElementById("IndexControllerMain")).scope(); 
     $anclar = true; 
-    onAnclar(nodoId, scope); 
+    onAnclar(nodoId, scope, false); 
 }; 
