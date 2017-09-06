@@ -91,10 +91,17 @@ function contextMenuMensajePanelInit() {
         "quit": { name: "Cancelar", icon: function() { return "context-menu-icon context-menu-icon-quit"; } } 
     }; 
 
+    var scope = angular.element(document.getElementById("IndexControllerMain")).scope(); 
+
     $.contextMenu({ 
         selector: ".context-menu-mensaje-anclado", 
         callback: function(key, options) { 
-            contextMenuMensajeInit(key, options, "anclado"); 
+            if(key === "sep1")
+                return; 
+
+            scope.$apply(function () { 
+                scope.vm.onMensajeMarcar(key, options, "anclado"); 
+            }); 
         }, 
         items: items 
     });
@@ -102,7 +109,12 @@ function contextMenuMensajePanelInit() {
     $.contextMenu({ 
         selector: ".context-menu-mensaje-navegar", 
         callback: function(key, options) { 
-            contextMenuMensajeInit(key, options, "navegar"); 
+            if(key === "sep1")
+                return; 
+            
+            scope.$apply(function () { 
+                scope.vm.onMensajeMarcar(key, options, "navegar"); 
+            }); 
         }, 
         items: items 
     });

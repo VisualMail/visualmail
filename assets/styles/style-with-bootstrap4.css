@@ -893,20 +893,20 @@ button { cursor: pointer; }
 .context-menu-icon-db,
 .context-menu-icon-ta,
 .context-menu-icon-da { 
-  background-position: 4px 2px; 
+  background-position: 5px 8px; 
   background-repeat: no-repeat; 
-  background-size: 25px; 
+  background-size: 18px; 
   min-height: 1%; 
   list-style-type: none; 
 }
 
-.context-menu-icon-citar { background-image: url('../images/icons/page_white_edit.png'); } 
-.context-menu-icon-ci { background-image: url('../images/icons/ci.png'); } 
-.context-menu-icon-ac { background-image: url('../images/icons/ac.png'); } 
-.context-menu-icon-nc { background-image: url('../images/icons/nc.png'); } 
-.context-menu-icon-db { background-image: url('../images/icons/db.png'); } 
-.context-menu-icon-ta { background-image: url('../images/icons/ta.png'); } 
-.context-menu-icon-da { background-image: url('../images/icons/da.png'); } 
+.context-menu-icon-citar { background-image: url('../images/icons/cr-small.png'); } 
+.context-menu-icon-ci { background-image: url('../images/icons/ci-small.png'); } 
+.context-menu-icon-ac { background-image: url('../images/icons/ac-small.png'); } 
+.context-menu-icon-nc { background-image: url('../images/icons/nc-small.png'); } 
+.context-menu-icon-db { background-image: url('../images/icons/db-small.png'); } 
+.context-menu-icon-ta { background-image: url('../images/icons/ta-small.png'); } 
+.context-menu-icon-da { background-image: url('../images/icons/da-small.png'); } 
 
 
 /* The snackbar - position it at the bottom and in the middle of the screen */

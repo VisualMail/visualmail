@@ -47,10 +47,12 @@
         vm.iniciarMensajeNavegar = iniciarMensajeNavegar; 
         vm.iniciarTiempoDialogo = iniciarTiempoDialogo; 
         vm.onActualizarTareaIndice = onActualizarTareaIndice; 
+        vm.onBtnMensajeAncladoNavegarResponderClick = onBtnMensajeAncladoNavegarResponderClick; 
         vm.onBtnMensajeCancelarClick = onBtnMensajeCancelarClick; 
         vm.onBtnMensajeEnviarClick = onBtnMensajeEnviarClick; 
         vm.onKanbanBoardUpdateColumn = onKanbanBoardUpdateColumn; 
         vm.onMensajeAnclarClick = onMensajeAnclarClick; 
+        vm.onMensajeMarcar = onMensajeMarcar; 
         vm.onProjectUserInit = onProjectUserInit; 
         vm.onSocketMensajeNuevo = onSocketMensajeNuevo; 
         vm.onSocketTareaActualizar = onSocketTareaActualizar; 
@@ -271,7 +273,7 @@
         }; 
 
         /**
-        * @method :: iniciarMensajeAnclado F
+        * @method :: iniciarMensajeAnclado 
         * @description :: Iniciar el 'nodo anclado'  
         **/
         function iniciarMensajeAnclado() { 
@@ -470,6 +472,29 @@
             }).catch(function(err) { 
                 setMessage(false, "¡Se produjo un error en el procedimiento '/tarea/updateTipo'!", null, err); 
             }); 
+        }; 
+
+        /** 
+        * @method :: onBtnMensajeCancelarClick 
+        * @description ::  Inicia los controles de la respuesta a un mensaje 
+        **/ 
+        function onBtnMensajeAncladoNavegarResponderClick() { 
+            $anclar = true; 
+            var nodoId = vm.miMensajeAncladoNavegar.nodoId; 
+            vm.miMensajeAncladoNavegar = { }; 
+            $("[data-circle=dialogo]").attr("stroke", ""); 
+            $("[data-circle=dialogo]").attr("stroke-width", ""); 
+            var n = $("[data-circle-navigate=ok]"); 
+            n.attr("stroke", ""); 
+            n.attr("stroke-width", ""); 
+            n.attr("data-circle-navigate", ""); 
+            n = $("[data-line-navigate=ok]"); 
+            n.attr("stroke", "#797979"); 
+            n.attr("stroke-width", "1"); 
+            n.attr("data-line-navigate", ""); 
+            vm.onMensajeAnclarClick(nodoId); 
+            vm.iniciarMensajeAnclado(); 
+            vm.mensajeResponder = true; 
         }; 
 
         /** 
@@ -712,6 +737,18 @@
             // En el caso de anclar el mensaje, dibujar el ancla 
             mapaDialogoDibujarAncla($anclar, vm.miMensajeAnclado); 
         };
+
+        /**
+        * @method :: onMensajeMarcar
+        * @description :: Inicia la respuesta del mensaje con la opción del sub-menú del mensaje cuando el usuario hace clic derecho.
+        * @param :: {string} key, identificador del nodo 
+        * @param :: {Object} options, datos del contenedor del texto 
+        * @param :: {Object} mensaje, datos del mensaje que se responde 
+        **/
+        function onMensajeMarcar(key, options, mensaje) { 
+            console.log(key, options, mensaje); 
+
+        }; 
 
         /**
         * @method :: onSocketMensajeNuevo 
@@ -1187,9 +1224,6 @@
             $scope.$apply(); 
             //setMessage("Se ha creado una nueva tarea"); 
         }; 
-
-
-
 
         /**
         * @method :: io.socket.get 
