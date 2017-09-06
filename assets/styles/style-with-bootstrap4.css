@@ -33,7 +33,7 @@ button { cursor: pointer; }
 
 .kanbanBoardColumn { border: 3px solid #C8E6C9; height:510px; overflow-y: auto; } 
 .kanbanBoardColumn.droppable, .kanbanBoardCell.droppable { border: 2px dashed #666; } 
-.kanbanBoardColumnHeader { background: #C8E6C9; color:#4CAF50; } 
+.kanbanBoardColumnHeader { background: #C8E6C9; color:#4CAF50; padding: 25px 10px 5px 10px; } 
 .kanbanBoardCell { border: 0px solid #666; display: block; margin: 15px 5px 15px 0; padding: 0; width: 100%; } 
 .kanbanBoardTask { background: #FFEB3B; border-radius: 6px; cursor: move; margin: 0px;   padding: 0px; position: relative; height: 100%; width: 100%; word-wrap: break-word; -moz-border-radius: 6px; -webkit-border-radius: 6px; } 
 .kanbanBoardTask:after { border-color: #FFEB3B transparent; border-style: solid; border-width: 0px 0px 0; bottom: -0px; content: ''; cursor: move; display: block; left: 8px; position: absolute; width: 0; z-index: 1; } 
