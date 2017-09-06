@@ -46,7 +46,7 @@ function mapaDialogoDibujar(nodoMensaje) {
 		if(sessionIdAux !== v.sessionId && $("[data-header-session-id=" + v.sessionId + "]").length === 0) {
 			// Alamcenar la nueva sesión en la variable auxiliar 
 			sessionIdAux = v.sessionId;
-			console.log(sessionIdAux);
+
 			// Almacenar la última session
 			sessionIdMax = sessionIdAux > sessionIdMax ? sessionIdAux : sessionIdMax;
 

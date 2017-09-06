@@ -221,7 +221,7 @@
         <!-- Fin Diálogo -->
             
         <!-- Inicio Kanban -->
-        <div class="card-body" ng-if="vm.activeTab === 4"> 
+        <div class="card-body" id="kanbanBoard" ng-show="vm.activeTab === 4"> 
             
             <!-- Inicio Lista NUEVA --> 
             <div class="form-group"> 
@@ -253,19 +253,25 @@
                                 ng-show="item.title"> 
                                 
                                 <!-- Inicio Tarea --> 
-                                <div class="hoverable kanbanBoardTask" draggable="true" id="{{ item.id }}"> 
-                                    <div class="row"> 
-                                        <div class="kanbanred" ng-if="item.associated == true && item.element != ''"> 
-                                            <div class="white-text"><h6>{{ item.element }}</h6></div> 
-                                        </div> 
-                                        <div class="col s4"> 
-                                            <div class="col s12" ng-show="item.usuario.imgurl">
-                                                <!--<img class="circle" height="40px" width="40px" ng-src="{{ item.usuario.imgurl }}">--> 
+                                <div class="kanbanBoardTask" draggable="true" id="{{ item.id }}"> 
+                                    <div class="form-group">
+                                        <div class="row" style="margin-left: 0; margin-right: 0;">
+                                            <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"> 
+                                                <div style="padding: 25px 0 0 0;">
+                                                    <img alt="profile" class="rounded-circle" style="height: 40px; width: 40px;"  
+                                                        ng-show="item.usuario.imgurl" 
+                                                        ng-src="{{ item.usuario.imgurl }}"> 
+                                                    <p><strong>{{ item.usuario.initials }}</strong></p> 
+                                                </div>
                                             </div> 
-                                            <div class="col s12">{{ item.usuario.initials }}</div> 
-                                        </div> 
-                                        <div class="col s8 textito"><h6>{{ item.title }}</h6></div> 
-                                    </div> 
+                                            <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9"> 
+                                                <div style="padding: 25px 0 0 0;">
+                                                    <h6 ng-if="item.associated === true && item.element !== ''">{{ item.element }}</h6>
+                                                    <p class="text-left">{{ item.title }}</p> 
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div> 
                                 <!-- Fin Tarea --> 
                             
@@ -302,28 +308,32 @@
                                 ng-repeat="item in vm.miKanbanColumn2 | filter: vm.miKanbanColumnSearch2" 
                                 ng-show="item.title">
         
-                                <!-- Inicio Tarea -->
-                                <div class="hoverable kanbanBoardTask" draggable="true" id="{{ item.id }}">
-                                    <div class="row">
-                                        <div class="kanbanred" 
-                                            ng-if="item.associated == true && item.element != ''">
-                                            <div class="white-text"> <h6>{{ item.element }}</h6></div>
-                                          </div>
-                                          <div class="col s4"> 
-                                              <div class="col s12" ng-show="item.usuario.imgurl">
-                                                  <br />
-                                                  <img class="circle" height="40px" width="40px" ng-src="{{ item.usuario.imgurl }}">
-                                              </div>
-                                              <div class="col s12">{{ item.usuario.initials }}</div>
-                                          </div>
-                                          <div class="col s8 textito"><h6>{{ item.title }}</h6></div>
-                                      </div>
-                                  </div>
-                                  <!-- Fin Tarea -->
+                                <!-- Inicio Tarea --> 
+                                <div class="kanbanBoardTask" draggable="true" id="{{ item.id }}"> 
+                                    <div class="form-group">
+                                        <div class="row" style="margin-left: 0; margin-right: 0;">
+                                            <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"> 
+                                                <div style="padding: 25px 0 0 0;">
+                                                    <img alt="profile" class="rounded-circle" style="height: 40px; width: 40px;"  
+                                                        ng-show="item.usuario.imgurl" 
+                                                        ng-src="{{ item.usuario.imgurl }}"> 
+                                                    <p><strong>{{ item.usuario.initials }}</strong></p> 
+                                                </div>
+                                            </div> 
+                                            <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9"> 
+                                                <div style="padding: 25px 0 0 0;">
+                                                    <h6 ng-if="item.associated === true && item.element !== ''">{{ item.element }}</h6>
+                                                    <p class="text-left">{{ item.title }}</p> 
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> 
+                                <!-- Fin Tarea --> 
         
-                              </div>
-                              <!-- Fin Celda -->
-        
+                            </div> 
+                            <!-- Fin Celda --> 
+                        
                         </div>
                         <!-- Fin Columna -->
         
@@ -354,23 +364,28 @@
                                 ng-repeat="item in vm.miKanbanColumn3 | filter: vm.miKanbanColumnSearch3" 
                                 ng-show="item.title">
         
-                                <!-- Inicio Tarea -->
-                                <div class="hoverable kanbanyellow kanbanBoardTask" draggable="true" id="{{ item.id }}">
-                                    <div class="row">
-                                        <div class="kanbanred" ng-if="item.associated == true && item.element != ''">
-                                            <div class="white-text"><h6>{{ item.element }}</h6></div>
-                                        </div>
-                                        <div class="col s4"> 
-                                            <div class="col s12" ng-show="item.usuario.imgurl">
-                                                <br />
-                                                <img class="circle" height="40px" width="40px" ng-src="{{ item.usuario.imgurl }}">
+                                <!-- Inicio Tarea --> 
+                                <div class="kanbanBoardTask" draggable="true" id="{{ item.id }}"> 
+                                    <div class="form-group">
+                                        <div class="row" style="margin-left: 0; margin-right: 0;">
+                                            <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"> 
+                                                <div style="padding: 25px 0 0 0;">
+                                                    <img alt="profile" class="rounded-circle" style="height: 40px; width: 40px;"  
+                                                        ng-show="item.usuario.imgurl" 
+                                                        ng-src="{{ item.usuario.imgurl }}"> 
+                                                    <p><strong>{{ item.usuario.initials }}</strong></p> 
+                                                </div>
+                                            </div> 
+                                            <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9"> 
+                                                <div style="padding: 25px 0 0 0;">
+                                                    <h6 ng-if="item.associated === true && item.element !== ''">{{ item.element }}</h6>
+                                                    <p class="text-left">{{ item.title }}</p> 
+                                                </div>
                                             </div>
-                                            <div class="col s12"> {{item.usuario.initials}}</div>
                                         </div>
-                                        <div class="col s8 textito"><h6>{{item.title}}</h6></div>
                                     </div>
-                                </div>
-                                <!-- Fin Tarea -->
+                                </div> 
+                                <!-- Fin Tarea --> 
         
                             </div>
                             <!-- Fin Celda -->
@@ -405,23 +420,28 @@
                                 ng-repeat="item in vm.miKanbanColumn4 | filter: vm.miKanbanColumnSearch4" 
                                 ng-show="item.title">
             
-                                <!-- Inicio Tarea -->
-                                <div class="hoverable kanbanyellow kanbanBoardTask" draggable="true" id="{{ item.id }}">
-                                    <div class="row">
-                                        <div class="kanbanred" ng-if="item.associated == true && item.element != ''">
-                                            <div class="white-text"><h6>{{ item.element }}</h6></div>
-                                        </div>
-                                        <div class="col s4"> 
-                                            <div class="col s12" ng-show="item.usuario.imgurl">
-                                                <br />
-                                                <img class="circle" height="40px" width="40px" ng-src="{{ item.usuario.imgurl }}">
-                                            </div>
-                                            <div class="col s12"> {{item.usuario.initials}}</div>
-                                        </div>
-                                        <div class="col s8 textito"><h6>{{item.title}}</h6></div>
+                                <!-- Inicio Tarea --> 
+                                <div class="kanbanBoardTask" draggable="true" id="{{ item.id }}"> 
+                                    <div class="form-group">
+                                        <div class="row" style="margin-left: 0; margin-right: 0;">
+                                            <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"> 
+                                                <div style="padding: 25px 0 0 0;">
+                                                    <img alt="profile" class="rounded-circle" style="height: 40px; width: 40px;"  
+                                                        ng-show="item.usuario.imgurl" 
+                                                        ng-src="{{ item.usuario.imgurl }}"> 
+                                                    <p><strong>{{ item.usuario.initials }}</strong></p> 
+                                                </div>
+                                            </div> 
+                                            <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9"> 
+                                                <div style="padding: 25px 0 0 0;">
+                                                    <h6 ng-if="item.associated === true && item.element !== ''">{{ item.element }}</h6>
+                                                    <p class="text-left">{{ item.title }}</p> 
+                                                </div> 
+                                            </div> 
+                                        </div> 
                                     </div>
-                                </div>
-                                <!-- Fin Tarea -->
+                                </div> 
+                                <!-- Fin Tarea --> 
             
                             </div>
                             <!-- Fin Celda -->

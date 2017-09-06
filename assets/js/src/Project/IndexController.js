@@ -41,18 +41,21 @@
         vm.miUserListaParticipantes = []; 
         
 
-        
-        
-
         vm.getQueryString = getQueryString; 
         vm.iniciarLineaDialogo = iniciarLineaDialogo; 
         vm.iniciarMensajeAnclado = iniciarMensajeAnclado; 
         vm.iniciarMensajeNavegar = iniciarMensajeNavegar; 
         vm.iniciarTiempoDialogo = iniciarTiempoDialogo; 
         vm.onActualizarTareaIndice = onActualizarTareaIndice; 
+        vm.onBtnMensajeCancelarClick = onBtnMensajeCancelarClick; 
+        vm.onBtnMensajeEnviarClick = onBtnMensajeEnviarClick; 
+        vm.onKanbanBoardUpdateColumn = onKanbanBoardUpdateColumn; 
         vm.onMensajeAnclarClick = onMensajeAnclarClick; 
         vm.onProjectUserInit = onProjectUserInit; 
+        vm.onSocketMensajeNuevo = onSocketMensajeNuevo; 
+        vm.onSocketTareaActualizar = onSocketTareaActualizar; 
         vm.setMessage = setMessage; 
+        vm.setMessageToast = setMessageToast; 
 
         init(); 
 
@@ -458,7 +461,7 @@
                     nuevoTipo: vm.miKanbanTipoTarea[newColumn - 1], 
                     newCell: newCell, 
                     newIndex: newIndex, 
-                    usuarioId: vm.miUsuario.id 
+                    usuarioId: vm.miUser.id 
                 }
             }).then(function(res) { 
                 // Verificar si la respuesta desde el servidor es error 
@@ -468,6 +471,451 @@
                 setMessage(false, "¡Se produjo un error en el procedimiento '/tarea/updateTipo'!", null, err); 
             }); 
         }; 
+
+        /** 
+        * @method :: onBtnMensajeCancelarClick 
+        * @description ::  Inicia los controles de la respuesta a un mensaje 
+        **/ 
+        function onBtnMensajeCancelarClick() { 
+            vm.mensajeResponder = false; 
+            vm.mensajeRespuesta = ""; 
+            vm.mensajeRespuestaTipo = ""; 
+            vm.formMensaje.mensajeRespuesta.$pristine = true; 
+        }; 
+
+        /** 
+        * @method :: onBtnMensajeEnviarClick 
+        * @description ::  Función para mandar POST que crea un nuevo mensaje
+        **/ 
+        function onBtnMensajeEnviarClick() { 
+            // Si se está procesando retornar 
+            if(vm.procesando) 
+                return; 
+
+            vm.procesando = true; 
+
+            // Arreglo que almacena la posición del nuevo mensaje 
+            var mensajePosicion = []; 
+            
+            // Por cada valor de 'position' del mensaje seleccionado a responder se copia 
+            for(var i = 0; i < vm.miMensajeAnclado.position.length; i++) 
+                mensajePosicion.push(vm.miMensajeAnclado.position[i]); 
+            
+            // Ingresar el valor que le corresponde al nuevo mensaje en 'position' 
+            mensajePosicion.push(vm.miMensajeAnclado.numero_hijos); 
+
+            // Si el mensaje no tiene sesión, actualizar mi sesión 
+            if(vm.miMensajeAnclado.sessionId === vm.miSessionId) 
+                vm.miSessionId++; 
+            
+            // Para realizar el post con csrf 
+            $http.defaults.withCredentials = true; 
+            $http({ 
+                method: "POST", 
+                url: "/mensaje/create", 
+                headers: { 
+                    "Content-Type": "application/json", 
+                    "X-CSRF-TOKEN": vm.csrfToken 
+                }, 
+                data: { 
+                    name: vm.mensajeRespuesta, 
+                    namePlain: vm.mensajeRespuesta, 
+                    nodoNivel: vm.miMensajeAnclado.numero_hijos + vm.miMensajeAnclado.nodoNivel, 
+                    nodoPadreId: vm.miMensajeAnclado.nodoId, 
+                    nodoPadreNivel: vm.miMensajeAnclado.nodoNivel, 
+                    nodoPadreSessionId: vm.miMensajeAnclado.sessionId, 
+                    numero_hijos: 0, 
+                    parent: "", // El padre por defecto = vacio 
+                    position: mensajePosicion, 
+                    project_id: vm.miProjectId, 
+                    root: false, 
+                    session: 0, 
+                    sessionId: vm.miSessionId, 
+                    tipo: vm.mensajeRespuestaTipo, 
+                    usuario: vm.miUser.id 
+                } 
+            }).then(function(res) { 
+                var d = res.data;
+
+                // Si existe error 
+                if(!d.proc) { 
+                    setMessage(d.proc, d.msg, "warning"); 
+                    return; 
+                } 
+                
+                var mensajeTemporal = d.mensaje; 
+                mensajeTemporal["usuario"] = vm.miUser; 
+                
+                // Se manda el POST para unir el mensaje nuevo con el anterior 
+                $http({ 
+                    method: "POST", 
+                    url: "/mensaje/unir", 
+                    headers: { 
+                        "Content-Type": "application/json", 
+                        "X-CSRF-TOKEN": vm.csrfToken 
+                    }, 
+                    data: { 
+                        id: vm.miMensajeAnclado.id, 
+                        idunion: mensajeTemporal.id 
+                    } 
+                }).then(function(datamensaje) {
+                    // Ahora se agrega el mensaje creado en el dialogo 
+                    // Manda el POST para añadirlo al dialogo 
+                    $http({ 
+                        method: "POST", 
+                        url: "/dialogo/update_dialogo", 
+                        headers: { 
+                            "Content-Type": "application/json", 
+                            "X-CSRF-TOKEN": vm.csrfToken 
+                        }, 
+                        data: { 
+                            id: vm.miProject.dialogos[0].id, 
+                            mensaje: mensajeTemporal
+                        } 
+                    }).then(function(datadialogoupdate) { 
+                        vm.procesando = false; 
+                    }).catch(function(err) { 
+                        vm.procesando = false; 
+                        setMessage(false, "¡Se produjo un error en el procedimiento '/tarea/updateTipo'!", null, err); 
+                    }); 
+                }).catch(function(err) { 
+                    vm.procesando = false; 
+                    setMessage(false, "¡Se produjo un error en el procedimiento '/tarea/updateTipo'!", null, err); 
+                }); 
+            }).catch(function(err) { 
+                vm.procesando = false; 
+                setMessage(false, "¡Se produjo un error en el procedimiento '/tarea/updateTipo'!", null, err); 
+            }); 
+        }; 
+
+        /**
+        * @method :: onKanbanBoardUpdateColumn 
+        * @description :: Función para actualizar una tarea en el tablero Kanban 
+        * @param :: {integer} column, el índice de la columna original (tipo de tarea original)
+        * @param :: {integer} newColumn, el índice de la columna nueva (tipo de tarea) 
+        * @param :: {integer} newIndex, el índice donde se posiciona la tarea 
+        * @param :: {integer} newCell, almacena si el usuario cambió de columna y no especificó en que celda (índice) colocar la tarea 
+        * @param :: {Object} tarea, objeto que contiene la información de la tarea modificada 
+        */
+        function onKanbanBoardUpdateColumn(column, newColumn, newIndex, newCell, tarea) { 
+            // Iniciar las variables auxiliares 
+            var listaAuxOrigen = []; 
+            var listaAuxDestino = []; 
+            var i = 1; 
+
+            // Almacenar en una variable auxiliar la columna original de la tarea 
+            if(column === 1)
+                listaAuxOrigen = vm.miKanbanColumn1; 
+            else if(column === 2)
+                listaAuxOrigen = vm.miKanbanColumn2; 
+            else if(column === 3)
+                listaAuxOrigen = vm.miKanbanColumn3; 
+            else if(column === 4)
+                listaAuxOrigen = vm.miKanbanColumn4; 
+
+            // Modificar los índices de todas las tareas en la columna original 
+            $.each(listaAuxOrigen, function(key, value) { 
+                if(value.id !== tarea.id) { 
+                    value.index = i++; 
+                    listaAuxDestino.push(value); 
+                } 
+            }); 
+
+            // Actualizar la columna original 
+            if(column === 1)
+                vm.miKanbanColumn1 = listaAuxDestino; 
+            else if(column === 2)
+                vm.miKanbanColumn2 = listaAuxDestino; 
+            else if(column === 3)
+                vm.miKanbanColumn3 = listaAuxDestino; 
+            else if(column === 4)
+                vm.miKanbanColumn4 = listaAuxDestino; 
+
+            // Iniciar las variables auxiliares 
+            listaAuxOrigen = []; 
+            listaAuxDestino = []; 
+            i = 1; 
+
+            // Almacenar en una variable auxiliar la columna destino de la tarea 
+            if(newColumn === 1)
+                listaAuxOrigen = vm.miKanbanColumn1; 
+            else if(newColumn === 2)
+                listaAuxOrigen = vm.miKanbanColumn2; 
+            else if(newColumn === 3)
+                listaAuxOrigen = vm.miKanbanColumn3; 
+            else if(newColumn === 4)
+                listaAuxOrigen = vm.miKanbanColumn4; 
+
+            // Modificar los índices de todas las tareas en la columna destino (incluida la nueva tarea) 
+            $.each(listaAuxOrigen, function(key, value) { 
+                if(value.index === newIndex) { 
+                    listaAuxDestino.push(tarea); 
+                    i++; 
+                    newIndex = -1; 
+                } 
+
+                value.index = i++; 
+                listaAuxDestino.push(value); 
+            }); 
+
+            // Si la nueva tarea se encuentra en la última posición de la nueva columna destino 
+            if(newIndex > 0) 
+                listaAuxDestino.push(tarea); 
+
+            // Actualizar la columna destino 
+            if(newColumn === 1) 
+                vm.miKanbanColumn1 = listaAuxDestino; 
+            else if(newColumn === 2) 
+                vm.miKanbanColumn2 = listaAuxDestino; 
+            else if(newColumn === 3) 
+                vm.miKanbanColumn3 = listaAuxDestino; 
+            else if(newColumn === 4) 
+                vm.miKanbanColumn4 = listaAuxDestino; 
+
+            setMessageToast("Tarea actualizada"); 
+        }; 
+
+        /**
+        * @method :: onMensajeAnclarClick 
+        * @description :: Establecer el 'nodo anclado' 
+        * @param :: {integer} nodoId, identificador del nodo 
+        **/
+        function onMensajeAnclarClick(nodoId) { 
+            // Iniciar el mensaje navegar 
+            vm.miMensajeAncladoNavegar = { }; 
+            vm.onBtnMensajeCancelarClick(); 
+
+            // Si se debe anclar, Buscar en la lista de mensajes el mensaje anclado 
+            // a través del id del nodo que identifica al mensaje, caso contrario 
+            // iniciar el mensaje anclado 
+            if($anclar) { 
+
+                $.each(vm.miMensajeLista, function(key, value) { 
+                    if(parseInt(value.nodoId) === nodoId) { 
+                        vm.miMensajeAnclado = value; 
+                        vm.miMensajeAncladoName = $sce.trustAsHtml(vm.miMensajeAnclado.name); 
+                        /*$(document).ready(function() { 
+                            $(".marcar").on("click", function() { 
+                                vm.onMensajeMarcaClick($(this).attr("data-marca"), parseInt($(this).attr("data-nid"))); 
+                            }); 
+                        }); */
+                        return false; 
+                    } 
+                }); 
+                
+                // Verificar si el mensaje anclado tiene hijos
+                if(vm.miMensajeAnclado.nodoId <= 1 && $("[data-nodo-parent-id=" + vm.miMensajeAnclado.nodoId + "]").length > 0) 
+                    vm.iniciarMensajeNavegar(true, false, "Derecha"); 
+            } else 
+                vm.miMensajeAnclado = { };
+
+            // En el caso de anclar el mensaje, dibujar el ancla 
+            mapaDialogoDibujarAncla($anclar, vm.miMensajeAnclado); 
+        };
+
+        /**
+        * @method :: onSocketMensajeNuevo 
+        * @description :: Actualizar el mensaje enviado desde el socket 
+        * @param :: {Object} data, información acerca del proceso, contiene además el nuevo mensaje  
+        **/
+        function onSocketMensajeNuevo(data) { 
+            // Obtener los parámetros 
+            var nuevoMensaje = data.nuevoMensaje; 
+            var revisarSession = data.revisarSession; 
+            var actualizarNodos = data.actualizarNodos; 
+
+            // Si un nuevo usuario creo el mensaje, actualizar mi sesión
+            if(vm.miUser.id !== nuevoMensaje.usuario.id) 
+                vm.miSessionId = nuevoMensaje.sessionId + 1; 
+
+            var dibujado = false; 
+
+            // Verificar cada mensaje 
+            $.each(vm.miMensajeLista, function(key, value) { 
+
+                // Si encuentra el mensaje padre 
+                // actualizar el número de hijos 
+                if(value.id === nuevoMensaje.parent) { 
+                    value.numero_hijos++; 
+
+                    if(!revisarSession)
+                        return false; 
+                }
+
+                // Si hay que revisar los nodos 
+                if(revisarSession && actualizarNodos.length > 0) { 
+
+                    $.each(actualizarNodos, function(k, v) { 
+                        if(v.id === value.id) { 
+                            value.nodoNivel = v.nodoNivel; 
+                        } else if(v.id === value.parent) {
+                            value.nodoPadreNivel = v.nodoNivel; 
+                        } 
+
+                        if(!dibujado) 
+                            mapaDialogoModificarNodo(v); 
+                    }); 
+
+                    dibujado = true; 
+                } 
+            }); 
+
+            nuevoMensaje["cssvalue"] = !vm.miMensajeIntercalar; 
+            vm.miMensajeIntercalar = !vm.miMensajeIntercalar; 
+            vm.miMensajeLista.push(nuevoMensaje); 
+            mapaDialogoAgregarNodo(nuevoMensaje); 
+            vm.iniciarMensajeAnclado(); 
+
+            if($anclar) { 
+                if(vm.miMensajeAnclado.nodoId === nuevoMensaje.nodoPadreId) { 
+                    vm.miMensajeAncladoNavegar = nuevoMensaje; 
+                    //vm.miMensajeAncladoNavegarName = $sce.trustAsHtml(nuevoMensaje.name); 
+
+                    var n = $("[data-circle-navigate=ok]"); 
+                    n.attr("stroke", ""); 
+                    n.attr("stroke-width", ""); 
+                    n.attr("data-circle-navigate", ""); 
+                    n = $("[data-line-navigate=ok]"); 
+                    n.attr("stroke", "#797979"); 
+                    n.attr("stroke-width", "1"); 
+                    n.attr("data-line-navigate", ""); 
+                    n = $("[data-nodo-id=" + vm.miMensajeAncladoNavegar.nodoId + "]"); 
+                    n.attr("stroke", "#18ffff"); 
+                    n.attr("stroke-width", "5"); 
+                    n.attr("data-circle-navigate", "ok"); 
+                    vm.iniciarLineaDialogo(vm.miMensajeAncladoNavegar.nodoId); 
+                } 
+            }
+
+            vm.iniciarTiempoDialogo(); 
+
+            // Actualizar el controlador
+            $scope.$apply();
+            setMessageToast("Nuevo mensaje en el diálogo"); 
+        }; 
+
+        /**
+        * @method :: onSocketTareaActualizar 
+        * @description :: Recibe la tarea actualizada en el Kanban 
+        **/
+        function onSocketTareaActualizar(data) { 
+            // Obtener las tareas del tablero Kanban
+            $http({ 
+                url: "/tarea/getTareas/", 
+                method: "GET", 
+                params: { id: data.obj.project_id } 
+            }).then(function(res) { 
+                var d = res.data; 
+
+                // Si existe error
+                if(!d.proc) { 
+                    setMessage(d.proc, d.msg, "warning"); 
+                    return;
+                } 
+
+                // Almacenar la lista de tareas 
+                vm.miKanbanListaTareas = d.lista; 
+
+                // Si es usuario es distinto al que modificó la tarea 
+                if(vm.miUser.id !== data.usuarioId) { 
+                    // Iniciar las columnas 
+                    vm.miKanbanColumn1 = []; 
+                    vm.miKanbanColumn2 = []; 
+                    vm.miKanbanColumn3 = []; 
+                    vm.miKanbanColumn4 = []; 
+
+                    // Añadir cada tarea a la columna correspondiente 
+                    $.each(vm.miKanbanListaTareas, function(key, value) { 
+                        if(value.tipo === vm.miKanbanTipoTarea[0]) // Nuevas 
+                            vm.miKanbanColumn1.push(value); 
+                        else if(value.tipo === vm.miKanbanTipoTarea[1]) // Haciendo 
+                            vm.miKanbanColumn2.push(value); 
+                        else if(value.tipo === vm.miKanbanTipoTarea[2]) // En pruebas 
+                            vm.miKanbanColumn3.push(value); 
+                        else if(value.tipo === vm.miKanbanTipoTarea[3]) // Terminada 
+                            vm.miKanbanColumn4.push(value); 
+                    }); 
+
+                    setMessageToast("Tarea actualizada"); 
+                } else { 
+                    var column = 0, newColumn = 0;  
+
+                    // Verificar la columna origen y destino (tipo de tarea origen y destino) 
+                    for(var i = 0; i < vm.miKanbanTipoTarea.length; i++) {
+                        if(vm.miKanbanTipoTarea[i] === data.tipoOriginal) 
+                            column = i + 1; 
+                        if(vm.miKanbanTipoTarea[i] === data.nuevoTipo) 
+                            newColumn = i + 1; 
+                    }
+
+                    // Actualizar el tablero kanban en el usuario que envió la tarea 
+                    vm.onKanbanBoardUpdateColumn(column, newColumn, data.newIndex, data.newCell, data.obj); 
+                }
+            }); 
+        }; 
+
+        /**
+        * @method :: setMessage 
+        * @description :: Despliega un mensaje  
+        * @param :: {boolean} proc, procedimiento correcto o incorrecto 
+        * @param :: {string} msg, contenido del mensaje  
+        * @param :: {string} state, estado del mensaje 
+        * @param :: {Object} err, error del proceso 
+        **/
+        function setMessage(proc, msg, state, err) { 
+            swal(proc ? "¡Datos registrados!" : "¡No se completó la operación!", msg, state ? state : (proc ? "success" : "error")); 
+
+            if (err !== undefined) { 
+                console.debug("Error: " + msg); 
+                console.debug(err); 
+                console.log(err); 
+            } 
+        }; 
+
+        /**
+        * @method :: setMessageToast 
+        * @description :: Despliega un mensaje 
+        * @param :: {string} message, contenido del mensaje  
+        **/
+        function setMessageToast(message) {
+            vm.messageToast = message; 
+            // Get the snackbar DIV
+            var x = document.getElementById("snackbar"); 
+        
+            // Add the "show" class to DIV
+            x.className = "show";
+        
+            // After 3 seconds, remove the show class from DIV
+            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         
         
@@ -607,122 +1055,15 @@
 
 
 
-        vm.mensajeRespuesta = ""; 
-        vm.onBtnMensajeCancelarClick = onBtnMensajeCancelarClick; 
-        vm.onBtnMensajeEnviarClick = onBtnMensajeEnviarClick; 
-        vm.onSocketMensajeNuevo = onSocketMensajeNuevo;
+        
 
-        function onBtnMensajeCancelarClick() { 
-            vm.mensajeResponder = false; 
-            vm.mensajeRespuesta = ""; 
-            vm.mensajeRespuestaTipo = ""; 
-            vm.formMensaje.mensajeRespuesta.$pristine = true; 
-        }; 
+        
 
-        /** 
-        * @method :: onBtnMensajeEnviarClick 
-        * @description ::  Función para mandar POST que crea un nuevo mensaje
-        **/ 
-        function onBtnMensajeEnviarClick() { 
-            // Si se está procesando retornar 
-            if(vm.procesando) 
-                return; 
 
-            vm.procesando = true; 
 
-            // Arreglo que almacena la posición del nuevo mensaje 
-            var mensajePosicion = []; 
-            
-            // Por cada valor de 'position' del mensaje seleccionado a responder se copia 
-            for(var i = 0; i < vm.miMensajeAnclado.position.length; i++) 
-                mensajePosicion.push(vm.miMensajeAnclado.position[i]); 
-            
-            // Ingresar el valor que le corresponde al nuevo mensaje en 'position' 
-            mensajePosicion.push(vm.miMensajeAnclado.numero_hijos); 
 
-            // Si el mensaje no tiene sesión, actualizar mi sesión 
-            if(vm.miMensajeAnclado.sessionId === vm.miSessionId) 
-                vm.miSessionId++; 
-            
-            // Para realizar el post con csrf 
-            $http.defaults.withCredentials = true; 
-            $http({ 
-                method: "POST", 
-                url: "/mensaje/create", 
-                headers: { 
-                    "Content-Type": "application/json", 
-                    "X-CSRF-TOKEN": vm.csrfToken 
-                }, 
-                data: { 
-                    name: vm.mensajeRespuesta, 
-                    namePlain: vm.mensajeRespuesta, 
-                    nodoNivel: vm.miMensajeAnclado.numero_hijos + vm.miMensajeAnclado.nodoNivel, 
-                    nodoPadreId: vm.miMensajeAnclado.nodoId, 
-                    nodoPadreNivel: vm.miMensajeAnclado.nodoNivel, 
-                    nodoPadreSessionId: vm.miMensajeAnclado.sessionId, 
-                    numero_hijos: 0, 
-                    parent: "", // El padre por defecto = vacio 
-                    position: mensajePosicion, 
-                    project_id: vm.miProjectId, 
-                    root: false, 
-                    session: 0, 
-                    sessionId: vm.miSessionId, 
-                    tipo: vm.mensajeRespuestaTipo, 
-                    usuario: vm.miUser.id 
-                } 
-            }).then(function(res) { 
-                var d = res.data;
 
-                // Si existe error 
-                if(!d.proc) { 
-                    setMessage(d.proc, d.msg, "warning"); 
-                    return; 
-                } 
-                
-                var mensajeTemporal = d.mensaje; 
-                mensajeTemporal["usuario"] = vm.miUser; 
-                
-                // Se manda el POST para unir el mensaje nuevo con el anterior 
-                $http({ 
-                    method: "POST", 
-                    url: "/mensaje/unir", 
-                    headers: { 
-                        "Content-Type": "application/json", 
-                        "X-CSRF-TOKEN": vm.csrfToken 
-                    }, 
-                    data: { 
-                        id: vm.miMensajeAnclado.id, 
-                        idunion: mensajeTemporal.id 
-                    } 
-                }).then(function(datamensaje) {
-                    // Ahora se agrega el mensaje creado en el dialogo 
-                    // Manda el POST para añadirlo al dialogo 
-                    $http({ 
-                        method: "POST", 
-                        url: "/dialogo/update_dialogo", 
-                        headers: { 
-                            "Content-Type": "application/json", 
-                            "X-CSRF-TOKEN": vm.csrfToken 
-                        }, 
-                        data: { 
-                            id: vm.miProject.dialogos[0].id, 
-                            mensaje: mensajeTemporal
-                        } 
-                    }).then(function(datadialogoupdate) { 
-                        vm.procesando = false; 
-                    }).catch(function(err) { 
-                        vm.procesando = false; 
-                        setMessage(false, "¡Se produjo un error en el procedimiento '/tarea/updateTipo'!", null, err); 
-                    }); 
-                }).catch(function(err) { 
-                    vm.procesando = false; 
-                    setMessage(false, "¡Se produjo un error en el procedimiento '/tarea/updateTipo'!", null, err); 
-                }); 
-            }).catch(function(err) { 
-                vm.procesando = false; 
-                setMessage(false, "¡Se produjo un error en el procedimiento '/tarea/updateTipo'!", null, err); 
-            }); 
-        }; 
+
 
         /**
         * @method :: onBtnTareaCrearClick 
@@ -792,130 +1133,9 @@
             }); 
         }; 
 
-        /**
-        * @method :: onKanbanBoardUpdateColumn 
-        * @description :: Función para actualizar una tarea en el tablero Kanban 
-        * @param :: {integer} column, el índice de la columna original (tipo de tarea original)
-        * @param :: {integer} newColumn, el índice de la columna nueva (tipo de tarea) 
-        * @param :: {integer} newIndex, el índice donde se posiciona la tarea 
-        * @param :: {integer} newCell, almacena si el usuario cambió de columna y no especificó en que celda (índice) colocar la tarea 
-        * @param :: {Object} tarea, objeto que contiene la información de la tarea modificada 
-        */
-        function onKanbanBoardUpdateColumn(column, newColumn, newIndex, newCell, tarea) { 
-            // Iniciar las variables auxiliares 
-            var listaAuxOrigen = []; 
-            var listaAuxDestino = []; 
-            var i = 1; 
 
-            // Almacenar en una variable auxiliar la columna original de la tarea 
-            if(column === 1)
-                listaAuxOrigen = vm.miKanbanColumn1; 
-            else if(column === 2)
-                listaAuxOrigen = vm.miKanbanColumn2; 
-            else if(column === 3)
-                listaAuxOrigen = vm.miKanbanColumn3; 
-            else if(column === 4)
-                listaAuxOrigen = vm.miKanbanColumn4; 
 
-            // Modificar los índices de todas las tareas en la columna original 
-            $.each(listaAuxOrigen, function(key, value) { 
-                if(value.id !== tarea.id) { 
-                    value.index = i++; 
-                    listaAuxDestino.push(value); 
-                } 
-            }); 
 
-            // Actualizar la columna original 
-            if(column === 1)
-                vm.miKanbanColumn1 = listaAuxDestino; 
-            else if(column === 2)
-                vm.miKanbanColumn2 = listaAuxDestino; 
-            else if(column === 3)
-                vm.miKanbanColumn3 = listaAuxDestino; 
-            else if(column === 4)
-                vm.miKanbanColumn4 = listaAuxDestino; 
-
-            // Iniciar las variables auxiliares 
-            listaAuxOrigen = []; 
-            listaAuxDestino = []; 
-            i = 1; 
-
-            // Almacenar en una variable auxiliar la columna destino de la tarea 
-            if(newColumn === 1)
-                listaAuxOrigen = vm.miKanbanColumn1; 
-            else if(newColumn === 2)
-                listaAuxOrigen = vm.miKanbanColumn2; 
-            else if(newColumn === 3)
-                listaAuxOrigen = vm.miKanbanColumn3; 
-            else if(newColumn === 4)
-                listaAuxOrigen = vm.miKanbanColumn4; 
-
-            // Modificar los índices de todas las tareas en la columna destino (incluida la nueva tarea) 
-            $.each(listaAuxOrigen, function(key, value) { 
-                if(value.index === newIndex) { 
-                    listaAuxDestino.push(tarea); 
-                    i++; 
-                    newIndex = -1; 
-                } 
-
-                value.index = i++; 
-                listaAuxDestino.push(value); 
-            }); 
-
-            // Si la nueva tarea se encuentra en la última posición de la nueva columna destino 
-            if(newIndex > 0) 
-                listaAuxDestino.push(tarea); 
-
-            // Actualizar la columna destino 
-            if(newColumn === 1) 
-                vm.miKanbanColumn1 = listaAuxDestino; 
-            else if(newColumn === 2) 
-                vm.miKanbanColumn2 = listaAuxDestino; 
-            else if(newColumn === 3) 
-                vm.miKanbanColumn3 = listaAuxDestino; 
-            else if(newColumn === 4) 
-                vm.miKanbanColumn4 = listaAuxDestino; 
-
-            setMensaje("Tarea actualizada"); 
-        }; 
-
-        /**
-        * @method :: onMensajeAnclarClick 
-        * @description :: Establecer el 'nodo anclado' 
-        * @param :: {integer} nodoId, identificador del nodo 
-        **/
-        function onMensajeAnclarClick(nodoId) { 
-            // Iniciar el mensaje navegar 
-            vm.miMensajeAncladoNavegar = { }; 
-            vm.onBtnMensajeCancelarClick(); 
-
-            // Si se debe anclar, Buscar en la lista de mensajes el mensaje anclado 
-            // a través del id del nodo que identifica al mensaje, caso contrario 
-            // iniciar el mensaje anclado 
-            if($anclar) { 
-
-                $.each(vm.miMensajeLista, function(key, value) { 
-                    if(parseInt(value.nodoId) === nodoId) { 
-                        vm.miMensajeAnclado = value; 
-                        vm.miMensajeAncladoName = $sce.trustAsHtml(vm.miMensajeAnclado.name); 
-                        /*$(document).ready(function() { 
-                            $(".marcar").on("click", function() { 
-                                vm.onMensajeMarcaClick($(this).attr("data-marca"), parseInt($(this).attr("data-nid"))); 
-                            }); 
-                        }); */
-                        return false; 
-                    } 
-                }); 
-                
-                // Verificar si el mensaje anclado tiene hijos
-                if(vm.miMensajeAnclado.nodoId <= 1 && $("[data-nodo-parent-id=" + vm.miMensajeAnclado.nodoId + "]").length > 0) 
-                    vm.iniciarMensajeNavegar(true, false, "Derecha"); 
-            } else 
-                vm.miMensajeAnclado = { };
-
-            // En el caso de anclar el mensaje, dibujar el ancla 
-            mapaDialogoDibujarAncla($anclar, vm.miMensajeAnclado); 
-        };
 
 
 
@@ -934,8 +1154,6 @@
                 }); 
             }); 
 
-            console.log(list); 
-
             s.select2({ 
                 cache: false, 
                 data: list, 
@@ -945,143 +1163,10 @@
             });  
         }; 
 
-        /**
-        * @method :: onSocketMensajeNuevo 
-        * @description :: Actualizar el mensaje enviado desde el socket 
-        * @param :: {Object} data, información acerca del proceso, contiene además el nuevo mensaje  
-        **/
-        function onSocketMensajeNuevo(data) { 
-            // Obtener los parámetros 
-            var nuevoMensaje = data.nuevoMensaje; 
-            var revisarSession = data.revisarSession; 
-            var actualizarNodos = data.actualizarNodos; 
 
-            // Si un nuevo usuario creo el mensaje, actualizar mi sesión
-            if(vm.miUser.id !== nuevoMensaje.usuario.id) 
-                vm.miSessionId = nuevoMensaje.sessionId + 1; 
+        
 
-            var dibujado = false; 
 
-            // Verificar cada mensaje 
-            $.each(vm.miMensajeLista, function(key, value) { 
-
-                // Si encuentra el mensaje padre 
-                // actualizar el número de hijos 
-                if(value.id === nuevoMensaje.parent) { 
-                    value.numero_hijos++; 
-
-                    if(!revisarSession)
-                        return false; 
-                }
-
-                // Si hay que revisar los nodos 
-                if(revisarSession && actualizarNodos.length > 0) { 
-
-                    $.each(actualizarNodos, function(k, v) { 
-                        if(v.id === value.id) { 
-                            value.nodoNivel = v.nodoNivel; 
-                        } else if(v.id === value.parent) {
-                            value.nodoPadreNivel = v.nodoNivel; 
-                        } 
-
-                        if(!dibujado) 
-                            mapaDialogoModificarNodo(v); 
-                    }); 
-
-                    dibujado = true; 
-                } 
-            }); 
-
-            nuevoMensaje["cssvalue"] = !vm.miMensajeIntercalar; 
-            vm.miMensajeIntercalar = !vm.miMensajeIntercalar; 
-            vm.miMensajeLista.push(nuevoMensaje); 
-            mapaDialogoAgregarNodo(nuevoMensaje); 
-            vm.iniciarMensajeAnclado(); 
-
-            if($anclar) { 
-                if(vm.miMensajeAnclado.nodoId === nuevoMensaje.nodoPadreId) { 
-                    vm.miMensajeAncladoNavegar = nuevoMensaje; 
-                    //vm.miMensajeAncladoNavegarName = $sce.trustAsHtml(nuevoMensaje.name); 
-
-                    var n = $("[data-circle-navigate=ok]"); 
-                    n.attr("stroke", ""); 
-                    n.attr("stroke-width", ""); 
-                    n.attr("data-circle-navigate", ""); 
-                    n = $("[data-line-navigate=ok]"); 
-                    n.attr("stroke", "#797979"); 
-                    n.attr("stroke-width", "1"); 
-                    n.attr("data-line-navigate", ""); 
-                    n = $("[data-nodo-id=" + vm.miMensajeAncladoNavegar.nodoId + "]"); 
-                    n.attr("stroke", "#18ffff"); 
-                    n.attr("stroke-width", "5"); 
-                    n.attr("data-circle-navigate", "ok"); 
-                    vm.iniciarLineaDialogo(vm.miMensajeAncladoNavegar.nodoId); 
-                } 
-            }
-
-            vm.iniciarTiempoDialogo(); 
-
-            // Actualizar el controlador
-            $scope.$apply();
-            setMessageToast("Nuevo mensaje en el diálogo"); 
-        }; 
-
-        /**
-        * @method :: onSocketTareaActualizar 
-        * @description :: Recibe la tarea actualizada en el Kanban 
-        **/
-        function onSocketTareaActualizar(data) { 
-            // Obtener las tareas del tablero Kanban
-            $http({ 
-                url: "/tarea/getTareas/", 
-                method: "GET", 
-                params: { id: data.obj.project_id } 
-            })
-            .then(function(resultado) { 
-                // Si existe error
-                if(resultado.data.tarea === "false") 
-                    return;
-
-                // Almacenar la lista de tareas 
-                vm.miKanbanListaTareas = resultado.data.tarea; 
-
-                // Si es usuario es distinto al que modificó la tarea 
-                if(vm.miUsuario.id !== data.usuarioId) { 
-                    // Iniciar las columnas 
-                    vm.miKanbanColumn1 = []; 
-                    vm.miKanbanColumn2 = []; 
-                    vm.miKanbanColumn3 = []; 
-                    vm.miKanbanColumn4 = []; 
-
-                    // Añadir cada tarea a la columna correspondiente 
-                    $.each(vm.miKanbanListaTareas, function(key, value) { 
-                        if(value.tipo === vm.miKanbanTipoTarea[0]) // Nuevas 
-                            vm.miKanbanColumn1.push(value); 
-                        else if(value.tipo === vm.miKanbanTipoTarea[1]) // Haciendo 
-                            vm.miKanbanColumn2.push(value); 
-                        else if(value.tipo === vm.miKanbanTipoTarea[2]) // En pruebas 
-                            vm.miKanbanColumn3.push(value); 
-                        else if(value.tipo === vm.miKanbanTipoTarea[3]) // Terminada 
-                            vm.miKanbanColumn4.push(value); 
-                    }); 
-
-                    setMensaje("Tarea actualizada"); 
-                } else { 
-                    var column = 0, newColumn = 0;  
-
-                    // Verificar la columna origen y destino (tipo de tarea origen y destino) 
-                    for(var i = 0; i < vm.miKanbanTipoTarea.length; i++) {
-                        if(vm.miKanbanTipoTarea[i] === data.tipoOriginal) 
-                            column = i + 1; 
-                        if(vm.miKanbanTipoTarea[i] === data.nuevoTipo) 
-                            newColumn = i + 1; 
-                    }
-
-                    // Actualizar el tablero kanban en el usuario que envió la tarea 
-                    vm.onKanbanBoardUpdateColumn(column, newColumn, data.newIndex, data.newCell, data.obj); 
-                }
-            }); 
-        }; 
 
         /**
         * @method :: onSocketTareaNueva 
@@ -1103,35 +1188,7 @@
             //setMessage("Se ha creado una nueva tarea"); 
         }; 
 
-        /**
-        * @method :: setMessage 
-        * @description :: Despliega un mensaje  
-        * @param :: {boolean} proc, procedimiento correcto o incorrecto 
-        * @param :: {string} msg, contenido del mensaje  
-        * @param :: {string} state, estado del mensaje 
-        * @param :: {Object} err, error del proceso 
-        **/
-        function setMessage(proc, msg, state, err) { 
-            swal(proc ? "¡Datos registrados!" : "¡No se completó la operación!", msg, state ? state : (proc ? "success" : "error")); 
 
-            if (err !== undefined) { 
-                console.debug("Error: " + msg); 
-                console.debug(err); 
-                console.log(err); 
-            } 
-        }; 
-
-        function setMessageToast(message) {
-            vm.messageToast = message; 
-            // Get the snackbar DIV
-            var x = document.getElementById("snackbar"); 
-        
-            // Add the "show" class to DIV
-            x.className = "show";
-        
-            // After 3 seconds, remove the show class from DIV
-            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-        }
 
 
         /**

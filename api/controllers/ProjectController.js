@@ -164,9 +164,9 @@ module.exports = {
 					"<script type='text/javascript' src='/js/dependencies/d3/4.8.0/js/d3.min.js'></script>" + 
 					"<script type='text/javascript' src='/js/dependencies/jquery-contextmenu/2.4.1/jquery.contextMenu.js'></script>" + 
 					"<script type='text/javascript' src='/js/dependencies/jquery-splitter/0.24.0/js/jquery.splitter.js'></script>" + 
-					"<script type='text/javascript' src='/js/src/Project/IndexController.jquery.js'></script>" + 
 					"<script type='text/javascript' src='/js/src/Project/IndexController.d3.js'></script>" + 
 					"<script type='text/javascript' src='/js/src/Project/IndexController.kanban.js'></script>" + 
+					"<script type='text/javascript' src='/js/src/Project/IndexController.jquery.js'></script>" + 
 					"<script type='text/javascript' src='/js/src/Project/IndexController.js'></script>" + 
 					"<script type='text/javascript' src='/js/dependencies/pickadate.js-master/3.5.6/picker.js'></script>" + 
 					"<script type='text/javascript' src='/js/dependencies/pickadate.js-master/3.5.6/picker.date.js'></script>" + 
