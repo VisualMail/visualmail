@@ -10,6 +10,11 @@
     autoUpdatedAt: true,
     attributes: { 
 
+        // 'pk' del mensaje al que esta asociado
+        children: { 
+            collection: 'Mensaje'
+        },
+
         // Texto del mensaje 
         name: { 
             type: "string" 
@@ -18,6 +23,56 @@
         // Texto plano 
         namePlain: { 
             type: "string"
+        }, 
+
+        // 'nodoId' identificador del nodo que representa al mensaje en el mapa del diálogo 
+        nodoId: {
+            type: "integer"
+        }, 
+
+        // 'nodoNivel' nivel en el que está posicionado el nodo en el mapa del diálogo   
+        nodoNivel: {
+            type: "integer"
+        }, 
+
+        // 'nodoPadreId' identificador del nodo padre del nodo que representa al mensaje en el mapa del diálogo 
+        nodoPadreId: {
+            type: "integer"
+        },
+
+        // 'nodoPadreNivel' nivel en el que está posicionado el nodo padre en el mapa del diálogo  
+        nodoPadreNivel: {
+            type: "integer"
+        }, 
+
+        // 'nodoPadreSessionId' el número de la sesión en la que se encuentra el nodo padre 
+        nodoPadreSessionId: {
+            type: "integer"
+        }, 
+
+        // Número de hijos del mensaje
+        numero_hijos: {
+            type: "integer"
+        },
+
+        // 'id' del mensaje padre
+        parent: { 
+            type: "string"
+        },
+
+        // Guardar en un arreglo la posición que le corresponde al mensaje de acuerdo al diálogo ('dialog')
+        position: { 
+            type: "array"
+        }, 
+
+        // 'id' del proyecto al cual está inmerso
+        project_id: {
+            type: "string"
+        },
+
+        // 'sessionId' el número de la sesión en la que se encuentra el nodo  
+        sessionId: {
+            type: "integer"
         }, 
 
         // Si el mensaje responde a una marca de un mensaje 
@@ -30,44 +85,9 @@
             type: "string"
         }, 
 
-        // Representa el tipo del mensaje: duda, compromiso, acuerdo, etc 
-        tipo: { 
-            type: "string" 
-        }, 
-
-        // Guardar en un arreglo la posición que le corresponde al mensaje de acuerdo al diálogo ('dialog')
-        position: { 
-            type: "array"
-        }, 
-
-        // 'id' del proyecto al cual está inmerso
-        project_id: {
-            type: "string"
-        },
-
-        // Número de hijos del mensaje
-        numero_hijos: {
-            type: "integer"
-        },
-
         // Valor booleano si es raíz de los mensajes (todos false menos el primero)
         root: {
             type: "boolean"
-        },
-    
-        // 'id' del mensaje padre
-        parent: { 
-            type: "string"
-        },
-
-        // 'pk' del mensaje al que esta asociado
-        children: { 
-            collection: 'Mensaje'
-        },
-
-        // 'pk' del usuario que realizó el mensaje
-        usuario: {
-            model: 'User'
         },
 
         // 'pk' de la tarea asociada al mensaje
@@ -76,35 +96,15 @@
             via: 'mensaje'
         },
 
-        // 'nodoId' identificador del nodo que representa al mensaje en el mapa del diálogo 
-        nodoId: {
-            type: "integer"
+        // Representa el tipo del mensaje: duda, compromiso, acuerdo, etc 
+        tipo: { 
+            type: "string" 
         }, 
 
-        // 'nodoPadreId' identificador del nodo padre del nodo que representa al mensaje en el mapa del diálogo 
-        nodoPadreId: {
-            type: "integer"
+        // 'pk' del usuario que realizó el mensaje
+        usuario: {
+            model: 'User'
         },
-
-        // 'sessionId' el número de la sesión en la que se encuentra el nodo  
-        sessionId: {
-            type: "integer"
-        }, 
-
-        // 'nodoNivel' nivel en el que está posicionado el nodo en el mapa del diálogo   
-        nodoNivel: {
-            type: "integer"
-        }, 
-
-        // 'nodoPadreNivel' nivel en el que está posicionado el nodo padre en el mapa del diálogo  
-        nodoPadreNivel: {
-            type: "integer"
-        }, 
-
-        // 'nodoPadreSessionId' el número de la sesión en la que se encuentra el nodo padre 
-        nodoPadreSessionId: {
-            type: "integer"
-        }
     },
 
     /**

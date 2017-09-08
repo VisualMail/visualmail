@@ -13,7 +13,10 @@
         vm.csrfToken = null; 
         vm.messageToast = ""; 
         vm.mensajeRespuesta = ""; 
+        vm.mensajeRespuestaMarca = ""; 
+        vm.mensajeRespuestaSelection = []; 
         vm.mensajeRespuestaTipo = ""; 
+        vm.mensajeRespuestaTipoId = ""; 
         vm.projectUserId = ""; 
         vm.projectName = ""; 
         vm.projectDateEnd = ""; 
@@ -296,7 +299,7 @@
         * @description :: Iniciar el 'nodo navegar' 
         * @param :: {boolean} iniciar, variable para verificar si se inicia el dibujo del mensaje navegar  
         **/
-        function iniciarMensajeNavegar(iniciar, actualizar, accion) {            
+        function iniciarMensajeNavegar(iniciar, actualizar, accion) { 
             var n; 
 
             // Si se deben iniciar los controles (nodo y línea)
@@ -504,7 +507,10 @@
         function onBtnMensajeCancelarClick() { 
             vm.mensajeResponder = false; 
             vm.mensajeRespuesta = ""; 
+            vm.mensajeRespuestaMarca = ""; 
+            vm.mensajeRespuestaSelection = []; 
             vm.mensajeRespuestaTipo = ""; 
+            vm.mensajeRespuestaTipoId = ""; 
             vm.formMensaje.mensajeRespuesta.$pristine = true; 
         }; 
 
@@ -553,11 +559,13 @@
                     parent: "", // El padre por defecto = vacio 
                     position: mensajePosicion, 
                     project_id: vm.miProjectId, 
+                    respuestaMarca: vm.mensajeRespuestaMarca, 
+                    respuestaMarcaId: vm.mensajeRespuestaTipoId, 
                     root: false, 
                     session: 0, 
                     sessionId: vm.miSessionId, 
                     tipo: vm.mensajeRespuestaTipo, 
-                    usuario: vm.miUser.id 
+                    mensajePadreId: vm.miMensajeAnclado.id 
                 } 
             }).then(function(res) { 
                 var d = res.data;
@@ -567,49 +575,31 @@
                     setMessage(d.proc, d.msg, "warning"); 
                     return; 
                 } 
-                
+
                 var mensajeTemporal = d.mensaje; 
                 mensajeTemporal["usuario"] = vm.miUser; 
                 
-                // Se manda el POST para unir el mensaje nuevo con el anterior 
+                // Ahora se agrega el mensaje creado en el dialogo 
+                // Manda el POST para añadirlo al dialogo 
                 $http({ 
                     method: "POST", 
-                    url: "/mensaje/unir", 
+                    url: "/dialogo/update_dialogo", 
                     headers: { 
                         "Content-Type": "application/json", 
                         "X-CSRF-TOKEN": vm.csrfToken 
-                    }, 
-                    data: { 
-                        id: vm.miMensajeAnclado.id, 
-                        idunion: mensajeTemporal.id 
+                    }, data: { 
+                        id: vm.miProject.dialogos[0].id, 
+                        mensaje: mensajeTemporal 
                     } 
-                }).then(function(datamensaje) {
-                    // Ahora se agrega el mensaje creado en el dialogo 
-                    // Manda el POST para añadirlo al dialogo 
-                    $http({ 
-                        method: "POST", 
-                        url: "/dialogo/update_dialogo", 
-                        headers: { 
-                            "Content-Type": "application/json", 
-                            "X-CSRF-TOKEN": vm.csrfToken 
-                        }, 
-                        data: { 
-                            id: vm.miProject.dialogos[0].id, 
-                            mensaje: mensajeTemporal
-                        } 
-                    }).then(function(datadialogoupdate) { 
-                        vm.procesando = false; 
-                    }).catch(function(err) { 
-                        vm.procesando = false; 
-                        setMessage(false, "¡Se produjo un error en el procedimiento '/tarea/updateTipo'!", null, err); 
-                    }); 
+                }).then(function(datadialogoupdate) { 
+                    vm.procesando = false; 
                 }).catch(function(err) { 
                     vm.procesando = false; 
                     setMessage(false, "¡Se produjo un error en el procedimiento '/tarea/updateTipo'!", null, err); 
                 }); 
             }).catch(function(err) { 
                 vm.procesando = false; 
-                setMessage(false, "¡Se produjo un error en el procedimiento '/tarea/updateTipo'!", null, err); 
+                setMessage(false, "¡Se produjo un error en el procedimiento '/mensaje/create'!", null, err); 
             }); 
         }; 
 
@@ -729,7 +719,8 @@
                 }); 
                 
                 // Verificar si el mensaje anclado tiene hijos
-                if(vm.miMensajeAnclado.nodoId <= 1 && $("[data-nodo-parent-id=" + vm.miMensajeAnclado.nodoId + "]").length > 0) 
+                //console.log(vm.miMensajeAnclado.nodoId, $("[data-nodo-parent-id=" + vm.miMensajeAnclado.nodoId + "]").length); 
+                if(vm.miMensajeAnclado.nodoId >= 1 && $("[data-nodo-parent-id=" + vm.miMensajeAnclado.nodoId + "]").length > 0) 
                     vm.iniciarMensajeNavegar(true, false, "Derecha"); 
             } else 
                 vm.miMensajeAnclado = { };
@@ -746,6 +737,62 @@
         * @param :: {Object} mensaje, datos del mensaje que se responde 
         **/
         function onMensajeMarcar(key, options, mensaje) { 
+            // Obtener el texto seleccionado 
+            var s = window.getSelection(); 
+
+            // Si el texto está vacío retornar 
+            if(s.toString() === "") 
+                return; 
+
+            // Iniciar la respuesta y la marca seleccionada 
+            vm.mensajeRespuesta = ""; 
+            vm.mensajeRespuestaMarca = $.trim(s.toString()); 
+
+            // Obtener el elemento del diálogo 
+            switch(key) { 
+                case "citar": 
+                    vm.mensajeRespuestaTipo = "Citar"; 
+                    break; 
+                case "ci": 
+                    vm.mensajeRespuestaTipo = "Compromiso individual"; 
+                    break; 
+                case "ac": 
+                    vm.mensajeRespuestaTipo = "Acuerdo de coordinación"; 
+                    break; 
+                case "nc": 
+                    vm.mensajeRespuestaTipo = "Norma común"; 
+                    break; 
+                case "db": 
+                    vm.mensajeRespuestaTipo = "Desacuerdo o brecha"; 
+                    break; 
+                case "ta": 
+                    vm.mensajeRespuestaTipo = "Tarea"; 
+                    break; 
+                case "da": 
+                    vm.mensajeRespuestaTipo = "Duda o alternativa"; 
+                    break; 
+                default: 
+                    vm.mensajeRespuestaTipo = ""; 
+                    break; 
+            }
+
+            vm.mensajeRespuestaTipoId = key; 
+
+            // Si es una tarea, retornar 
+            if(key === "ta")
+                return; 
+
+            // Guardar la selección 
+            vm.mensajeRespuestaSelection = window.getSelection().getRangeAt(0); 
+            vm.mensajeRespuestaSelection = [ 
+                [vm.mensajeRespuestaSelection.startContainer, vm.mensajeRespuestaSelection.startOffset], 
+                [vm.mensajeRespuestaSelection.endContainer, vm.mensajeRespuestaSelection.endOffset] 
+            ]; 
+
+            vm.mensajeResponder = true; 
+
+
+
             console.log(key, options, mensaje); 
 
         }; 

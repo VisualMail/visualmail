@@ -119,7 +119,6 @@
                         session: 0, // El valor de sesion inicial 
                         sessionId: 0, 
                         tipo: "Mensaje Inicial", // El tipo del mensaje inicial ya que no es un elemento dialogico 
-                        usuario: vm.miUser.id, //el id del usuario 
                     }
                 }).then(function(resMensaje) { 
                     d = resMensaje.data; 

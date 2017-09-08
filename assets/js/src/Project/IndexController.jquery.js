@@ -141,10 +141,9 @@ function onAnclar(nodoId, scope, responder) {
     
     scope.$apply(function () { 
         scope.vm.onMensajeAnclarClick(nodoId); 
+        scope.vm.iniciarMensajeAnclado(); 
         scope.vm.mensajeResponder = responder; 
     }); 
-    
-    scope.vm.iniciarMensajeAnclado(); 
 }; 
 
 function onMensajeAnclarResponder(nodoId, scope, responder) { 

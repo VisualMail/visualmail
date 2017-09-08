@@ -15,7 +15,7 @@ module.exports = {
 	getAllProjectId: function(req, res, next) {
 		// Llamar a la función de Sails para encontrar todos los mensajes segun la 'id' del proyecto 
 		// más los usuarios asociados al mensaje
-		Mensaje.find({ project_id: req.param("id") }).populate("usuario").then(function(result) { 
+		Mensaje.find({ project_id: req.param("id") }).populate("usuario").sort("nodoId").then(function(result) { 
 			// Si hay error se actualiza la variable flash y se entrega el json con formato de manejo del error
 			if(!result) { 
 				return res.json({ 
@@ -60,7 +60,7 @@ module.exports = {
 			project_id: req.param("project_id"), 
 			respuestaMarca: req.param("respuestaMarca"), 
 			respuestaMarcaId: req.param("respuestaMarcaId"), 
-			root: false, 
+			root: req.param("root"), 
 			session: req.param("session"), 
 			sessionId: req.param("sessionId"), 
 			tipo: req.param("tipo"), 
@@ -68,19 +68,47 @@ module.exports = {
 		}; 
 
         // Crear el mensaje
-		Mensaje.create(msj).then(function(result) { 
+		Mensaje.create(msj).then(function(resultCreate) { 
 			// Verificar si existe un error
-			if(!result) { 
+			if(!resultCreate) { 
 				return res.json({ 
                     proc: false, 
-                    msg: "¡Se produjo un error con el objeto 'mensaje'!" 
+                    msg: "¡Se produjo un error con el objeto 'mensaje' (Mensaje.create)!" 
                 }); 
-            } 
+			} 
+			
+			// Si no es el mensaje inicial 
+			// unir el mensaje con sus hijos 
+			if(!msj.root) { 
+				// Buscar el mensaje padre para unir mensaje 
+				var mensajePadreId = req.param("mensajePadreId"); 
 
-			var mensajeUser = result;
+				Mensaje.findOne(mensajePadreId).populate("children").then(function(resultPadre) { 
+					// Si hay error retornar 
+					if(!resultPadre) { 
+						return res.json({ 
+							proc: false, 
+							msg: "¡Se produjo un error en el objeto 'mensaje' (Mensaje.findOne)!" 
+						}); 
+					} 
+
+					// Se actualiza el numero de hijos 
+					resultPadre.children.add(resultCreate.id);	
+					resultPadre.numero_hijos += 1; 
+					resultPadre.save(); 
+				}).catch(function(err) { 
+					sails.log("Se produjo un error en 'mensaje/create/Mensaje.findOne': ", err); 
+					return res.json({ 
+						proc: false, 
+						msg: "¡Se produjo un error en la conexión con la base de datos!" 
+					}); 
+				}); 
+			}
 
 			// Enviar a todos los usuarios del proyecto
-			User.findOne(result.usuario).then(function(resultUser) { 
+			var mensajeUser = resultCreate;
+			
+			User.findOne(req.session.User.id).then(function(resultUser) { 
 				// Verificar si existe un error
 				if(!resultUser) { 
 					return res.json({ 
@@ -101,7 +129,7 @@ module.exports = {
 				return res.json({ 
 					proc: true, 
 					msg: "¡Mensaje creado!", 
-					mensaje: result 
+					mensaje: resultCreate 
 				}); 
 			}).catch(function(err) { 
 				sails.log("Se produjo un error en 'mensaje/create/User.findOne': ", err); 
@@ -119,42 +147,7 @@ module.exports = {
         }); 
 	}, 
 
-	/** 
-	* @method :: unir (POST) 
-	* @description :: Hace la unión entre mensajes en la parte de los modelos 
-	* @param :: {Object} req, request element de sails 
-	* @param :: {Objetct} res, de la vista ejs del servidor 
-	* @param :: {Objetct} next, para continuar en caso de error 
-	**/ 
-	unir: function(req, res, next) { 
-		// Unir mensaje 
-		Mensaje.findOne(req.param("id")).populate("children").then(function(mensaje) { 
-			// Si hay error retornar 
-			if(!mensaje) { 
-				return res.json({ 
-					proc: false, 
-					msg: "¡Se produjo un error en el objeto 'mensaje'!" 
-				}); 
-			} 
 
-			// Se actualiza el numero de hijos 
-			mensaje.children.add(req.param("idunion"));	
-			mensaje.numero_hijos += 1; 
-			mensaje.save();
-
-			return res.json({ 
-				proc: true, 
-				msg: "", 
-				mensaje: mensaje 
-			}); 
-		}).catch(function(err) { 
-            sails.log("Se produjo un error en 'mensaje/unir/Mensaje.findOne': ", err); 
-			return res.json({ 
-				proc: false, 
-				msg: "¡Se produjo un error en la conexión con la base de datos!" 
-            }); 
-        }); 
-	},
 
 
 
@@ -562,4 +555,40 @@ module.exports = {
 		}); 
 
 	}, 
+	/** 
+	* @method :: unir (POST) 
+	* @description :: Hace la unión entre mensajes en la parte de los modelos 
+	* @param :: {Object} req, request element de sails 
+	* @param :: {Objetct} res, de la vista ejs del servidor 
+	* @param :: {Objetct} next, para continuar en caso de error 
+	**/ 
+	unir: function(req, res, next) { 
+		// Unir mensaje 
+		Mensaje.findOne(req.param("id")).populate("children").then(function(mensaje) { 
+			// Si hay error retornar 
+			if(!mensaje) { 
+				return res.json({ 
+					proc: false, 
+					msg: "¡Se produjo un error en el objeto 'mensaje'!" 
+				}); 
+			} 
+
+			// Se actualiza el numero de hijos 
+			mensaje.children.add(req.param("idunion"));	
+			mensaje.numero_hijos += 1; 
+			mensaje.save();
+
+			return res.json({ 
+				proc: true, 
+				msg: "", 
+				mensaje: mensaje 
+			}); 
+		}).catch(function(err) { 
+            sails.log("Se produjo un error en 'mensaje/unir/Mensaje.findOne': ", err); 
+			return res.json({ 
+				proc: false, 
+				msg: "¡Se produjo un error en la conexión con la base de datos!" 
+            }); 
+        }); 
+	},
 };

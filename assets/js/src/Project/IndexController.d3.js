@@ -90,7 +90,8 @@ function mapaDialogoDibujar(nodoMensaje) {
 			cx: circleWidth + (v.sessionId * 100), 
 			cy: y2, 
 			name: v.namePlain, 
-			tipo: v.tipo 
+			tipo: v.tipo, 
+			respuestaMarcaId: v.respuestaMarcaId 
 		});
 	}); 
 
@@ -149,7 +150,8 @@ function mapaDialogoAgregarNodo(mensaje) {
 		cx: circleWidth + (mensaje.sessionId * 100), 
 		cy: y2, 
 		name: mensaje.namePlain, 
-		tipo: mensaje.tipo 
+		tipo: mensaje.tipo, 
+		respuestaMarcaId: mensaje.respuestaMarcaId 
 	}; 
 
 	// Dibular la línea que interconecta al nuevo nodo con el padre 
@@ -264,15 +266,15 @@ function mapaDialogoDibujarNodo(svgMapa, data) {
 	if(data.tipo !== "") { 
 		var imagenTipo = ""; 
 
-		if($.trim(data.tipo) === "Duda o Alternativa") 
+		if($.trim(data.respuestaMarcaId) === "da") 
 			imagenTipo = "da-small.png"; 
-		else if($.trim(data.tipo) === "Normas comunes") 
+		else if($.trim(data.respuestaMarcaId) === "nc") 
 			imagenTipo = "nc-small.png"; 
-		else if($.trim(data.tipo) === "Compromiso individual") 
+		else if($.trim(data.respuestaMarcaId) === "ci") 
 			imagenTipo = "ci-small.png"; 
-		else if($.trim(data.tipo) === "Acuerdos de Coordinación") 
+		else if($.trim(data.respuestaMarcaId) === "ac") 
 			imagenTipo = "ac-small.png"; 
-		else if($.trim(data.tipo) === "Desacuerdo o Brecha") 
+		else if($.trim(data.respuestaMarcaId) === "db") 
 			imagenTipo = "db-small.png"; 
 		else 
 			return; 
