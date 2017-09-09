@@ -81,9 +81,7 @@ module.exports = {
 			// unir el mensaje con sus hijos 
 			if(!msj.root) { 
 				// Buscar el mensaje padre para unir mensaje 
-				var mensajePadreId = req.param("mensajePadreId"); 
-
-				Mensaje.findOne(mensajePadreId).populate("children").then(function(resultPadre) { 
+				Mensaje.findOne(msj.parent).populate("children").then(function(resultPadre) { 
 					// Si hay error retornar 
 					if(!resultPadre) { 
 						return res.json({ 

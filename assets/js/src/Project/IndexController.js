@@ -556,7 +556,7 @@
                     nodoPadreNivel: vm.miMensajeAnclado.nodoNivel, 
                     nodoPadreSessionId: vm.miMensajeAnclado.sessionId, 
                     numero_hijos: 0, 
-                    parent: "", // El padre por defecto = vacio 
+                    parent: vm.miMensajeAnclado.id, 
                     position: mensajePosicion, 
                     project_id: vm.miProjectId, 
                     respuestaMarca: vm.mensajeRespuestaMarca, 
@@ -564,8 +564,7 @@
                     root: false, 
                     session: 0, 
                     sessionId: vm.miSessionId, 
-                    tipo: vm.mensajeRespuestaTipo, 
-                    mensajePadreId: vm.miMensajeAnclado.id 
+                    tipo: vm.mensajeRespuestaTipo 
                 } 
             }).then(function(res) { 
                 var d = res.data;
@@ -790,11 +789,6 @@
             ]; 
 
             vm.mensajeResponder = true; 
-
-
-
-            console.log(key, options, mensaje); 
-
         }; 
 
         /**
