@@ -1,7 +1,4 @@
 <div id="IndexControllerMain" style="height: 100%; position: absolute; top: 60px; width: 100%;" ng-controller="IndexController as vm">
-
-    <div id="snackbar">{{ vm.messageToast }}</div>
-
     <div class="card text-center"> 
 
         <!-- Inicio Tab -->
@@ -31,14 +28,16 @@
                         <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"> 
                             <input class="form-control datepicker" type="text" />
                         </div>
+                    </div>
+                </div>
 
-                        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"> 
+                <div class="form-group"> 
+                        <div class="row"> 
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
                             <label for="projectUser">Sección padre</label> 
                             <div class="input-group">
-                                <div> 
-                                    <select class="js-example-basic-multiple" id="projectUser" multiple="multiple" name="projectUser" style="width: 100%"> 
+                                    <select id="projectUser" multiple="multiple" name="projectUser" style="width: 100%"> 
                                     </select> 
-                                </div> 
                                 <span class="input-group-btn">
                                     <button class="btn btn-primary" type="button" 
                                         ng-click="vm.onBtnProjectModalClick()">
@@ -237,7 +236,7 @@
                                 </span> 
                                 <input class="form-control" placeholder="Buscar..." type="text" ng-model="vm.miKanbanColumnSearch1" /> 
                                 <div class="input-group-btn"> 
-                                    <button class="btn btn-primary" type="button">Add</button> 
+                                    <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#modalTarea">Add</button> 
                                 </div> 
                             </div>  
                         </div>
@@ -458,4 +457,73 @@
         <!-- Fin Kanban -->
             
     </div>
+
+    <!-- Inicio mensaje Toast -->
+    <div id="snackbar">{{ vm.messageToast }}</div>
+    <!-- Fin mensaje Toast -->
+
+    <!-- Inicio modal Tarea -->
+    <div class="modal fade" id="modalTarea" tabindex="-1" role="dialog" aria-labelledby="modalTareaTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form name="vm.formTarea" novalidate="novalidate">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalTareaTitle">Nueva tarea</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <label for="tareaTitle"
+                                        ng-class="{ 
+                                            'col-form-label': vm.formTarea.tareaTitle.$pristine || vm.formTarea.tareaTitle.$valid, 
+                                            'col-form-label text-danger': !vm.formTarea.tareaTitle.$pristine && !vm.formTarea.tareaTitle.$valid }">Título (requerido)</label> 
+                                    <input id="tareaTitle" name="tareaTitle" placeholder="Mínimo 3 caracteres" type="text" 
+                                        ng-class="{ 
+                                        'form-control': vm.formTarea.tareaTitle.$pristine || vm.formTarea.tareaTitle.$valid, 
+                                        'form-control is-invalid': !vm.formTarea.tareaTitle.$pristine && !vm.formTarea.tareaTitle.$valid }" 
+                                        ng-maxlength="130" 
+                                        ng-minlength="3" 
+                                        ng-model="vm.tareaTitle" 
+                                        ng-required="true" /> 
+                                    <p class="text-danger" role="alert" ng-messages="!vm.formTarea.tareaTitle.$pristine && vm.formTarea.tareaTitle.$error"> 
+                                        <strong ng-message="minlength">Mínimo 3 caracteres</strong> 
+                                        <strong ng-message="maxlength">Nombre muy largo</strong> 
+                                        <strong ng-message="required">Requerido</strong> 
+                                    </p> 
+                                </div> 
+                            </div> 
+                        </div> 
+                        
+                        <div class="form-group"> 
+                            <div class="row"> 
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
+                                    <label for="tareaUser">Responsable</label> 
+                                    <select id="tareaUser" name="tareaUser" style="width: 100%"> 
+                                    </select> 
+                                </div> 
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" type="button" data-dismiss="modal"><span class="glyphicon glyphicon-remove-circle"></span> Cerrar</button>
+                        <button type="button"
+                            ng-class="{ 
+                                'btn btn-success': vm.formTarea.$valid, 
+                                'btn btn-default': !vm.formTarea.$valid }" 
+                            ng-click="vm.onBtnTareaGuardarClick()"
+                            ng-disabled="!vm.formTarea.$valid">
+                            <span class="glyphicon glyphicon-save"></span> Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Fin modal Tarea -->
 </div>

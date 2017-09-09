@@ -53,6 +53,7 @@
         vm.onBtnMensajeAncladoNavegarResponderClick = onBtnMensajeAncladoNavegarResponderClick; 
         vm.onBtnMensajeCancelarClick = onBtnMensajeCancelarClick; 
         vm.onBtnMensajeEnviarClick = onBtnMensajeEnviarClick; 
+        vm.onBtnTareaGuardarClick = onBtnTareaGuardarClick; 
         vm.onKanbanBoardUpdateColumn = onKanbanBoardUpdateColumn; 
         vm.onMensajeAnclarClick = onMensajeAnclarClick; 
         vm.onMensajeMarcar = onMensajeMarcar; 
@@ -65,6 +66,19 @@
         init(); 
 
         function init() { 
+            // Iniciar select2 de la lista de usuarios 'project' 
+            $("#projectUser").select2();
+			$("#projectUser").on("change", function() { 
+                var userId = $(this).val(); 
+				vm.projectUserId = userId !== null ? userId : "-1"; 
+            });
+
+            $("#tareaUser").select2();
+			$("#tareaUser").on("change", function() { 
+                var userId = $(this).val(); 
+				vm.tareaUser = userId !== null ? userId : "-1"; 
+            });
+
             $('.datepicker').pickadate()
             // Obtener el 'id' del proyecto 
             vm.miProjectId = getQueryString("id"); 
@@ -82,13 +96,6 @@
             }).catch(function(err) { 
                 setMessage(false, "¡Se produjo un error en el procedimiento '/session/getUser'!", null, err); 
             }); 
-            
-            // Iniciar select2 de la lista de usuarios 'project' 
-            $("#projectUser").select2();
-			$("#projectUser").on("change", function() { 
-                var userId = $(this).val(); 
-				vm.projectUserId = userId !== null ? userId : "-1"; 
-            });
             
             // Obtener los usuarios de VisualMail menos mi usuario 
             $http.get("/user/getAllEmail").then(function(resUsers) { 
@@ -138,6 +145,7 @@
                     } 
 
                     onProjectUserInit(); 
+                    onProjectUserParticipanteInit(); 
                     
                     /*$.each(vm.miListaParticipantes, function(key, value) { 
                         $("#selectFiltrarUsuario").append("<option value=\"" + value.id + "\" data-icon=\"" + value.imgurl + "\" class=\"left circle\">" + value.firstname + " " + value.lastname + "</option>"); 
@@ -599,6 +607,70 @@
             }).catch(function(err) { 
                 vm.procesando = false; 
                 setMessage(false, "¡Se produjo un error en el procedimiento '/mensaje/create'!", null, err); 
+            }); 
+        }; 
+
+        function onBtnTareaGuardarClick() { 
+            // Verificar si está procesando 
+            if(vm.procesando) 
+                return; 
+            
+            vm.procesando = true; 
+
+            // Para identificar el usuario seleccionado de Selectize 
+            for(var i = 0; i < vm.miUserListaParticipantes.length; i++) { 
+                if(vm.miUserListaParticipantes[i].id === vm.tareaUser) { 
+                    vm.miKanbanSelectedUsuarioTask = vm.miListaParticipantes[i]; 
+                    break; 
+                } 
+            } 
+
+            // Se eliminan valores que no se utilizan del usuario 
+            delete vm.miKanbanSelectedUsuarioTask.$$hashKey; 
+            delete vm.miKanbanSelectedUsuarioTask.$order; 
+            delete vm.miKanbanSelectedUsuarioTask.password; 
+
+            // Almacenar los datos que se enviarán al servidor 
+            var dataPost = { 
+                drag: true, 
+                tipo: "new", 
+                kanban: vm.miProyecto.kanban[0].id, 
+                usuario: vm.miKanbanSelectedUsuarioTask.id, 
+                title: vm.miKanbanTareaNueva, 
+                project_id: vm.miProyecto.id, 
+                associated: false, 
+                element: "", 
+                mensaje: null, 
+                selectedUsuarioTask: vm.miKanbanSelectedUsuarioTask
+            }; 
+
+            // Si es una tarea asociada al mensaje agregar los datos del mensaje 
+            if(conMensaje) { 
+                dataPost.associated = true; 
+                dataPost.element = vm.miMensajeSeleccionado.tipo; 
+                dataPost.mensaje = vm.miMensajeSeleccionado.id; 
+            } 
+
+            $http({ 
+                method: "POST", 
+                url: "/tarea/create", 
+                headers: { 
+                    "Content-Type": "application/json", 
+                    "X-CSRF-TOKEN": vm.csrfToken 
+                }, 
+                data: dataPost
+            }).then(function(res) { 
+                // Se reciben los valores del post 
+                vm.miKanbanTareaNueva = ""; 
+                vm.procesando = false; 
+
+                // Verificar si la respuesta desde el servidor es error 
+                if(!res.data.procedimiento) 
+                    setMensaje(res.data.mensaje); 
+            }).catch(function(err) { 
+                setMensaje("¡Se produjo un error!"); 
+                console.log(err); 
+                vm.procesando = false; 
             }); 
         }; 
 
@@ -1148,67 +1220,7 @@
         * @description :: Función para mandar POST y crear una tarea
         */
         function onBtnTareaCrearClick(conMensaje) { 
-            // Verificar si está procesando 
-            if(vm.procesando) 
-                return; 
-            
-            vm.procesando = true; 
 
-            // Para identificar el usuario seleccionado de Selectize 
-            for(var i = 0; i < vm.miListaParticipantes.length; i++) { 
-                if(vm.miListaParticipantes[i].id === vm.miKanbanSelectedTask) { 
-                    vm.miKanbanSelectedUsuarioTask = vm.miListaParticipantes[i]; 
-                    break; 
-                } 
-            } 
-
-            // Se eliminan valores que no se utilizan del usuario 
-            delete vm.miKanbanSelectedUsuarioTask.$$hashKey; 
-            delete vm.miKanbanSelectedUsuarioTask.$order; 
-            delete vm.miKanbanSelectedUsuarioTask.password; 
-
-            // Almacenar los datos que se enviarán al servidor 
-            var dataPost = { 
-                drag: true, 
-                tipo: "new", 
-                kanban: vm.miProyecto.kanban[0].id, 
-                usuario: vm.miKanbanSelectedUsuarioTask.id, 
-                title: vm.miKanbanTareaNueva, 
-                project_id: vm.miProyecto.id, 
-                associated: false, 
-                element: "", 
-                mensaje: null, 
-                selectedUsuarioTask: vm.miKanbanSelectedUsuarioTask
-            }; 
-
-            // Si es una tarea asociada al mensaje agregar los datos del mensaje 
-            if(conMensaje) { 
-                dataPost.associated = true; 
-                dataPost.element = vm.miMensajeSeleccionado.tipo; 
-                dataPost.mensaje = vm.miMensajeSeleccionado.id; 
-            } 
-
-            $http({ 
-                method: "POST", 
-                url: "/tarea/create", 
-                headers: { 
-                    "Content-Type": "application/json", 
-                    "X-CSRF-TOKEN": vm.csrfToken 
-                }, 
-                data: dataPost
-            }).then(function(res) { 
-                // Se reciben los valores del post 
-                vm.miKanbanTareaNueva = ""; 
-                vm.procesando = false; 
-
-                // Verificar si la respuesta desde el servidor es error 
-                if(!res.data.procedimiento) 
-                    setMensaje(res.data.mensaje); 
-            }).catch(function(err) { 
-                setMensaje("¡Se produjo un error!"); 
-                console.log(err); 
-                vm.procesando = false; 
-            }); 
         }; 
 
 
@@ -1228,16 +1240,40 @@
             $.each(vm.miUserLista, function(key, value) { 
                 list.push({ 
                     id: value.id, 
-                    text: value.firstname 
+                    text: value.firstname + ", " + value.email
                 }); 
             }); 
 
             s.select2({ 
                 cache: false, 
                 data: list, 
-                placeholder: "Seleccionar una sección", 
+                placeholder: "Seleccionar un usuario", 
                 allowClear: true, 
                 multiple: true, 
+            });  
+        }; 
+
+        function onProjectUserParticipanteInit() { 
+            var s = $("#tareaUser"); 
+            s.select2("data", null); 
+            s.html(""); 
+            var list = []; 
+            
+            $.each(vm.miUserListaParticipantes, function(key, value) { 
+                list.push({ 
+                    id: value.id, 
+                    text: value.firstname + ", " + value.email
+                }); 
+            }); 
+
+            list.unshift({ id: "", text: ""})
+
+            s.select2({ 
+                cache: false, 
+                data: list, 
+                placeholder: "Seleccionar un responsable", 
+                allowClear: true, 
+                multiple: false, 
             });  
         }; 
 
