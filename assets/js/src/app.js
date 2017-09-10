@@ -3,6 +3,7 @@
 
     angular
         .module("VisualMailApp", [
+            "angular-loading-bar", 
             "ngMessages", 
             //"ngSanitize", 
             "ui.materialize"
