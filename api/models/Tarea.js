@@ -9,19 +9,13 @@ module.exports = {
     autoCreatedAt: true, 
     autoUpdatedAt: true, 
     attributes: { 
-
-        // Relación con el usuario que realizó la tarea 
-        usuario: { 
-            model: "User" 
-        }, 
-
-        // 'id' del proyecto 
-        project_id: { 
-            type: "string" 
-        }, 
-
         // Valor para api 
         associated: { 
+            type: "boolean" 
+        }, 
+
+        // Valor para api drag and drop (true) por defecto 
+        drag: { 
             type: "boolean" 
         }, 
 
@@ -30,14 +24,9 @@ module.exports = {
             type: "string" 
         }, 
 
-        // Título de la tarea 
-        title: { 
-            type: "string" 
-        }, 
-
-        // Estado de la tarea de acuerdo al Kanban: doing, done, testing, new 
-        tipo: { 
-            type: "string" 
+        // Índice de la tarea en la columna 
+        index: {
+            type: "integer"
         }, 
 
         // Relación con el tablero kanban 
@@ -50,14 +39,9 @@ module.exports = {
             model: "mensaje" 
         }, 
 
-        // Valor para api drag and drop (true) por defecto 
-        drag: { 
-            type: "boolean" 
-        }, 
-
-        // Índice de la tarea en la columna 
-        index: {
-            type: "integer"
+        // 'id' del proyecto 
+        project_id: { 
+            type: "string" 
         }, 
 
         // Si la tarea corresponde a una marca de un mensaje 
@@ -68,6 +52,21 @@ module.exports = {
         // Id de la marca de un mensaje 
         respuestaMarcaId: { 
             type: "string"
+        }, 
+        
+        // Estado de la tarea de acuerdo al Kanban: doing, done, testing, new 
+        tipo: { 
+            type: "string" 
+        }, 
+
+        // Título de la tarea 
+        title: { 
+            type: "string" 
+        }, 
+
+        // Relación con el usuario que realizó la tarea 
+        usuario: { 
+            model: "User" 
         }, 
     }, 
 

@@ -20,7 +20,6 @@
         vm.projectUserId = ""; 
         vm.projectName = ""; 
         vm.projectDateEnd = ""; 
-
         vm.miKanbanColumn1 = []; 
         vm.miKanbanColumn2 = []; 
         vm.miKanbanColumn3 = []; 
@@ -39,6 +38,8 @@
         vm.miProject = { }; 
         vm.miProjectId = ""; 
         vm.miSessionId = 0; 
+        vm.tareaTitle = ""; 
+        vm.tareaUser = ""; 
         vm.miUser = ""; 
         vm.miUserLista = []; 
         vm.miUserListaParticipantes = []; 
@@ -57,9 +58,11 @@
         vm.onKanbanBoardUpdateColumn = onKanbanBoardUpdateColumn; 
         vm.onMensajeAnclarClick = onMensajeAnclarClick; 
         vm.onMensajeMarcar = onMensajeMarcar; 
+        vm.onMensajeTareaCrear = onMensajeTareaCrear; 
         vm.onProjectUserInit = onProjectUserInit; 
         vm.onSocketMensajeNuevo = onSocketMensajeNuevo; 
         vm.onSocketTareaActualizar = onSocketTareaActualizar; 
+        vm.onSocketTareaNueva = onSocketTareaNueva; 
         vm.setMessage = setMessage; 
         vm.setMessageToast = setMessageToast; 
 
@@ -515,6 +518,7 @@
         function onBtnMensajeCancelarClick() { 
             vm.mensajeResponder = false; 
             vm.mensajeRespuesta = ""; 
+            vm.formMensaje.mensajeRespuesta.$pristine = true; 
             vm.mensajeRespuestaMarca = ""; 
             vm.mensajeRespuestaSelection = []; 
             vm.mensajeRespuestaTipo = ""; 
@@ -576,6 +580,7 @@
                 } 
             }).then(function(res) { 
                 var d = res.data;
+                vm.procesando = false; 
 
                 // Si existe error 
                 if(!d.proc) { 
@@ -583,12 +588,51 @@
                     return; 
                 } 
 
-                var mensajeTemporal = d.mensaje; 
-                mensajeTemporal["usuario"] = vm.miUser; 
-                
+                // Modificar el mensaje navegar 
+                //vm.miMensajeAncladoNavegar = d.mensaje; 
+                //vm.miMensajeAncladoNavegar = vm.miUser; 
+
+                // Preparar el objeto tarea 
+                var obj = { 
+                    element: vm.mensajeRespuestaTipo === "Mensaje Inicial" || vm.mensajeRespuestaTipo === "Citar" || vm.mensajeRespuestaTipo === "" ? "" : vm.mensajeRespuestaTipo, 
+                    mensajeId: d.mensaje.id, 
+                    respuestaMarca: vm.mensajeRespuestaMarca, 
+                    respuestaMarcaId: vm.mensajeRespuestaTipoId, 
+                    title: vm.mensajeRespuestaMarca, 
+                    usuario: vm.miUser 
+                }; 
+
+                // Si es un compromiso individual crear la tarea 
+                if(vm.mensajeRespuestaTipoId === "ci") { 
+                    vm.onMensajeTareaCrear(obj); 
+                } else if(vm.mensajeRespuestaTipoId === "ac" || 
+                    vm.mensajeRespuestaTipoId === "nc" || 
+                    vm.mensajeRespuestaTipoId === "db" || 
+                    vm.mensajeRespuestaTipoId === "ta" || 
+                    vm.mensajeRespuestaTipoId === "da") { 
+                    // Preguntar si se asocia a una tarea 
+                    swal({ 
+                        title: "¡Atención!", 
+                        text: "¿Deseas asociar este mensaje a una tarea?", 
+                        type: "warning", 
+                        showCancelButton: true, 
+                        confirmButtonClass: "btn-success", 
+                        confirmButtonText: "Sí, crear tarea", 
+                        cancelButtonText: "No, cerrar", 
+                        closeOnConfirm: true, 
+                        closeOnCancel: true 
+                    }, function(isConfirm) { 
+                        if(!isConfirm) 
+                            return; 
+                        vm.onMensajeTareaCrear(obj); 
+                    }); 
+                } 
+
+                // Iniciar controles 
+                vm.onBtnMensajeCancelarClick(); 
                 // Ahora se agrega el mensaje creado en el dialogo 
                 // Manda el POST para añadirlo al dialogo 
-                $http({ 
+                /*$http({ 
                     method: "POST", 
                     url: "/dialogo/update_dialogo", 
                     headers: { 
@@ -603,13 +647,17 @@
                 }).catch(function(err) { 
                     vm.procesando = false; 
                     setMessage(false, "¡Se produjo un error en el procedimiento '/tarea/updateTipo'!", null, err); 
-                }); 
+                }); */
             }).catch(function(err) { 
                 vm.procesando = false; 
                 setMessage(false, "¡Se produjo un error en el procedimiento '/mensaje/create'!", null, err); 
             }); 
         }; 
 
+        /** 
+        * @method :: onBtnTareaGuardarClick 
+        * @description :: Función para guardar una tarea 
+        */
         function onBtnTareaGuardarClick() { 
             // Verificar si está procesando 
             if(vm.procesando) 
@@ -617,39 +665,41 @@
             
             vm.procesando = true; 
 
-            // Para identificar el usuario seleccionado de Selectize 
+            // Seleccionar el usuario responsable 
+            var usuarioResponsable = { }; 
             for(var i = 0; i < vm.miUserListaParticipantes.length; i++) { 
-                if(vm.miUserListaParticipantes[i].id === vm.tareaUser) { 
-                    vm.miKanbanSelectedUsuarioTask = vm.miListaParticipantes[i]; 
-                    break; 
-                } 
+                if(vm.miUserListaParticipantes[i].id !== vm.tareaUser) 
+                    continue; 
+
+                usuarioResponsable = vm.miUserListaParticipantes[i]; 
+                break; 
             } 
 
             // Se eliminan valores que no se utilizan del usuario 
-            delete vm.miKanbanSelectedUsuarioTask.$$hashKey; 
-            delete vm.miKanbanSelectedUsuarioTask.$order; 
-            delete vm.miKanbanSelectedUsuarioTask.password; 
+            //delete vm.miKanbanSelectedUsuarioTask.$$hashKey; 
+            //delete vm.miKanbanSelectedUsuarioTask.$order; 
+            //delete vm.miKanbanSelectedUsuarioTask.password; 
 
             // Almacenar los datos que se enviarán al servidor 
-            var dataPost = { 
-                drag: true, 
-                tipo: "new", 
-                kanban: vm.miProyecto.kanban[0].id, 
-                usuario: vm.miKanbanSelectedUsuarioTask.id, 
-                title: vm.miKanbanTareaNueva, 
-                project_id: vm.miProyecto.id, 
+            var tarea = { 
                 associated: false, 
+                drag: true, 
                 element: "", 
+                kanban: vm.miProject.kanban[0].id, 
                 mensaje: null, 
-                selectedUsuarioTask: vm.miKanbanSelectedUsuarioTask
+                project_id: vm.miProject.id, 
+                selectedUsuarioTask: usuarioResponsable, 
+                tipo: "new", 
+                title: vm.tareaTitle, 
+                usuario: usuarioResponsable.id, 
             }; 
 
             // Si es una tarea asociada al mensaje agregar los datos del mensaje 
-            if(conMensaje) { 
+            /*if(conMensaje) { 
                 dataPost.associated = true; 
                 dataPost.element = vm.miMensajeSeleccionado.tipo; 
                 dataPost.mensaje = vm.miMensajeSeleccionado.id; 
-            } 
+            } */
 
             $http({ 
                 method: "POST", 
@@ -658,17 +708,26 @@
                     "Content-Type": "application/json", 
                     "X-CSRF-TOKEN": vm.csrfToken 
                 }, 
-                data: dataPost
+                data: tarea 
             }).then(function(res) { 
-                // Se reciben los valores del post 
-                vm.miKanbanTareaNueva = ""; 
+                // Se obtiene el resultado 'res' 
+                var d = res.data; 
                 vm.procesando = false; 
 
-                // Verificar si la respuesta desde el servidor es error 
-                if(!res.data.procedimiento) 
-                    setMensaje(res.data.mensaje); 
+                // Si existe un error retornar 
+                if(!d.proc) { 
+                    setMessage(d.proc, d.msj, "warning"); 
+                    return; 
+                } 
+
+                // Iniciar datos de la tarea 
+                vm.tareaTitle = ""; 
+                vm.formTarea.tareaTitle.$pristine = true; 
+                vm.tareaUser = ""; 
+                $("#tareaUser").val("").trigger("change"); 
+                $("#modalTarea").modal("hide"); 
             }).catch(function(err) { 
-                setMensaje("¡Se produjo un error!"); 
+                setMessage(false, "¡Se produjo un error!"); 
                 console.log(err); 
                 vm.procesando = false; 
             }); 
@@ -790,7 +849,6 @@
                 }); 
                 
                 // Verificar si el mensaje anclado tiene hijos
-                //console.log(vm.miMensajeAnclado.nodoId, $("[data-nodo-parent-id=" + vm.miMensajeAnclado.nodoId + "]").length); 
                 if(vm.miMensajeAnclado.nodoId >= 1 && $("[data-nodo-parent-id=" + vm.miMensajeAnclado.nodoId + "]").length > 0) 
                     vm.iniciarMensajeNavegar(true, false, "Derecha"); 
             } else 
@@ -817,6 +875,7 @@
 
             // Iniciar la respuesta y la marca seleccionada 
             vm.mensajeRespuesta = ""; 
+            vm.formMensaje.mensajeRespuesta.$pristine = true; 
             vm.mensajeRespuestaMarca = $.trim(s.toString()); 
 
             // Obtener el elemento del diálogo 
@@ -861,6 +920,57 @@
             ]; 
 
             vm.mensajeResponder = true; 
+        }; 
+
+        /**
+        * @method :: onMensajeTareaCrear 
+        * @description :: Crea una tarea a partir de un mensaje 
+        * @param :: {Object} obj, datos del mensaje que se asocian a la tarea 
+        **/
+        function onMensajeTareaCrear(obj) { 
+            // Almacenar los datos que se enviarán al servidor 
+            var tarea = { 
+                associated: true, 
+                drag: true, 
+                element: obj.element, 
+                kanban: vm.miProject.kanban[0].id, 
+                mensaje: obj.mensajeId, 
+                project_id: vm.miProject.id, 
+                selectedUsuarioTask: obj.usuario, 
+                tipo: "new", 
+                title: obj.title, 
+                usuario: obj.usuario.id, 
+            }; 
+
+            // Si existe una marca agregar 
+            if(obj.respuestaMarca) { 
+                tarea.respuestaMarca = obj.respuestaMarca; 
+                tarea.respuestaMarcaId = obj.respuestaMarcaId; 
+            }  
+
+            $http({ 
+                method: "POST", 
+                url: "/tarea/create", 
+                headers: { 
+                    "Content-Type": "application/json", 
+                    "X-CSRF-TOKEN": vm.csrfToken 
+                }, 
+                data: tarea 
+            }).then(function(res) { 
+                // Se obtiene el resultado 'res' 
+                var d = res.data; 
+                vm.procesando = false; 
+
+                // Si existe un error retornar 
+                if(!d.proc) { 
+                    setMessage(d.proc, d.msj, "warning"); 
+                    return; 
+                } 
+            }).catch(function(err) { 
+                setMessage(false, "¡Se produjo un error!"); 
+                console.log(err); 
+                vm.procesando = false; 
+            }); 
         }; 
 
         /**
@@ -919,7 +1029,7 @@
             if($anclar) { 
                 if(vm.miMensajeAnclado.nodoId === nuevoMensaje.nodoPadreId) { 
                     vm.miMensajeAncladoNavegar = nuevoMensaje; 
-                    //vm.miMensajeAncladoNavegarName = $sce.trustAsHtml(nuevoMensaje.name); 
+                    vm.miMensajeAncladoNavegarName = $sce.trustAsHtml(nuevoMensaje.name); 
 
                     var n = $("[data-circle-navigate=ok]"); 
                     n.attr("stroke", ""); 
@@ -940,8 +1050,8 @@
             vm.iniciarTiempoDialogo(); 
 
             // Actualizar el controlador
-            $scope.$apply();
             setMessageToast("Nuevo mensaje en el diálogo"); 
+            $scope.$apply();
         }; 
 
         /**
@@ -1002,6 +1112,26 @@
                     vm.onKanbanBoardUpdateColumn(column, newColumn, data.newIndex, data.newCell, data.obj); 
                 }
             }); 
+        }; 
+
+        /**
+        * @method :: onSocketTareaNueva 
+        * @description :: Recibe las tareas creadas que envía el servidor a través del socket 
+        **/
+        function onSocketTareaNueva(data) { 
+            // Obtener la tarea creada 
+            var nuevaTarea = data.obj; 
+
+            // Asignar el usuario responsable 
+            nuevaTarea["usuario"] = data.selectedUsuarioTask; 
+            vm.miKanbanListaTareas.push(nuevaTarea); 
+
+            // Agregar en la columna 'NUEVA' del Kanban 
+            vm.miKanbanColumn1.push(nuevaTarea); 
+
+            // Actualizar el 'scope' 
+            $scope.$apply(); 
+            setMessageToast("Se ha creado una nueva tarea"); 
         }; 
 
         /**
@@ -1211,20 +1341,7 @@
 
 
 
-
-
-
-
-        /**
-        * @method :: onBtnTareaCrearClick 
-        * @description :: Función para mandar POST y crear una tarea
-        */
-        function onBtnTareaCrearClick(conMensaje) { 
-
-        }; 
-
-
-
+        
 
 
 
@@ -1282,25 +1399,7 @@
 
 
 
-        /**
-        * @method :: onSocketTareaNueva 
-        * @description :: Recibe las tareas creadas que envía el servidor a través del socket 
-        **/
-        function onSocketTareaNueva(data) { 
-            // Obtener la tarea creada 
-            var nuevaTarea = data.obj; 
 
-            // Asignar el usuario responsable 
-            nuevaTarea["usuario"] = data.selectedUsuarioTask; 
-            vm.miKanbanListaTareas.push(nuevaTarea); 
-
-            // Agregar en la columna 'NUEVA' del Kanban 
-            vm.miKanbanColumn1.push(nuevaTarea); 
-
-            // Actualizar el 'scope' 
-            $scope.$apply(); 
-            //setMessage("Se ha creado una nueva tarea"); 
-        }; 
 
         /**
         * @method :: io.socket.get 

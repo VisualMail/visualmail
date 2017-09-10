@@ -295,6 +295,7 @@ function mapaDialogoDibujarNodo(svgMapa, data) {
 		// Dibujar el contenedor del tipo de mensaje 
 		var sessionCircle = svgMapa.append("circle")
 			.attr("fill", "url(#nodoTipo" + data.nodoId + ")")
+			.attr("data-nodo-id-tipo", data.nodoId)
 			.attr("data-nodo-session-id", data.sessionId)
 			.attr("stroke", "black")
 			.attr("stroke-width", "0")
@@ -379,6 +380,7 @@ function mapaDialogoModificarNodo(mensaje) {
 	circle.attr("data-nodo-parent-nivel", mensaje.nodoPadreNivel); 
 	circle.attr("data-nodo-nivel", mensaje.nodoNivel); 
 	circle.attr("cy", y2); 
+	$("[data-nodo-id-tipo='" + mensaje.nodoId + "']").attr("cy", circleHeight + (mensaje.nodoNivel * 40) - 15); 
 
 	// Obtener la línea que interconecta al nodo hijo con el padre 
 	var line = $("[data-line-nodo-id='" + mensaje.nodoId + "'"); 

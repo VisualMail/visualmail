@@ -1,10 +1,53 @@
-/**
-* TareaController
-*
-* @description :: Lógica del lado del servidor para manejar las tareas
-* @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
-**/
-module.exports = {
+/** 
+* TareaController 
+* 
+* @description :: Lógica del lado del servidor para manejar las tareas 
+* @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers 
+**/ 
+module.exports = { 
+	/** 
+	* @method :: create (POST) 
+	* @description :: Crea una nueva tarea 
+	* @param :: {Object} req, request element de sails 
+	* @param :: {Objetct} res, de la vista ejs del servidor 
+	* @param :: {Objetct} next, para continuar en caso de error 
+	**/ 
+	create: function(req, res, next) { 
+		//Con todos los parámetros, crear una nueva tarea
+		Tarea.create(req.allParams()).then(function(tarea) { 
+			// Verificar si existe un error 
+			if(!tarea) { 
+				return res.json({ 
+					proc: false, 
+					msg: "¡Se produjo un error con el objeto 'tarea'!" 
+				}); 
+			} 
+
+			// Enviar un broadcast a los usuarios en línea que pertecen al proyecto 
+			sails.sockets.broadcast( 
+				req.param("project_id"), 
+				"socket_project_response", { 
+					message: "Mensaje desde el servidor.", 
+					obj: tarea, 
+					type: "TareaNueva", 
+					selectedUsuarioTask: req.param("selectedUsuarioTask") 
+				}, req); 
+
+			// Retornar tarea 
+			return res.json({ 
+				proc: true, 
+				msg: "¡Tarea registrada!",
+				tarea: tarea 
+			});
+		}).catch(function(err) { 
+			sails.log(err); 
+			return req.json({ 
+				proc: false, 
+				msg: "¡Se produjo un error con la conexión a la base de datos!" 
+			}); 
+		}); 
+	}, 
+
 	/**
 	* @method :: getAllProjectId (GET)
 	* @description :: Busca todas las tareas
@@ -186,94 +229,5 @@ module.exports = {
 				msg: "¡Se produjo un error en la conexión con la base de datos (Tarea.findOne)!" 
 			}); 
 		}); 
-	},
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	/**
-	* @method :: create (POST)
-	* @description :: Crea una nueva tarea
-	* @param :: {Object} req, request element de sails
-	* @param :: {Objetct} res, de la vista ejs del servidor
-	* @param :: {Objetct} next, para continuar en caso de error
-	**/
-	create: function(req, res, next) {
-		
-		//Con todos los parámetros, crear una nueva tarea
-		Tarea.create(req.allParams(), function tareaCreated(err, tarea) {
-			
-			// Verificar si existe un error
-			if(err) { 
-				req.session.flash = { err: err };
-				return res.json({ 
-					procedimiento: false, 
-					mensaje: "Se produjo un error al conectar el objeto 'tarea'" 
-				});
-			}
-			
-			// Verificar si no existe la tarea
-			if(!tarea) 
-				return res.json({ 
-					procedimiento: false, 
-					mensaje: "No existe el objeto 'tarea'" 
-				});
-			
-			// En caso de no haber error, reiniciar la variable flash 
-			// y crear el objeto retornando un post con la tarea
-			req.session.flash = { };
-
-			// Enviar un broadcast a los usuarios en línea que pertecen al proyecto
-			sails.sockets.broadcast(
-				req.param("project_id"), 
-				"socket_project_response", { 
-					message: "Mensaje desde el servidor.", 
-					obj: tarea, 
-					type: "TareaNueva", 
-					selectedUsuarioTask: req.param("selectedUsuarioTask")
-				}, req); 
-				
-			return res.json({ 
-				procedimiento: true, 
-				mensaje: "",
-				tarea: tarea 
-			});
-		});
-	},
+	}, 
 };

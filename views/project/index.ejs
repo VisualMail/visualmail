@@ -195,7 +195,14 @@
                                         <div class="card-footer"> 
                                             <div class="row"> 
                                                 <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"> 
-                                                    <button class="btn btn-success btn-block" type="button" ng-click="vm.onBtnMensajeEnviarClick()"><span class="glyphicon glyphicon-send"></span> Enviar mensaje</button> 
+                                                    <button type="button" 
+                                                        ng-class="{ 
+                                                            'btn btn-success btn-block': vm.formMensaje.$valid, 
+                                                            'btn btn-default btn-block': !vm.formMensaje.$valid }" 
+                                                        ng-click="vm.onBtnMensajeEnviarClick()" 
+                                                        ng-disabled="!vm.formMensaje.$valid">
+                                                        <span class="glyphicon glyphicon-send"></span> Enviar mensaje
+                                                    </button> 
                                                 </div> 
                                                 <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"> 
                                                     <button class="btn btn-info btn-block" type="button" ng-click="vm.onBtnMensajeCancelarClick()"><span class="glyphicon glyphicon-remove-sign"></span> Cancelar</button> 

@@ -149,7 +149,7 @@ function onAnclar(nodoId, scope, responder) {
 function onMensajeAnclarResponder(nodoId, scope, responder) { 
     $anclar = true; 
     
-    if(scope.vm.miMensajeAnclado !== "") 
+    if(scope.vm.miMensajeAnclado !== "" && !(responder && scope.vm.miMensajeAnclado.nodoId === nodoId)) 
         $anclar = nodoId !== scope.vm.miMensajeAnclado.nodoId; 
         
     onAnclar(nodoId, scope, responder); 
