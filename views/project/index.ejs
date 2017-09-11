@@ -16,37 +16,30 @@
             </ul> 
         </div> 
         <!-- Fin Tab -->
-            
+
         <!-- Inicio Proyecto --> 
-        <div class="card-body text-left" ng-show="vm.activeTab === 1"> 
+        <div class="text-left" ng-show="vm.activeTab === 1"> 
             <div class="container">
                 <h4 class="card-title text-left">Información del proyecto</h4> 
-                <hr />
-
-                <div class="form-group"> 
-                    <div class="row"> 
-                        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"> 
-                            <input class="form-control datepicker" type="text" />
-                        </div>
-                    </div>
-                </div>
+                <hr /> 
 
                 <div class="form-group"> 
                     <div class="row"> 
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
                             <label for="projectUser">Usuarios registrados</label> 
-                            <div class="input-group">
-                                    <select id="projectUser" multiple="multiple" name="projectUser" style="width: 100%"> 
-                                    </select> 
-                                <span class="input-group-btn">
+                            <div class="input-group"> 
+                                <div style="width: 100%;">
+                                    <select id="projectUser" multiple="multiple" name="projectUser" style="width: 100%"></select> 
+                                </div>
+                                <span class="input-group-btn"> 
                                     <button class="btn btn-success" type="button" 
-                                        ng-click="vm.onBtnProjectAddUserClick()">
-                                        <span class="glyphicon glyphicon-edit"></span> Agregar participante
-                                    </button>
+                                        ng-click="vm.onBtnProjectAddUserClick()"> 
+                                        <span class="glyphicon glyphicon-plus-sign"></span> Agregar participante 
+                                    </button> 
                                     <button class="btn btn-primary" type="button" 
-                                        ng-click="vm.onBtnProjectModalClick()">
-                                        <span class="glyphicon glyphicon-edit"></span> Editar proyecto
-                                    </button>
+                                        ng-click="vm.onBtnProjectModalClick()"> 
+                                        <span class="glyphicon glyphicon-edit"></span> Editar proyecto 
+                                </button>
                                 </span>
                             </div>
                         </div> 
@@ -247,7 +240,7 @@
                                 </span> 
                                 <input class="form-control" placeholder="Buscar..." type="text" ng-model="vm.miKanbanColumnSearch1" /> 
                                 <div class="input-group-btn"> 
-                                    <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#modalTarea">Add</button> 
+                                    <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#modalTarea"><span class="glyphicon glyphicon-plus-sign"></span></button> 
                                 </div> 
                             </div>  
                         </div>
@@ -475,67 +468,70 @@
 
     <!-- Inicio modal Project -->
     <div class="modal fade" id="modalProject" tabindex="-1" role="dialog" aria-labelledby="modalProjectTitle" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <form name="vm.formProject" novalidate="novalidate">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="modalProjectTitle">Información proyecto</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <label for="tareaTitle"
-                                            ng-class="{ 
-                                                'col-form-label': vm.formTarea.tareaTitle.$pristine || vm.formTarea.tareaTitle.$valid, 
-                                                'col-form-label text-danger': !vm.formTarea.tareaTitle.$pristine && !vm.formTarea.tareaTitle.$valid }">Título (requerido)</label> 
-                                        <input id="tareaTitle" name="tareaTitle" placeholder="Mínimo 3 caracteres" type="text" 
-                                            ng-class="{ 
-                                            'form-control': vm.formTarea.tareaTitle.$pristine || vm.formTarea.tareaTitle.$valid, 
-                                            'form-control is-invalid': !vm.formTarea.tareaTitle.$pristine && !vm.formTarea.tareaTitle.$valid }" 
-                                            ng-maxlength="130" 
-                                            ng-minlength="3" 
-                                            ng-model="vm.tareaTitle" 
-                                            ng-required="true" /> 
-                                        <p class="text-danger" role="alert" ng-messages="!vm.formTarea.tareaTitle.$pristine && vm.formTarea.tareaTitle.$error"> 
-                                            <strong ng-message="minlength">Mínimo 3 caracteres</strong> 
-                                            <strong ng-message="maxlength">Nombre muy largo</strong> 
-                                            <strong ng-message="required">Requerido</strong> 
-                                        </p> 
-                                    </div> 
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form name="vm.formProject" novalidate="novalidate">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalProjectTitle">Modificar proyecto</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-12">
+                                    <label for="projectName"
+                                        ng-class="{ 
+                                            'col-form-label': vm.formProject.projectName.$pristine || vm.formProject.projectName.$valid, 
+                                            'col-form-label text-danger': !vm.formProject.projectName.$pristine && !vm.formProject.projectName.$valid }">Nombre (requerido)</label> 
+                                    <input id="projectName" name="projectName" placeholder="Mínimo 3 caracteres" type="text" 
+                                        ng-class="{ 
+                                        'form-control': vm.formProject.projectName.$pristine || vm.formProject.projectName.$valid, 
+                                        'form-control is-invalid': !vm.formProject.projectName.$pristine && !vm.formProject.projectName.$valid }" 
+                                        ng-maxlength="23" 
+                                        ng-minlength="3" 
+                                        ng-model="vm.projectName" 
+                                        ng-required="true" /> 
+                                    <p class="text-danger" role="alert" ng-messages="!vm.formProject.projectName.$pristine && vm.formProject.projectName.$error"> 
+                                        <strong ng-message="minlength">Mínimo 3 caracteres</strong> 
+                                        <strong ng-message="maxlength">Nombre muy largo</strong> 
+                                        <strong ng-message="required">Requerido</strong> 
+                                    </p> 
                                 </div> 
                             </div> 
-                            
-                            <div class="form-group"> 
-                                <div class="row"> 
-                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
-                                        <label for="tareaUser">Responsable</label> 
-                                        <select id="tareaUser" name="tareaUser" style="width: 100%"> 
-                                        </select> 
+                        </div> 
+                        
+                        <div class="form-group"> 
+                            <div class="row"> 
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"> 
+                                    <label class="col-form-label" for="projectDateEnd">Termina el</label> 
+                                    <div class="input-group date"> 
+                                        <input class="form-control" id="projectDateEnd" maxlength="10" name="projectDateEnd" placeholder="Año-Mes-Día" type="text" 
+                                            ng-model="vm.projectDateEnd" /> 
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span> 
                                     </div> 
-                                </div>
+                                </div> 
                             </div>
-    
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-primary" type="button" data-dismiss="modal"><span class="glyphicon glyphicon-remove-circle"></span> Cerrar</button>
-                            <button type="button"
-                                ng-class="{ 
-                                    'btn btn-success': vm.formTarea.$valid, 
-                                    'btn btn-default': !vm.formTarea.$valid }" 
-                                ng-click="vm.onBtnTareaGuardarClick()"
-                                ng-disabled="!vm.formTarea.$valid">
-                                <span class="glyphicon glyphicon-save"></span> Guardar
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                        </div> 
+
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" type="button" data-dismiss="modal"><span class="glyphicon glyphicon-remove-circle"></span> Cerrar</button>
+                        <button type="button"
+                            ng-class="{ 
+                                'btn btn-success': vm.formProject.$valid, 
+                                'btn btn-default': !vm.formProject.$valid }" 
+                            ng-click="vm.onBtnProjectGuardarClick()"
+                            ng-disabled="!vm.formProject.$valid">
+                            <span class="glyphicon glyphicon-save"></span> Guardar
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
+    </div>
     <!-- Fin modal Project -->
 
     <!-- Inicio modal Tarea -->

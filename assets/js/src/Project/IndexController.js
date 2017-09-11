@@ -38,11 +38,11 @@
         vm.miProject = { }; 
         vm.miProjectId = ""; 
         vm.miSessionId = 0; 
-        vm.tareaTitle = ""; 
-        vm.tareaUser = ""; 
         vm.miUser = ""; 
         vm.miUserLista = []; 
         vm.miUserListaParticipantes = []; 
+        vm.tareaTitle = ""; 
+        vm.tareaUser = ""; 
         
 
         vm.getQueryString = getQueryString; 
@@ -54,12 +54,16 @@
         vm.onBtnMensajeAncladoNavegarResponderClick = onBtnMensajeAncladoNavegarResponderClick; 
         vm.onBtnMensajeCancelarClick = onBtnMensajeCancelarClick; 
         vm.onBtnMensajeEnviarClick = onBtnMensajeEnviarClick; 
+        vm.onBtnProjectAddUserClick = onBtnProjectAddUserClick; 
+        vm.onBtnProjectGuardarClick = onBtnProjectGuardarClick; 
+        vm.onBtnProjectModalClick = onBtnProjectModalClick; 
         vm.onBtnTareaGuardarClick = onBtnTareaGuardarClick; 
         vm.onKanbanBoardUpdateColumn = onKanbanBoardUpdateColumn; 
         vm.onMensajeAnclarClick = onMensajeAnclarClick; 
         vm.onMensajeMarcar = onMensajeMarcar; 
         vm.onMensajeTareaCrear = onMensajeTareaCrear; 
         vm.onProjectUserInit = onProjectUserInit; 
+        vm.onProjectUserParticipanteInit = onProjectUserParticipanteInit; 
         vm.onSocketMensajeNuevo = onSocketMensajeNuevo; 
         vm.onSocketTareaActualizar = onSocketTareaActualizar; 
         vm.onSocketTareaNueva = onSocketTareaNueva; 
@@ -82,7 +86,15 @@
 				vm.tareaUser = userId !== null ? userId : "-1"; 
             });
 
-            $('.datepicker').pickadate()
+            $(".input-group.date").datepicker({ 
+                autoclose: true, 
+                format: "yyyy-mm-dd", 
+                language: "es", 
+                todayBtn: "linked", 
+                todayHighlight: true
+            }); 
+
+
             // Obtener el 'id' del proyecto 
             vm.miProjectId = getQueryString("id"); 
 
@@ -655,6 +667,69 @@
         }; 
 
         /** 
+        * @method :: onBtnProjectAddUserClick 
+        * @description :: Función para mandar POST que actualiza los datos del proyecto 
+        **/ 
+        function onBtnProjectAddUserClick() { 
+
+        }; 
+    
+        /**
+        * @method :: onBtnProjectGuardarClick 
+        * @description :: Función para mandar POST que actualiza los datos del proyecto
+        **/
+        function onBtnProjectGuardarClick() { 
+            // Verificar si está procesando 
+            if(vm.procesando) 
+                return; 
+            
+            vm.procesando = true; 
+
+            // Actualizar proyecto 
+            $http({ 
+                method: "POST", 
+                url: "/project/update", 
+                headers: { 
+                    "Content-Type": "application/json", 
+                    "X-CSRF-TOKEN": vm.csrfToken 
+                }, 
+                data: { 
+                    description: "", 
+                    finish_date: vm.projectDateEnd, 
+                    id: vm.miProject.id, 
+                    name: vm.projectName 
+                } 
+            }).then(function(res) { 
+                // Se obtiene el resultado 'res' 
+                var d = res.data; 
+                setMessage(d.proc, d.msg, d.proc ? "success" : "warning"); 
+                vm.procesando = false; 
+                
+                // Si existe un error retornar 
+                if(!d.proc) 
+                    return; 
+                
+                // Se actualizan los datos en el cliente y se limpian los datos
+                vm.miProject.name = vm.projectName; 
+                vm.miProject.finish_date = vm.projectDateEnd; 
+                $("#modalProject").modal("hide"); 
+            }).catch(function(err) { 
+                vm.procesando = false; 
+                setMessage(false, "¡Se produjo un error en el procedimiento '/project/update'!", "error", err); 
+            }); 
+        }; 
+
+        /**
+        * @method :: onBtnProjectModalClick 
+        * @description :: Muestra el modal pop-up con los datos del proyecto 
+        **/
+        function onBtnProjectModalClick() { 
+            vm.projectName = vm.miProject.name; 
+            vm.projectDateEnd = vm.miProject.projectDateEnd; 
+            $("#modalProject").modal("show"); 
+        }; 
+
+        /** 
         * @method :: onBtnTareaGuardarClick 
         * @description :: Función para guardar una tarea 
         */
@@ -716,7 +791,7 @@
 
                 // Si existe un error retornar 
                 if(!d.proc) { 
-                    setMessage(d.proc, d.msj, "warning"); 
+                    setMessage(d.proc, d.msg, "warning"); 
                     return; 
                 } 
 
@@ -963,7 +1038,7 @@
 
                 // Si existe un error retornar 
                 if(!d.proc) { 
-                    setMessage(d.proc, d.msj, "warning"); 
+                    setMessage(d.proc, d.msg, "warning"); 
                     return; 
                 } 
             }).catch(function(err) { 
@@ -971,6 +1046,60 @@
                 console.log(err); 
                 vm.procesando = false; 
             }); 
+        }; 
+
+        /** 
+        * @method :: onProjectUserInit 
+        * @description :: Inicia la lista de usuarios de visualmail 
+        **/ 
+        function onProjectUserInit() { 
+            var s = $("#projectUser"); 
+            s.select2("data", null); 
+            s.html(""); 
+            var list = []; 
+            
+            $.each(vm.miUserLista, function(key, value) { 
+                list.push({ 
+                    id: value.id, 
+                    text: value.firstname + ", " + value.email
+                }); 
+            }); 
+
+            s.select2({ 
+                cache: false, 
+                data: list, 
+                placeholder: "Seleccionar un usuario", 
+                allowClear: true, 
+                multiple: true, 
+            });  
+        }; 
+
+        /** 
+        * @method :: onProjectUserParticipanteInit 
+        * @description :: Inicia la lista de usuarios en un proyecto 
+        **/ 
+        function onProjectUserParticipanteInit() { 
+            var s = $("#tareaUser"); 
+            s.select2("data", null); 
+            s.html(""); 
+            var list = []; 
+            
+            $.each(vm.miUserListaParticipantes, function(key, value) { 
+                list.push({ 
+                    id: value.id, 
+                    text: value.firstname + ", " + value.email
+                }); 
+            }); 
+
+            list.unshift({ id: "", text: ""})
+
+            s.select2({ 
+                cache: false, 
+                data: list, 
+                placeholder: "Seleccionar un responsable", 
+                allowClear: true, 
+                multiple: false, 
+            });  
         }; 
 
         /**
@@ -1152,254 +1281,22 @@
             } 
         }; 
 
-        /**
+        /** 
         * @method :: setMessageToast 
         * @description :: Despliega un mensaje 
-        * @param :: {string} message, contenido del mensaje  
+        * @param :: {string} message, contenido del mensaje 
         **/
-        function setMessageToast(message) {
+        function setMessageToast(message) { 
             vm.messageToast = message; 
-            // Get the snackbar DIV
+            // Get the snackbar DIV 
             var x = document.getElementById("snackbar"); 
         
-            // Add the "show" class to DIV
-            x.className = "show";
+            // Add the "show" class to DIV 
+            x.className = "show"; 
         
-            // After 3 seconds, remove the show class from DIV
-            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-        
-
-
-
-
-
-
-
-
-
-
-
-
-        vm.onBtnProjectModalClick = onBtnProjectModalClick; 
-        vm.onBtnProjectGuardarClick = onBtnProjectGuardarClick; 
-        vm.onBtnProjectAgregarParticipanteClick = onBtnProjectAgregarParticipanteClick; 
-
-        function onBtnProjectModalClick() { 
-            vm.projectName = vm.miProject.name; 
-            vm.projectDateEnd = vm.miProject.projectDateEnd; 
-            $("#modalProject").modal("show"); 
-        }; 
-    
-        /**
-        * @method :: onBtnProjectGuardarClick 
-        * @description :: Función para mandar POST que actualiza los datos del proyecto
-        **/
-        function onBtnProjectGuardarClick() { 
-            // Verificar que los datos estén correctos 
-            if(vm.projectName === "" && (vm.projectDateEnd === "" || vm.projectDateEnd === null)) 
-                return; 
-            else { 
-                // Actualizar el nombre del proyecto para la vista 
-                if(vm.miProyectoEditar.nombre === "") 
-                    vm.miProyectoEditar.nombre = vm.miProyecto.name; 
-                
-                // Actualizar la fecha para la vista 
-                if((vm.miProyectoEditar.fechaLimite === "" || vm.miProyectoEditar.fechaLimite === null)) 
-                    vm.miProyectoEditar.fechaLimite = vm.miProyecto.finish_date; 
-                
-                $http({ 
-                    method: "POST", 
-                    url: "/project/editarproyecto", 
-                    headers: { 
-                        "Content-Type": "application/json", 
-                        "X-CSRF-TOKEN": vm.csrfToken 
-                    }, 
-                    data: { 
-                        id: vm.miProyecto.id, 
-                        name: vm.miProyectoEditar.nombre, 
-                        finish_date: vm.miProyectoEditar.fechaLimite 
-                    } 
-                }).then(function(resultado) { 
-                    var d = resultado.data; 
-                    
-                    // Desplegar el mensaje 
-                    setMensaje(d.mensaje); 
-                    
-                    // Si el servidor devuelve un valor false retornar
-                    if(!d.procedimiento) 
-                        return; 
-                    
-                    // Se actualizan los datos en el cliente y se limpian los datos
-                    vm.miProyecto.name = vm.miProyectoEditar.nombre; 
-                    vm.miProyecto.finish_date = vm.miProyectoEditar.fechaLimite; 
-                    vm.miProyectoEditar = { nombre: "", fechaLimite: "" }; 
-                }); 
-            }
-        }; 
-        
-        /** 
-         * @method :: onBtnProjectAgregarParticipanteClick 
-         * @description :: Función para agregar un usuario participante 
-         **/ 
-        function onBtnProjectAgregarParticipanteClick() { 
-            $http.defaults.withCredentials = true; 
-            $http({ 
-                method: "POST", 
-                url: "/project/add_user", 
-                headers: { 
-                    "Content-Type": "application/json", 
-                    "X-CSRF-TOKEN": vm.csrfToken 
-                }, 
-                data: { 
-                    email: vm.miListaUsuariosSeleccionado, 
-                    id: vm.miProyectoId 
-                } 
-            }).then(function(data) { 
-                // Es necesario actualizar de parte del cliente el valor de usuarios 
-                // para que estos no sean seleccionados en selectize 
-                // primero para cada usuario ingresado al proyecto 
-                for(var i = 0; i < vm.miListaUsuariosSeleccionado.length; i++) { 
-                    var bandera = 0; 
-                    var position = 0; 
-                    
-                    // Buscar la posición de cada usuario seleccionado por selectize en 'miListaUsuarios' 
-                    for(var j = 0; j < vm.miListaUsuarios.length; j++) { 
-                        if(vm.miListaUsuariosSeleccionado[i] == vm.miListaUsuarios[j].id) { 
-                            bandera = 1; 
-                            position = j; 
-                            break; 
-                        } 
-                    } 
-                    
-                    // Si el elemento es encontrado se actualizan los arreglos 
-                    if(bandera == 1) { 
-                        // 'miListaParticipantes' lo agrega en la primera posicion 
-                        vm.miListaParticipantes.splice(0, 0, vm.miListaUsuarios[position]); 
-                        
-                        // y agrega el elemento a usuarios 
-                        vm.miListaUsuarios.splice(position, 1); 
-                    } 
-                } 
-                
-                //Se manda mensaje al usuario 
-                if(vm.miListaUsuariosSeleccionado.length === 1) 
-                    setMensaje("Se agregó el nuevo usuario al proyecto"); 
-                else if(vm.miListaUsuariosSeleccionado.length >= 2) 
-                    setMensaje("Se agregaron los nuevos usuarios al proyecto"); 
-                
-                //Se actualizan y refrescan los valores de Selectize 
-                vm.miListaUsuariosSelectize.clear(); 
-                vm.miListaUsuariosSelectize.refreshItems(); 
-            }); 
-        };
-            
-
-
-
-
-
-
-
-
-
-
-
-        
-
-        
-
-
-
-        
-
-
-
-
-
-
-        function onProjectUserInit() { 
-            var s = $("#projectUser"); 
-            s.select2("data", null); 
-            s.html(""); 
-            var list = []; 
-            
-            $.each(vm.miUserLista, function(key, value) { 
-                list.push({ 
-                    id: value.id, 
-                    text: value.firstname + ", " + value.email
-                }); 
-            }); 
-
-            s.select2({ 
-                cache: false, 
-                data: list, 
-                placeholder: "Seleccionar un usuario", 
-                allowClear: true, 
-                multiple: true, 
-            });  
-        }; 
-
-        function onProjectUserParticipanteInit() { 
-            var s = $("#tareaUser"); 
-            s.select2("data", null); 
-            s.html(""); 
-            var list = []; 
-            
-            $.each(vm.miUserListaParticipantes, function(key, value) { 
-                list.push({ 
-                    id: value.id, 
-                    text: value.firstname + ", " + value.email
-                }); 
-            }); 
-
-            list.unshift({ id: "", text: ""})
-
-            s.select2({ 
-                cache: false, 
-                data: list, 
-                placeholder: "Seleccionar un responsable", 
-                allowClear: true, 
-                multiple: false, 
-            });  
-        }; 
-
-
-        
-
-
-
-
+            // After 3 seconds, remove the show class from DIV 
+            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000); 
+        } 
 
         /**
         * @method :: io.socket.get 
@@ -1461,7 +1358,105 @@
                 accion = "Derecha"; 
             
             vm.iniciarMensajeNavegar(true, true, accion); 
-        };
+        }; 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        vm.onBtnProjectAgregarParticipanteClick = onBtnProjectAgregarParticipanteClick; 
+        
+        /** 
+         * @method :: onBtnProjectAgregarParticipanteClick 
+         * @description :: Función para agregar un usuario participante 
+         **/ 
+        function onBtnProjectAgregarParticipanteClick() { 
+            $http.defaults.withCredentials = true; 
+            $http({ 
+                method: "POST", 
+                url: "/project/add_user", 
+                headers: { 
+                    "Content-Type": "application/json", 
+                    "X-CSRF-TOKEN": vm.csrfToken 
+                }, 
+                data: { 
+                    email: vm.miListaUsuariosSeleccionado, 
+                    id: vm.miProyectoId 
+                } 
+            }).then(function(data) { 
+                // Es necesario actualizar de parte del cliente el valor de usuarios 
+                // para que estos no sean seleccionados en selectize 
+                // primero para cada usuario ingresado al proyecto 
+                for(var i = 0; i < vm.miListaUsuariosSeleccionado.length; i++) { 
+                    var bandera = 0; 
+                    var position = 0; 
+                    
+                    // Buscar la posición de cada usuario seleccionado por selectize en 'miListaUsuarios' 
+                    for(var j = 0; j < vm.miListaUsuarios.length; j++) { 
+                        if(vm.miListaUsuariosSeleccionado[i] == vm.miListaUsuarios[j].id) { 
+                            bandera = 1; 
+                            position = j; 
+                            break; 
+                        } 
+                    } 
+                    
+                    // Si el elemento es encontrado se actualizan los arreglos 
+                    if(bandera == 1) { 
+                        // 'miListaParticipantes' lo agrega en la primera posicion 
+                        vm.miListaParticipantes.splice(0, 0, vm.miListaUsuarios[position]); 
+                        
+                        // y agrega el elemento a usuarios 
+                        vm.miListaUsuarios.splice(position, 1); 
+                    } 
+                } 
+                
+                //Se manda mensaje al usuario 
+                if(vm.miListaUsuariosSeleccionado.length === 1) 
+                    setMensaje("Se agregó el nuevo usuario al proyecto"); 
+                else if(vm.miListaUsuariosSeleccionado.length >= 2) 
+                    setMensaje("Se agregaron los nuevos usuarios al proyecto"); 
+                
+                //Se actualizan y refrescan los valores de Selectize 
+                vm.miListaUsuariosSelectize.clear(); 
+                vm.miListaUsuariosSelectize.refreshItems(); 
+            }); 
+        }; 
     }; 
 })(); 

@@ -53,7 +53,7 @@ module.exports = {
 				msg: "¡Se produjo un error en la base de datos al momento de verificar el objeto 'project'!"
 			}); 
 		}); 
-	},
+	}, 
 
 	/**
 	* @method :: getOne (POST)
@@ -168,14 +168,60 @@ module.exports = {
 					"<script type='text/javascript' src='/js/src/Project/IndexController.kanban.js'></script>" + 
 					"<script type='text/javascript' src='/js/src/Project/IndexController.jquery.js'></script>" + 
 					"<script type='text/javascript' src='/js/src/Project/IndexController.js'></script>" + 
-					"<script type='text/javascript' src='/js/dependencies/pickadate.js-master/3.5.6/picker.js'></script>" + 
-					"<script type='text/javascript' src='/js/dependencies/pickadate.js-master/3.5.6/picker.date.js'></script>" + 
 					"<script src='/js/dependencies/sails.io.js'></script>", 
 				project: project 
 			});
 		});
 	},
 
+	/**
+	* @method :: update (POST)
+	* @description :: Edita los valores del proyecto
+	* @param :: {Object} req, request element de sails
+	* @param :: {Objetct} res, de la vista ejs del servidor
+	* @param :: {Objetct} next, para continuar en caso de error
+	**/
+	update: function(req, res, next) { 
+		// Llamar a la función de sails para buscar un proyecto y llenar con los participantes 
+		Project.findOne(req.param("id")).populate("participants").then(function(result) { 
+			// Verificar si existe un error 
+			if(!result) { 
+				return res.json({ 
+					proc: false, 
+					msg: "¡Se produjo un error con el objeto 'project'!" 
+				}); 
+			} 
+			
+			// Actualizar los parámetros del proyecto 
+			var name = req.param("name"); 
+			var finish_date = req.param("finish_date"); 
+			var description = req.param("description"); 
+			
+			if(name !== "") 
+				result.name = name; 
+			
+			result.finish_date = finish_date; 
+			
+			if(description !== "") 
+				result.description = description; 
+			
+			// Guardar en la base de datos los cambios 
+			result.save(); 
+			
+			// Retornar un json con los valores nuevos actualizados 
+			return res.json({ 
+				proc: true, 
+				msg: "¡Datos del proyecto actualizados!", 
+				project: result 
+			}); 
+		}).catch(function(err) { 
+			sails.log(err); 
+			return res.json({ 
+				proc: false, 
+				msg: "¡Se produjo un error en la base de datos!!" 
+			}); 
+		}); 
+	}, 
 
 
 
@@ -327,52 +373,7 @@ module.exports = {
 		});
 	},
 
-	/**
-	* @method :: editarproyecto (POST)
-	* @description :: Edita los valores del proyecto
-	* @param :: {Object} req, request element de sails
-	* @param :: {Objetct} res, de la vista ejs del servidor
-	* @param :: {Objetct} next, para continuar en caso de error
-	**/
-	editarproyecto: function(req, res, next) {
-	
-		// Llamar a la función de sails para buscar un proyecto y llenar con los participantes
-		Project.findOne(req.param("id")).populate("participants").exec(function(err, project) {
-			
-			// Verificar si existe un error
-			if(err) 
-				return res.json({ 
-					procedimiento: false, 
-					mensaje: "Se produjo un error al conectarse con el objeto 'project'" 
-				}); 
 
-			// Verificar si no existe el proyecto
-			if(!project) 
-				return res.json({ 
-					procedimiento: false, 
-					mensaje: "No se encontró el objeto 'project'" 
-				}); 
-			else {
-				
-				// Si encontró el proyecto
-				// actualizar el nombre del proyecto
-				project.name = req.param("name"); 
-
-				// Actualizar su fecha de termino
-				project.finish_date = req.param("finish_date"); 
-
-				// Guardar en la base de datos los cambios
-				project.save(function(err) { }); 
-
-				// Retornar un json con los valores nuevos actualizados
-				return res.json({ 
-					procedimiento: true, 
-					mensaje: "Datos del proyecto actualizados", 
-					project: project 
-				}); 
-			}
-		});
-	},
 
 	/**
 	* @method :: getDialogos (POST)
