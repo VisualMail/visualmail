@@ -39,12 +39,33 @@
                                     <button class="btn btn-primary" type="button" 
                                         ng-click="vm.onBtnProjectModalClick()"> 
                                         <span class="glyphicon glyphicon-edit"></span> Editar proyecto 
-                                </button>
+                                    </button>
                                 </span>
                             </div>
                         </div> 
                     </div> 
                 </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <table class="table table-bordered table-hover table-ng" ng-table="vm.tableParams"> 
+                                <tr ng-repeat="row in $data track by row.id"> 
+                                    <td data-title="'Nombre'" filter="{firstname: 'text'}" sortable="'firstname'">{{row.firstname}}</td> 
+                                    <td data-title="'Apellido'" filter="{lastname: 'text'}" sortable="'lastname'">{{row.lastname}}</td> 
+                                    <td data-title="'Correo electrónico'" filter="{email: 'text'}" sortable="'email'">{{row.email}}</td> 
+                                    <td data-title="'Color'" sortable="'color'">
+                                        <button class="btn btn-default" ng-style="{'background-color': '#' + row.color}" type="button">
+                                            <span class="glyphicon glyphicon-tag"></span>
+                                        </button>
+                                        <!--<span ng-style="{'background-color': '#' + row.color}">#{{ row.color }}</span>-->
+                                    </td>
+                                </tr> 
+                            </table> 
+                        </div>
+                    </div>
+                </div>
+
+
             </div> 
         </div> 
         <!-- Fin Proyecto -->

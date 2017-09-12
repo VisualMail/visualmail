@@ -6,6 +6,53 @@
 **/
 module.exports = { 
 	/**
+	* @method :: addUser (POST)
+	* @description :: Añade un usuario un proyecto
+	* @param :: {Object} req, request element de sails
+	* @param :: {Objetct} res, de la vista ejs del servidor
+	* @param :: {Objetct} next, para continuar en caso de error
+	**/
+	addUser: function(req, res, next) {
+		/* Nota: */
+		// No confundir, emails variable en un inicio solicitaba emails, 
+		// pero realmente se piden los id (puede resultar raro pero son los id)
+		// 'emails' contiene lista de ids de los usuarios
+		var usuarioId = req.param("usuarioId");
+
+		// Llamar a la función de Sails para buscar el proyecto
+		Project.findOne(req.param("id")).then(function(result) { 
+			// Verificar si existe un error 
+			if(!result) { 
+				return res.json({ 
+					proc: false, 
+					msg: "¡Se produjo un error con el objeto 'project'!" 
+				}); 
+			}
+
+			// Para cada valor de 'ids' de los usuarios (variable emails) 
+			for(var i = 0; i < usuarioId.length; i++) { 
+				// Por cada 'id', añadir al proyecto, 
+				// se añade el usuario al proyecto 
+				result.participants.add(usuarioId[i]); 
+
+				// Guardar en la base de datos 
+				result.save(); 
+			}
+
+			return res.json({ 
+				proc: true	, 
+				msg: "¡Datos registrados!" 
+			}); 
+		}).catch(function(err) { 
+			sails.log(err); 
+			return res.json({ 
+				proc: false, 
+				msg: "¡Se produjo un error en la base de datos al momento de verificar el objeto 'project'!"
+			}); 
+		}); 
+	},
+
+	/**
 	* @method :: create (POST)
 	* @description :: Crea un nuevo proyecto
 	* @param :: {Object} req, request element de sails
@@ -95,7 +142,7 @@ module.exports = {
 
 	/**
 	* @method :: getUserProjects (GET)
-	* @description :: Encuentra todos los proyectos de un usario
+	* @description :: Encuentra todos los proyectos de un usuario
 	* @param :: {Object} req, request element de sails
 	* @param :: {Objetct} res, de la vista ejs del servidor
 	* @param :: {Objetct} next, para continuar en caso de error
@@ -153,6 +200,7 @@ module.exports = {
 				title: "Proyecto: " + project.name,
 				layout: "shared/project", 
 				sectionHead:
+					"<link href='/js/dependencies/ng-table/2.0.2/css/ng-table.min.css'></script>" + 
 					"<link href='/js/dependencies/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css' />" +  
 					"<link href='/js/dependencies/jquery-contextmenu/2.4.1/jquery.contextMenu.css' rel='stylesheet' type='text/css' />" +  
 					"<link href='/js/dependencies/jquery-splitter/0.24.0/css/jquery.splitter.css' rel='stylesheet' type='text/css' />" + 
@@ -164,6 +212,7 @@ module.exports = {
 					"<script type='text/javascript' src='/js/dependencies/d3/4.8.0/js/d3.min.js'></script>" + 
 					"<script type='text/javascript' src='/js/dependencies/jquery-contextmenu/2.4.1/jquery.contextMenu.js'></script>" + 
 					"<script type='text/javascript' src='/js/dependencies/jquery-splitter/0.24.0/js/jquery.splitter.js'></script>" + 
+					"<script src='/js/dependencies/ng-table/2.0.2/js/ng-table.min.js'></script>" + 
 					"<script type='text/javascript' src='/js/src/Project/IndexController.d3.js'></script>" + 
 					"<script type='text/javascript' src='/js/src/Project/IndexController.kanban.js'></script>" + 
 					"<script type='text/javascript' src='/js/src/Project/IndexController.jquery.js'></script>" + 
@@ -254,55 +303,7 @@ module.exports = {
 
 
 
-
-
-	/**
-	* @method :: add_user (POST)
-	* @description :: Añade un usuario un proyecto
-	* @param :: {Object} req, request element de sails
-	* @param :: {Objetct} res, de la vista ejs del servidor
-	* @param :: {Objetct} next, para continuar en caso de error
-	**/
-	add_user: function(req, res, next) {
-		
-		/* Nota: */
-		// No confundir, emails variable en un inicio solicitaba emails, 
-		// pero realmente se piden los id (puede resultar raro pero son los id)
-		// 'emails' contiene lista de ids de los usuarios
-		var emails = req.param("email");
-
-		// Llamar a la función de Sails para buscar el proyecto
-		Project.findOne(req.param("id")).exec(function(err, project) {
-			
-			// Verificar si existe un error
-			if(err) 
-				return res.json({ 
-					project: false, 
-					mensaje: "Se produjo un error al conectarse con el objeto 'project'"
-				});
-
-			// Verificar si no existe el proyecto
-			if(!project) 
-				return res.json({ 
-					project: false, 
-					mensaje: "No existe el objeto 'project'"
-				});
-
-			// Para cada valor de 'ids' de los usuarios (variable emails)
-			for(var i = 0; i < emails.length; i++) {
-
-				// Por cada 'id', añadir al proyecto,
-				// se añade el usuario al proyecto
-				project.participants.add(emails[i]);
-
-				// Guardar en la base de datos
-				project.save(function(err) { });
-			}
-		});
-
-		return res.redirect("/user/");
-	},
-
+	
 	/**
 	* @method :: admin (VIEW)
 	* @description :: retorna la vista de administración de proyectos
