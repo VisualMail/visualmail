@@ -1173,6 +1173,34 @@
             });  
         }; 
 
+        /** 
+        * @method :: onProjectUserParticipanteFiltrarInit 
+        * @description :: Inicia la lista de usuarios en un proyecto 
+        **/ 
+        function onProjectUserParticipanteFiltrarInit() { 
+            var s = $("#tareaUser"); 
+            s.select2("data", null); 
+            s.html(""); 
+            var list = []; 
+            
+            $.each(vm.miUserListaParticipantes, function(key, value) { 
+                list.push({ 
+                    id: value.id, 
+                    text: value.firstname + ", " + value.email
+                }); 
+            }); 
+
+            list.unshift({ id: "", text: ""})
+
+            s.select2({ 
+                cache: false, 
+                data: list, 
+                placeholder: "Seleccionar un responsable", 
+                allowClear: true, 
+                multiple: false, 
+            });  
+        }; 
+
         /**
         * @method :: onSocketMensajeNuevo 
         * @description :: Actualizar el mensaje enviado desde el socket 

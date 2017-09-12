@@ -50,7 +50,30 @@ module.exports = {
 				msg: "¡Se produjo un error en la base de datos al momento de verificar el objeto 'project'!"
 			}); 
 		}); 
-	},
+	}, 
+
+	/**
+	* @method :: conectar_socket (POST) 
+	* @description :: Añade un usuario al socket de comunicación 
+	* @param :: {Object} req, request element de sails 
+	* @param :: {Objetct} res, de la vista ejs del servidor 
+	**/ 
+	conectar_socket: function(req, res) { 
+		// Verificar que es un socket request (no un request HTTP tradicional) 
+	    if (!req.isSocket) 
+	    	return res.badRequest(); 
+
+	    // Establecer el socket que realizó el request join hacia un nuevo room 
+	    sails.sockets.join(req, req.param("project_id")); 
+
+	    // Realizar un broadcast al 'room' 
+	    sails.sockets.broadcast(req.param("project_id"), "conectar_socket", {message: "conectado a VisualMail Socket"}, req); 
+	    
+	    // Responder al nuevo integrante 
+	    return res.ok({ 
+	        message: "Ahora estás conectado al proyecto." 
+	    }); 
+	}, 
 
 	/**
 	* @method :: create (POST)
@@ -404,26 +427,5 @@ module.exports = {
 
 
 
-	/**
-	* @method :: conectar_socket (POST) 
-	* @description :: Añade un usuario al socket de comunicación 
-	* @param :: {Object} req, request element de sails 
-	* @param :: {Objetct} res, de la vista ejs del servidor 
-	**/
-	conectar_socket: function(req, res) { 
-		// Verificar que es un socket request (no un request HTTP tradicional)
-	    if (!req.isSocket) 
-	    	return res.badRequest(); 
 
-	    // Establecer el socket que realizó el request join hacia un nuevo room 
-	    sails.sockets.join(req, req.param("project_id")); 
-
-	    // Realizar un broadcast al 'room' 
-	    sails.sockets.broadcast(req.param("project_id"), "conectar_socket", {message: "conectado a VisualMail Socket"}, req);
-	    
-	    // Responder al nuevo integrante 
-	    return res.ok({
-	        message: "Ahora estás conectado al proyecto."
-	    });
-	}, 
 };

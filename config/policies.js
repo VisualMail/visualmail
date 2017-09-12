@@ -40,6 +40,13 @@ module.exports.policies = {
     create: ['flash','sessionAuth'], 
     edit: ['flash','sessionAuth'], 
     '*': "sessionAuth" 
+  }, 
+  session: { 
+    index: "sessionAuth", 
+    profile: "sessionAuth", 
+    profileUpdate: "sessionAuth", 
+    password: "sessionAuth", 
+    passwordUpdate: "sessionAuth", 
   }
 
   /***************************************************************************
