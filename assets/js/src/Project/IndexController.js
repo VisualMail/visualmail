@@ -1145,6 +1145,24 @@
             });  
         }; 
 
+        function formatState (opt) {
+            console.log(opt); 
+            if (!opt.id || !opt.imgurl) {
+                return opt.text;
+            }               
+
+            var optimage = opt.imgurl; 
+
+            if(!optimage){
+                return opt.text;
+            } else {
+                var $opt = $(
+                '<span class="userName"><img src="' + optimage + '" style="height: 20px; width: 20px;" class="rounded-circle" /> ' + $(opt.element).text() + '</span>'
+                );
+                return $opt;
+            }
+        };
+
         /** 
         * @method :: onProjectUserParticipanteInit 
         * @description :: Inicia la lista de usuarios en un proyecto 
@@ -1158,11 +1176,12 @@
             $.each(vm.miUserListaParticipantes, function(key, value) { 
                 list.push({ 
                     id: value.id, 
-                    text: value.firstname + ", " + value.email
+                    text: value.firstname + ", " + value.email, 
+                    imgurl: value.imgurl 
                 }); 
             }); 
 
-            list.unshift({ id: "", text: ""})
+            list.unshift({ id: "", text: "", imgurl: ""})
 
             s.select2({ 
                 cache: false, 
@@ -1170,35 +1189,20 @@
                 placeholder: "Seleccionar un responsable", 
                 allowClear: true, 
                 multiple: false, 
-            });  
-        }; 
+            }); 
 
-        /** 
-        * @method :: onProjectUserParticipanteFiltrarInit 
-        * @description :: Inicia la lista de usuarios en un proyecto 
-        **/ 
-        function onProjectUserParticipanteFiltrarInit() { 
-            var s = $("#tareaUser"); 
+            s = $("#projectUserFiltrar"); 
             s.select2("data", null); 
             s.html(""); 
-            var list = []; 
-            
-            $.each(vm.miUserListaParticipantes, function(key, value) { 
-                list.push({ 
-                    id: value.id, 
-                    text: value.firstname + ", " + value.email
-                }); 
-            }); 
-
-            list.unshift({ id: "", text: ""})
-
-            s.select2({ 
+            s.select2({
                 cache: false, 
                 data: list, 
                 placeholder: "Seleccionar un responsable", 
                 allowClear: true, 
                 multiple: false, 
-            });  
+                templateResult: formatState, 
+                templateSelection: formatState 
+            });
         }; 
 
         /**
