@@ -57,19 +57,19 @@ module.exports.connections = {
   *                                                                          *
   ***************************************************************************/
 
-  /*someMongodbServer: { 
+  someMongodbServer: { 
     adapter: "sails-mongo", 
     url: "mongodb://visualmail:visualmail2017@ds053216.mlab.com:53216/visualmaildb" 
-  },*/
+  },
   
-  someMongodbServer: { 
+  /*someMongodbServer: { 
     adapter: 'sails-mongo', 
     host: 'localhost', 
     port: 27017, 
     user: '', //optional
     password: '', //optional 
     database: 'visualmaildb' //optional
-  },
+  },*/
 
   /***************************************************************************
   *                                                                          *

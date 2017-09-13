@@ -88,6 +88,8 @@
 				vm.tareaUser = userId !== null ? userId : "-1"; 
             });
 
+            $("#selectFiltrarUsuario").select2(); 
+
             // Iniciar datetime 
             $(".input-group.date").datepicker({ 
                 autoclose: true, 
@@ -1145,23 +1147,21 @@
             });  
         }; 
 
-        function formatState (opt) {
-            console.log(opt); 
-            if (!opt.id || !opt.imgurl) {
-                return opt.text;
-            }               
-
+        function formatState (opt) { 
+            if(!opt.id || !opt.imgurl) 
+                return opt.text; 
+            
             var optimage = opt.imgurl; 
-
-            if(!optimage){
-                return opt.text;
-            } else {
-                var $opt = $(
-                '<span class="userName"><img src="' + optimage + '" style="height: 20px; width: 20px;" class="rounded-circle" /> ' + $(opt.element).text() + '</span>'
-                );
-                return $opt;
-            }
-        };
+            
+            if(!optimage) 
+                return opt.text; 
+            else { 
+                var $opt = $( 
+                    '<span><img src="' + optimage + '" style="height: 20px; width: 20px;" class="rounded-circle" /> ' + $(opt.element).text() + '</span>' 
+                ); 
+                return $opt; 
+            } 
+        }; 
 
         /** 
         * @method :: onProjectUserParticipanteInit 
@@ -1191,7 +1191,7 @@
                 multiple: false, 
             }); 
 
-            s = $("#projectUserFiltrar"); 
+            s = $("#selectFiltrarUsuario"); 
             s.select2("data", null); 
             s.html(""); 
             s.select2({

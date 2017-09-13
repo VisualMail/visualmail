@@ -16,6 +16,10 @@ $(document).ready(function() {
 
     // Iniciar el menú contextual del panel de mensajes 
     $(function() { contextMenuMensajePanelInit(); }); 
+
+    $("#selectFiltrarUsuario").on("change", function() { 
+        onSelectFiltrarUsuario(this); 
+    }); 
 }); 
 
 /**
@@ -120,7 +124,6 @@ function contextMenuMensajePanelInit() {
     });
 }; 
 
-
 /**
 * @method :: onAnclar
 * @description :: Llama a las funciones para anclar el mensaje.
@@ -146,6 +149,13 @@ function onAnclar(nodoId, scope, responder) {
     }); 
 }; 
 
+/** 
+* @method :: onMensajeAnclarResponder 
+* @description :: Ancla el mensaje al momento que el usuario hace clic en un nodo y permitir responder 
+* @param :: {integer} nodoId, identificador del nodo 
+* @param :: {Object} scope, datos del controlador de la vista 
+* @param :: {boolean} responder, permite activar la respuesta al mensaje 
+**/ 
 function onMensajeAnclarResponder(nodoId, scope, responder) { 
     $anclar = true; 
     
@@ -155,13 +165,45 @@ function onMensajeAnclarResponder(nodoId, scope, responder) {
     onAnclar(nodoId, scope, responder); 
 }; 
 
-/**
-* @method :: onNodoClick
-* @description :: Ancla el mensaje al momento que el usuario hace clic en un nodo.
+/** 
+* @method :: onNodoClick 
+* @description :: Ancla el mensaje al momento que el usuario hace clic en un nodo 
 * @param :: {integer} nodoId, identificador del nodo 
-**/
+**/ 
 function onNodoClick(nodoId) { 
     var scope = angular.element(document.getElementById("IndexControllerMain")).scope(); 
     $anclar = true; 
     onAnclar(nodoId, scope, false); 
+}; 
+
+/**
+* @method :: onSelectFiltrarUsuario
+* @description :: Filtran los nodos de interacción de un usuario 
+* @param :: {Object} control, datos del dropdownlist que contiene la información de los usuarios 
+**/
+function onSelectFiltrarUsuario(control) { 
+    var s = $(control); 
+    var svg = $("#dialogo-svg > .svg-mapa, #dialogo-svg > .svg-session"); 
+
+    if(s.val() !== "") { 
+        svg.find("circle").css("fill-opacity", "0.3"); 
+        svg.find("circle").css("stroke-opacity", "0.3"); 
+        svg.find("line").css("stroke-opacity", "0.3"); 
+        svg.find("path").css("stroke-opacity", "0.3"); 
+
+        var h = $("[data-header-usuario-id='" + s.val() + "']"); 
+        h.css("fill-opacity", "1"); 
+        h.css("stroke-opacity", "1"); 
+
+        $.each(h, function(key, value) { 
+            var n = $("[data-nodo-session-id=" + $(value).attr("data-header-session-id") + "]"); 
+            n.css("fill-opacity", "1"); 
+            n.css("stroke-opacity", "1"); 
+        }); 
+    } else { 
+        svg.find("circle").css("fill-opacity", "1"); 
+        svg.find("circle").css("stroke-opacity", "1"); 
+        svg.find("line").css("stroke-opacity", "1"); 
+        svg.find("path").css("stroke-opacity", "1"); 
+    } 
 }; 
