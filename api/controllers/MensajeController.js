@@ -6,6 +6,49 @@
 **/
 module.exports = { 
 	/**
+	* @method :: actualizarContenido (POST)
+	* @description :: Actualiza el contenido del mensaje 
+	* @param :: {Object} req, request element de sails
+	* @param :: {Objetct} res, de la vista ejs del servidor
+	* @param :: {Objetct} next, para continuar en caso de error
+	**/
+	actualizarContenido: function(req, res, next) { 
+		// Obtener los parámetros
+		var id = req.param("id"); 
+		var name = req.param("name"); 
+
+		// Actualizar el contenido del mensaje 
+		Mensaje.update({ 
+			id: id 
+		}, { 
+			name: name 
+		}).then(function(result) { 
+			// Retornar error 
+			if(!result) { 
+				return res.json({ 
+					proc: false, 
+					msj: "¡No se almacenó la información!", 
+				}); 
+			} 
+
+			// Retornar el Ok
+			return res.json({ 
+				proc: true, 
+				msj: "Mensaje actualizado" 
+			}); 
+
+		}).catch(function(err) { 
+			// Existe un error en actualizar el mensaje 
+			sails.log(err); 
+			return res.json({ 
+				proc: false, 
+				msj: "¡Se produjo un error al actualizar el mensaje!", 
+				err: err 
+			});
+		}); 
+	}, 
+
+	/**
 	* @method :: getAllProjectId (POST)
 	* @description :: Obtiene la lista de mensajes asociados a un proyecto
 	* @param :: {Object} req, request element de sails
@@ -124,11 +167,46 @@ module.exports = {
 				if(mensajeUser.nodoId > 1) 
 					Mensaje.setMensajePosicion(mensajeUser, req); 
 
-				return res.json({ 
-					proc: true, 
-					msg: "¡Mensaje creado!", 
-					mensaje: resultCreate 
-				}); 
+				// Si se marcó un mensaje, crear marca 
+				if(msj.respuestaMarca !== "") { 
+					// Guardar la marca del mensaje 
+					MensajeMarca.create({ 
+						marca: msj.respuestaMarca, 
+						mensajeId: resultCreate.id, 
+						tipo: msj.tipo, 
+						tipoId: msj.respuestaMarcaId, 
+						usuario: resultUser 
+					}).then(function(resultMarca) { 
+						// Retornar error 
+						if(!resultMarca) { 
+							return res.json({ 
+								proc: false, 
+								msj: "¡No se almacenó la información!", 
+							}); 
+						} 
+						
+						// Retornar ok 
+						return res.json({ 
+							proc: true, 
+							msj: "¡Texto marcado!", 
+							mensaje: resultCreate, 
+							mensajeMarca: resultMarca 
+						}); 
+					}).catch(function(err) { 
+						// Existe un error 
+						sails.log(err); 
+						return res.json({ 
+							proc: false, 
+							msj: "¡Se produjo un error al almacenar la 'marca' del texto!" 
+						});
+					}); 
+				} else { 
+					return res.json({ 
+						proc: true, 
+						msg: "¡Mensaje creado!", 
+						mensaje: resultCreate 
+					}); 
+				} 
 			}).catch(function(err) { 
 				sails.log("Se produjo un error en 'mensaje/create/User.findOne': ", err); 
 				return res.json({ 
@@ -188,50 +266,6 @@ module.exports = {
 
 
 
-
-
-	/**
-	* @method :: actualizarContenido (POST)
-	* @description :: Actualiza el contenido del mensaje 
-	* @param :: {Object} req, request element de sails
-	* @param :: {Objetct} res, de la vista ejs del servidor
-	* @param :: {Objetct} next, para continuar en caso de error
-	**/
-	actualizarContenido: function(req, res, next) { 
-		// Obtener los parámetros
-		var id = req.param("id"); 
-		var name = req.param("name"); 
-
-		// Actualizar el contenido del mensaje 
-		Mensaje.update({ 
-			id: id 
-		}, { 
-			name: name 
-		}).then(function(result) { 
-			// Retornar error 
-			if(!result) { 
-				return res.json({ 
-					proc: false, 
-					msj: "¡No se almacenó la información!", 
-				}); 
-			} 
-
-			// Retornar el Ok
-			return res.json({ 
-				proc: true, 
-				msj: "Mensaje actualizado" 
-			}); 
-
-		}).catch(function(err) { 
-			// Existe un error en actualizar el mensaje 
-			sails.log(err); 
-			return res.json({ 
-				proc: false, 
-				msj: "¡Se produjo un error al actualizar el mensaje!", 
-				err: err 
-			});
-		}); 
-	}, 
 	
 
 	/**

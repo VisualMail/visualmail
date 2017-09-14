@@ -9,15 +9,24 @@
     autoCreatedAt: true,
     autoUpdatedAt: true,
     attributes: { 
+        // Marca del texto del mensaje 
+        marca: { 
+            type: "string" 
+        }, 
 
         // Identificador numérico 
         marcaId: { 
             type: "integer"
         }, 
 
-        // Marca del texto del mensaje 
-        marca: { 
+        // 'pk' del mensaje 
+        mensajeId: { 
             type: "string" 
+        }, 
+
+        // nodo del mensaje 
+        nodoId: { 
+            type: "integer" 
         }, 
 
         // Representa el tipo del mensaje: duda, compromiso, acuerdo, etc 
@@ -25,14 +34,9 @@
             type: "string" 
         }, 
 
-        // 'pk' del mensaje 
-        mensajeId: {
+        // Representa el tipo del mensaje: duda, compromiso, acuerdo, etc 
+        tipoId: { 
             type: "string" 
-        },
-
-        // nodo del mensaje 
-        nodoId: { 
-            type: "integer" 
         }, 
 
         // 'pk' del usuario que realizó el mensaje

@@ -49,7 +49,7 @@ function contextMenuMapaInit() {
         }, 
         items: { 
             "reply": { name: "Responder todo", icon: "edit" }, 
-            "add": { name: "Añadir al Kanban", icon: "add" }, 
+            //"add": { name: "Añadir al Kanban", icon: "add" }, 
             "anchor": { name: "Anclar/Desanclar", icon: "paste" }, 
             "sep1": "---------", 
             "quit": { name: "Cancelar", icon: function() { return "context-menu-icon context-menu-icon-quit"; } } 
@@ -83,13 +83,24 @@ function contextMenuMensajeInit(key, options, mensaje) {
 * @description :: Inicia el sub-menú del mensaje cuando el usuario hace clic derecho.
 **/
 function contextMenuMensajePanelInit() { 
-    var items = { 
+    /*var items = { 
         "citar": { name: "Citar mensaje", icon: "citar" }, 
         "ci": { name: "Compromiso individual", icon: "ci" }, 
         "ac": { name: "Acuerdo de coordinación", icon: "ac" }, 
         "nc": { name: "Norma común", icon: "nc" }, 
         "db": { name: "Desacuerdo o brecha", icon: "db" }, 
         "ta": { name: "Tarea", icon: "ta" }, 
+        "da": { name: "Duda o alternativa", icon: "da" }, 
+        "sep1": "---------", 
+        "quit": { name: "Cancelar", icon: function() { return "context-menu-icon context-menu-icon-quit"; } } 
+    }; */
+
+    var items = { 
+        "citar": { name: "Citar mensaje", icon: "citar" }, 
+        "ci": { name: "Compromiso individual", icon: "ci" }, 
+        "ac": { name: "Acuerdo de coordinación", icon: "ac" }, 
+        "nc": { name: "Norma común", icon: "nc" }, 
+        "db": { name: "Desacuerdo o brecha", icon: "db" }, 
         "da": { name: "Duda o alternativa", icon: "da" }, 
         "sep1": "---------", 
         "quit": { name: "Cancelar", icon: function() { return "context-menu-icon context-menu-icon-quit"; } } 

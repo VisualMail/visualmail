@@ -60,8 +60,10 @@
         vm.onBtnProjectGuardarClick = onBtnProjectGuardarClick; 
         vm.onBtnProjectModalClick = onBtnProjectModalClick; 
         vm.onBtnTareaGuardarClick = onBtnTareaGuardarClick; 
+        vm.onBtnTareaMostrarClick = onBtnTareaMostrarClick; 
         vm.onKanbanBoardUpdateColumn = onKanbanBoardUpdateColumn; 
         vm.onMensajeAnclarClick = onMensajeAnclarClick; 
+        vm.onMensajeFormat = onMensajeFormat; 
         vm.onMensajeMarcar = onMensajeMarcar; 
         vm.onMensajeTareaCrear = onMensajeTareaCrear; 
         vm.onProjectUserInit = onProjectUserInit; 
@@ -97,6 +99,15 @@
                 language: "es", 
                 todayBtn: "linked", 
                 todayHighlight: true
+            }); 
+
+            // Desactivar la navegación 
+            $(document).ready(function() { 
+                $("body").on("click", function(e){ 
+                    var cn = e.target.parentNode.className; 
+                    vm.miMapaSvgFocus = cn === "svg-mapa" || e.target.parentNode.nodeName === "svg"; 
+                    $(".svg-mapa").css("opacity", vm.miMapaSvgFocus ? "1" : "0.3"); 
+                }); 
             }); 
 
             // Obtener el 'id' del proyecto 
@@ -605,9 +616,9 @@
                     return; 
                 } 
 
-                // Modificar el mensaje navegar 
-                //vm.miMensajeAncladoNavegar = d.mensaje; 
-                //vm.miMensajeAncladoNavegar = vm.miUser; 
+                // Verificar si se debe marcar el mensaje 
+                if(vm.mensajeRespuestaMarca !== "") 
+                    vm.onMensajeFormat(d.mensajeMarca.marcaId, vm.miMensajeAnclado.id, vm.miMensajeAnclado.nodoId); 
 
                 // Preparar el objeto tarea 
                 var obj = { 
@@ -881,6 +892,10 @@
             }); 
         }; 
 
+        function onBtnTareaMostrarClick(mensajeId) { 
+
+        }; 
+
         /**
         * @method :: onKanbanBoardUpdateColumn 
         * @description :: Función para actualizar una tarea en el tablero Kanban 
@@ -1007,6 +1022,86 @@
         };
 
         /**
+        * @method :: onMensajeFormat
+        * @description :: Dar un formato al texto 
+        * @param :: {string} marcaId, identificador de la marca 
+        * @param :: {string} mensajeId, identificador del mensaje 
+        * @param :: {integer} nodoId, identificador del nodo 
+        **/
+        function onMensajeFormat(marcaId, mensajeId, nodoId) { 
+            // Dar formato al mensaje 
+            var range = document.createRange(); 
+            console.log("Range ", vm.mensajeRespuestaSelection); 
+            range.setStart(vm.mensajeRespuestaSelection[0][0], vm.mensajeRespuestaSelection[0][1]); 
+            range.setEnd(vm.mensajeRespuestaSelection[1][0], vm.mensajeRespuestaSelection[1][1]); 
+            var s = window.getSelection();
+
+            if(s) 
+                s.removeAllRanges(); 
+
+            s.addRange(range);  
+                
+            // Si no existe el rango retornar 
+            if(!s.rangeCount || !s.getRangeAt) 
+                return; 
+
+            // Verificar si se está respondiendo una misma marca 
+            if(s.focusNode.parentNode.getAttribute("data-marca")) { 
+                // Actualizar la marca con el nuevo 'id' almacenado 
+                var dm = s.focusNode.parentNode.getAttribute("data-marca"); 
+                $(s.focusNode.parentNode).attr("data-marca", dm + "," + marcaId); 
+            } else { 
+                // Crear la marca en el texto del mensaje 
+                var span = document.createElement("span"); 
+                span.setAttribute("data-marca", marcaId); 
+                span.setAttribute("data-nid", nodoId); 
+                span.className = "marcar"; 
+                range = s.getRangeAt(0).cloneRange(); 
+                range.surroundContents(span); 
+                document.desingMode = "on"; 
+            
+                if(range) { 
+                    s.removeAllRanges(); 
+                    s.addRange(range); 
+                } 
+
+                document.designMode = "off"; 
+
+                // Actualizar en el texto del mensaje 
+                var msjTemp = $(".context-menu-mensaje-anclado").html(); 
+
+                // Actualizar el mensaje 
+                $http({ 
+                    method: "POST", 
+                    url: "/mensaje/actualizarContenido", 
+                    headers: { 
+                        "Content-Type": "application/json", 
+                        "X-CSRF-TOKEN": vm.csrfToken 
+                    }, 
+                    data: { 
+                        id: mensajeId, 
+                        name: msjTemp  
+                    }
+                }).then(function(r) { 
+                    // Obtener la respuesta 
+                    var d = r.data; 
+                    
+                    for(var i = 0; i < vm.miMensajeLista.length; i++) { 
+                        if(vm.miMensajeLista[i].id !== mensajeId) 
+                            continue; 
+                        
+                        vm.miMensajeLista[i].name = msjTemp; 
+                        break; 
+                    } 
+                }).catch(function(err) { 
+                    setMessage(false, "¡Se produjo un error!"); 
+                    console.log(err); 
+                    vm.procesando = false; 
+                }); 
+            } 
+        }; 
+
+        /**
         * @method :: onMensajeMarcar
         * @description :: Inicia la respuesta del mensaje con la opción del sub-menú del mensaje cuando el usuario hace clic derecho.
         * @param :: {string} key, identificador del nodo 
@@ -1020,6 +1115,19 @@
             // Si el texto está vacío retornar 
             if(s.toString() === "") 
                 return; 
+
+            // Guardar la selección 
+            vm.mensajeRespuestaSelection = window.getSelection().getRangeAt(0); 
+            vm.mensajeRespuestaSelection = [ 
+                [vm.mensajeRespuestaSelection.startContainer, vm.mensajeRespuestaSelection.startOffset], 
+                [vm.mensajeRespuestaSelection.endContainer, vm.mensajeRespuestaSelection.endOffset] 
+            ]; 
+
+            if(mensaje === "navegar") { 
+                var aux = vm.mensajeRespuestaSelection; 
+                vm.onBtnMensajeAncladoNavegarResponderClick(); 
+                vm.mensajeRespuestaSelection = aux; 
+            } 
 
             // Iniciar la respuesta y la marca seleccionada 
             vm.mensajeRespuesta = ""; 
@@ -1057,15 +1165,10 @@
             vm.mensajeRespuestaTipoId = key; 
 
             // Si es una tarea, retornar 
-            if(key === "ta")
+            if(key === "ta") { 
+                //vm.onBtnTareaMostrarClick(vm.miMensajeAnclado.id)
                 return; 
-
-            // Guardar la selección 
-            vm.mensajeRespuestaSelection = window.getSelection().getRangeAt(0); 
-            vm.mensajeRespuestaSelection = [ 
-                [vm.mensajeRespuestaSelection.startContainer, vm.mensajeRespuestaSelection.startOffset], 
-                [vm.mensajeRespuestaSelection.endContainer, vm.mensajeRespuestaSelection.endOffset] 
-            ]; 
+            } 
 
             vm.mensajeResponder = true; 
         }; 
@@ -1462,46 +1565,5 @@
             
             vm.iniciarMensajeNavegar(true, true, accion); 
         }; 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-        
-
-
-
-
-
-
-
-
-
-
-        
     }; 
 })(); 

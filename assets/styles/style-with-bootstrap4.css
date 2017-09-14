@@ -58,6 +58,9 @@ button { cursor: pointer; }
 .main-logo:hover { opacity: 0.01; } 
 .main-logo-hover { position: absolute; opacity: 1; }
 
+.marcar { cursor: pointer; font-weight: bold; text-decoration: underline; }
+
+
 /* select2 */
 
 .select2-selection--single { border-color: #000000 !important; border-color: rgba(0,0,0,.15) !important; height: 38px !important; } 
