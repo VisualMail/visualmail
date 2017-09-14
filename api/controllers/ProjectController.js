@@ -425,6 +425,83 @@ module.exports = {
 		});
 	},
 
+	delete: function(req, res, next) { 
+		Project.findOne(req.param("id"))
+		.populate("participants")
+		.populate("dialogos")
+		.populate("kanban")
+		.then(function(project) { 
+			sails.log("Eliminando proyecto: ", project.id); 
+			
+
+			for(var i = 0; i < project.participants.length; i++) { 
+				project.participants.remove(project.participants[i].id); 
+			}
+
+			project.save(); 
+			
+			Mensaje.find({ project_id: project.id }).populate("children").then(function(mensaje) { 
+
+				if(mensaje.children) { 
+
+					for(var i = 0; i < mensaje.length; i++) { 
+						mensaje.children.remove(mensaje.children[i].id);
+
+						MensajeMarca.destroy({ menasjeId: mensaje[i].id }).then(function(mensajeMarca) { 
+							sails.log("Mensaje Marca eliminado"); 
+						}); 
+					} 
+
+					mensaje.save(); 
+
+				}
+
+				
+				
+				Mensaje.destroy({ project_id: project.id }).then(function(mensajeDestroy) { 
+					sails.log("Mensajes eliminados"); 
+				}); 
+		
+				
+
+
+			}); 
+
+			
+			Tarea.destroy({ project_id: project.id }).then(function(tareaDestroy) { 
+				sails.log("Tareas eliminadas"); 
+
+				Kanban.destroy({ project_id: project.id }).then(function(kanbanDestroy) { 
+					sails.log("Kanban eliminado"); 
+				}); 
+			}); 
+
+			/*Dialogo.destroy({ project_id: project.id }).then(function(dialogoDestroy) { 
+				sails.log("Diálogo destruido"); 
+			}); */
+
+			Project.destroy(req.param("id")).then(function(projectDestroy) { 
+				return ({ 
+					proc: true, 
+					msg: "¡Proyecto eliminado!"
+				}); 
+			}); 
+
+			
+
+
+			
+			
+
+		}).catch(function(err) { 
+			sails.log("Se produjo un error en '/project/delete/Project.find(project): ", err); 
+			return res.json({ 
+				proc: false, 
+				msg: "¡Se produjo un error en '/project/delete/Project.find(project)!" 
+			}); 
+		}); 
+	}
+
 
 
 

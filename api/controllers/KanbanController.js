@@ -5,7 +5,6 @@
 * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
 **/
 module.exports = {
-
 	/**
 	* @method :: create (POST)
 	* @description :: Crea un nuevo del kanban
@@ -14,14 +13,13 @@ module.exports = {
 	* @param :: {Objetct} next, para continuar en caso de error
 	**/
 	create: function(req, res, next) {
-		
-		// Llamar a la función de Sails para crear un objeto Kanban, se piden todos los parámetros requeridos en el GET
+		// Llamar a la función de Sails para crear el objeto, se piden todos los parámetros requeridos en el 'req' 
 		Kanban.create(req.allParams()).then(function(result) { 
-			// Si no fue posible crear el objeto, el POST retorna un mensaje de error según formato
+			// Verificar si existe un error con el objeto que arroja la respuesta 
 			if(!result) { 
 				return res.json({ 
                     proc: false, 
-                    msg: "¡Se produjo un error al crear el objeto 'kanban'!"
+                    msg: "¡Se produjo un error al crear el objeto 'kanban'!" 
 				 });
 			} 
 			

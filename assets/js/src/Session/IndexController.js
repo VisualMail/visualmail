@@ -132,39 +132,6 @@
 
                     var mensaje = d.mensaje; 
                     
-                    // Inicio POST para la creacion del Diálogo 
-                    // Se repiten los valores del mensaje para el inicio de Dialog ya que es un JSON con formato d3.js  
-                    $http({ 
-                        method: "POST", 
-                        url: "/dialogo/create", 
-                        headers: { 
-                            "Content-Type": "application/json", 
-                            "X-CSRF-TOKEN": vm.csrfToken 
-                        }, 
-                        data: { 
-                            //Se repiten los valores del mensaje para el inicio de Dialog ya que es un JSON con formato d3.js 
-                            project: project.id, 
-                            name: project.description, 
-                            root: true, 
-                            children: [], // Aquí van, en un futuro, los mensajes hijos 
-                            session: 0, 
-                            numero_hijos: 0, 
-                            session_actual: 0, 
-                            ultimo_session_email: vm.miUser.email, // El último usuario que realizo un mensaje 
-                            usuario: vm.miUser, // El objeto usuario 
-                            idmensaje: mensaje.id, // El 'id' del mensaje creado 
-                            parent_ultimo_respondido: mensaje.id, // El padre 'id' del mensaje (es el mismo para el primer caso) 
-                        } 
-                    }).then(function(resDialogo) { 
-                        d = resDialogo.data; 
-                        
-                        // En caso de error mostrar el mensaje 
-                        if(!d.proc) { 
-                            vm.procesando = false;
-                            setMessage(d.proc, d.msg, undefined, "warning"); 
-                            return; 
-                        }
-                        
                         // Inicio POST para la creacion del kanban 
                         $http({ 
                             method: "POST", 
@@ -203,10 +170,6 @@
                             vm.procesando = false;
                             setMessage(false, "Se produjo un error en el procedimiento '/kanban/create'", err); 
                         }); 
-                    }).catch(function(err) { 
-                        vm.procesando = false;
-                        setMessage(false, "Se produjo un error en el procedimiento '/dialog/create'", err); 
-                    }); 
                 }).catch(function(err) { 
                     vm.procesando = false;
                     setMessage(false, "Se produjo un error en el procedimiento '/mensaje/create'", err); 
