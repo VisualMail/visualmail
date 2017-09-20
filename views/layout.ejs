@@ -114,7 +114,7 @@
 		        </div>
                 <% } else { %>
                 <ul id="nav-mobile" class="right hide-on-med-and-down">
-                    <li><a href="/session/signup">Registrarse</a></li>
+                    <li><a href="/session/signin">Registrarse</a></li>
                     <li><a href="/session/login">Iniciar sesión</a></li>
                 </ul>
                 <% } %>
@@ -206,8 +206,8 @@
         <script src="/js/dependencies/angular-materialize/0.2.2/js/angular-materialize.min.js"></script>
         <script src="/js/dependencies/angular-messages/1.6.4/js/angular-messages.min.js"></script>
         <script src="/js/dependencies/angular-sanitize/angular-sanitize.min.js"></script>
-        <script src="/js/src/Directives/compareTo.js"></script>
-        <script src="/js/src/Directives/scrollglue.js"></script>
+        <script src="/js/src/directives/compareTo.js"></script>
+        <script src="/js/src/directives/scrollglue.js"></script>
         <script src="/js/src/app.js"></script>
         <%- typeof sectionScripts != "undefined" ? sectionScripts : "" %>
         <% if(session.flash && session.flash.legnth > 0) { %>

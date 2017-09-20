@@ -40,7 +40,7 @@
 
                 // Verificar si no existe un error 
                 if(!du.proc) { 
-                    setMessage(du.proc, du.msg, undefined, "warning"); 
+                    vm.setMessage(du.proc, du.msg, undefined, "warning"); 
                     return; 
                 }
                 
@@ -54,7 +54,7 @@
 
                     // Verificar si no existe un error 
                     if(!dp.proc) { 
-                        setMessage(dp.proc, dp.msg, undefined, "warning"); 
+                        vm.setMessage(dp.proc, dp.msg, undefined, "warning"); 
                         return; 
                     }
                     
@@ -87,10 +87,10 @@
                     //vm.child.vm.tableParams = new NgTableParams({}, { dataset: vm.miUserListaParticipantes });
                     vm.tableParams = new NgTableParams({}, { dataset: parent.vm.miUserListaParticipantes });
                 }).catch(function(err) { 
-                    setMessage(false, "¡Se produjo un error en el procedimiento '/project/getOne'!", null, err); 
+                    vm.setMessage(false, "¡Se produjo un error en el procedimiento '/project/getOne'!", null, err); 
                 }); 
             }).catch(function(err) { 
-                setMessage(false, "¡Se produjo un error en el procedimiento '/user/getAllEmail'!", null, err); 
+                vm.setMessage(false, "¡Se produjo un error en el procedimiento '/user/getAllEmail'!", null, err); 
             }); 
         }; 
 
@@ -101,7 +101,7 @@
         function onBtnProjectAddUserClick() { 
             // Verificar si no se ha seleccionado un usuario 
             if(vm.projectUserId.length === 0) {
-                setMessage(false, "¡Seleccionar un usuario!", "warning"); 
+                vm.setMessage(false, "¡Seleccionar un usuario!", "warning"); 
                 return; 
             } 
 
@@ -161,8 +161,8 @@
                 vm.projectUserId = []; 
                 $("#tareaUser").val("").trigger("change"); 
                 //vm.tareaUser = ""; 
-                parent.vm.onProjectUserInit(); 
-                parent.vm.onProjectUserParticipanteInit(); 
+                vm.onProjectUserInit(); 
+                vm.onProjectUserParticipanteInit(); 
                 vm.tableParams = new NgTableParams({}, { dataset: parent.vm.miUserListaParticipantes });
             }).catch(function(err) { 
                 vm.procesando = false; 
@@ -200,7 +200,7 @@
             }).then(function(res) { 
                 // Se obtiene el resultado 'res' 
                 var d = res.data; 
-                setMessage(d.proc, d.msg, d.proc ? "success" : "warning"); 
+                vm.setMessage(d.proc, d.msg, d.proc ? "success" : "warning"); 
                 vm.procesando = false; 
                 
                 // Si existe un error retornar 

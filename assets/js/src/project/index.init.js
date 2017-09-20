@@ -211,8 +211,10 @@ function onAnclar(nodoId, scope, responder) {
         scope.im.mensajeResponder = responder; 
     }); 
 
-    if(responder) 
+    if(responder) { 
         $('#mensajeRespuesta').focus(); 
+        $("#x").css("opacity", "0.5"); 
+    }
 }; 
     
 /** 

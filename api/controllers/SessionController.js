@@ -1,32 +1,46 @@
-/**
-* SessionController
-*
-* @description :: Lógica del lado del servidor para manejar las sesiones
-* @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
-**/
+/** 
+* SessionController 
+* 
+* @description :: Lógica del lado del servidor para manejar las sesiones 
+* @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers 
+**/ 
 
-var bcrypt = require("bcryptjs");
+var bcrypt = require("bcryptjs"); 
 
 module.exports = { 
 	/**
-	* @method :: getUser (View)
-	* @description :: Se encarga de dar los permisos para mostrar vista de login
+	* @method :: forgotPassword (View)
+	* @description :: Se encarga de dar los permisos para mostrar vista de olvido de contraseña
 	* @param :: {Object} req, request element de sails
-	* @param :: {Objetct} res, de la vista ejs del servidor 
+	* @param :: {Object} res, de la vista ejs del servidor
+	* @param :: {Object} next, para continuar en caso de error
 	**/
-	getUser: function(req, res) {
+	forgotPassword: function(req, res) { 
+		res.view({ 
+			sectionScripts: "<script src='/js/src/session/forgotPass.controller.js'></script>", 
+			title: "Recuperar contraseña" 
+		}); 
+	}, 
+
+	/** 
+	* @method :: getUser (View) 
+	* @description :: Se encarga de dar los permisos para mostrar vista de login. 
+	* @param :: {Object} req, request element de sails. 
+	* @param :: {Object} res, de la vista ejs del servidor. 
+	**/ 
+	getUser: function(req, res) { 
 		if(req.session.User) 
-			return res.json({ user: req.session.User });
+			return res.json({ user: req.session.User }); 
 			
-		return res.json({ user: false });
+		return res.json({ user: false }); 
 	},
 
 	/**
 	* @method :: index (VIEW)
 	* @description :: Muestra la vista principal de la sesión 
 	* @param :: {Object} req, request element de sails
-	* @param :: {Objetct} res, de la vista ejs del servidor
-	* @param :: {Objetct} next, para continuar en caso de error
+	* @param :: {Object} res, de la vista ejs del servidor
+	* @param :: {Object} next, para continuar en caso de error
 	**/
 	index: function(req, res, next) {
 		// Redirigir a la vista 'user/edit'
@@ -38,16 +52,96 @@ module.exports = {
 			sectionScripts: 
 				"<script type='text/javascript' src='/js/dependencies/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js'></script>" + 
 				"<script type='text/javascript' src='/js/dependencies/bootstrap-datepicker/1.7.1/locales/bootstrap-datepicker.es.min.js'></script>" + 
-				"<script type='text/javascript' src='/js/src/Session/IndexController.js'></script>" 
+				"<script type='text/javascript' src='/js/src/session/index.controller.js'></script>" 
 		});
+	}, 
+
+	/**
+	* @method :: login (View)
+	* @description :: Muestra la vista para iniciar sesión 
+	* @param :: {Object} req, request element de sails 
+	* @param :: {Object} res, respuesta desde el servidor 
+	**/
+	login: function(req, res) {
+		//Para manejar el tiempo de sesión se puede utilizar el formato:
+		/*var olddate = new Date();
+		var newdate = new Date(olddate.getTime()+60000);
+		req.session.cookie.expires = newdate;
+		req.session.authenticated = true;*/
+		res.view({ 
+			title: "Iniciar sesión",
+			sectionScripts: "<script src='/js/src/session/login.controller.js'></script>" 
+		});
+	}, 
+
+	/**
+	* @method :: logon 
+	* @description :: Se encarga de verificar y crear una sesion de usuario 
+	* @param :: {Object} req, request element de sails 
+	* @param :: {Object} res, respuesta desde el servidor 
+	* @param :: {Object} next, para continuar en caso de error 
+	**/
+	logon: function(req, res, next) { 
+		req.session.logInErrorMessage = "¡Usuario y/o contraseña incorrecto(s)!";
+
+		// Verificar que el correo electrónico y la contraseña no estén vacíos
+		if(!req.param("email") || !req.param("password")) 
+			return res.redirect("/session/login"); 
+
+		// Verificar si existe el correo electrónico
+		User.findOneByEmail(req.param("email"), function foundUser(err, user) { 
+
+			// Verificar si existe un error
+			if(err) 
+				return next(err); 
+
+			// Verificar si no existe el usuario 
+			if(!user) 
+				return res.redirect("/session/login"); 
+
+			// Si no hay error, comparar la contraseña con la contraseña almacenada
+			bcrypt.compare(req.param("password"), user.password, function(err, valid) {
+
+				// Verificar si la contraseña no es válida
+				if(!valid) 
+					return res.redirect("/session/login"); 
+			
+				// Si todo salio ok, iniciar sesión al usuario
+				// El valor de la variable global es verdadero
+				req.session.authenticated = true; 
+				delete req.session.logInErrorMessage; 
+
+				// La variable global guarda los datos del usuario
+				delete user.password;
+				req.session.User = user; 
+
+				if(!user.imgurl)  
+					user.imgurl = "/images/profile.jpg";
+			
+				// Redirige a la vista principal
+				res.redirect("/session/index");
+			});
+		});
+	},
+
+	/**
+	* @method :: logout 
+	* @description :: Se encarga de terminar la sesion. 
+	* @param :: {Object} req, request element de sails. 
+	* @param :: {Object} res, de la vista ejs del servidor. 
+	* @param :: {Object} next, para continuar en caso de error. 
+	*/ 
+	logout: function(req, res, next) { 
+		req.session.destroy(); 
+		res.redirect("/"); 
 	}, 
 
 	/**
 	* @method :: edit (VIEW)
 	* @description :: Muestra la vista para editar el perfil
 	* @param :: {Object} req, request element de sails
-	* @param :: {Objetct} res, de la vista ejs del servidor
-	* @param :: {Objetct} next, para continuar en caso de error
+	* @param :: {Object} res, de la vista ejs del servidor
+	* @param :: {Object} next, para continuar en caso de error
 	**/
 	profile: function(req, res, next) {
 		// Redirigir a la vista 'user/edit'
@@ -56,7 +150,7 @@ module.exports = {
 			layout: "shared/admin", 
 			sectionScripts: 
 				"<script src='/js/dependencies/jscolor/2.0.4/js/jscolor.min.js'></script>" + 
-				"<script src='/js/src/Session/ProfileController.js'></script>" 
+				"<script src='/js/src/session/profile.controller.js'></script>" 
 		});
 	}, 
 
@@ -64,8 +158,8 @@ module.exports = {
 	* @method :: profileUpdate (POST)
 	* @description :: Edita los datos de un usuario de forma asincrona y sin problemas de concurrencia
 	* @param :: {Object} req, request element de sails
-	* @param :: {Objetct} res, de la vista ejs del servidor
-	* @param :: {Objetct} next, para continuar en caso de error
+	* @param :: {Object} res, de la vista ejs del servidor
+	* @param :: {Object} next, para continuar en caso de error
 	**/
 	profileUpdate: function(req, res, next){
 		// Guardar en variables temporales los vales de cambio
@@ -157,8 +251,8 @@ module.exports = {
 	* @method :: password (VIEW)
 	* @description :: Controla la vista principal para la modificación de la contraseña
 	* @param :: {Object} req, request element de sails
-	* @param :: {Objetct} res, de la vista ejs del servidor
-	* @param :: {Objetct} next, para continuar en caso de error
+	* @param :: {Object} res, de la vista ejs del servidor
+	* @param :: {Object} next, para continuar en caso de error
 	**/
 	password: function(req, res, next) { 
 		return res.view({ 
@@ -171,8 +265,8 @@ module.exports = {
 	* @method :: passwordActualizar (POST)
 	* @description :: Actualiza una contraseña
 	* @param :: {Object} req, request element de sails
-	* @param :: {Objetct} res, de la vista ejs del servidor
-	* @param :: {Objetct} next, para continuar en caso de error
+	* @param :: {Object} res, de la vista ejs del servidor
+	* @param :: {Object} next, para continuar en caso de error
 	*/
 	passwordUpdate: function(req, res, next) { 
 		// Establecer los datos 
@@ -254,309 +348,74 @@ module.exports = {
 			req.session.passwordMessage = { result: false, message: "¡Error en la Base de Datos '/User/findOne'!" }; 
 			return res.redirect("/session/password"); 
 		}); 
-	},
+	}, 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	/**
-	* @method :: actualizarpass (POST)
-	* @description :: Actualiza una contraseña
-	* @param :: {Object} req, request element de sails
-	* @param :: {Objetct} res, de la vista ejs del servidor
-	* @param :: {Objetct} next, para continuar en caso de error
-	*/
-	actualizarpass: function(req, res) {
-		
+	/** 
+	* @method :: passwordUpdateRecover (POST) 
+	* @description :: Actualiza una contraseña desde el formulario de recuperar contraseña. 
+	* @param :: {Object} req, request element de sails. 
+	* @param :: {Object} res, de la vista ejs del servidor. 
+	* @param :: {Object} next, para continuar en caso de error. 
+	*/ 
+	passwordUpdateRecover: function(req, res) { 
 		// Variable temporal para guardar la contraseña cifrada
 		var nuevo;
 
-		require("bcrypt").hash(req.param("password"), 10, function passwordEncrypted(err, password) { 
+		bcrypt.hash(req.param("password"), 10, function passwordEncrypted(err, password) { 
 
 			// Verificar si existe un error
     		if(err) 
     			return res.json({ 
 					procedimiento: false, 
 					mensaje: "Se produjo un error al conectarse con el objeto 'bcrypt'" 
-				});
+				}); 
     		
-    		// Almacenar en 'nuevo' la contraseña cifrada
+    		// Almacenar en 'nuevo' la contraseña cifrada 
     		nuevo = password; 
 
-    		// Buscar el usuario por su 'id' y actualizar la nueva contraseña
-    		User.update({ id: req.param("id") }, { password: nuevo }).exec(function userUpdatedPass(err) {
+    		// Buscar el usuario por su 'id' y actualizar la nueva contraseña 
+    		User.update({ id: req.param("id") }, { password: nuevo }).exec(function userUpdatedPass(err) { 
 
-    			// Verificar si existe un error
+    			// Verificar si existe un error 
 				if(err) 
 					return res.json({ 
 						procedimiento: false, 
 						mensaje: "Se produjo un error al actualizar la contraseña" 
 					}); 
 					
-				// Si no hay error retorna la opción con valor verdadero en formato JSON
+				// Si no hay error retorna la opción con valor verdadero en formato JSON 
 				return res.json({ 
 					procedimiento: true, 
-					mensaje: "Contraseña actualizada"
-				});
-			});
-  		});
-	},
-
-	/**
-	* @method :: forgotPassword (View)
-	* @description :: Se encarga de dar los permisos para mostrar vista de olvido de contraseña
-	* @param :: {Object} req, request element de sails
-	* @param :: {Objetct} res, de la vista ejs del servidor
-	* @param :: {Objetct} next, para continuar en caso de error
-	**/
-	forgotPassword: function(req, res) {
-		res.view({ 
-			sectionScripts: "<script src='/js/src/Session/ForgotPassController.js'></script>", 
-			title: "Recuperar contraseña" });
-	},
-
-	 /**
-	* @method :: help (View)
-	* @description :: Se encarga de dar los permisos para mostrar vista de ayuda
-	* @param :: {Object} req, request element de sails
-	* @param :: {Objetct} res, de la vista ejs del servidor
-	**/
-	help: function(req, res) {
-		res.view({ title: "Ayuda" });
-	},
-
-	/**
-	* @method :: login (View)
-	* @description :: Muestra la vista para iniciar sesión 
-	* @param :: {Object} req, request element de sails 
-	* @param :: {Objetct} res, respuesta desde el servidor 
-	**/
-	login: function(req, res) {
-		//Para manejar el tiempo de sesión se puede utilizar el formato:
-		/*var olddate = new Date();
-		var newdate = new Date(olddate.getTime()+60000);
-		req.session.cookie.expires = newdate;
-		req.session.authenticated = true;*/
-		res.view({ 
-			title: "Iniciar sesión",
-			sectionScripts: "<script src='/js/src/Session/LogInController.js'></script>" 
-		});
+					mensaje: "Contraseña actualizada" 
+				}); 
+			}); 
+  		}); 
 	}, 
-
-	/**
-	* @method :: logon 
-	* @description :: Se encarga de verificar y crear una sesion de usuario 
-	* @param :: {Object} req, request element de sails 
-	* @param :: {Objetct} res, respuesta desde el servidor 
-	* @param :: {Objetct} next, para continuar en caso de error 
-	**/
-	logon: function(req, res, next) { 
-		req.session.flash = { };
-		// Verificar que el correo electrónico y la contraseña no estén vacíos
-		if(!req.param("email") || !req.param("password")) { 
-
-			// Establecer el error
-			req.session.flash = {
-				err: "Usuario y/o contraseña incorrecto(s)" 
-			};
-
-			// Redirigir al inicio de sesión
-			return res.redirect("/session/login");
-		}
-
-		// Verificar si existe el correo electrónico
-		User.findOneByEmail(req.param("email"),  function foundUser(err, user) { 
-
-			// Verificar si existe un error
-			if(err) 
-				return next(err); 
-
-			// Verificar si no existe el usuario 
-			if(!user) { 
-
-				// Establecer el error
-				req.session.flash = {
-					err: "Usuario y/o contraseña incorrecto(s)" 
-				};
-
-				// Redirigir al inicio de sesión
-				return res.redirect("/session/login");
-			}
-
-			// Si no hay error, comparar la contraseña con la contraseña almacenada
-			bcrypt.compare(req.param("password"), user.password, function(err, valid) {
-
-				// Verificar si la contraseña no es válida
-				if(!valid) { 
-
-					// Establecer el error
-					req.session.flash = {
-						err: "Usuario y/o contraseña incorrecto(s)" 
-					};
-
-					// Redirigir al inicio de sesión
-					return res.redirect("/session/login");
-				}
-			
-				// Si todo salio ok, iniciar sesión al usuario
-				// El valor de la variable global es verdadero
-				req.session.authenticated = true; 
-
-				// La variable global guarda los datos del usuario
-				delete user.password;
-				req.session.User = user; 
-
-				if(!user.imgurl)  
-					user.imgurl = "/images/profile.jpg";
-			
-				// Redirige a la vista principal
-				res.redirect("/session/index");
-			});
-		});
-	},
-
-	/**
-	* @method :: logout 
-	* @description :: Se encarga de terminar la sesion
-	* @param :: {Object} req, request element de sails
-	* @param :: {Objetct} res, de la vista ejs del servidor
-	* @param :: {Objetct} next, para continuar en caso de error
-	*/
-	logout: function(req, res, next) {
-		req.session.destroy();
-		res.redirect('/');
-	}, 
-
-	/**
-	* @method :: recover (View)
-	* @description :: Se encarga de dar los permisos para mostrar vista de recuperación de clave
-	* @param :: {Object} req, request element de sails
-	* @param :: {Objetct} res, de la vista ejs del servidor
-	**/
+	
+	/** 
+	* @method :: recover (View) 
+	* @description :: Se encarga de dar los permisos para mostrar vista de recuperación de clave. 
+	* @param :: {Object} req, request element de sails. 
+	* @param :: {Object} res, de la vista ejs del servidor. 
+	**/ 
 	recover: function(req, res) { 
 		res.view({ 
 			title: "Recuperar contraseña", 
-			sectionScripts: "<script src='/js/src/Session/RecoverController.js'></script>" 
-		});
-	},
-
-	/**
-	* @method :: sendEmail (POST) 
-	* @description :: Se encarga de enviar un correo a traves del hook del email
-	* @param :: {Object} req, request element de sails
-	* @param :: {Objetct} res, de la vista ejs del servidor
-	*/
-	sendEmail: function(req, res) {
-		// Buscar el usuario a través de su correo electrónico
-		User.findOneByEmail(req.param("email")).exec(function(err, user) { 
-
-			// Verificar si existe un error
-			if(err) {
-				return res.json({ 
-					procedimiento: false, 
-					mensaje: "Se produjo un error en la conexión con la base de datos"
-				 });
-			}
-			
-			// Verificar si no existe el usuario
-			if(!user) 
-				return res.json({ 
-					procedimiento: false, 
-					mensaje: "No existe el usuario" });
-
-			// Si el usuario existe se envia el correo a traves de sails hook email (Ver api/services)
-			Mailer.sendWelcomeMail(user);
-
-			// Retornar la opción en formato JSON con valor verdadero 
-			// para demostrar que fue un exito y mandar mensaje por pantalla
-			return res.json({ 
-				procedimiento: true, 
-				mensaje: "Se envío un correo al 'email' ingresado" 
-			});
-		});
+			sectionScripts: "<script src='/js/src/session/recover.controller.js'></script>" 
+		}); 
 	}, 
 
-	/**
-	* @method :: signin (POST)
-	* @description :: Crea un usuario
-	* @param :: {Object} req, request element de sails
-	* @param :: {Objetct} res, de la vista ejs del servidor
-	* @param :: {Objetct} next, para continuar en caso de error
-	**/
-	signin: function(req, res, next) {
-		// Crear un usuario dado los parametros de entrada
-		User.create(req.allParams(), function userCreated(err, user) {
-			
-			// Verificar si existe un error
-			if(err) { 
-				
-				// req.session dura el tiempo de la sesion hasta que el browser cierra
-				req.session.flash = { err: err };
-				
-				// Redirigir al usuario a la vista de signup
-				return res.redirect("/user/signup");
-			}
-			
-			// En caso de no haber error, se reinicializa la variable flash
-			req.session.flash = { };
-
-			// Autenticar al usuario
-			req.session.authenticated = true; 
-
-			// Guardar la variable User con los datos de usuario (global)
-			delete user.password;
-			req.session.User = user; 
-
-			// Redirigir al usuario a la vista 'view'
-			res.redirect("/user/index/" + user.id); 
-		});
-	},
-
-	/**
-	* @method :: signup (VIEW)
-	* @description :: Controla la vista de signup
-	* @param :: {Object} req, request element de sails
-	* @param :: {Objetct} res, de la vista ejs del servidor
-	* @param :: {Objetct} next, para continuar en caso de error
-	**/
-	signup: function(req, res) {
-		
-		//res locals dura por el tiempo de la vista
-		res.view({ 
-			title: "Registrarse", 
-			sectionScripts: 
-				"<script src='/js/dependencies/jscolor/2.0.4/js/jscolor.min.js'></script>" + 
-				"<script src='/js/src/Session/SignUpController.js'></script>" 
-		});
-	},
-
-	/**
-	* @method :: verficar_clave (POST)
-	* @description :: Verifica si la clave entregada por correo es aceptada para poder cambiar el email
-	* @param :: {Object} req, request element de sails
-	* @param :: {Objetct} res, de la vista ejs del servidor
-	*/
-	verficar_clave: function(req, res) { 
-		// De acuerdo a la contraseña solicitada
-		// verificar si corresponde al id de un usuario
+	/** 
+	* @method :: verficar_clave (POST) 
+	* @description :: Verifica si la clave entregada por correo es aceptada para poder cambiar el email. 
+	* @param :: {Object} req, request element de sails. 
+	* @param :: {Object} res, de la vista ejs del servidor. 
+	*/ 
+	recoverVerificar: function(req, res) { 
+		// De acuerdo a la contraseña solicitada 
+		// verificar si corresponde al id de un usuario 
 		var my_query = User.findOne(req.param("clave")); 
-		my_query.exec(function(err, user) {
+		my_query.exec(function(err, user) { 
 
 			// Verificar si existe un error
 			if(err) 
@@ -577,18 +436,142 @@ module.exports = {
 			return res.json({ 
 				procedimiento: true, 
 				mensaje: "Clave ingresada válida" 
-			});
-		});
+			}); 
+		}); 
 	}, 
 
-	temp: function(req, res) { 
-		res.view({ 
-			title: "Administrar", 
+	/**
+	* @method :: sendEmail (POST) 
+	* @description :: Se encarga de enviar un correo a traves del hook del email
+	* @param :: {Object} req, request element de sails
+	* @param :: {Object} res, de la vista ejs del servidor
+	*/
+	sendEmail: function(req, res) {
+		// Buscar el usuario a través de su correo electrónico
+		User.findOneByEmail(req.param("email")).exec(function(err, user) { 
+
+			// Verificar si existe un error
+			if(err) {
+				return res.json({ 
+					procedimiento: false, 
+					mensaje: "Se produjo un error en la conexión con la base de datos" 
+				 }); 
+			} 
 			
-			sectionHead: "<link href='/js/dependencies/select2/4.0.3/css/select2.min.css' />", 
-			sectionScripts: 
-				"<script type='text/javascript' src='/js/dependencies/select2/4.0.3/js/select2.min.js'></script>" +
-				"<script type='text/javascript' src='/js/src/Session/TempController.js'></script>" 
+			// Verificar si no existe el usuario 
+			if(!user) 
+				return res.json({ 
+					procedimiento: false, 
+					mensaje: "No existe el usuario" 
+				}); 
+
+			// Si el usuario existe se envia el correo a traves de sails hook email (Ver api/services) 
+			Mailer.sendWelcomeMail(user); 
+
+			// Retornar la opción en formato JSON con valor verdadero 
+			// para demostrar que fue un exito y mandar mensaje por pantalla 
+			return res.json({ 
+				procedimiento: true, 
+				mensaje: "Se envío un correo al 'email' ingresado" 
+			}); 
 		}); 
-	}
+	}, 
+
+	/** 
+	* @method :: signin (VIEW) 
+	* @description :: Controla la vista de signup. 
+	* @param :: {Object} req, request element de sails. 
+	* @param :: {Object} res, de la vista ejs del servidor. 
+	* @param :: {Object} next, para continuar en caso de error. 
+	**/ 
+	signin: function(req, res) { 
+		//res locals dura por el tiempo de la vista 
+		res.view({ 
+			title: "Registrarse", 
+			sectionScripts: 
+				"<script src='/js/dependencies/jscolor/2.0.4/js/jscolor.min.js'></script>" + 
+				"<script src='/js/src/session/signin.controller.js'></script>" 
+		}); 
+	}, 
+
+	/** 
+	* @method :: signup (POST) 
+	* @description :: Crea un usuario. 
+	* @param :: {Object} req, request element de sails. 
+	* @param :: {Object} res, de la vista ejs del servidor. 
+	* @param :: {Object} next, para continuar en caso de error. 
+	**/ 
+	signup: function(req, res, next) { 
+		// Crear un usuario dado los parametros de entrada 
+		User.create(req.allParams(), function userCreated(err, user) { 
+			// Verificar si existe un error
+			if(err) { 
+				
+				// req.session dura el tiempo de la sesion hasta que el browser cierra
+				req.session.flash = { err: err };
+				
+				// Redirigir al usuario a la vista de signup
+				return res.redirect("/session/signin");
+			}
+			
+			// En caso de no haber error, se reinicializa la variable flash
+			req.session.flash = { };
+
+			// Autenticar al usuario
+			req.session.authenticated = true; 
+
+			// Guardar la variable User con los datos de usuario (global)
+			delete user.password;
+			req.session.User = user; 
+
+			// Redirigir al usuario a la vista 'view'
+			res.redirect("/session/index/" + user.id); 
+		});
+	},
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	 /**
+	* @method :: help (View)
+	* @description :: Se encarga de dar los permisos para mostrar vista de ayuda
+	* @param :: {Object} req, request element de sails
+	* @param :: {Object} res, de la vista ejs del servidor
+	**/
+	help: function(req, res) {
+		res.view({ title: "Ayuda" });
+	}, 
 }

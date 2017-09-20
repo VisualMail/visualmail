@@ -31,25 +31,28 @@ module.exports.policies = {
   admin: {
     "*": ["sessionAuth", "adminAuth"], 
   }, 
+  session: { 
+    getUser: "sessionAuth", 
+    index: "sessionAuth", 
+    profile: "sessionAuth", 
+    profileUpdate: "sessionAuth", 
+    password: "sessionAuth", 
+    passwordUpdate: "sessionAuth", 
+  }, 
+  project:{ 
+    '*': "sessionAuth" 
+  }, 
+
+
+
   user:{ 
     password: "sessionAuth",
     create: "flash", 
     edit: ['flash','sessionAuth'], 
     '*': "sessionAuth" 
   }, 
-  project:{ 
-    add_user: ['flash','sessionAuth'], 
-    create: ['flash','sessionAuth'], 
-    edit: ['flash','sessionAuth'], 
-    '*': "sessionAuth" 
-  }, 
-  session: { 
-    index: "sessionAuth", 
-    profile: "sessionAuth", 
-    profileUpdate: "sessionAuth", 
-    password: "sessionAuth", 
-    passwordUpdate: "sessionAuth", 
-  }
+
+
 
   /***************************************************************************
   *                                                                          *

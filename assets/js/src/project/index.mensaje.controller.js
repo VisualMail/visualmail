@@ -296,6 +296,7 @@
             vm.mensajeRespuestaTipoId = ""; 
             vm.mensajeRespuestaTipoName = $sce.trustAsHtml(""); 
             vm.mensajeRespuestaTipoNameMarca = ""; 
+            $("#x").css("opacity", "1"); 
         }; 
 
         /** 
@@ -394,11 +395,16 @@
             }); 
         }; 
 
+        /**
+        * @method :: onBtnMensajeResponderClick 
+        * @description :: Responder a un mensaje. 
+        **/
         function onBtnMensajeResponderClick() { 
             vm.mensajeResponder = true; 
             $timeout(function() { 
                 $('#mensajeRespuesta').focus(); 
             }); 
+            $("#x").css("opacity", "0.5"); 
         }; 
 
         /**
@@ -566,6 +572,7 @@
             // Actualizar en el texto del mensaje 
             vm.mensajeRespuestaTipoName = $sce.trustAsHtml($(".context-menu-mensaje-anclado").html().trim()); 
             $(".context-menu-mensaje-anclado").html(vm.miMensajeAnclado.name); 
+            $("#x").css("opacity", "0.5"); 
         }; 
 
         /**
@@ -696,7 +703,13 @@
 
             // Actualizar el controlador
             vm.setMessageToast("Nuevo mensaje en el diálogo"); 
-            $scope.$apply();
+            
+            if($anclar && vm.miMapaSvgFocus) 
+                $(".svg-mapa").focus(); 
+            else 
+                $(".svg-mapa").css("opacity", "0.3"); 
+
+            $scope.$apply(); 
         }; 
 
     }; 

@@ -323,7 +323,320 @@
             <!-- Fin Mensaje Controller -->
                     
         </div> 
-        <!-- Fin Diálogo -->
+        <!-- Fin Diálogo --> 
+        
+        <!-- Inicio Kanban --> 
+        <div class="card-body" ng-show="vm.activeTab === 4"> 
+
+            <div id="kanbanBoard" ng-controller="IndexKanbanController as ik">
+                
+                <!-- Inicio Lista NUEVA --> 
+                <div class="form-group"> 
+                    <div class="row"> 
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"> 
+                            
+                            <!-- Inicio Título y búsqueda --> 
+                            <div class="kanbanBoardColumnHeader"> 
+                                <h6>NUEVA</h6> 
+                                <div class="input-group"> 
+                                    <span class="input-group-addon"> 
+                                        <span class="glyphicon glyphicon-search"></span> 
+                                    </span> 
+                                    <input class="form-control" placeholder="Buscar..." type="text" ng-model="vm.miKanbanColumnSearch1" /> 
+                                    <div class="input-group-btn"> 
+                                        <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#modalTarea"><span class="glyphicon glyphicon-plus-sign"></span></button> 
+                                    </div> 
+                                </div>  
+                            </div>
+                            <!-- Fin Título y búsqueda --> 
+                            
+                            <!-- Inicio Columna --> 
+                            <div class="kanbanBoardColumn" id="kanbanBoardColumn1" data-column-index="1"> 
+                                
+                                <!-- Inicio Celda --> 
+                                <div class="kanbanBoardCell" id="kanbanBoardColumn1Cell{{ item.index }}" 
+                                    data-cell-index="{{ item.index }}" 
+                                    ng-repeat="item in vm.miKanbanColumn1 | filter: vm.miKanbanColumnSearch1" 
+                                    ng-show="item.title"> 
+                                    
+                                    <!-- Inicio Tarea --> 
+                                    <div class="kanbanBoardTask" draggable="true" id="{{ item.id }}"> 
+                                        <div class="form-group">
+                                            <div class="row" style="margin-left: 0; margin-right: 0;">
+                                                <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"> 
+                                                    <div style="padding: 25px 0 0 0;">
+                                                        <img alt="profile" class="rounded-circle" style="height: 40px; width: 40px;"  
+                                                            ng-show="item.usuario.imgurl" 
+                                                            ng-src="{{ item.usuario.imgurl }}"> 
+                                                        <p><strong>{{ item.usuario.initials }}</strong></p> 
+                                                    </div>
+                                                </div> 
+                                                <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9"> 
+                                                    <div style="padding: 25px 0 0 0;">
+                                                        <h6 ng-if="item.associated === true && item.element !== ''">{{ item.element }}</h6>
+                                                        <p class="text-left">{{ item.title }}</p> 
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> 
+                                    <!-- Fin Tarea --> 
+                                
+                                </div> 
+                                <!-- Fin Celda --> 
+                            
+                            </div> 
+                            <!-- Fin Columna --> 
+    
+                        </div> 
+                        <!-- Fin Lista NUEVA --> 
+                
+                        <!-- Inicio Lista HACIENDO --> 
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"> 
+                            
+                            <!-- Inicio Título y búsqueda --> 
+                            <div class="kanbanBoardColumnHeader"> 
+                                <h6>HACIENDO</h6> 
+                                <div class="input-group"> 
+                                    <span class="input-group-addon"> 
+                                        <span class="glyphicon glyphicon-search"></span> 
+                                    </span> 
+                                    <input class="form-control" placeholder="Buscar..." type="text" ng-model="vm.miKanbanColumnSearch2" /> 
+                                </div>  
+                            </div>
+                            <!-- Fin Título y búsqueda --> 
+            
+                            <!-- Inicio Columna -->
+                            <div class="kanbanBoardColumn" id="kanbanBoardColumn2" data-column-index="2"> 
+            
+                                <!-- Inicio Celda -->
+                                <div class="kanbanBoardCell" id="kanbanBoardColumn2Cell{{ item.index }}" 
+                                    data-cell-index="{{ item.index }}" 
+                                    ng-repeat="item in vm.miKanbanColumn2 | filter: vm.miKanbanColumnSearch2" 
+                                    ng-show="item.title">
+            
+                                    <!-- Inicio Tarea --> 
+                                    <div class="kanbanBoardTask" draggable="true" id="{{ item.id }}"> 
+                                        <div class="form-group">
+                                            <div class="row" style="margin-left: 0; margin-right: 0;">
+                                                <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"> 
+                                                    <div style="padding: 25px 0 0 0;">
+                                                        <img alt="profile" class="rounded-circle" style="height: 40px; width: 40px;"  
+                                                            ng-show="item.usuario.imgurl" 
+                                                            ng-src="{{ item.usuario.imgurl }}"> 
+                                                        <p><strong>{{ item.usuario.initials }}</strong></p> 
+                                                    </div>
+                                                </div> 
+                                                <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9"> 
+                                                    <div style="padding: 25px 0 0 0;">
+                                                        <h6 ng-if="item.associated === true && item.element !== ''">{{ item.element }}</h6>
+                                                        <p class="text-left">{{ item.title }}</p> 
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> 
+                                    <!-- Fin Tarea --> 
+            
+                                </div> 
+                                <!-- Fin Celda --> 
+                            
+                            </div>
+                            <!-- Fin Columna -->
+            
+                        </div> 
+                        <!-- Fin Lista HACIENDO --> 
+                
+                        <!-- Inicio Lista EN PRUEBAS --> 
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"> 
+    
+                            <!-- Inicio Título y búsqueda --> 
+                            <div class="kanbanBoardColumnHeader"> 
+                                <h6>EN PRUEBAS</h6> 
+                                <div class="input-group"> 
+                                    <span class="input-group-addon"> 
+                                        <span class="glyphicon glyphicon-search"></span> 
+                                    </span> 
+                                    <input class="form-control" placeholder="Buscar..." type="text" ng-model="vm.miKanbanColumnSearch3" /> 
+                                </div>  
+                            </div>
+                            <!-- Fin Título y búsqueda --> 
+            
+                            <!-- Inicio Columna -->
+                            <div class="kanbanBoardColumn" id="kanbanBoardColumn3" data-column-index="3">
+            
+                                <!-- Inicio Celda -->
+                                <div class="kanbanBoardCell" id="kanbanBoardColumn3Cell{{ item.index }}" 
+                                    data-cell-index="{{ item.index }}" 
+                                    ng-repeat="item in vm.miKanbanColumn3 | filter: vm.miKanbanColumnSearch3" 
+                                    ng-show="item.title">
+            
+                                    <!-- Inicio Tarea --> 
+                                    <div class="kanbanBoardTask" draggable="true" id="{{ item.id }}"> 
+                                        <div class="form-group">
+                                            <div class="row" style="margin-left: 0; margin-right: 0;">
+                                                <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"> 
+                                                    <div style="padding: 25px 0 0 0;">
+                                                        <img alt="profile" class="rounded-circle" style="height: 40px; width: 40px;"  
+                                                            ng-show="item.usuario.imgurl" 
+                                                            ng-src="{{ item.usuario.imgurl }}"> 
+                                                        <p><strong>{{ item.usuario.initials }}</strong></p> 
+                                                    </div>
+                                                </div> 
+                                                <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9"> 
+                                                    <div style="padding: 25px 0 0 0;">
+                                                        <h6 ng-if="item.associated === true && item.element !== ''">{{ item.element }}</h6>
+                                                        <p class="text-left">{{ item.title }}</p> 
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> 
+                                    <!-- Fin Tarea --> 
+            
+                                </div>
+                                <!-- Fin Celda -->
+            
+                            </div>
+                            <!-- Fin Columna --> 
+            
+                        </div> 
+                        <!-- Fin Lista EN PRUEBAS --> 
+    
+                        <!-- Inicio Lista COMPLETA --> 
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"> 
+                
+                            <!-- Inicio Título y búsqueda --> 
+                            <div class="kanbanBoardColumnHeader"> 
+                                <h6>COMPLETADO</h6> 
+                                <div class="input-group"> 
+                                    <span class="input-group-addon"> 
+                                        <span class="glyphicon glyphicon-search"></span> 
+                                    </span> 
+                                    <input class="form-control" placeholder="Buscar..." type="text" ng-model="vm.miKanbanColumnSearch4" /> 
+                                </div>  
+                            </div>
+                            <!-- Fin Título y búsqueda --> 
+                
+                            <!-- Inicio Columna -->
+                            <div class="kanbanBoardColumn" id="kanbanBoardColumn4" data-column-index="3">
+                
+                                <!-- Inicio Celda -->
+                                <div class="kanbanBoardCell" id="kanbanBoardColumn4Cell{{ item.index }}" 
+                                    data-cell-index="{{ item.index }}" 
+                                    ng-repeat="item in vm.miKanbanColumn4 | filter: vm.miKanbanColumnSearch4" 
+                                    ng-show="item.title">
+                
+                                    <!-- Inicio Tarea --> 
+                                    <div class="kanbanBoardTask" draggable="true" id="{{ item.id }}"> 
+                                        <div class="form-group">
+                                            <div class="row" style="margin-left: 0; margin-right: 0;">
+                                                <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"> 
+                                                    <div style="padding: 25px 0 0 0;">
+                                                        <img alt="profile" class="rounded-circle" style="height: 40px; width: 40px;"  
+                                                            ng-show="item.usuario.imgurl" 
+                                                            ng-src="{{ item.usuario.imgurl }}"> 
+                                                        <p><strong>{{ item.usuario.initials }}</strong></p> 
+                                                    </div>
+                                                </div> 
+                                                <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9"> 
+                                                    <div style="padding: 25px 0 0 0;">
+                                                        <h6 ng-if="item.associated === true && item.element !== ''">{{ item.element }}</h6>
+                                                        <p class="text-left">{{ item.title }}</p> 
+                                                    </div> 
+                                                </div> 
+                                            </div> 
+                                        </div>
+                                    </div> 
+                                    <!-- Fin Tarea --> 
+                
+                                </div>
+                                <!-- Fin Celda -->
+                
+                            </div>
+                            <!-- Fin Columna --> 
+                
+                        </div>
+                    </div>
+                </div> 
+                <!-- Fin Lista EN PRUEBAS --> 
+    
+            <!-- Inicio modal Tarea -->
+            <div class="modal fade" id="modalTarea" tabindex="-1" role="dialog" aria-labelledby="modalTareaTitle" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <form name="vm.formTarea" novalidate="novalidate">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modalTareaTitle">Nueva tarea</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <label for="tareaTitle"
+                                                    ng-class="{ 
+                                                        'col-form-label': vm.formTarea.tareaTitle.$pristine || vm.formTarea.tareaTitle.$valid, 
+                                                        'col-form-label text-danger': !vm.formTarea.tareaTitle.$pristine && !vm.formTarea.tareaTitle.$valid }">Título (requerido)</label> 
+                                                <input id="tareaTitle" name="tareaTitle" placeholder="Mínimo 3 caracteres" type="text" 
+                                                    ng-class="{ 
+                                                    'form-control': vm.formTarea.tareaTitle.$pristine || vm.formTarea.tareaTitle.$valid, 
+                                                    'form-control is-invalid': !vm.formTarea.tareaTitle.$pristine && !vm.formTarea.tareaTitle.$valid }" 
+                                                    ng-maxlength="130" 
+                                                    ng-minlength="3" 
+                                                    ng-model="vm.tareaTitle" 
+                                                    ng-required="true" /> 
+                                                <p class="text-danger" role="alert" ng-messages="!vm.formTarea.tareaTitle.$pristine && vm.formTarea.tareaTitle.$error"> 
+                                                    <strong ng-message="minlength">Mínimo 3 caracteres</strong> 
+                                                    <strong ng-message="maxlength">Nombre muy largo</strong> 
+                                                    <strong ng-message="required">Requerido</strong> 
+                                                </p> 
+                                            </div> 
+                                        </div> 
+                                    </div> 
+                                    
+                                    <div class="form-group"> 
+                                        <div class="row"> 
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
+                                                <label for="tareaUser">Responsable</label> 
+                                                <select id="tareaUser" name="tareaUser" style="width: 100%"> 
+                                                </select> 
+                                            </div> 
+                                        </div>
+                                    </div>
+            
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-primary" type="button" data-dismiss="modal"><span class="glyphicon glyphicon-remove-circle"></span> Cerrar</button>
+                                    <button type="button"
+                                        ng-class="{ 
+                                            'btn btn-success': vm.formTarea.$valid, 
+                                            'btn btn-default': !vm.formTarea.$valid }" 
+                                        ng-click="vm.onBtnTareaGuardarClick()"
+                                        ng-disabled="!vm.formTarea.$valid">
+                                        <span class="glyphicon glyphicon-save"></span> Guardar
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- Fin modal Tarea -->
+
+
+            </div> 
+            <!-- Fin Kanban -->
+ 
+            
+
+        
+
+
+
+
 
 
 
