@@ -220,26 +220,26 @@ module.exports = {
 
 			// Retornar la vista con los valores del proyecto
 			return res.view({
-				title: "Proyecto: " + project.name,
+				title: "Proyecto: " + project.name, 
 				layout: "shared/project", 
-				sectionHead:
-					"<link href='/js/dependencies/ng-table/2.0.2/css/ng-table.min.css'></script>" + 
-					"<link href='/js/dependencies/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css' />" +  
-					"<link href='/js/dependencies/jquery-contextmenu/2.4.1/jquery.contextMenu.css' rel='stylesheet' type='text/css' />" +  
+				sectionHead: 
+					"<link href='/js/dependencies/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css' />" + 
+					"<link href='/js/dependencies/jquery-contextmenu/2.4.1/jquery.contextMenu.css' rel='stylesheet' type='text/css' />" + 
 					"<link href='/js/dependencies/jquery-splitter/0.24.0/css/jquery.splitter.css' rel='stylesheet' type='text/css' />" + 
-					"<link href='/js/dependencies/pickadate.js-master/3.5.6/themes/default.css' />" +   
-					"<link href='/js/dependencies/pickadate.js-master/3.5.6/themes/default.date.css' />",  
+					"<link href='/js/dependencies/ng-table/2.0.2/css/ng-table.min.css' rel='stylesheet' type='text/css' />", 
 				sectionScripts: 
 					"<script type='text/javascript' src='/js/dependencies/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js'></script>" + 
 					"<script type='text/javascript' src='/js/dependencies/bootstrap-datepicker/1.7.1/locales/bootstrap-datepicker.es.min.js'></script>" + 
 					"<script type='text/javascript' src='/js/dependencies/d3/4.8.0/js/d3.min.js'></script>" + 
 					"<script type='text/javascript' src='/js/dependencies/jquery-contextmenu/2.4.1/jquery.contextMenu.js'></script>" + 
 					"<script type='text/javascript' src='/js/dependencies/jquery-splitter/0.24.0/js/jquery.splitter.js'></script>" + 
-					"<script src='/js/dependencies/ng-table/2.0.2/js/ng-table.min.js'></script>" + 
-					"<script type='text/javascript' src='/js/src/Project/IndexController.d3.js'></script>" + 
-					"<script type='text/javascript' src='/js/src/Project/IndexController.kanban.js'></script>" + 
-					"<script type='text/javascript' src='/js/src/Project/IndexController.jquery.js'></script>" + 
-					"<script type='text/javascript' src='/js/src/Project/IndexController.js'></script>" + 
+					"<script type='text/javascript' src='/js/dependencies/ng-table/2.0.2/js/ng-table.min.js'></script>" + 
+					"<script type='text/javascript' src='/js/src/project/index.d3.js'></script>" + 
+					"<script type='text/javascript' src='/js/src/project/index.kanban.js'></script>" + 
+					"<script type='text/javascript' src='/js/src/project/index.init.js'></script>" + 
+					"<script type='text/javascript' src='/js/src/project/index.controller.js'></script>" + 
+					"<script type='text/javascript' src='/js/src/project/index.mensaje.controller.js'></script>" + 
+					"<script type='text/javascript' src='/js/src/project/index.project.controller.js'></script>" + 
 					"<script src='/js/dependencies/sails.io.js'></script>", 
 				project: project 
 			});

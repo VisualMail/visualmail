@@ -92,21 +92,19 @@ module.exports = {
 		// Obtener el mensaje 
 		var msj = { 
 			name: req.param("name"), 
-			namePlain: req.param("name"), 
 			nodoNivel: req.param("nodoNivel"), 
 			nodoPadreId: req.param("nodoPadreId"), 
 			nodoPadreNivel: req.param("nodoPadreNivel"), 
 			nodoPadreSessionId: req.param("nodoPadreSessionId"), 
 			numero_hijos: 0, 
 			parent: req.param("parent"), 
-			position: req.param("position"), 
 			project_id: req.param("project_id"), 
-			respuestaMarca: req.param("respuestaMarca"), 
-			respuestaMarcaId: req.param("respuestaMarcaId"), 
 			root: req.param("root"), 
-			session: req.param("session"), 
 			sessionId: req.param("sessionId"), 
 			tipo: req.param("tipo"), 
+			tipoId: req.param("tipoId"), 
+			tipoName: req.param("tipoName"), 
+			tipoNameMarca: req.param("tipoNameMarca"), 
 			usuario: req.session.User 
 		}; 
 

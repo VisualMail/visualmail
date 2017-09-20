@@ -58,7 +58,7 @@ button { cursor: pointer; }
 .main-logo:hover { opacity: 0.01; } 
 .main-logo-hover { position: absolute; opacity: 1; }
 
-.marcar { cursor: pointer; font-weight: bold; text-decoration: underline; }
+.marcar { background-color: #93B7DC; }
 
 
 /* select2 */
@@ -911,6 +911,20 @@ button { cursor: pointer; }
 .context-menu-icon-db { background-image: url('../images/icons/db-small.png'); } 
 .context-menu-icon-ta { background-image: url('../images/icons/ta-small.png'); } 
 .context-menu-icon-da { background-image: url('../images/icons/da-small.png'); } 
+.icon-display 
+{
+  height: 18px; width: 18px;  background-position: 1px 2px; 
+  background-repeat: no-repeat; display: inline-block;
+  background-size: 18px;
+}
+
+.icon-citar-sm { background-image: url('../images/cr18x18.png'); } 
+.icon-ci-sm { background-image: url('../images/ci18x18.png'); } 
+.icon-ac-sm { background-image: url('../images/ac18x18.png'); } 
+.icon-nc-sm { background-image: url('../images/nc18x18.png'); } 
+.icon-db-sm { background-image: url('../images/db18x18.png'); } 
+.icon-ta-sm { background-image: url('../images/ta18x18.png'); } 
+.icon-da-sm { background-image: url('../images/da18x18.png'); } 
 
 
 /* The snackbar - position it at the bottom and in the middle of the screen */

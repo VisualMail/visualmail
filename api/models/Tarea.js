@@ -43,20 +43,25 @@ module.exports = {
         project_id: { 
             type: "string" 
         }, 
-
-        // Si la tarea corresponde a una marca de un mensaje 
-        respuestaMarca: { 
-            type: "string"
-        }, 
-
-        // Id de la marca de un mensaje 
-        respuestaMarcaId: { 
-            type: "string"
-        }, 
         
-        // Estado de la tarea de acuerdo al Kanban: doing, done, testing, new 
+        // Representa el tipo del mensaje: duda, compromiso, acuerdo, etc 
         tipo: { 
             type: "string" 
+        }, 
+
+        // Identificador del tipo del mensaje: duda, compromiso, acuerdo, etc 
+        tipoId: { 
+            type: "string" 
+        }, 
+
+        // Texto con la marca a la que responde el mensaje 
+        tipoName: { 
+            type: "string", 
+        }, 
+
+        // Marca del texto a la que responde el mensaje 
+        tipoNameMarca: { 
+            type: "string", 
         }, 
 
         // Título de la tarea 

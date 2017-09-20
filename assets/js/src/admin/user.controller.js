@@ -1,5 +1,6 @@
 (function() { 
     "use strict"; 
+    
     angular.module("VisualMailApp").requires.push("ngTable"); 
     angular
         .module('VisualMailApp') 

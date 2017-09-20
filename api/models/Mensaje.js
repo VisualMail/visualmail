@@ -4,107 +4,101 @@
  * @description :: TODO: Representa un mensaje realizado por un usuario
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  **/
- module.exports = {
-    schema: true,
-    autoCreatedAt: true,
-    autoUpdatedAt: true,
+ module.exports = { 
+    schema: true, 
+    autoCreatedAt: true, 
+    autoUpdatedAt: true, 
     attributes: { 
-
-        // 'pk' del mensaje al que esta asociado
+        // 'pk' del mensaje al que esta asociado 
         children: { 
-            collection: 'Mensaje'
-        },
+            collection: 'Mensaje' 
+        }, 
 
         // Texto del mensaje 
         name: { 
             type: "string" 
-        },
-        
-        // Texto plano 
-        namePlain: { 
-            type: "string"
         }, 
 
         // 'nodoId' identificador del nodo que representa al mensaje en el mapa del diálogo 
-        nodoId: {
-            type: "integer"
+        nodoId: { 
+            type: "integer" 
         }, 
 
-        // 'nodoNivel' nivel en el que está posicionado el nodo en el mapa del diálogo   
-        nodoNivel: {
-            type: "integer"
+        // 'nodoNivel' nivel en el que está posicionado el nodo en el mapa del diálogo 
+        nodoNivel: { 
+            type: "integer" 
         }, 
 
         // 'nodoPadreId' identificador del nodo padre del nodo que representa al mensaje en el mapa del diálogo 
-        nodoPadreId: {
-            type: "integer"
-        },
+        nodoPadreId: { 
+            type: "integer" 
+        }, 
 
-        // 'nodoPadreNivel' nivel en el que está posicionado el nodo padre en el mapa del diálogo  
-        nodoPadreNivel: {
-            type: "integer"
+        // 'nodoPadreNivel' nivel en el que está posicionado el nodo padre en el mapa del diálogo 
+        nodoPadreNivel: { 
+            type: "integer" 
         }, 
 
         // 'nodoPadreSessionId' el número de la sesión en la que se encuentra el nodo padre 
-        nodoPadreSessionId: {
-            type: "integer"
+        nodoPadreSessionId: { 
+            type: "integer" 
         }, 
 
-        // Número de hijos del mensaje
-        numero_hijos: {
-            type: "integer"
-        },
+        // Número de hijos del mensaje 
+        numero_hijos: { 
+            type: "integer" 
+        }, 
 
-        // 'id' del mensaje padre
+        // 'id' del mensaje padre 
         parent: { 
-            type: "string"
-        },
-
-        // Guardar en un arreglo la posición que le corresponde al mensaje de acuerdo al diálogo ('dialog')
-        position: { 
-            type: "array"
+            type: "string" 
         }, 
 
-        // 'id' del proyecto al cual está inmerso
-        project_id: {
-            type: "string"
-        },
-
-        // 'sessionId' el número de la sesión en la que se encuentra el nodo  
-        sessionId: {
-            type: "integer"
+        // 'id' del proyecto al cual está inmerso 
+        project_id: { 
+            type: "string" 
         }, 
 
-        // Si el mensaje responde a una marca de un mensaje 
-        respuestaMarca: { 
-            type: "string"
+        // 'sessionId' el número de la sesión en la que se encuentra el nodo 
+        sessionId: { 
+            type: "integer" 
         }, 
 
-        // Id de la marca de un mensaje 
-        respuestaMarcaId: { 
-            type: "string"
+        // Valor booleano si es raíz de los mensajes (todos false menos el primero) 
+        root: { 
+            type: "boolean" 
         }, 
 
-        // Valor booleano si es raíz de los mensajes (todos false menos el primero)
-        root: {
-            type: "boolean"
-        },
-
-        // 'pk' de la tarea asociada al mensaje
-        tareas: {
-            collection: 'tarea',
-            via: 'mensaje'
-        },
+        // 'pk' de la tarea asociada al mensaje 
+        tareas: { 
+            collection: 'tarea', 
+            via: 'mensaje' 
+        }, 
 
         // Representa el tipo del mensaje: duda, compromiso, acuerdo, etc 
         tipo: { 
             type: "string" 
         }, 
 
-        // 'pk' del usuario que realizó el mensaje
-        usuario: {
-            model: 'User'
-        },
+        // Identificador del tipo del mensaje: duda, compromiso, acuerdo, etc 
+        tipoId: { 
+            type: "string" 
+        }, 
+
+        // Texto con la marca a la que responde el mensaje 
+        tipoName: { 
+            type: "string", 
+        }, 
+
+        // Marca del texto a la que responde el mensaje 
+        tipoNameMarca: { 
+            type: "string", 
+        }, 
+
+        // 'pk' del usuario que realizó el mensaje 
+        usuario: { 
+            model: 'User' 
+        }, 
     },
 
     /**

@@ -106,19 +106,19 @@
                     }, 
                     data: { 
                         name: project.description, // La descripción es el mensaje inicial 
-                        namePlain: project.description, // La descripción es el mensaje inicial 
                         nodoNivel: 0, 
                         nodoPadreId: 0, 
                         nodoPadreNivel: 0, 
                         nodoPadreSessionId: 0, 
                         numero_hijos: 0, // Su numero de hijos 
                         parent: "", // El padre por defecto = vacio 
-                        position: [0], // La posicion del mensaje en Dialog 
                         project_id: project.id, // El id del proyecto 
                         root: true, // La raiz 
-                        session: 0, // El valor de sesion inicial 
                         sessionId: 0, 
                         tipo: "Mensaje Inicial", // El tipo del mensaje inicial ya que no es un elemento dialogico 
+                        tipoId: "", 
+                        tipoName: "", 
+                        tipoNameMarca: "" 
                     }
                 }).then(function(resMensaje) { 
                     d = resMensaje.data; 

@@ -28,11 +28,13 @@ module.exports.policies = {
 
   // '*': true,
   '*': 'flash', 
+  admin: {
+    "*": ["sessionAuth", "adminAuth"], 
+  }, 
   user:{ 
     password: "sessionAuth",
     create: "flash", 
     edit: ['flash','sessionAuth'], 
-    admin: ['sessionAuth', 'adminAuth'], 
     '*': "sessionAuth" 
   }, 
   project:{ 

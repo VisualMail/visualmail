@@ -20,9 +20,9 @@ module.exports = {
 			sectionHead: 
 				"<link href='/js/dependencies/ng-table/2.0.2/css/ng-table.min.css'></script>", 
 			sectionScripts: 
-				"<script src='/js/dependencies/jscolor/2.0.4/js/jscolor.min.js'></script>" + 
-				"<script src='/js/dependencies/ng-table/2.0.2/js/ng-table.min.js'></script>" + 
-				"<script src='/js/src/Admin/UserController.js'></script>" 
+				"<script src='/js/dependencies/jscolor/2.0.4/js/jscolor.min.js' type='text/javascript'></script>" + 
+				"<script src='/js/dependencies/ng-table/2.0.2/js/ng-table.min.js' type='text/javascript'></script>" + 
+				"<script src='/js/src/admin/user.controller.js' type='text/javascript'></script>" 
 		});
     }, 
     
