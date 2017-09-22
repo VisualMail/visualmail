@@ -238,6 +238,7 @@ module.exports = {
 					"<script type='text/javascript' src='/js/src/project/index.kanban.js'></script>" + 
 					"<script type='text/javascript' src='/js/src/project/index.init.js'></script>" + 
 					"<script type='text/javascript' src='/js/src/project/index.controller.js'></script>" + 
+					"<script type='text/javascript' src='/js/src/project/index.kanban.controller.js'></script>" + 
 					"<script type='text/javascript' src='/js/src/project/index.mensaje.controller.js'></script>" + 
 					"<script type='text/javascript' src='/js/src/project/index.project.controller.js'></script>" + 
 					"<script src='/js/dependencies/sails.io.js'></script>", 

@@ -190,6 +190,22 @@ function mapaDialogoAgregarNodo(mensaje) {
 	var sessionH = parseInt($("[data-line-type='session']").first().attr("y2"));
 	sessionH = y2 > sessionH ? y2 : sessionH; 
 	$("[data-line-type='session']").attr("y2", sessionH);
+
+	// Agregar palabra "Nuevo" 
+	var a = $("#txtNew"); 
+
+	if(a.length === 0) { 
+		svgMapa.append("text") 
+			.attr("id", "txtNew")
+			.attr("dx", circleWidth + (data.sessionId * 100) + 5) 
+			.attr("dy", circleHeight + (data.nodoNivel * 40) - 20) 
+			.attr("fill", "red") 
+			.style("text-anchor", "start") 
+			.text("Nuevo"); 
+	} else { 
+		a.attr("dx", circleWidth + (data.sessionId * 100) + 5); 
+		a.attr("dy", circleHeight + (data.nodoNivel * 40) - 20); 
+	}
 }
 
 /**
