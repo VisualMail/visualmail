@@ -13,16 +13,19 @@ $(document).ready(function() {
     
     // Iniciar el menú contextual de cada nodo del mapa del diálogo
     $(function() { contextMenuMapaInit(); }); 
+
+    // Iniciar el menú contextual de cada nodo del mapa del diálogo con kanban 
+    $(function() { contextMenuMapaKanbanInit(); }); 
     
     // Iniciar el menú contextual del panel de mensajes 
     $(function() { contextMenuMensajePanelInit(); }); 
     
-    $("#selectFiltrarUsuario").on("change", function() { 
-        onSelectFiltrarUsuario(this); 
-    }); 
+    // Iniciar el filtro de usuarios en el mapa 
+    $("#selectFiltrarUsuario").on("change", function() { onSelectFiltrarUsuario(this); }); 
 
     var scopeMain = angular.element(document.getElementById("IndexControllerMain")).scope(); 
     var scopeMensaje = angular.element(document.getElementById("IndexMensajeControllerMain")).scope(); 
+    var scopeTarea = angular.element(document.getElementById("kanbanBoard")).scope(); 
 
     /** 
     * @method :: io.socket.get 
@@ -45,10 +48,10 @@ $(document).ready(function() {
                 scopeMensaje.im.onSocketMensajeNuevo(data); 
                 break; 
             case "TareaNueva": 
-                //scope.im.onSocketTareaNueva(data); 
+                scopeTarea.ik.onSocketTareaNueva(data); 
                 break; 
             case "TareaActualizar": 
-                //scope.im.onSocketTareaActualizar(data); 
+                scopeTarea.ik.onSocketTareaActualizar(data); 
                 break; 
             default: 
                 break; 
@@ -115,6 +118,42 @@ function contextMenuMapaInit() {
         items: { 
             "reply": { name: "Responder todo", icon: "edit" }, 
             "anchor": { name: "Anclar/Desanclar", icon: "paste" }, 
+            "go": { name: "Desplegar mensaje", icon: "add" }, 
+            "sep1": "---------", 
+            "quit": { name: "Cancelar", icon: function() { return "context-menu-icon context-menu-icon-quit"; } } 
+        } 
+    });
+}; 
+
+/**
+* @method :: contextMenuMapaKanbanInit
+* @description :: Inicia el sub-menú del mapa con 'ir al kanban' cuando el usuario hace clic derecho.
+**/
+function contextMenuMapaKanbanInit() { 
+    $.contextMenu({ 
+        selector: ".context-menu-one-kanban", 
+        callback: function(key, options) { 
+            var nodoId = parseInt($(this[0]).attr("data-nodo-id")); 
+            var scope = angular.element(document.getElementById("IndexMensajeControllerMain")).scope(); 
+                
+            switch(key) { 
+                case "go": 
+                    scope.$apply(function () { 
+                        scope.im.onMensajeAnclarNavegar(nodoId, 2); 
+                    }); 
+                    break; 
+                case "reply":
+                case "anchor": 
+                    onMensajeAnclarResponder(nodoId, scope, key === "reply"); 
+                    break; 
+                default: 
+                    break; 
+            } 
+        }, 
+        items: { 
+            "reply": { name: "Responder todo", icon: "edit" }, 
+            "anchor": { name: "Anclar/Desanclar", icon: "paste" }, 
+            "kanban": { name: "Ir al kanban", icon: "reply" }, 
             "go": { name: "Desplegar mensaje", icon: "add" }, 
             "sep1": "---------", 
             "quit": { name: "Cancelar", icon: function() { return "context-menu-icon context-menu-icon-quit"; } } 

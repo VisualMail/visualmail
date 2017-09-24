@@ -351,13 +351,14 @@
 
                 // Preparar el objeto tarea 
                 var obj = { 
+                    description: vm.mensajeRespuesta, 
                     element: vm.mensajeRespuestaTipo === "Mensaje Inicial" || vm.mensajeRespuestaTipo === "Citar" || vm.mensajeRespuestaTipo === "" ? "" : vm.mensajeRespuestaTipo, 
                     mensajeId: d.mensaje.id, 
                     tipo: vm.mensajeRespuestaTipo, 
                     tipoId: vm.mensajeRespuestaTipoId, 
                     tipoName: $("#miMensajeRespuestaTipoName").html(), 
                     tipoNameMarca: vm.mensajeRespuestaTipoNameMarca, 
-                    title: vm.mensajeRespuestaMarca, 
+                    title: vm.mensajeRespuestaTipoNameMarca, 
                     usuario: parent.vm.miUser 
                 }; 
 
@@ -584,29 +585,28 @@
             // Almacenar los datos que se enviarán al servidor 
             var tarea = { 
                 associated: true, 
+                description: obj.description, 
                 drag: true, 
                 element: obj.element, 
+                estado: "new", 
                 kanban: parent.vm.miProject.kanban[0].id, 
                 mensaje: obj.mensajeId, 
                 project_id: parent.vm.miProject.id, 
                 selectedUsuarioTask: obj.usuario, 
-                tipo: "new", 
+                tipo: obj.tipo, 
+                tipoId: obj.tipoId, 
+                tipoName: obj.tipoName, 
+                tipoNameMarca: obj.tipoNameMarca, 
                 title: obj.title, 
                 usuario: obj.usuario.id, 
             }; 
-
-            // Si existe una marca agregar 
-            if(obj.respuestaMarca) { 
-                tarea.respuestaMarca = obj.respuestaMarca; 
-                tarea.respuestaMarcaId = obj.respuestaMarcaId; 
-            }  
 
             $http({ 
                 method: "POST", 
                 url: "/tarea/create", 
                 headers: { 
                     "Content-Type": "application/json", 
-                    "X-CSRF-TOKEN": vm.csrfToken 
+                    "X-CSRF-TOKEN": parent.vm.csrfToken 
                 }, 
                 data: tarea 
             }).then(function(res) { 
@@ -616,7 +616,7 @@
 
                 // Si existe un error retornar 
                 if(!d.proc) { 
-                    setMessage(d.proc, d.msg, "warning"); 
+                    vm.setMessage(d.proc, d.msg, "warning"); 
                     return; 
                 } 
             }).catch(function(err) { 

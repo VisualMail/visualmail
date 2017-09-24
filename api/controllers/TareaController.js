@@ -134,37 +134,37 @@ module.exports = {
 					msg: "¡Se produjo un error con el objeto 'tarea' (findOne)!" 
 				});
 
-			// Almacenar el tipo original de la tarea y asignar el nuevo tipo 
-			var tipoOriginal = tarea.tipo; 
-			tarea.tipo = req.param("nuevoTipo"); 
+			// Almacenar el estado original de la tarea y asignar el nuevo estado  
+			var estadoOriginal = tarea.estado; 
+			tarea.estado = req.param("nuevoEstado"); 
 
-			// Si el nuevo tipo de la tarea es distinto del original buscar 
-			// todas las tareas del tipo original ordenadas por el índice 
-			if(tarea.tipo !== tipoOriginal) { 
+			// Si el nuevo estado de la tarea es distinto del original 
+			// buscar todas las tareas del estado original ordenadas por el índice 
+			if(tarea.estado !== estadoOriginal) { 
 				Tarea.find({ 
 					project_id: tarea.project_id, 
 					id: { "!": tarea.id }, 
-					tipo: tipoOriginal 
-				}).sort("index ASC").then(function(tareasTipo) { 
+					estado: estadoOriginal 
+				}).sort("index ASC").then(function(tareasEstado) { 
 					// Iterar en cada tarea y actualizar su índice 
-					for(var i = 0; i < tareasTipo.length; i++) { 
-						tareasTipo[i].index = i + 1; 
-						tareasTipo[i].save(); 
+					for(var i = 0; i < tareasEstado.length; i++) { 
+						tareasEstado[i].index = i + 1; 
+						tareasEstado[i].save(); 
 					} 
 				}).catch(function(err) { 
-					sails.log("Se produjo un error en '/tarea/updateTipo' (Tarea.find(tareasTipo)): ", err); 
+					sails.log("Se produjo un error en '/tarea/updateTipo' (Tarea.find(tareasEstado)): ", err); 
 					return res.json({ 
 						proc: false, 
-						msg: "¡Se produjo un error en la conexión con la base de datos (Tarea.find(tareasTipo))!" 
+						msg: "¡Se produjo un error en la conexión con la base de datos (Tarea.find(tareasEstado))!" 
 					}); 
 				}); 
 			} 
 
-			// Buscar todas las tareas del nuevo tipo ordenadas por su índice 
+			// Buscar todas las tareas del nuevo estado ordenadas por su índice 
 			Tarea.find({ 
 				project_id: tarea.project_id, 
 				id: { "!": tarea.id }, 
-				tipo: tarea.tipo 
+				estado: tarea.estado 
 			}).sort("index ASC").then(function(tareasActualizar) { 
 				// La variable "newCell" permite verificar si la tarea se cambió 
 				// hacia una nueva columna (en el tablero Kanban) y el usuario 
@@ -177,14 +177,14 @@ module.exports = {
 				// Si el nuevo tipo de la tarea es distinto al original y 
 				// el usuario no especificó en que índice colocar la tarea 
 				// establecer el último índice de la tarea 
-				if(tarea.tipo !== tipoOriginal && newCell) 
+				if(tarea.estado !== estadoOriginal && newCell) 
 					tarea.index = tareasActualizar.length + 1; 
 				
 				// Almacenar los cambios de la tarea 
-				tarea.save(function(err) { }); 
+				tarea.save(); 
 				var k = 1; 
 				
-				// Para cada tarea del nuevo tipo, actualizar el nuevo índice 
+				// Para cada tarea del nuevo estado, actualizar el nuevo índice 
 				for(var j = 0; j < tareasActualizar.length; j++) { 
 					tareasActualizar[j].index = k++; 
 					
@@ -204,8 +204,8 @@ module.exports = {
 						usuarioId: req.param("usuarioId"), 
 						newCell: newCell, 
 						newIndex: tarea.index, 
-						tipoOriginal: tipoOriginal, 
-						nuevoTipo: tarea.tipo, 
+						estadoOriginal: estadoOriginal, 
+						nuevoEstado: tarea.estado, 
 						type: "TareaActualizar" 
 					}, req);
 				}).catch(function(err) { 

@@ -14,6 +14,11 @@ module.exports = {
             type: "boolean" 
         }, 
 
+        // Descripción/Alcance de la tarea 
+        description: { 
+            type: "string" 
+        }, 
+
         // Valor para api drag and drop (true) por defecto 
         drag: { 
             type: "boolean" 
@@ -21,6 +26,11 @@ module.exports = {
 
         // Valor para api 
         element: { 
+            type: "string" 
+        }, 
+
+        // Estado de la tarea "por hacer, etc."
+        estado: { 
             type: "string" 
         }, 
 

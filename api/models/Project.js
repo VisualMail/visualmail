@@ -39,12 +39,6 @@ module.exports = {
 			via: "projects" 
 		}, 
 
-		// Relación uno a muchos con el diálogo 
-		dialogos: { 
-			collection: "dialogo", 
-			via: "project" 
-		}, 
-
 		// Guarda los roles en un json (no implementado) 
 		roles: { 
 			type: "json" 

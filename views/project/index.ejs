@@ -1,5 +1,5 @@
 <div style="height: 100%; position: absolute; top: 60px; width: 100%;">
-    <div class="card text-center"> 
+    <div class="card"> 
 
         <!-- Inicio Tab -->
         <div class="card-header"> 
@@ -328,12 +328,13 @@
         <!-- Inicio Kanban --> 
         <div class="card-body" ng-show="vm.activeTab === 4"> 
 
+            <!-- Inicio controller -->
             <div id="kanbanBoard" ng-controller="IndexKanbanController as ik">
                 
                 <!-- Inicio Lista NUEVA --> 
                 <div class="form-group"> 
                     <div class="row"> 
-                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"> 
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 text-center"> 
                             
                             <!-- Inicio Título y búsqueda --> 
                             <div class="kanbanBoardColumnHeader"> 
@@ -356,8 +357,7 @@
                                 <!-- Inicio Celda --> 
                                 <div class="kanbanBoardCell" id="kanbanBoardColumn1Cell{{ item.index }}" 
                                     data-cell-index="{{ item.index }}" 
-                                    ng-repeat="item in vm.miKanbanColumn1 | filter: vm.miKanbanColumnSearch1" 
-                                    ng-show="item.title"> 
+                                    ng-repeat="item in ik.miKanbanColumn1 | filter: ik.miKanbanColumnSearch1"> 
                                     
                                     <!-- Inicio Tarea --> 
                                     <div class="kanbanBoardTask" draggable="true" id="{{ item.id }}"> 
@@ -366,14 +366,13 @@
                                                 <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"> 
                                                     <div style="padding: 25px 0 0 0;">
                                                         <img alt="profile" class="rounded-circle" style="height: 40px; width: 40px;"  
-                                                            ng-show="item.usuario.imgurl" 
-                                                            ng-src="{{ item.usuario.imgurl }}"> 
-                                                        <p><strong>{{ item.usuario.initials }}</strong></p> 
+                                                            ng-src="{{ item.usuario.imgurl ? item.usuario.imgurl : ik.tareaProfileNone }}"> 
+                                                        <p><strong>{{ item.usuario ? item.usuario.initials : '' }}</strong></p> 
                                                     </div>
                                                 </div> 
                                                 <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9"> 
                                                     <div style="padding: 25px 0 0 0;">
-                                                        <h6 ng-if="item.associated === true && item.element !== ''">{{ item.element }}</h6>
+                                                        <h6 ng-if="item.associated === true && item.tipoId">{{ item.tipo }}</h6>
                                                         <p class="text-left">{{ item.title }}</p> 
                                                     </div>
                                                 </div>
@@ -392,7 +391,7 @@
                         <!-- Fin Lista NUEVA --> 
                 
                         <!-- Inicio Lista HACIENDO --> 
-                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"> 
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 text-center"> 
                             
                             <!-- Inicio Título y búsqueda --> 
                             <div class="kanbanBoardColumnHeader"> 
@@ -401,7 +400,7 @@
                                     <span class="input-group-addon"> 
                                         <span class="glyphicon glyphicon-search"></span> 
                                     </span> 
-                                    <input class="form-control" placeholder="Buscar..." type="text" ng-model="vm.miKanbanColumnSearch2" /> 
+                                    <input class="form-control" placeholder="Buscar..." type="text" ng-model="ik.miKanbanColumnSearch2" /> 
                                 </div>  
                             </div>
                             <!-- Fin Título y búsqueda --> 
@@ -412,7 +411,7 @@
                                 <!-- Inicio Celda -->
                                 <div class="kanbanBoardCell" id="kanbanBoardColumn2Cell{{ item.index }}" 
                                     data-cell-index="{{ item.index }}" 
-                                    ng-repeat="item in vm.miKanbanColumn2 | filter: vm.miKanbanColumnSearch2" 
+                                    ng-repeat="item in ik.miKanbanColumn2 | filter: ik.miKanbanColumnSearch2" 
                                     ng-show="item.title">
             
                                     <!-- Inicio Tarea --> 
@@ -422,14 +421,13 @@
                                                 <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"> 
                                                     <div style="padding: 25px 0 0 0;">
                                                         <img alt="profile" class="rounded-circle" style="height: 40px; width: 40px;"  
-                                                            ng-show="item.usuario.imgurl" 
-                                                            ng-src="{{ item.usuario.imgurl }}"> 
-                                                        <p><strong>{{ item.usuario.initials }}</strong></p> 
+                                                            ng-src="{{ item.usuario.imgurl ? item.usuario.imgurl : ik.tareaProfileNone }}"> 
+                                                        <p><strong>{{ item.usuario ? item.usuario.initials : '' }}</strong></p> 
                                                     </div>
                                                 </div> 
                                                 <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9"> 
                                                     <div style="padding: 25px 0 0 0;">
-                                                        <h6 ng-if="item.associated === true && item.element !== ''">{{ item.element }}</h6>
+                                                        <h6 ng-if="item.associated === true && item.tipoId">{{ item.tipo }}</h6>
                                                         <p class="text-left">{{ item.title }}</p> 
                                                     </div>
                                                 </div>
@@ -448,7 +446,7 @@
                         <!-- Fin Lista HACIENDO --> 
                 
                         <!-- Inicio Lista EN PRUEBAS --> 
-                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"> 
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 text-center"> 
     
                             <!-- Inicio Título y búsqueda --> 
                             <div class="kanbanBoardColumnHeader"> 
@@ -457,7 +455,7 @@
                                     <span class="input-group-addon"> 
                                         <span class="glyphicon glyphicon-search"></span> 
                                     </span> 
-                                    <input class="form-control" placeholder="Buscar..." type="text" ng-model="vm.miKanbanColumnSearch3" /> 
+                                    <input class="form-control" placeholder="Buscar..." type="text" ng-model="ik.miKanbanColumnSearch3" /> 
                                 </div>  
                             </div>
                             <!-- Fin Título y búsqueda --> 
@@ -468,7 +466,7 @@
                                 <!-- Inicio Celda -->
                                 <div class="kanbanBoardCell" id="kanbanBoardColumn3Cell{{ item.index }}" 
                                     data-cell-index="{{ item.index }}" 
-                                    ng-repeat="item in vm.miKanbanColumn3 | filter: vm.miKanbanColumnSearch3" 
+                                    ng-repeat="item in ik.miKanbanColumn3 | filter: ik.miKanbanColumnSearch3" 
                                     ng-show="item.title">
             
                                     <!-- Inicio Tarea --> 
@@ -478,14 +476,13 @@
                                                 <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"> 
                                                     <div style="padding: 25px 0 0 0;">
                                                         <img alt="profile" class="rounded-circle" style="height: 40px; width: 40px;"  
-                                                            ng-show="item.usuario.imgurl" 
-                                                            ng-src="{{ item.usuario.imgurl }}"> 
-                                                        <p><strong>{{ item.usuario.initials }}</strong></p> 
+                                                            ng-src="{{ item.usuario.imgurl ? item.usuario.imgurl : ik.tareaProfileNone }}"> 
+                                                        <p><strong>{{ item.usuario ? item.usuario.initials : '' }}</strong></p> 
                                                     </div>
                                                 </div> 
                                                 <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9"> 
                                                     <div style="padding: 25px 0 0 0;">
-                                                        <h6 ng-if="item.associated === true && item.element !== ''">{{ item.element }}</h6>
+                                                        <h6 ng-if="item.associated === true && item.tipoId">{{ item.tipo }}</h6>
                                                         <p class="text-left">{{ item.title }}</p> 
                                                     </div>
                                                 </div>
@@ -504,7 +501,7 @@
                         <!-- Fin Lista EN PRUEBAS --> 
     
                         <!-- Inicio Lista COMPLETA --> 
-                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"> 
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 text-center"> 
                 
                             <!-- Inicio Título y búsqueda --> 
                             <div class="kanbanBoardColumnHeader"> 
@@ -513,18 +510,18 @@
                                     <span class="input-group-addon"> 
                                         <span class="glyphicon glyphicon-search"></span> 
                                     </span> 
-                                    <input class="form-control" placeholder="Buscar..." type="text" ng-model="vm.miKanbanColumnSearch4" /> 
+                                    <input class="form-control" placeholder="Buscar..." type="text" ng-model="ik.miKanbanColumnSearch4" /> 
                                 </div>  
                             </div>
                             <!-- Fin Título y búsqueda --> 
                 
                             <!-- Inicio Columna -->
-                            <div class="kanbanBoardColumn" id="kanbanBoardColumn4" data-column-index="3">
+                            <div class="kanbanBoardColumn" id="kanbanBoardColumn4" data-column-index="4">
                 
                                 <!-- Inicio Celda -->
                                 <div class="kanbanBoardCell" id="kanbanBoardColumn4Cell{{ item.index }}" 
                                     data-cell-index="{{ item.index }}" 
-                                    ng-repeat="item in vm.miKanbanColumn4 | filter: vm.miKanbanColumnSearch4" 
+                                    ng-repeat="item in ik.miKanbanColumn4 | filter: ik.miKanbanColumnSearch4" 
                                     ng-show="item.title">
                 
                                     <!-- Inicio Tarea --> 
@@ -534,18 +531,17 @@
                                                 <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"> 
                                                     <div style="padding: 25px 0 0 0;">
                                                         <img alt="profile" class="rounded-circle" style="height: 40px; width: 40px;"  
-                                                            ng-show="item.usuario.imgurl" 
-                                                            ng-src="{{ item.usuario.imgurl }}"> 
-                                                        <p><strong>{{ item.usuario.initials }}</strong></p> 
+                                                            ng-src="{{ item.usuario.imgurl ? item.usuario.imgurl : ik.tareaProfileNone }}"> 
+                                                        <p><strong>{{ item.usuario ? item.usuario.initials : '' }}</strong></p> 
                                                     </div>
                                                 </div> 
                                                 <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9"> 
                                                     <div style="padding: 25px 0 0 0;">
-                                                        <h6 ng-if="item.associated === true && item.element !== ''">{{ item.element }}</h6>
+                                                        <h6 ng-if="item.associated === true && item.tipoId">{{ item.tipo }}</h6>
                                                         <p class="text-left">{{ item.title }}</p> 
-                                                    </div> 
-                                                </div> 
-                                            </div> 
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div> 
                                     <!-- Fin Tarea --> 
@@ -559,13 +555,13 @@
                         </div>
                     </div>
                 </div> 
-                <!-- Fin Lista EN PRUEBAS --> 
+                <!-- Fin Lista COMPLETADO --> 
     
-            <!-- Inicio modal Tarea -->
-            <div class="modal fade" id="modalTarea" tabindex="-1" role="dialog" aria-labelledby="modalTareaTitle" aria-hidden="true">
+                <!-- Inicio modal Tarea -->
+                <div class="modal fade" id="modalTarea" tabindex="-1" role="dialog" aria-labelledby="modalTareaTitle" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
-                            <form name="vm.formTarea" novalidate="novalidate">
+                            <form name="ik.formTarea" novalidate="novalidate">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="modalTareaTitle">Nueva tarea</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -579,17 +575,17 @@
                                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                                 <label for="tareaTitle"
                                                     ng-class="{ 
-                                                        'col-form-label': vm.formTarea.tareaTitle.$pristine || vm.formTarea.tareaTitle.$valid, 
-                                                        'col-form-label text-danger': !vm.formTarea.tareaTitle.$pristine && !vm.formTarea.tareaTitle.$valid }">Título (requerido)</label> 
+                                                        'col-form-label': ik.formTarea.tareaTitle.$pristine || ik.formTarea.tareaTitle.$valid, 
+                                                        'col-form-label text-danger': !ik.formTarea.tareaTitle.$pristine && !ik.formTarea.tareaTitle.$valid }">Título (requerido)</label> 
                                                 <input id="tareaTitle" name="tareaTitle" placeholder="Mínimo 3 caracteres" type="text" 
                                                     ng-class="{ 
-                                                    'form-control': vm.formTarea.tareaTitle.$pristine || vm.formTarea.tareaTitle.$valid, 
-                                                    'form-control is-invalid': !vm.formTarea.tareaTitle.$pristine && !vm.formTarea.tareaTitle.$valid }" 
+                                                    'form-control': ik.formTarea.tareaTitle.$pristine || ik.formTarea.tareaTitle.$valid, 
+                                                    'form-control is-invalid': !ik.formTarea.tareaTitle.$pristine && !ik.formTarea.tareaTitle.$valid }" 
                                                     ng-maxlength="130" 
                                                     ng-minlength="3" 
-                                                    ng-model="vm.tareaTitle" 
+                                                    ng-model="ik.tareaTitle" 
                                                     ng-required="true" /> 
-                                                <p class="text-danger" role="alert" ng-messages="!vm.formTarea.tareaTitle.$pristine && vm.formTarea.tareaTitle.$error"> 
+                                                <p class="text-danger" role="alert" ng-messages="!ik.formTarea.tareaTitle.$pristine && ik.formTarea.tareaTitle.$error"> 
                                                     <strong ng-message="minlength">Mínimo 3 caracteres</strong> 
                                                     <strong ng-message="maxlength">Nombre muy largo</strong> 
                                                     <strong ng-message="required">Requerido</strong> 
@@ -607,16 +603,32 @@
                                             </div> 
                                         </div>
                                     </div>
+
+
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-12">
+                                                <label for="tareaDescription" 
+                                                    ng-class="{ 
+                                                        'col-form-label': ik.formTarea.tareaDescription.$pristine || ik.tareaDescription, 
+                                                        'col-form-label text-danger': !ik.formTarea.tareaDescription.$pristine && !ik.tareaDescription }">Descripción breve (requerido)</label> 
+                                                <textarea class="form-control" id="tareaDescription" name="tareaDescription" placeholder="Información del evento" rows="3" ng-model="ik.tareaDescription"></textarea>
+                                                <p class="text-danger" role="alert" ng-if="!ik.formTarea.tareaDescription.$pristine && !ik.tareaDescription"> 
+                                                    <strong>Debes ingresar una descripción breve de la tarea</strong>
+                                                </p> 
+                                            </div>
+                                        </div>
+                                    </div>
             
                                 </div>
                                 <div class="modal-footer">
                                     <button class="btn btn-primary" type="button" data-dismiss="modal"><span class="glyphicon glyphicon-remove-circle"></span> Cerrar</button>
                                     <button type="button"
                                         ng-class="{ 
-                                            'btn btn-success': vm.formTarea.$valid, 
-                                            'btn btn-default': !vm.formTarea.$valid }" 
-                                        ng-click="vm.onBtnTareaGuardarClick()"
-                                        ng-disabled="!vm.formTarea.$valid">
+                                            'btn btn-success': ik.formTarea.$valid && ik.tareaDescription, 
+                                            'btn btn-default': !ik.formTarea.$valid || !ik.tareaDescription }" 
+                                        ng-click="ik.onBtnTareaGuardarClick()"
+                                        ng-disabled="!ik.formTarea.$valid || !ik.tareaDescription">
                                         <span class="glyphicon glyphicon-save"></span> Guardar
                                     </button>
                                 </div>
@@ -626,29 +638,10 @@
                 </div>
                 <!-- Fin modal Tarea -->
 
-
             </div> 
-            <!-- Fin Kanban -->
- 
-            
-
-        
-
-
-
-
-
-
-
-
-
-
-        
-
-
-
-
-        
+            <!-- Fin Controller --> 
+        </div>
+        <!-- Fin Kanban -->
     </div>
 </div>
 

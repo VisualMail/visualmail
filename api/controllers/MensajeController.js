@@ -118,8 +118,7 @@ module.exports = {
                 }); 
 			} 
 			
-			// Si no es el mensaje inicial 
-			// unir el mensaje con sus hijos 
+			// Si no es el mensaje inicial unir el mensaje con sus hijos 
 			if(!msj.root) { 
 				// Buscar el mensaje padre para unir mensaje 
 				Mensaje.findOne(msj.parent).populate("children").then(function(resultPadre) { 
@@ -164,47 +163,12 @@ module.exports = {
 				// Si no es el mensaje inicial o el primer hijo, verificar la posición 
 				if(mensajeUser.nodoId > 1) 
 					Mensaje.setMensajePosicion(mensajeUser, req); 
-
-				// Si se marcó un mensaje, crear marca 
-				if(msj.respuestaMarca !== "") { 
-					// Guardar la marca del mensaje 
-					MensajeMarca.create({ 
-						marca: msj.respuestaMarca, 
-						mensajeId: resultCreate.id, 
-						tipo: msj.tipo, 
-						tipoId: msj.respuestaMarcaId, 
-						usuario: resultUser 
-					}).then(function(resultMarca) { 
-						// Retornar error 
-						if(!resultMarca) { 
-							return res.json({ 
-								proc: false, 
-								msj: "¡No se almacenó la información!", 
-							}); 
-						} 
-						
-						// Retornar ok 
-						return res.json({ 
-							proc: true, 
-							msj: "¡Texto marcado!", 
-							mensaje: resultCreate, 
-							mensajeMarca: resultMarca 
-						}); 
-					}).catch(function(err) { 
-						// Existe un error 
-						sails.log(err); 
-						return res.json({ 
-							proc: false, 
-							msj: "¡Se produjo un error al almacenar la 'marca' del texto!" 
-						});
-					}); 
-				} else { 
-					return res.json({ 
-						proc: true, 
-						msg: "¡Mensaje creado!", 
-						mensaje: resultCreate 
-					}); 
-				} 
+ 
+				return res.json({ 
+					proc: true, 
+					msg: "¡Mensaje creado!", 
+					mensaje: resultCreate 
+				}); 
 			}).catch(function(err) { 
 				sails.log("Se produjo un error en 'mensaje/create/User.findOne': ", err); 
 				return res.json({ 

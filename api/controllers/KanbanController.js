@@ -45,7 +45,6 @@ module.exports = {
 	* @param :: {Objetct} next, para continuar en caso de error
 	**/
 	getKanban: function(req, res, next) { 
-		
 		// Con la función de Sails, de acuerdo a un 'id' de entrada, buscar el Kanban 
 		// y hacer un populate a las tareas asociadas y los datos del proyecto
 		Kanban.findOne(req.param('id')).populate('tareas').populate('project').exec(function(err, kanban) { 

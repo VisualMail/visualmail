@@ -127,7 +127,7 @@ module.exports = {
 
 	/**
 	* @method :: getOne (POST)
-	* @description :: Consigue el json de proyecto mas los participantes, dialogos y kanban
+	* @description :: Consigue el json del proyecto más los participantes y kanban.
 	* @param :: {Object} req, request element de sails
 	* @param :: {Objetct} res, de la vista ejs del servidor
 	* @param :: {Objetct} next, para continuar en caso de error
@@ -137,7 +137,6 @@ module.exports = {
 		// y hace un populate a elementos necesarios 
 		Project.findOne(req.param("id"))
 		.populate("participants")
-		.populate("dialogos")
 		.populate("kanban")
 		.then(function(result) { 
 			// Verificar si no existe el proyecto 

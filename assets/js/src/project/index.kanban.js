@@ -160,7 +160,7 @@ function kanbanBoardInitGecko() {
         var tareaId = task.attr("id"); 
     
         // Obtener el "scope" desde angular 
-        var scope = angular.element(document.getElementById("IndexControllerMain")).scope(); 
+        var scope = angular.element(document.getElementById("kanbanBoard")).scope(); 
         var column = parseInt(oldCell.parent().attr("data-column-index")); 
     
         // Verificar si el destino es una celda o una nueva columna 
@@ -170,7 +170,7 @@ function kanbanBoardInitGecko() {
                 var parentColumn = $(sectionTask).parent(); 
                 var newColumn = parseInt(parentColumn.attr("data-column-index")); 
                 var newIndex = parseInt($(sectionTask).attr("data-cell-index")); 
-                scope.vm.onActualizarTareaIndice(tareaId, newColumn, false, newIndex); 
+                scope.ik.onActualizarTareaIndice(tareaId, newColumn, false, newIndex); 
                 $("#" + tareaId).attr("style", "opacity: 0.2"); 
             } else 
                 hideMe.style.visibility = "visible"; 
@@ -179,7 +179,7 @@ function kanbanBoardInitGecko() {
             if($(sectionColumn).attr("id") !== oldCell.parent().attr("id")) { 
                 var newColumn = parseInt($(sectionColumn).attr("data-column-index")); 
                 var newIndex = 1; 
-                scope.vm.onActualizarTareaIndice(tareaId, newColumn, true, newIndex); 
+                scope.ik.onActualizarTareaIndice(tareaId, newColumn, true, newIndex); 
                 $("#" + tareaId).attr("style", "opacity: 0.2"); 
             } else 
                 hideMe.style.visibility = "visible"; 
@@ -312,7 +312,7 @@ function kanbanBoardInitWebKit() {
         var tareaId = task.attr("id"); 
     
         // Obtener el "scope" desde angular 
-        var scope = angular.element(document.getElementById("IndexControllerMain")).scope(); 
+        var scope = angular.element(document.getElementById("kanbanBoard")).scope(); 
         var column = parseInt(oldCell.parent().attr("data-column-index")); 
     
         // Verificar si el destino es una celda o una nueva columna 
@@ -322,7 +322,7 @@ function kanbanBoardInitWebKit() {
                 var parentColumn = $(sectionTask).parent(); 
                 var newColumn = parseInt(parentColumn.attr("data-column-index")); 
                 var newIndex = parseInt($(sectionTask).attr("data-cell-index")); 
-                scope.vm.onActualizarTareaIndice(tareaId, newColumn, false, newIndex); 
+                scope.ik.onActualizarTareaIndice(tareaId, newColumn, false, newIndex); 
                 $("#" + tareaId).attr("style", "opacity: 0.2"); 
             } else 
                 hideMe.style.visibility = "visible"; 
@@ -331,7 +331,7 @@ function kanbanBoardInitWebKit() {
             if($(sectionColumn).attr("id") !== oldCell.parent().attr("id")) { 
                 var newColumn = parseInt($(sectionColumn).attr("data-column-index")); 
                 var newIndex = 1; 
-                scope.vm.onActualizarTareaIndice(tareaId, newColumn, true, newIndex); 
+                scope.ik.onActualizarTareaIndice(tareaId, newColumn, true, newIndex); 
                 $("#" + tareaId).attr("style", "opacity: 0.2"); 
             } else 
                 hideMe.style.visibility = "visible"; 
