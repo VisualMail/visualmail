@@ -896,21 +896,29 @@ button { cursor: pointer; }
 .context-menu-icon-nc,
 .context-menu-icon-db,
 .context-menu-icon-ta,
-.context-menu-icon-da { 
+.context-menu-icon-da, 
+.context-menu-icon-anchor, 
+.context-menu-icon-kanban, 
+.context-menu-icon-navigate, 
+.context-menu-icon-reply { 
   background-position: 5px 8px; 
   background-repeat: no-repeat; 
   background-size: 18px; 
   min-height: 1%; 
   list-style-type: none; 
 }
+.context-menu-icon-citar { background-image: url('../images/cr18x18.png'); } 
+.context-menu-icon-ci { background-image: url('../images/ci18x18.png'); } 
+.context-menu-icon-ac { background-image: url('../images/ac18x18.png'); } 
+.context-menu-icon-nc { background-image: url('../images/nc18x18.png'); } 
+.context-menu-icon-db { background-image: url('../images/db18x18.png'); } 
+.context-menu-icon-ta { background-image: url('../images/ta18x18.png'); } 
+.context-menu-icon-da { background-image: url('../images/da18x18.png'); } 
+.context-menu-icon-anchor { background-image: url('../images/anchor18x18.png'); } 
+.context-menu-icon-kanban { background-image: url('../images/kanban18x18.png'); } 
+.context-menu-icon-navigate { background-image: url('../images/navigate18x18.png'); } 
+.context-menu-icon-reply { background-image: url('../images/reply18x18.png'); } 
 
-.context-menu-icon-citar { background-image: url('../images/icons/cr-small.png'); } 
-.context-menu-icon-ci { background-image: url('../images/icons/ci-small.png'); } 
-.context-menu-icon-ac { background-image: url('../images/icons/ac-small.png'); } 
-.context-menu-icon-nc { background-image: url('../images/icons/nc-small.png'); } 
-.context-menu-icon-db { background-image: url('../images/icons/db-small.png'); } 
-.context-menu-icon-ta { background-image: url('../images/icons/ta-small.png'); } 
-.context-menu-icon-da { background-image: url('../images/icons/da-small.png'); } 
 .icon-display 
 {
   height: 18px; width: 18px;  background-position: 1px 2px; 

@@ -151,6 +151,7 @@ function mapaDialogoAgregarNodo(mensaje) {
 		cx: circleWidth + (mensaje.sessionId * 100), 
 		cy: y2, 
 		name: mensaje.name, 
+		tareaId: mensaje.tareaId, 
 		tipo: mensaje.tipo, 
 		tipoId: mensaje.tipoId 
 	}; 

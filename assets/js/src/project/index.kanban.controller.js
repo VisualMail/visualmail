@@ -28,6 +28,7 @@
         vm.onActualizarTareaIndice = onActualizarTareaIndice; 
         vm.onBtnTareaGuardarClick = onBtnTareaGuardarClick; 
         vm.onKanbanBoardUpdateColumn = onKanbanBoardUpdateColumn; 
+        vm.onKanbanGoToTarea = onKanbanGoToTarea; 
         vm.onSocketTareaActualizar = onSocketTareaActualizar; 
         vm.onSocketTareaNueva = onSocketTareaNueva; 
         vm.setMessage = parent.vm.setMessage; 
@@ -131,15 +132,6 @@
                 break; 
             } 
 
-            console.log("tarea user",  vm.tareaUser); 
-            console.log("parent.vm.miUserListaParticipantes", parent.vm.miUserListaParticipantes); 
-
-
-            // Se eliminan valores que no se utilizan del usuario 
-            //delete vm.miKanbanSelectedUsuarioTask.$$hashKey; 
-            //delete vm.miKanbanSelectedUsuarioTask.$order; 
-            //delete vm.miKanbanSelectedUsuarioTask.password; 
-
             // Almacenar los datos que se enviarán al servidor 
             var tarea = { 
                 associated: false, 
@@ -154,13 +146,6 @@
                 title: vm.tareaTitle, 
                 usuario: usuarioResponsable.id, 
             }; 
-
-            // Si es una tarea asociada al mensaje agregar los datos del mensaje 
-            /*if(conMensaje) { 
-                dataPost.associated = true; 
-                dataPost.element = vm.miMensajeSeleccionado.estado; 
-                dataPost.mensaje = vm.miMensajeSeleccionado.id; 
-            } */
 
             $http({ 
                 method: "POST", 
@@ -282,6 +267,11 @@
             vm.setMessageToast("Tarea actualizada"); 
         }; 
 
+        function onKanbanGoToTarea(nodoId) { 
+            
+
+        }; 
+
         /**
         * @method :: onSocketTareaActualizar 
         * @description :: Recibe la tarea actualizada en el Kanban 
@@ -357,9 +347,10 @@
             // Agregar en la columna 'NUEVA' del Kanban 
             vm.miKanbanColumn1.push(nuevaTarea); 
 
-            // Actualizar el 'scope' 
-            if(data.nodoId)
-                $("[data-nodo-id=" + data.nodoId + "]").attr("class", "tooltipped context-menu-one-kanban");
+            // Actualizar el mensaje con la tarea 
+            if(nuevaTarea.mensaje) 
+                parent.vm.onScopeMensajeActualizarTarea(nuevaTarea.mensaje, nuevaTarea.id); 
+                //$("[data-nodo-id=" + data.nodoId + "]").attr("class", "tooltipped context-menu-one-kanban");
 
             $scope.$apply(); 
             vm.setMessageToast("Se ha creado una nueva tarea"); 

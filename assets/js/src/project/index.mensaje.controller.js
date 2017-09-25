@@ -75,6 +75,7 @@
                 $anclar = true; 
                 vm.onMensajeAnclarClick(vm.miMensajeLista[0].nodoId); 
                 vm.iniciarMensajeAnclado(); 
+                parent.vm.scopeMensaje = $scope; 
             }).catch(function(err) { 
                 vm.setMessage(false, "¡Se produjo un error en el procedimiento '/mensaje/getAllProjectId'!", null, err); 
             }); 
@@ -356,7 +357,7 @@
                         tipoId: vm.mensajeRespuestaTipoId, 
                         tipoName: $("#miMensajeRespuestaTipoName").html(), 
                         tipoNameMarca: vm.mensajeRespuestaTipoNameMarca, 
-                        title: vm.mensajeRespuestaTipoNameMarca, 
+                        title: vm.mensajeRespuesta, 
                         usuario: parent.vm.miUser 
                     }; 
 
@@ -454,6 +455,11 @@
         };
 
         function onMensajeAnclarNavegar(nodoId) { 
+            if(!vm.miMensajeAnclado.nodoId)
+                return; 
+            if(vm.miMensajeAnclado.nodoId === nodoId)
+                return; 
+
             $.each(vm.miMensajeLista, function(key, value) { 
                 if(value.nodoId !== nodoId) 
                     return true; 
@@ -687,6 +693,7 @@
             //nuevoMensaje["cssvalue"] = !vm.miMensajeIntercalar; 
             //vm.miMensajeIntercalar = !vm.miMensajeIntercalar; 
             vm.miMensajeLista.push(nuevoMensaje); 
+            nuevoMensaje.tareaId = data.crearTarea; 
             mapaDialogoAgregarNodo(nuevoMensaje); 
             vm.iniciarMensajeAnclado(); 
 

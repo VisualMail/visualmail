@@ -14,6 +14,11 @@ module.exports = {
             type: "boolean" 
         }, 
 
+        // Fecha de entrega 
+        deliveryDate: { 
+            type: "string" 
+        }, 
+
         // Descripción/Alcance de la tarea 
         description: { 
             type: "string" 

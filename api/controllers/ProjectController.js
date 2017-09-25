@@ -293,147 +293,15 @@ module.exports = {
 				msg: "¡Se produjo un error en la base de datos!!" 
 			}); 
 		}); 
-	}, 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
-	/**
-	* @method :: admin (VIEW)
-	* @description :: retorna la vista de administración de proyectos
-	* @param :: {Object} req, request element de sails
-	* @param :: {Objetct} res, de la vista ejs del servidor
-	* @param :: {Objetct} next, para continuar en caso de error
-	**/
-	admin: function(req, res, next) {
-		
-		// Llamar a Sails para ir a la vista de edición del proyecto
-		Project.findOne(req.param("id")).populate("participants").exec(function(err, project) {
-			
-			// Verificar si existe un error
-			if(err) 
-				return next(err); 
-
-			// Verificar si no existe el proyecto 
-			if(!project) 
-				return next(); 
-
-			// Retornar la vista con los valores del proyecto
-			return res.view({
-				title: "Proyecto: " + project.name,
-				sectionHead:
-					"<link href='/js/dependencies/jquery-contextmenu/2.4.1/jquery.contextMenu.min.css' rel='stylesheet' type='text/css' />" + 
-					"<link href='/js/dependencies/selectize/0.12.4/css/selectize.default.css' rel='stylesheet' type='text/css' />", 
-				sectionScripts: 
-					"<script type='text/javascript' src='/js/dependencies/jquery-contextmenu/2.4.1/jquery.contextMenu.min.js'></script>" + 
-					"<script type='text/javascript' src='/js/dependencies/d3/4.8.0/js/d3.min.js'></script>" + 
-					"<script type='text/javascript' src='/js/dependencies/selectize/0.12.4/js/standalone/selectize.min.js'></script>" + 
-					"<script type='text/javascript' src='/js/dependencies/angular-selectize/js/angular-selectize.js'></script>" + 
-					"<script type='text/javascript' src='/js/src/Project/ProjectController.d3.js'></script>" + 
-					"<script type='text/javascript' src='/js/src/Project/ProjectController.jquery.js'></script>" + 
-					"<script type='text/javascript' src='/js/src/Project/ProjectController.kanban.js'></script>" + 
-					"<script type='text/javascript' src='/js/src/Project/ProjectController.js'></script>" + 
-					"<script src='/js/dependencies/sails.io.js'></script>", 
-				project: project
-			});
-		});
-	},
-
-
-
-	/**
-	* @method :: edit (VIEW)
-	* @description :: retorna la vista edit
-	* @param :: {Object} req, request element de sails
-	* @param :: {Objetct} res, de la vista ejs del servidor
-	* @param :: {Objetct} next, para continuar en caso de error
-	**/
-	edit: function(req, res, next) {
-		
-		// Llamar a Sails para ir a la vista de edición del proyecto
-		Project.findOne(req.param('id')).populate('participants').exec(function(err, project) {
-			
-			// Verificar si existe un error
-			if(err) 
-				return next(err); 
-
-			// Verificar si no existe el proyecto 
-			if(!project) 
-				return next(); 
-
-			// Retornar la vista con los valores del proyecto
-			return res.view({
-				project: project
-			});
-		});
-	},
-
-
-
-	/**
-	* @method :: getDialogos (POST)
-	* @description :: Consigue el dialogo asociado al proyecto
-	* @param :: {Object} req, request element de sails
-	* @param :: {Objetct} res, de la vista ejs del servidor
-	* @param :: {Objetct} next, para continuar en caso de error
-	**/
-	getDialogos: function(req, res, next) {
-	
-		// LLamar a la función en sails para buscar el proyecto de acuerdo a su 'id'
-		// y hace un populate añadiendo el objeto diálogo
-		Project.findOne(req.param('id')).populate('dialogos').exec(function(err, project) { 
-		
-			// Verificar si existe un error
-			if(err) 
-				return res.json({ project: 'false' }); 
-
-			// Verificar si no existe el proyecto 
-			if(!project) 
-				res.json({ project: 'false' }); 
-		
-			// Retornar el diálogo del proyecto
-			return res.json(project.dialogos[0]);
-		});
-	},
+	}, 	
 
 	delete: function(req, res, next) { 
 		Project.findOne(req.param("id"))
 		.populate("participants")
-		.populate("dialogos")
 		.populate("kanban")
 		.then(function(project) { 
 			sails.log("Eliminando proyecto: ", project.id); 
 			
-
 			for(var i = 0; i < project.participants.length; i++) { 
 				project.participants.remove(project.participants[i].id); 
 			}
@@ -446,25 +314,14 @@ module.exports = {
 
 					for(var i = 0; i < mensaje.length; i++) { 
 						mensaje.children.remove(mensaje.children[i].id);
-
-						MensajeMarca.destroy({ menasjeId: mensaje[i].id }).then(function(mensajeMarca) { 
-							sails.log("Mensaje Marca eliminado"); 
-						}); 
 					} 
 
 					mensaje.save(); 
-
 				}
-
-				
 				
 				Mensaje.destroy({ project_id: project.id }).then(function(mensajeDestroy) { 
 					sails.log("Mensajes eliminados"); 
 				}); 
-		
-				
-
-
 			}); 
 
 			
@@ -476,9 +333,6 @@ module.exports = {
 				}); 
 			}); 
 
-			/*Dialogo.destroy({ project_id: project.id }).then(function(dialogoDestroy) { 
-				sails.log("Diálogo destruido"); 
-			}); */
 
 			Project.destroy(req.param("id")).then(function(projectDestroy) { 
 				return ({ 
@@ -486,13 +340,6 @@ module.exports = {
 					msg: "¡Proyecto eliminado!"
 				}); 
 			}); 
-
-			
-
-
-			
-			
-
 		}).catch(function(err) { 
 			sails.log("Se produjo un error en '/project/delete/Project.find(project): ", err); 
 			return res.json({ 
@@ -501,8 +348,4 @@ module.exports = {
 			}); 
 		}); 
 	}
-
-
-
-
 };

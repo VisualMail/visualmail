@@ -142,7 +142,8 @@
                 type: "MensajeNuevo", 
                 nuevoMensaje: nuevoMensaje, 
                 revisarSession: revisarSession, 
-                actualizarNodos: actualizarNodos 
+                actualizarNodos: actualizarNodos, 
+                crearTarea: req.param("crearTarea") 
             }, req);
     }, 
 

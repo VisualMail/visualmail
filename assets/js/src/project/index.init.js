@@ -102,9 +102,9 @@ function contextMenuMapaInit() {
             var scope = angular.element(document.getElementById("IndexMensajeControllerMain")).scope(); 
                 
             switch(key) { 
-                case "go": 
+                case "navigate": 
                     scope.$apply(function () { 
-                        scope.im.onMensajeAnclarNavegar(nodoId, 2); 
+                        scope.im.onMensajeAnclarNavegar(nodoId); 
                     }); 
                     break; 
                 case "reply":
@@ -116,9 +116,9 @@ function contextMenuMapaInit() {
             } 
         }, 
         items: { 
-            "reply": { name: "Responder todo", icon: "edit" }, 
-            "anchor": { name: "Anclar/Desanclar", icon: "paste" }, 
-            "go": { name: "Desplegar mensaje", icon: "add" }, 
+            "reply": { name: "Responder todo", icon: "reply" }, 
+            "anchor": { name: "Anclar/Desanclar", icon: "anchor" }, 
+            "navigate": { name: "Desplegar mensaje", icon: "navigate" }, 
             "sep1": "---------", 
             "quit": { name: "Cancelar", icon: function() { return "context-menu-icon context-menu-icon-quit"; } } 
         } 
@@ -134,27 +134,33 @@ function contextMenuMapaKanbanInit() {
         selector: ".context-menu-one-kanban", 
         callback: function(key, options) { 
             var nodoId = parseInt($(this[0]).attr("data-nodo-id")); 
-            var scope = angular.element(document.getElementById("IndexMensajeControllerMain")).scope(); 
+            var scopeMensaje = angular.element(document.getElementById("IndexMensajeControllerMain")).scope(); 
+            var scopeKanban = angular.element(document.getElementById("kanbanBoard")).scope(); 
                 
             switch(key) { 
-                case "go": 
-                    scope.$apply(function () { 
-                        scope.im.onMensajeAnclarNavegar(nodoId, 2); 
+                case "navigate": 
+                    scopeMensaje.$apply(function () { 
+                        scopeMensaje.im.onMensajeAnclarNavegar(nodoId); 
+                    }); 
+                    break; 
+                case "kanban": 
+                    scopeKanban.$apply(function () { 
+                        scopeKanban.ik.onKanbanGoToTarea(nodoId); 
                     }); 
                     break; 
                 case "reply":
                 case "anchor": 
-                    onMensajeAnclarResponder(nodoId, scope, key === "reply"); 
+                    onMensajeAnclarResponder(nodoId, scopeMensaje, key === "reply"); 
                     break; 
                 default: 
                     break; 
             } 
         }, 
         items: { 
-            "reply": { name: "Responder todo", icon: "edit" }, 
-            "anchor": { name: "Anclar/Desanclar", icon: "paste" }, 
-            "kanban": { name: "Ir al kanban", icon: "reply" }, 
-            "go": { name: "Desplegar mensaje", icon: "add" }, 
+            "reply": { name: "Responder todo", icon: "reply" }, 
+            "anchor": { name: "Anclar/Desanclar", icon: "anchor" }, 
+            "kanban": { name: "Ir al kanban", icon: "kanban" }, 
+            "navigate": { name: "Desplegar mensaje", icon: "navigate" }, 
             "sep1": "---------", 
             "quit": { name: "Cancelar", icon: function() { return "context-menu-icon context-menu-icon-quit"; } } 
         } 

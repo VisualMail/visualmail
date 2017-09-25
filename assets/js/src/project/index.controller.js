@@ -12,20 +12,21 @@
         vm.activeTab = 2; 
         vm.csrfToken = null; 
         vm.messageToast = ""; 
-        
         vm.miProject = { }; 
         vm.miProjectId = ""; 
         vm.miSessionId = 0; 
         vm.miUser = ""; 
         vm.miUserLista = []; 
         vm.miUserListaParticipantes = []; 
+        vm.scopeMensaje = {}; 
     
-
         vm.getQueryString = getQueryString; 
         vm.iniciarTiempoDialogo = iniciarTiempoDialogo; 
+        vm.onActiveTabChanged = onActiveTabChanged; 
+        vm.onScopeMensajeActualizarTarea = onScopeMensajeActualizarTarea; 
         vm.setMessage = setMessage; 
         vm.setMessageToast = setMessageToast; 
-        vm.child = {}; 
+        
         init(); 
 
         function init() { 
@@ -57,8 +58,6 @@
             }).catch(function(err) { 
                 setMessage(false, "¡Se produjo un error en el procedimiento '/session/getUser'!", null, err); 
             }); 
-
-            return; 
 
             // Expresión regular para el E-mail
             //var REGEX_EMAIL = 
@@ -100,6 +99,26 @@
             /*var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
             console.log(diffDays); 
             console.log(diffDays);*/
+        }; 
+
+        function onActiveTabChanged(nodoId) { 
+
+        }; 
+
+        /** 
+        * @method :: onScopeMensajeActualizarTarea 
+        * @description :: Actualizar el mensaje con el id de la tarea. 
+        * @param :: {string} mensajeId, el 'id' del mensaje. 
+        * @param :: {string} tareaId, el 'id' de la tarea. 
+        **/
+        function onScopeMensajeActualizarTarea(mensajeId, tareaId) { 
+            $.each(vm.scopeMensaje.im.miMensajeLista, function(key, value) { 
+                if(value.id !== mensajeId) 
+                    return true; 
+
+                value.tareaId = tareaId; 
+                return false; 
+            }); 
         }; 
 
         /**

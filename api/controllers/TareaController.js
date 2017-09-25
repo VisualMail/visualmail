@@ -7,10 +7,10 @@
 module.exports = { 
 	/** 
 	* @method :: create (POST) 
-	* @description :: Crea una nueva tarea 
-	* @param :: {Object} req, request element de sails 
-	* @param :: {Objetct} res, de la vista ejs del servidor 
-	* @param :: {Objetct} next, para continuar en caso de error 
+	* @description :: Crea una nueva tarea. 
+	* @param :: {Object} req, request element de sails. 
+	* @param :: {Objetct} res, de la vista ejs del servidor. 
+	* @param :: {Objetct} next, para continuar en caso de error. 
 	**/ 
 	create: function(req, res, next) { 
 		//Con todos los parámetros, crear una nueva tarea
@@ -53,8 +53,7 @@ module.exports = {
 					message: "Mensaje desde el servidor.", 
 					obj: tarea, 
 					type: "TareaNueva", 
-					selectedUsuarioTask: req.param("selectedUsuarioTask"), 
-					nodoId: req.param("nodoId")
+					selectedUsuarioTask: req.param("selectedUsuarioTask") 
 				}, req); 
 
 			// Retornar tarea 
@@ -74,10 +73,10 @@ module.exports = {
 
 	/**
 	* @method :: getAllProjectId (GET)
-	* @description :: Busca todas las tareas
-	* @param :: {Object} req, request element de sails
-	* @param  :: {Objetct} res, de la vista ejs del servidor
-	* @param :: {Objetct} next, para continuar en caso de error
+	* @description :: Busca todas las tareas. 
+	* @param :: {Object} req, request element de sails. 
+	* @param  :: {Objetct} res, de la vista ejs del servidor. 
+	* @param :: {Objetct} next, para continuar en caso de error. 
 	**/
 	getAllProjectId: function(req, res, next) { 
 		// De acuerdo al id de un proyecto, se buscan todas las tareas asociadas a ese proyecto 
@@ -108,10 +107,10 @@ module.exports = {
 
 	/**
 	* @method :: getTareas (GET)
-	* @description :: Busca todas las tareas
-	* @param :: {Object} req, request element de sails
-	* @param  :: {Objetct} res, de la vista ejs del servidor
-	* @param :: {Objetct} next, para continuar en caso de error
+	* @description :: Busca todas las tareas. 
+	* @param :: {Object} req, request element de sails. 
+	* @param  :: {Objetct} res, de la vista ejs del servidor. 
+	* @param :: {Objetct} next, para continuar en caso de error. 
 	**/
 	getTareas: function(req, res, next) { 
 		// De acuerdo al id de un proyecto, se buscan todas las tareas asociadas a ese proyecto 
