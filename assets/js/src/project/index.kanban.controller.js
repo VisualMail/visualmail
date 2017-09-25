@@ -358,6 +358,9 @@
             vm.miKanbanColumn1.push(nuevaTarea); 
 
             // Actualizar el 'scope' 
+            if(data.nodoId)
+                $("[data-nodo-id=" + data.nodoId + "]").attr("class", "tooltipped context-menu-one-kanban");
+
             $scope.$apply(); 
             vm.setMessageToast("Se ha creado una nueva tarea"); 
         }; 

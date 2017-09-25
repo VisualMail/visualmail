@@ -70,6 +70,11 @@
         }, 
 
         // 'pk' de la tarea asociada al mensaje 
+        tareaId: { 
+            type: "string" 
+        }, 
+        
+        // 'pk' de la tarea asociada al mensaje 
         tareas: { 
             collection: 'tarea', 
             via: 'mensaje' 
@@ -137,7 +142,7 @@
                 type: "MensajeNuevo", 
                 nuevoMensaje: nuevoMensaje, 
                 revisarSession: revisarSession, 
-                actualizarNodos: actualizarNodos  
+                actualizarNodos: actualizarNodos 
             }, req);
     }, 
 

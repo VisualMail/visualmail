@@ -299,15 +299,9 @@
             $("#x").css("opacity", "1"); 
         }; 
 
-        /** 
-        * @method :: onBtnMensajeEnviarClick 
-        * @description :: Función para mandar POST que crea un nuevo mensaje. 
-        **/ 
-        function onBtnMensajeEnviarClick() { 
-            // Si se está procesando retornar 
-            if(vm.procesando) 
-                return; 
+        vm.onMensajeEnviar = onMensajeEnviar; 
 
+        function onMensajeEnviar(crearTarea) { 
             vm.procesando = true; 
 
             // Si el mensaje no tiene sesión, actualizar mi sesión 
@@ -324,6 +318,7 @@
                     "X-CSRF-TOKEN": parent.vm.csrfToken 
                 }, 
                 data: { 
+                    crearTarea: crearTarea, 
                     name: vm.mensajeRespuesta, 
                     nodoNivel: vm.miMensajeAnclado.numero_hijos + vm.miMensajeAnclado.nodoNivel, 
                     nodoPadreId: vm.miMensajeAnclado.nodoId, 
@@ -341,59 +336,75 @@
                 } 
             }).then(function(res) { 
                 var d = res.data;
-                vm.procesando = false; 
 
                 // Si existe error 
                 if(!d.proc) { 
                     vm.setMessage(d.proc, d.msg, "warning"); 
+                    vm.procesando = false; 
                     return; 
                 } 
 
-                // Preparar el objeto tarea 
-                var obj = { 
-                    description: vm.mensajeRespuesta, 
-                    element: vm.mensajeRespuestaTipo === "Mensaje Inicial" || vm.mensajeRespuestaTipo === "Citar" || vm.mensajeRespuestaTipo === "" ? "" : vm.mensajeRespuestaTipo, 
-                    mensajeId: d.mensaje.id, 
-                    tipo: vm.mensajeRespuestaTipo, 
-                    tipoId: vm.mensajeRespuestaTipoId, 
-                    tipoName: $("#miMensajeRespuestaTipoName").html(), 
-                    tipoNameMarca: vm.mensajeRespuestaTipoNameMarca, 
-                    title: vm.mensajeRespuestaTipoNameMarca, 
-                    usuario: parent.vm.miUser 
-                }; 
+                // Si se debe crear la tarea 
+                if(crearTarea) {
+                    // Preparar el objeto tarea 
+                    var obj = { 
+                        description: vm.mensajeRespuesta, 
+                        element: vm.mensajeRespuestaTipo === "Mensaje Inicial" || vm.mensajeRespuestaTipo === "Citar" || vm.mensajeRespuestaTipo === "" ? "" : vm.mensajeRespuestaTipo, 
+                        mensajeId: d.mensaje.id, 
+                        nodoId: d.mensaje.nodoId, 
+                        tipo: vm.mensajeRespuestaTipo, 
+                        tipoId: vm.mensajeRespuestaTipoId, 
+                        tipoName: $("#miMensajeRespuestaTipoName").html(), 
+                        tipoNameMarca: vm.mensajeRespuestaTipoNameMarca, 
+                        title: vm.mensajeRespuestaTipoNameMarca, 
+                        usuario: parent.vm.miUser 
+                    }; 
 
-                // Si es un compromiso individual crear la tarea 
-                if(vm.mensajeRespuestaTipoId === "ci") { 
                     vm.onMensajeTareaCrear(obj); 
-                } else if(vm.mensajeRespuestaTipoId === "ac" || 
-                    vm.mensajeRespuestaTipoId === "nc" || 
-                    vm.mensajeRespuestaTipoId === "db" || 
-                    vm.mensajeRespuestaTipoId === "ta" || 
-                    vm.mensajeRespuestaTipoId === "da") { 
-                    // Preguntar si se asocia a una tarea 
-                    swal({ 
-                        title: "¡Atención!", 
-                        text: "¿Deseas asociar este mensaje a una tarea?", 
-                        type: "warning", 
-                        showCancelButton: true, 
-                        confirmButtonClass: "btn-success", 
-                        confirmButtonText: "Sí, crear tarea", 
-                        cancelButtonText: "No, cerrar", 
-                        closeOnConfirm: true, 
-                        closeOnCancel: true 
-                    }, function(isConfirm) { 
-                        if(!isConfirm) 
-                            return; 
-                        vm.onMensajeTareaCrear(obj); 
-                    }); 
                 } 
 
                 // Iniciar controles 
                 vm.onBtnMensajeCancelarClick(); 
+                vm.procesando = false; 
             }).catch(function(err) { 
                 vm.procesando = false; 
                 vm.setMessage(false, "¡Se produjo un error en el procedimiento '/mensaje/create'!", null, err); 
             }); 
+        }; 
+
+        /** 
+        * @method :: onBtnMensajeEnviarClick 
+        * @description :: Función para mandar POST que crea un nuevo mensaje. 
+        **/ 
+        function onBtnMensajeEnviarClick() { 
+            // Si se está procesando retornar 
+            if(vm.procesando) 
+                return; 
+            
+            // Si es un compromiso individual crear la tarea 
+            if(vm.mensajeRespuestaTipoId === "ci") { 
+                vm.onMensajeEnviar(true); 
+            } else if(vm.mensajeRespuestaTipoId === "ac" || 
+                vm.mensajeRespuestaTipoId === "nc" || 
+                vm.mensajeRespuestaTipoId === "db" || 
+                vm.mensajeRespuestaTipoId === "ta" || 
+                vm.mensajeRespuestaTipoId === "da") { 
+                // Preguntar si se asocia a una tarea 
+                swal({ 
+                    title: "¡Atención!", 
+                    text: "¿Deseas asociar este mensaje a una tarea?", 
+                    type: "warning", 
+                    showCancelButton: true, 
+                    confirmButtonClass: "btn-success", 
+                    confirmButtonText: "Sí, crear tarea", 
+                    cancelButtonText: "No, cerrar", 
+                    closeOnConfirm: true, 
+                    closeOnCancel: true 
+                }, function(isConfirm) { 
+                    vm.onMensajeEnviar(isConfirm); 
+                }); 
+            } else 
+                vm.onMensajeEnviar(false); 
         }; 
 
         /**
@@ -591,6 +602,7 @@
                 estado: "new", 
                 kanban: parent.vm.miProject.kanban[0].id, 
                 mensaje: obj.mensajeId, 
+                nodoId: obj.nodoId, 
                 project_id: parent.vm.miProject.id, 
                 selectedUsuarioTask: obj.usuario, 
                 tipo: obj.tipo, 

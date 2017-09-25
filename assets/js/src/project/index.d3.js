@@ -90,7 +90,7 @@ function mapaDialogoDibujar(nodoMensaje) {
 			cx: circleWidth + (v.sessionId * 100), 
 			cy: y2, 
 			name: v.name, 
-			tareas: v.tareas ? true : false, 
+			tareaId: v.tareaId ? true : false, 
 			tipo: v.tipo, 
 			tipoId: v.tipoId 
 		});
@@ -272,7 +272,7 @@ function mapaDialogoDibujarNodo(svgMapa, data) {
 		.attr("cx", data.cx)
 		.attr("cy", data.cy)
 		.attr("r", circleRadio)
-		.attr("class", data.tareas ? "tooltipped context-menu-one-kanban" : "tooltipped context-menu-one")
+		.attr("class", data.tareaId ? "tooltipped context-menu-one-kanban" : "tooltipped context-menu-one")
 		.attr("data-position", "bottom")
 		.attr("data-delay", "50")
 		.attr("data-tooltip", 

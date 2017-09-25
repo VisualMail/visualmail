@@ -23,6 +23,29 @@ module.exports = {
 				}); 
 			} 
 
+			// Buscar el mensaje padre para unir la tarea 
+			if(tarea.mensaje) { 
+				Mensaje.findOne(tarea.mensaje).populate("tareas").then(function(mensaje) { 
+					// Si hay error retornar 
+					if(!mensaje) { 
+						return res.json({ 
+							proc: false, 
+							msg: "¡Se produjo un error en el objeto 'mensaje' (Mensaje.findOne)!" 
+						}); 
+					} 
+					
+					// Se actualiza el mensaje 
+					mensaje.tareaId = tarea.id; 
+					mensaje.save(); 
+				}).catch(function(err) { 
+					sails.log("Se produjo un error en 'tarea/create/Mensaje.findOne': ", err); 
+					return res.json({ 
+						proc: false, 
+						msg: "¡Se produjo un error en la conexión con la base de datos!" 
+					}); 
+				}); 
+			} 
+
 			// Enviar un broadcast a los usuarios en línea que pertecen al proyecto 
 			sails.sockets.broadcast( 
 				req.param("project_id"), 
@@ -30,7 +53,8 @@ module.exports = {
 					message: "Mensaje desde el servidor.", 
 					obj: tarea, 
 					type: "TareaNueva", 
-					selectedUsuarioTask: req.param("selectedUsuarioTask") 
+					selectedUsuarioTask: req.param("selectedUsuarioTask"), 
+					nodoId: req.param("nodoId")
 				}, req); 
 
 			// Retornar tarea 
@@ -41,7 +65,7 @@ module.exports = {
 			});
 		}).catch(function(err) { 
 			sails.log(err); 
-			return req.json({ 
+			return res.json({ 
 				proc: false, 
 				msg: "¡Se produjo un error con la conexión a la base de datos!" 
 			}); 
