@@ -135,7 +135,7 @@ function contextMenuMapaKanbanInit() {
         callback: function(key, options) { 
             var nodoId = parseInt($(this[0]).attr("data-nodo-id")); 
             var scopeMensaje = angular.element(document.getElementById("IndexMensajeControllerMain")).scope(); 
-            var scopeKanban = angular.element(document.getElementById("kanbanBoard")).scope(); 
+            var scopeMain = angular.element(document.getElementById("IndexControllerMain")).scope(); 
                 
             switch(key) { 
                 case "navigate": 
@@ -144,8 +144,8 @@ function contextMenuMapaKanbanInit() {
                     }); 
                     break; 
                 case "kanban": 
-                    scopeKanban.$apply(function () { 
-                        scopeKanban.ik.onKanbanGoToTarea(nodoId); 
+                    scopeMain.$apply(function () { 
+                        scopeMain.vm.onActiveTabChanged(4, nodoId); 
                     }); 
                     break; 
                 case "reply":

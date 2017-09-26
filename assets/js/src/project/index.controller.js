@@ -19,6 +19,7 @@
         vm.miUserLista = []; 
         vm.miUserListaParticipantes = []; 
         vm.scopeMensaje = {}; 
+        vm.scopeTarea = {}; 
     
         vm.getQueryString = getQueryString; 
         vm.iniciarTiempoDialogo = iniciarTiempoDialogo; 
@@ -101,8 +102,45 @@
             console.log(diffDays);*/
         }; 
 
-        function onActiveTabChanged(nodoId) { 
+        function onActiveTabChanged(tabId, nodoId) { 
+            vm.scopeTarea.ik.kanbanTareaIdFocus = ""; 
 
+            if(!nodoId) { 
+                vm.activeTab = tabId; 
+                return; 
+            } 
+
+            if(tabId === 2) { 
+                if(nodoId !== vm.scopeMensaje.im.miMensajeAnclado.nodoId) { 
+                    $anclar = true; 
+                    $("[data-circle=dialogo]").attr("stroke", ""); 
+                    $("[data-circle=dialogo]").attr("stroke-width", ""); 
+                    var n = $("[data-circle-navigate=ok]"); 
+                    n.attr("stroke", ""); 
+                    n.attr("stroke-width", ""); 
+                    n.attr("data-circle-navigate", ""); 
+                    n = $("[data-line-navigate=ok]"); 
+                    n.attr("stroke", "#797979"); 
+                    n.attr("stroke-width", "1"); 
+                    n.attr("data-line-navigate", ""); 
+
+                    vm.scopeMensaje.im.onMensajeAnclarClick(nodoId); 
+                    vm.scopeMensaje.im.iniciarMensajeAnclado(); 
+                    vm.scopeMensaje.im.mensajeResponder = false; 
+                    vm.miMapaSvgFocus = true; 
+                    $(".svg-mapa").focus(); 
+                }  
+            } else if(tabId === 4) { 
+                $.each(vm.scopeMensaje.im.miMensajeLista, function(key, value) { 
+                    if(value.nodoId !== nodoId)
+                        return true; 
+                    
+                    vm.scopeTarea.ik.kanbanTareaIdFocus = value.tareaId; 
+                    return false; 
+                }); 
+            }
+
+            vm.activeTab = tabId; 
         }; 
 
         /** 

@@ -47,7 +47,7 @@
             $(document).ready(function() { 
                 $("body").on("click", function(e) { 
                     var cn = e.target.parentNode.className; 
-                    vm.miMapaSvgFocus = cn === "svg-mapa" || e.target.parentNode.nodeName === "svg" || cn === "context-menu-item context-menu-icon context-menu-icon-add"; 
+                    vm.miMapaSvgFocus = cn === "svg-mapa" || e.target.parentNode.nodeName === "svg" || cn === "context-menu-item context-menu-icon context-menu-icon-add" || cn === "verMensaje"; 
                     $(".svg-mapa").css("opacity", vm.miMapaSvgFocus ? "1" : "0.3"); 
                 }); 
             }); 

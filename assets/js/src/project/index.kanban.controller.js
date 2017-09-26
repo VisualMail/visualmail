@@ -10,6 +10,7 @@
     function IndexKanbanController($http, $scope) { 
         var vm = this; 
         var parent = $scope.$parent; 
+        vm.kanbanTareaIdFocus = ""; 
         vm.miKanbanColumn1 = []; 
         vm.miKanbanColumn2 = []; 
         vm.miKanbanColumn3 = []; 
@@ -27,8 +28,8 @@
         
         vm.onActualizarTareaIndice = onActualizarTareaIndice; 
         vm.onBtnTareaGuardarClick = onBtnTareaGuardarClick; 
+        vm.onBtnVerMensajeClick = onBtnVerMensajeClick; 
         vm.onKanbanBoardUpdateColumn = onKanbanBoardUpdateColumn; 
-        vm.onKanbanGoToTarea = onKanbanGoToTarea; 
         vm.onSocketTareaActualizar = onSocketTareaActualizar; 
         vm.onSocketTareaNueva = onSocketTareaNueva; 
         vm.setMessage = parent.vm.setMessage; 
@@ -72,6 +73,15 @@
                     else if(value.estado === vm.miKanbanTipoTarea[3]) // Terminada 
                         vm.miKanbanColumn4.push(value); 
                 }); 
+
+                $(".input-group.date").datepicker({ 
+                    autoclose: true, 
+                    format: "yyyy-mm-dd", 
+                    language: "es", 
+                    todayBtn: "linked", 
+                    todayHighlight: true 
+                }); 
+                parent.vm.scopeTarea = $scope; 
             }).catch(function(err) { 
                 vm.setMessage(false, "¡Se produjo un error en el procedimiento '/tarea/getAllProjectId/'!", null, err); 
             });             
@@ -180,6 +190,10 @@
             }); 
         }; 
 
+        function onBtnVerMensajeClick(nodoId) { 
+            parent.vm.onActiveTabChanged(2, nodoId); 
+        }; 
+
         /**
         * @method :: onKanbanBoardUpdateColumn 
         * @description :: Función para actualizar una tarea en el tablero Kanban 
@@ -267,11 +281,6 @@
             vm.setMessageToast("Tarea actualizada"); 
         }; 
 
-        function onKanbanGoToTarea(nodoId) { 
-            
-
-        }; 
-
         /**
         * @method :: onSocketTareaActualizar 
         * @description :: Recibe la tarea actualizada en el Kanban 
@@ -351,7 +360,13 @@
             if(nuevaTarea.mensaje) 
                 parent.vm.onScopeMensajeActualizarTarea(nuevaTarea.mensaje, nuevaTarea.id); 
                 //$("[data-nodo-id=" + data.nodoId + "]").attr("class", "tooltipped context-menu-one-kanban");
-
+                $(".input-group.date").datepicker({ 
+                    autoclose: true, 
+                    format: "yyyy-mm-dd", 
+                    language: "es", 
+                    todayBtn: "linked", 
+                    todayHighlight: true 
+                }); 
             $scope.$apply(); 
             vm.setMessageToast("Se ha creado una nueva tarea"); 
         }; 
