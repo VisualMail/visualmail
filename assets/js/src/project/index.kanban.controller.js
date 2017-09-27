@@ -21,12 +21,14 @@
         vm.miKanbanColumnSearch4 = ""; 
         vm.miKanbanListaTareas = []; 
         vm.miKanbanTipoTarea = ["new", "doing", "testing", "done"]; 
+        vm.tareaDeliveryDate = ""; 
         vm.tareaDescription = ""; 
         vm.tareaProfileNone = "/images/profile_none.jpeg"; 
         vm.tareaTitle = ""; 
         vm.tareaUser = ""; 
         
         vm.onActualizarTareaIndice = onActualizarTareaIndice; 
+        vm.onBtnTareaCrearEditarClick = onBtnTareaCrearEditarClick; 
         vm.onBtnTareaGuardarClick = onBtnTareaGuardarClick; 
         vm.onBtnVerMensajeClick = onBtnVerMensajeClick; 
         vm.onKanbanBoardUpdateColumn = onKanbanBoardUpdateColumn; 
@@ -118,6 +120,17 @@
             }).catch(function(err) { 
                 vm.setMessage(false, "¡Se produjo un error en el procedimiento '/tarea/updateTipo'!", null, err); 
             }); 
+        }; 
+
+        function onBtnTareaCrearEditarClick(nueva, item) { 
+            if(!nueva) { 
+                vm.tareaDeliveryDate = item.deliveryDate; 
+                vm.tareaDescription = item.description; 
+                vm.tareaTitle = item.title; 
+                vm.tareaUser = item.usuario.id; 
+            }
+
+
         }; 
 
         /** 
