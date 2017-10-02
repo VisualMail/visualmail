@@ -135,15 +135,15 @@
               vm.tareaUser = "";
               $("#tareaUser").val("").trigger("change");
           } else {
-                vm.tareaDeliveryDate = item.deliveryDate ? item.deliveryDate : "";
-                vm.tareaDescription = item.description ? item.description : "";
-                vm.tareaTitle = item.title ? item.title : "";
+            vm.tareaDeliveryDate = item.deliveryDate ? item.deliveryDate : "";
+            vm.tareaDescription = item.description ? item.description : "";
+            vm.tareaTitle = item.title ? item.title : "";
 
-                if(item.usuario) {
-                    vm.tareaUser = item.usuario.id;
-                    $("#tareaUser").val(vm.tareaUser).trigger("change");
-                } else
-                    $("#tareaUser").val("").trigger("change");
+            if(item.usuario) {
+                vm.tareaUser = item.usuario.id;
+                $("#tareaUser").val(vm.tareaUser).trigger("change");
+            } else
+                $("#tareaUser").val("").trigger("change");
           }
 
           $("#modalTarea").modal("show");
@@ -174,21 +174,23 @@
             // Almacenar los datos que se enviarán al servidor
             var tarea = {
                 associated: false,
+                deliveryDate: vm.tareaDeliveryDate, 
                 description: vm.tareaDescription,
                 drag: true,
                 element: "",
                 estado: "new",
                 kanban: parent.vm.miProject.kanban[0].id,
                 mensaje: null,
+                nueva: vm.tareaInsert, 
                 project_id: parent.vm.miProject.id,
                 selectedUsuarioTask: usuarioResponsable,
                 title: vm.tareaTitle,
-                usuario: usuarioResponsable.id,
+                usuario: usuarioResponsable.id ? usuarioResponsable.id : "",
             };
 
             $http({
                 method: "POST",
-                url: "/tarea/create",
+                url: vm.tareaInsert ? "/tarea/create" : "/tarea/update",
                 headers: {
                     "Content-Type": "application/json",
                     "X-CSRF-TOKEN": parent.vm.csrfToken
@@ -316,7 +318,65 @@
         * @method :: onSocketTareaActualizar
         * @description :: Recibe la tarea actualizada en el Kanban
         **/
-        function onSocketTareaActualizar(data) {
+        function onSocketTareaActualizar(data) { 
+            // Modificar la tarea 
+            var titulo = ""; 
+            
+            $.each(vm.miKanbanListaTareas, function(key, value) { 
+                if(value.id !== obj.id) 
+                    return true; 
+
+                titulo = value.title; 
+                value = obj; 
+                return false; 
+            });
+
+            // Verificar si es la sesión del usuario actual 
+            if(data.usuarioProcedimiento === parent.vm.miUser.id) 
+                return; 
+            
+            if(obj.estado === "new") { 
+                for(var i = 0; i < vm.miKanbanColumn1.length; i++) { 
+                    if(vm.miKanbanColumn1[i].id !== obj.id) 
+                        continue; 
+                    vm.miKanbanColumn1[i] = obj; 
+                    break; 
+                }
+            } else if(obj.estado === "doing") { 
+                for(var i = 0; i < vm.miKanbanColumn2.length; i++) { 
+                    if(vm.miKanbanColumn2[i].id !== obj.id) 
+                        continue; 
+                    vm.miKanbanColumn2[i] = obj; 
+                    break; 
+                }
+            } else if(obj.estado === "testing") { 
+                for(var i = 0; i < vm.miKanbanColumn3.length; i++) { 
+                    if(vm.miKanbanColumn3[i].id !== obj.id) 
+                        continue; 
+                    vm.miKanbanColumn3[i] = obj; 
+                    break; 
+                }
+            } else if(obj.estado === "done") { 
+                for(var i = 0; i < vm.miKanbanColumn4.length; i++) { 
+                    if(vm.miKanbanColumn4[i].id !== obj.id) 
+                        continue; 
+                    vm.miKanbanColumn4[i] = obj; 
+                    break; 
+                }
+            } 
+
+            if(data.usuarioOriginal !== parent.vm.miUser.id) 
+                return;
+
+            var msg = "La tarea '" + titulo + "' de la que eres responsable, ha sido modificada"; 
+            vm.setMessageToast(msg); 
+        }; 
+
+        /**
+        * @method :: onSocketTareaActualizarTipo 
+        * @description :: Recibe la tarea actualizada en el Kanban 
+        **/
+        function onSocketTareaActualizarTipo(data) {
             // Obtener las tareas del tablero Kanban
             $http({
                 url: "/tarea/getTareas/",
@@ -370,7 +430,7 @@
                     vm.onKanbanBoardUpdateColumn(column, newColumn, data.newIndex, data.newCell, data.obj);
                 }
             });
-        };
+        }; 
 
         /**
         * @method :: onSocketTareaNueva
@@ -401,6 +461,7 @@
             $scope.$apply();
             vm.setMessageToast("Se ha creado una nueva tarea");
         };
+        
     };
 
 })();

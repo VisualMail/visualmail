@@ -13,8 +13,24 @@ module.exports = {
 	* @param :: {Objetct} next, para continuar en caso de error.
 	**/
 	create: function(req, res, next) {
+		// Obtener los parámetros 
+		var obj = { 
+			associated: req.param("associated"), 
+			deliveryDate: req.param("deliveryDate"), 
+			description: req.param("description"), 
+			drag: req.param("drag"), 
+			element: req.param("element"), 
+			estado: req.param("estado"), 
+			kanban: req.param("kanban"), 
+			mensaje: req.param("mensaje"), 
+			project_id: req.param("project_id"), 
+			selectedUsuarioTask: req.param("selectedUsuarioTask"), 
+			title: req.param("title"), 
+			usuario: req.param("usuario") 
+		}; 
+
 		//Con todos los parámetros, crear una nueva tarea
-		Tarea.create(req.allParams()).then(function(tarea) {
+		Tarea.create(obj).then(function(tarea) {
 			// Verificar si existe un error
 			if(!tarea) {
 				return res.json({
@@ -139,6 +155,57 @@ module.exports = {
 		});
 	},
 
+	update: function(req, res, next) { 
+		// Buscar la tarea 
+		Tarea.findOne(req.param("id")).then(function(tarea) { 
+			if(!tarea) { 
+				return res.json({ 
+					proc: false, 
+					msg: "¡Se produjo un error con el objeto 'tarea'!"
+				}); 
+			}
+
+			var notificar = 
+				tarea.deliveryDate !== req.param("deliveryDate") || 
+				tarea.usuario !== req.param("usuario"); 
+
+			var usuarioOriginal = tarea.usuario; 
+			tarea.deliveryDate = req.param("deliveryDate"); 
+			tarea.description = req.param("description"); 
+			tarea.title = req.param("title"); 
+			tarea.usuario = req.param("usuario"); 
+			tarea.save(); 
+			
+			// Enviar un broadcast a los usuarios en línea que pertecen al proyecto 
+			if(notificar) { 
+				sails.sockets.broadcast(
+					req.param("project_id"),
+					"socket_project_response", {
+						message: "Mensaje desde el servidor.",
+						obj: tarea,
+						type: "TareaNuevaActualizar",
+						selectedUsuarioTask: req.param("selectedUsuarioTask"), 
+						usuarioProcedimiento: req.session.User.id, 
+						usuarioOriginal: usuarioOriginal 
+					}, req);
+			}
+
+			// Retornar tarea
+			return res.json({
+				proc: true,
+				msg: "¡Tarea registrada!",
+				tarea: tarea
+			});
+
+		}).catch(function(err) { 
+			sails.log(err); 
+			return res.json({ 
+				proc: false, 
+				msg: "¡Se produjo un error en la Base de Datos!"
+			}); 
+		}); 
+	}, 
+
 	/**
 	* @method :: updateTipo (POST)
 	* @description :: Le da un nuevo tipo a una tarea del Kanban, ejemplo , de new a doing
@@ -229,7 +296,7 @@ module.exports = {
 						newIndex: tarea.index,
 						estadoOriginal: estadoOriginal,
 						nuevoEstado: tarea.estado,
-						type: "TareaActualizar"
+						type: "TareaActualizarTipo"
 					}, req);
 				}).catch(function(err) {
 					sails.log("Se produjo un error en '/tarea/updateTipo' (Tarea.find(tareasActualizar)): ", err);

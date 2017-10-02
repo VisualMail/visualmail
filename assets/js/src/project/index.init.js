@@ -53,6 +53,9 @@ $(document).ready(function() {
             case "TareaActualizar":
                 scopeTarea.ik.onSocketTareaActualizar(data);
                 break;
+            case "TareaActualizarTipo":
+                scopeTarea.ik.onSocketTareaActualizarTipo(data);
+                break;
             default:
                 break;
         }
