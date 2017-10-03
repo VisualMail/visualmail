@@ -616,7 +616,7 @@
                                                     ng-class="{
                                                         'col-form-label': ik.formTarea.tareaDescription.$pristine || ik.tareaDescription,
                                                         'col-form-label text-danger': !ik.formTarea.tareaDescription.$pristine && !ik.tareaDescription }">Descripción breve (requerido)</label>
-                                                <textarea class="form-control" id="tareaDescription" name="tareaDescription" placeholder="Información del evento" rows="3" ng-model="ik.tareaDescription"></textarea>
+                                                <textarea class="form-control" id="tareaDescription" name="tareaDescription" placeholder="Información del evento" rows="3" ng-model="ik.tareaDescription" style="width: 100%"></textarea>
                                                 <p class="text-danger" role="alert" ng-if="!ik.formTarea.tareaDescription.$pristine && !ik.tareaDescription">
                                                     <strong>Debes ingresar una descripción breve de la tarea</strong>
                                                 </p>

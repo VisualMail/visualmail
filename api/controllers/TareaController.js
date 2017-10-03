@@ -165,10 +165,6 @@ module.exports = {
 				}); 
 			}
 
-			var notificar = 
-				tarea.deliveryDate !== req.param("deliveryDate") || 
-				tarea.usuario !== req.param("usuario"); 
-
 			var usuarioOriginal = tarea.usuario; 
 			tarea.deliveryDate = req.param("deliveryDate"); 
 			tarea.description = req.param("description"); 
@@ -177,18 +173,16 @@ module.exports = {
 			tarea.save(); 
 			
 			// Enviar un broadcast a los usuarios en línea que pertecen al proyecto 
-			if(notificar) { 
-				sails.sockets.broadcast(
-					req.param("project_id"),
-					"socket_project_response", {
-						message: "Mensaje desde el servidor.",
-						obj: tarea,
-						type: "TareaNuevaActualizar",
-						selectedUsuarioTask: req.param("selectedUsuarioTask"), 
-						usuarioProcedimiento: req.session.User.id, 
-						usuarioOriginal: usuarioOriginal 
-					}, req);
-			}
+			sails.sockets.broadcast(
+				req.param("project_id"),
+				"socket_project_response", {
+					message: "Mensaje desde el servidor.",
+					obj: tarea,
+					type: "TareaActualizar",
+					selectedUsuarioTask: req.param("selectedUsuarioTask"), 
+					usuarioProcedimiento: req.session.User.id, 
+					usuarioOriginal: usuarioOriginal 
+				}, req);
 
 			// Retornar tarea
 			return res.json({
