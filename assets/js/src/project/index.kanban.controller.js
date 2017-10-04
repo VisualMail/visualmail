@@ -138,6 +138,7 @@
               vm.tareaId = "";
               $("#tareaUser").val("").trigger("change");
           } else {
+            vm.formTarea.tareaDeliveryDate.$pristine = true;
             vm.tareaDeliveryDate = item.deliveryDate ? item.deliveryDate : "";
             vm.tareaDescription = item.description ? item.description : "";
             vm.tareaId = item.id;
@@ -327,21 +328,21 @@
         * @description :: Recibe la tarea actualizada en el Kanban
         **/
         function onSocketTareaActualizar(data) {
-            console.log(data); 
             // Modificar la tarea
             var titulo = "";
-            var usuarioOriginalId = ""; 
+            var usuarioOriginalId = "";
 
-            $.each(vm.miKanbanListaTareas, function(key, value) {
-                if(value.id !== data.obj.id)
-                    return true;
+            for(var i = 0; i < vm.miKanbanListaTareas.length; i++) {
+              if(vm.miKanbanListaTareas[i].id !== data.obj.id)
+                continue;
 
-                titulo = value.title;
-                usuarioOriginalId = value.usuario.id; 
-                value = data.obj;
-                value.usuario = data.selectedUsuarioTask; 
-                return false;
-            });
+              titulo = vm.miKanbanListaTareas[i].title;
+              usuarioOriginalId = vm.miKanbanListaTareas[i].usuario.id ? vm.miKanbanListaTareas[i].usuario.id : "";
+              data.obj.mensaje = vm.miKanbanListaTareas[i].mensaje;
+              data.obj.usuario = data.selectedUsuarioTask;
+              vm.miKanbanListaTareas[i] = data.obj;
+              break;
+            }
 
             if(data.obj.estado === "new") {
                 for(var i = 0; i < vm.miKanbanColumn1.length; i++) {
@@ -373,18 +374,19 @@
                 }
             }
 
-            if(data.usuarioProcedimiento === parent.vm.miUser.id) { 
-                vm.setMessageToast("Tarea actualizada"); 
-                return; 
-            } else if(usuarioOriginalId !== parent.vm.miUser.id || parent.vm.miUser.id !== data.selectedUsuarioTask.id)
-                return; 
+            if(parent.vm.miUser.id === data.usuarioProcedimiento) {
+                vm.setMessageToast("Tarea actualizada");
+                return;
+            } else if(parent.vm.miUser.id !== usuarioOriginalId && parent.vm.miUser.id !== data.selectedUsuarioTask.id)
+                return;
 
             var msg = "La tarea '" + titulo + "' de la que eres responsable, ha sido modificada";
 
-            if(parent.vm.miUser.id === data.selectedUsuarioTask.id)
+            if(parent.vm.miUser.id !== usuarioOriginalId && parent.vm.miUser.id === data.selectedUsuarioTask.id)
                 msg = "Se te asignó la tarea '" + titulo + "'";
 
             vm.setMessageToast(msg);
+            $scope.$apply();
         };
 
         /**
