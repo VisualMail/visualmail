@@ -53,6 +53,17 @@ module.exports = {
 					// Se actualiza el mensaje
 					mensaje.tareaId = tarea.id;
 					mensaje.save();
+					tarea.mensaje = mensaje; 
+
+					// Enviar un broadcast a los usuarios en línea que pertecen al proyecto
+					sails.sockets.broadcast(
+						req.param("project_id"),
+						"socket_project_response", {
+							message: "Mensaje desde el servidor.",
+							obj: tarea,
+							type: "TareaNueva",
+							selectedUsuarioTask: req.param("selectedUsuarioTask")
+						}, req);
 				}).catch(function(err) {
 					sails.log("Se produjo un error en 'tarea/create/Mensaje.findOne': ", err);
 					return res.json({
@@ -60,17 +71,17 @@ module.exports = {
 						msg: "¡Se produjo un error en la conexión con la base de datos!"
 					});
 				});
+			} else { 
+				// Enviar un broadcast a los usuarios en línea que pertecen al proyecto
+				sails.sockets.broadcast(
+					req.param("project_id"),
+					"socket_project_response", {
+						message: "Mensaje desde el servidor.",
+						obj: tarea,
+						type: "TareaNueva",
+						selectedUsuarioTask: req.param("selectedUsuarioTask")
+					}, req);
 			}
-
-			// Enviar un broadcast a los usuarios en línea que pertecen al proyecto
-			sails.sockets.broadcast(
-				req.param("project_id"),
-				"socket_project_response", {
-					message: "Mensaje desde el servidor.",
-					obj: tarea,
-					type: "TareaNueva",
-					selectedUsuarioTask: req.param("selectedUsuarioTask")
-				}, req);
 
 			// Retornar tarea
 			return res.json({

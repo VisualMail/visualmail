@@ -101,7 +101,7 @@
             console.log(diffDays); 
             console.log(diffDays);*/
         }; 
-
+        
         function onActiveTabChanged(tabId, nodoId) { 
             vm.scopeTarea.ik.kanbanTareaIdFocus = ""; 
 
@@ -141,6 +141,8 @@
             }
 
             vm.activeTab = tabId; 
+
+            $("#dialogo-svg").scrollLeft(300); 
         }; 
 
         /** 
