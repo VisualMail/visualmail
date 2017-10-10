@@ -18,7 +18,7 @@
         <!-- Fin Tab -->
 
         <!-- Inicio Project -->
-        <div class="text-left" ng-show="vm.activeTab === 1">
+        <div class="text-left" id="tab1" style="display: none;">
 
             <!-- Inicio controller -->
             <div ng-controller="IndexProjectController as ip">
@@ -146,7 +146,7 @@
         <!-- Fin Project -->
 
         <!-- Inicio Diálogo -->
-        <div class="text-left" id="dialogo-main" ng-show="vm.activeTab === 2">
+        <div class="text-left" id="dialogo-main">
 
             <!-- Fin Mensaje Controller -->
             <div id="IndexMensajeControllerMain" ng-controller="IndexMensajeController as im">
@@ -326,7 +326,7 @@
         <!-- Fin Diálogo -->
 
         <!-- Inicio Kanban -->
-        <div class="card-body" ng-show="vm.activeTab === 4">
+        <div class="card-body" id="tab4" style="display: none;">
 
             <!-- Inicio controller -->
             <div id="kanbanBoard" ng-controller="IndexKanbanController as ik">

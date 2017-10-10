@@ -104,9 +104,20 @@
         
         function onActiveTabChanged(tabId, nodoId) { 
             vm.scopeTarea.ik.kanbanTareaIdFocus = ""; 
+            $("#tab1, #dialogo-main, #tab4").attr("style", "display: none;"); 
+            
+            var active = "";
+
+            if(tabId === 1)
+                active = "tab1"; 
+            else if(tabId === 2)
+                active = "dialogo-main"; 
+            else if(tabId === 4)
+                active = "tab4";
 
             if(!nodoId) { 
                 vm.activeTab = tabId; 
+                $("#" + active).attr("style", "display: visible;");
                 return; 
             } 
 
@@ -130,6 +141,16 @@
                     vm.miMapaSvgFocus = true; 
                     $(".svg-mapa").focus(); 
                 }  
+
+                var x = $("[data-nodo-id=" + nodoId + "]").attr("cx"); 
+                var y = $("[data-nodo-id=" + nodoId + "]").attr("cx"); 
+
+                $("#" + active).show(0, function() { 
+                    $('#dialogo-svg').animate({
+                        scrollTop: $("[data-nodo-id=" + nodoId + "]").offset().top / 2, 
+                        scrollLeft: $("[data-nodo-id=" + nodoId + "]").offset().left
+                    }, 0);
+                }); 
             } else if(tabId === 4) { 
                 $.each(vm.scopeMensaje.im.miMensajeLista, function(key, value) { 
                     if(value.nodoId !== nodoId)
@@ -138,11 +159,17 @@
                     vm.scopeTarea.ik.kanbanTareaIdFocus = value.tareaId; 
                     return false; 
                 }); 
+
+                var cell = $("#" + vm.scopeTarea.ik.kanbanTareaIdFocus).parent(); 
+
+                $("#" + active).show(0, function() { 
+                    cell.parent().animate({
+                        scrollTop: cell.offset().top 
+                    }, 0);
+                });
             }
 
             vm.activeTab = tabId; 
-
-            $("#dialogo-svg").scrollLeft(300); 
         }; 
 
         /** 
