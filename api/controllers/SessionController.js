@@ -35,6 +35,18 @@ module.exports = {
 		return res.json({ user: false }); 
 	},
 
+	 /**
+	* @method :: help (View)
+	* @description :: Se encarga de dar los permisos para mostrar vista de ayuda
+	* @param :: {Object} req, request element de sails
+	* @param :: {Object} res, de la vista ejs del servidor
+	**/
+	help: function(req, res) {
+		res.view({ 
+			title: "Ayuda", 
+			layout: "shared/admin" });
+	}, 
+
 	/**
 	* @method :: index (VIEW)
 	* @description :: Muestra la vista principal de la sesión 
@@ -527,51 +539,5 @@ module.exports = {
 			// Redirigir al usuario a la vista 'view'
 			res.redirect("/session/index/" + user.id); 
 		});
-	},
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	 /**
-	* @method :: help (View)
-	* @description :: Se encarga de dar los permisos para mostrar vista de ayuda
-	* @param :: {Object} req, request element de sails
-	* @param :: {Object} res, de la vista ejs del servidor
-	**/
-	help: function(req, res) {
-		res.view({ title: "Ayuda" });
 	}, 
 }
