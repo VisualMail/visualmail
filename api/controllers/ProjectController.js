@@ -233,7 +233,6 @@ module.exports = {
 					"<script type='text/javascript' src='/js/dependencies/jquery-contextmenu/2.4.1/jquery.contextMenu.js'></script>" +
 					"<script type='text/javascript' src='/js/dependencies/jquery-splitter/0.24.0/js/jquery.splitter.js'></script>" +
 					"<script type='text/javascript' src='/js/dependencies/ng-table/2.0.2/js/ng-table.min.js'></script>" +
-					"<script type='text/javascript' src='/js/dependencies/angular-scroll/1.0.2/js/angular-scroll.min.js'></script>" +
 					"<script type='text/javascript' src='/js/src/project/index.d3.js'></script>" +
 					"<script type='text/javascript' src='/js/src/project/index.kanban.js'></script>" +
 					"<script type='text/javascript' src='/js/src/project/index.init.js'></script>" +

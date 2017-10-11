@@ -34,6 +34,7 @@
         vm.onBtnMensajeResponderClick = onBtnMensajeResponderClick; 
         vm.onMensajeAnclarClick = onMensajeAnclarClick; 
         vm.onMensajeAnclarNavegar = onMensajeAnclarNavegar; 
+        vm.onMensajeEnviar = onMensajeEnviar; 
         vm.onMensajeMarcar = onMensajeMarcar; 
         vm.onMensajeTareaCrear = onMensajeTareaCrear; 
         vm.onSocketMensajeNuevo = onSocketMensajeNuevo; 
@@ -299,8 +300,6 @@
             vm.mensajeRespuestaTipoNameMarca = ""; 
             $("#x").css("opacity", "1"); 
         }; 
-
-        vm.onMensajeEnviar = onMensajeEnviar; 
 
         function onMensajeEnviar(crearTarea) { 
             vm.procesando = true; 
@@ -588,7 +587,7 @@
             document.designMode = "off"; 
     
             // Actualizar en el texto del mensaje 
-            vm.mensajeRespuestaTipoName = $sce.trustAsHtml($(".context-menu-mensaje-anclado").html().trim()); 
+            vm.mensajeRespuestaTipoName = mensaje !== "navegar" ? $sce.trustAsHtml($(".context-menu-mensaje-anclado").html().trim()) : $sce.trustAsHtml($(".context-menu-mensaje-navegar").html().trim()); 
             $(".context-menu-mensaje-anclado").html(vm.miMensajeAnclado.name); 
             $("#x").css("opacity", "0.5"); 
         }; 
