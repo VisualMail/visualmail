@@ -94,12 +94,12 @@
 
         /**
         * @method :: onActualizarTareaIndice
-        * @description :: Actualizar el índice de la tarea cuando el usuario cambia la tarea posición en el tablero Kanban
-        * @param :: {string} tareaId, identificador de la tarea
-        * @param :: {integer} newColumn, el índice de la columna nueva (tipo de tarea)
-        * @param :: {integer} newCell, almacena si el usuario cambió de columna y no especificó en que celda (índice) colocar la tarea
-        * @param :: {integer} newIndex, el índice donde se posiciona la tarea
-        **/
+        * @description :: Actualizar el índice de la tarea cuando el usuario cambia la tarea posición en el tablero Kanban. 
+        * @param :: {string} tareaId, identificador de la tarea. 
+        * @param :: {integer} newColumn, el índice de la columna nueva (tipo de tarea). 
+        * @param :: {integer} newCell, almacena si el usuario cambió de columna y no especificó en que celda (índice) colocar la tarea. 
+        * @param :: {integer} newIndex, el índice donde se posiciona la tarea. 
+        **/ 
         function onActualizarTareaIndice(tareaId, newColumn, newCell, newIndex) {
             // Actualizar el indice da la tarea
             $http({
@@ -125,6 +125,12 @@
             });
         };
 
+        /**
+        * @method :: onBtnTareaCrearEditarClick 
+        * @description :: Muestra un formulario para editar una tarea. 
+        * @param :: {boolean} nueva, es una tarea nueva. 
+        * @param :: {Object} item, objeto con los datos de la tarea. 
+        **/ 
         function onBtnTareaCrearEditarClick(nueva, item) {
           vm.tareaInsert = nueva;
           if(nueva) {
@@ -232,9 +238,14 @@
             });
         };
 
-        function onBtnVerMensajeClick(nodoId) {
-            parent.vm.onActiveTabChanged(2, nodoId);
-        };
+        /** 
+        * @method :: onBtnVerMensajeClick 
+        * @description :: Muestra el mensaje asociado a la tarea. 
+        * @param :: {integer} nodoId, identificador de un nodo en el mapa. 
+        **/ 
+        function onBtnVerMensajeClick(nodoId) { 
+            parent.vm.onActiveTabChanged(2, nodoId); 
+        }; 
 
         /**
         * @method :: onKanbanBoardUpdateColumn
@@ -466,7 +477,7 @@
 
             // Actualizar el mensaje con la tarea
             if(nuevaTarea.mensaje)
-                parent.vm.onScopeMensajeActualizarTarea(nuevaTarea.mensaje, nuevaTarea.id);
+                parent.vm.onScopeMensajeActualizarTarea(nuevaTarea.mensaje.id, nuevaTarea.id);
                 //$("[data-nodo-id=" + data.nodoId + "]").attr("class", "tooltipped context-menu-one-kanban");
                 $(".input-group.date").datepicker({
                     autoclose: true,
@@ -478,7 +489,6 @@
             $scope.$apply();
             vm.setMessageToast("Se ha creado una nueva tarea");
         };
-
     };
 
 })();

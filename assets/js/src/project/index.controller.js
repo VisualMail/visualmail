@@ -101,7 +101,13 @@
             console.log(diffDays); 
             console.log(diffDays);*/
         }; 
-        
+
+        /** 
+        * @method :: onActiveTabChanged 
+        * @description :: Activa una pestaña. 
+        * @param :: {integer} tabId, identificador de la pestaña. 
+        * @param :: {integer} nodoId, identificador del nodo del mapa. 
+        **/ 
         function onActiveTabChanged(tabId, nodoId) { 
             vm.scopeTarea.ik.kanbanTareaIdFocus = ""; 
             $("#tab1, #dialogo-main, #tab4").attr("style", "display: none;"); 
@@ -159,6 +165,8 @@
                     vm.scopeTarea.ik.kanbanTareaIdFocus = value.tareaId; 
                     return false; 
                 }); 
+
+                console.log(vm.scopeTarea.ik.kanbanTareaIdFocus); 
 
                 var cell = $("#" + vm.scopeTarea.ik.kanbanTareaIdFocus).parent(); 
 
