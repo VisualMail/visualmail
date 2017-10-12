@@ -363,6 +363,7 @@
 
                                       <!-- Inicio Tarea -->
                                       <div class="kanbanBoardTask" draggable="true" id="{{ item.id }}" 
+                                        data-border="ok"
                                         ng-click="ik.kanbanTareaIdFocus = item.id;" 
                                         ng-style="{ 'border': ik.kanbanTareaIdFocus === item.id ? '5px solid #28a745' : '' }">
                                           <div class="form-group">
@@ -427,11 +428,11 @@
                                   <!-- Inicio Celda -->
                                   <div class="kanbanBoardCell" id="kanbanBoardColumn2Cell{{ item.index }}"
                                       data-cell-index="{{ item.index }}"
-                                      ng-repeat="item in ik.miKanbanColumn2 | filter: ik.miKanbanColumnSearch2"
-                                      ng-show="item.title">
+                                      ng-repeat="item in ik.miKanbanColumn2 | filter: ik.miKanbanColumnSearch2">
 
                                       <!-- Inicio Tarea -->
                                       <div class="kanbanBoardTask" draggable="true" id="{{ item.id }}" 
+                                      data-border="ok"
                                       ng-click="ik.kanbanTareaIdFocus = item.id;" 
                                       ng-style="{ 'border': ik.kanbanTareaIdFocus === item.id ? '5px solid #28a745' : '' }">
                                         <div class="form-group">
@@ -496,11 +497,11 @@
                                   <!-- Inicio Celda -->
                                   <div class="kanbanBoardCell" id="kanbanBoardColumn3Cell{{ item.index }}"
                                       data-cell-index="{{ item.index }}"
-                                      ng-repeat="item in ik.miKanbanColumn3 | filter: ik.miKanbanColumnSearch3"
-                                      ng-show="item.title">
+                                      ng-repeat="item in ik.miKanbanColumn3 | filter: ik.miKanbanColumnSearch3">
 
                                       <!-- Inicio Tarea -->
                                       <div class="kanbanBoardTask" draggable="true" id="{{ item.id }}" 
+                                      data-border="ok"
                                       ng-click="ik.kanbanTareaIdFocus = item.id;" 
                                       ng-style="{ 'border': ik.kanbanTareaIdFocus === item.id ? '5px solid #28a745' : '' }">
                                         <div class="form-group">
@@ -565,11 +566,11 @@
                                   <!-- Inicio Celda -->
                                   <div class="kanbanBoardCell" id="kanbanBoardColumn4Cell{{ item.index }}"
                                       data-cell-index="{{ item.index }}"
-                                      ng-repeat="item in ik.miKanbanColumn4 | filter: ik.miKanbanColumnSearch4"
-                                      ng-show="item.title">
+                                      ng-repeat="item in ik.miKanbanColumn4 | filter: ik.miKanbanColumnSearch4">
 
                                       <!-- Inicio Tarea -->
                                       <div class="kanbanBoardTask" draggable="true" id="{{ item.id }}" 
+                                      data-border="ok"
                                       ng-click="ik.kanbanTareaIdFocus = item.id;" 
                                       ng-style="{ 'border': ik.kanbanTareaIdFocus === item.id ? '5px solid #28a745' : '' }">
                                         <div class="form-group">

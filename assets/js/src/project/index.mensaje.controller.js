@@ -351,8 +351,8 @@
 
         /**
         * @method :: onMensajeAnclarClick 
-        * @description :: Establecer el 'nodo anclado' 
-        * @param :: {integer} nodoId, identificador del nodo 
+        * @description :: Establece en el panel izquierdo el mensaje 'anclado'. 
+        * @param :: {integer} nodoId, identificador del nodo del mensaje. 
         **/
         function onMensajeAnclarClick(nodoId) { 
             // Iniciar el mensaje navegar 
@@ -383,6 +383,11 @@
             //mapaDialogoDibujarAncla($anclar, vm.miMensajeAnclado); 
         };
 
+        /**
+        * @method :: onMensajeAnclarNavegar 
+        * @description :: Establece en el panel derecho el mensaje 'navegar'  
+        * @param :: {integer} nodoId, identificador del nodo del mensaje. 
+        **/
         function onMensajeAnclarNavegar(nodoId) { 
             if(!vm.miMensajeAnclado.nodoId)
                 return; 
