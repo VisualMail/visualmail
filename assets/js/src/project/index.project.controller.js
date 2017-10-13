@@ -282,6 +282,7 @@
             s.select2("data", null); 
             s.html(""); 
             var list = []; 
+            var listTarea = []; 
             
             $.each(parent.vm.miUserListaParticipantes, function(key, value) { 
                 list.push({ 
@@ -289,13 +290,20 @@
                     text: value.firstname + ", " + value.email, 
                     imgurl: value.imgurl 
                 }); 
+
+                listTarea.push({ 
+                    id: value.id, 
+                    text: value.firstname + ", " + value.email, 
+                    imgurl: value.imgurl 
+                }); 
             }); 
 
-            list.unshift({ id: "", text: "", imgurl: ""})
+            list.unshift({ id: "", text: "", imgurl: ""}); 
+            listTarea.unshift({ id: "-1", text: "Nadie", imgurl: ""}); 
 
             s.select2({ 
                 cache: false, 
-                data: list, 
+                data: listTarea, 
                 placeholder: "Seleccionar un responsable", 
                 allowClear: true, 
                 multiple: false, 

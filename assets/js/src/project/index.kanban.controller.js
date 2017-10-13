@@ -15,12 +15,14 @@
         vm.miKanbanColumn2 = [];
         vm.miKanbanColumn3 = [];
         vm.miKanbanColumn4 = [];
+        vm.miKanbanColumn5 = []; 
         vm.miKanbanColumnSearch1 = "";
         vm.miKanbanColumnSearch2 = "";
         vm.miKanbanColumnSearch3 = "";
         vm.miKanbanColumnSearch4 = "";
+        vm.miKanbanColumnSearch5 = "";
         vm.miKanbanListaTareas = [];
-        vm.miKanbanTipoTarea = ["new", "doing", "testing", "done"];
+        vm.miKanbanTipoTarea = ["new", "doing", "testing", "done", "discard"];
         vm.tareaDeliveryDate = "";
         vm.tareaDescription = "";
         vm.tareaId = "";
@@ -77,6 +79,8 @@
                         vm.miKanbanColumn3.push(value);
                     else if(value.estado === vm.miKanbanTipoTarea[3]) // Terminada
                         vm.miKanbanColumn4.push(value);
+                    else if(value.estado === vm.miKanbanTipoTarea[4]) // Descartada
+                        vm.miKanbanColumn5.push(value);
                 });
 
                 $(".input-group.date").datepicker({
@@ -372,6 +376,13 @@
                     vm.miKanbanColumn4[i] = data.obj;
                     break;
                 }
+            } else if(data.obj.estado === "discard") {
+                for(var i = 0; i < vm.miKanbanColumn5.length; i++) {
+                    if(vm.miKanbanColumn5[i].id !== data.obj.id)
+                        continue;
+                    vm.miKanbanColumn5[i] = data.obj;
+                    break;
+                }
             }
 
             if(parent.vm.miUser.id === data.usuarioProcedimiento) {
@@ -418,6 +429,7 @@
                     vm.miKanbanColumn2 = [];
                     vm.miKanbanColumn3 = [];
                     vm.miKanbanColumn4 = [];
+                    vm.miKanbanColumn5 = [];
 
                     // Añadir cada tarea a la columna correspondiente
                     $.each(vm.miKanbanListaTareas, function(key, value) {
@@ -429,6 +441,8 @@
                             vm.miKanbanColumn3.push(value);
                         else if(value.estado === vm.miKanbanTipoTarea[3]) // Terminada
                             vm.miKanbanColumn4.push(value);
+                        else if(value.estado === vm.miKanbanTipoTarea[4]) // Terminada
+                            vm.miKanbanColumn5.push(value);
                     });
 
                     vm.setMessageToast("Tarea actualizada");
