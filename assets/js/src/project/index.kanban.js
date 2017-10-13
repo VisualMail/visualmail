@@ -59,6 +59,13 @@ function kanbanBoardInitGecko() {
     kanbanBoard.on("dragstart", function(e) { 
         // Almacenar el elemento HTML que contiene a la tarea 
         hideMe = e.target; 
+
+        if($(hideMe).attr("data-border")) { 
+            $("[data-border='ok']").attr("style", "border: none;"); 
+            $(hideMe).attr("style", "border: 5px solid #28a745;"); 
+            var scope = angular.element(document.getElementById("kanbanBoard")).scope(); 
+            scope.ik.kanbanTareaIdFocus = $(hideMe).attr("id"); 
+        } 
         
         // Almacenar el "id" del elemento HTML que contiene a la tarea para enviarlo a través de los eventos 
         e.originalEvent.dataTransfer.setData("kanbanBoardTask", e.target.id); 
@@ -162,6 +169,7 @@ function kanbanBoardInitGecko() {
         // Obtener el "scope" desde angular 
         var scope = angular.element(document.getElementById("kanbanBoard")).scope(); 
         var column = parseInt(oldCell.parent().attr("data-column-index")); 
+        scope.ik.kanbanTareaIdFocus = tareaId; 
     
         // Verificar si el destino es una celda o una nueva columna 
         if(sectionTask) { 
@@ -214,6 +222,13 @@ function kanbanBoardInitWebKit() {
     kanbanBoard.on("dragstart", function(e) { 
         // Almacenar el elemento HTML que contiene a la tarea 
         hideMe = e.target; 
+
+        if($(hideMe).attr("data-border")) { 
+            $("[data-border='ok']").attr("style", "border: none;"); 
+            $(hideMe).attr("style", "border: 5px solid #28a745;"); 
+            var scope = angular.element(document.getElementById("kanbanBoard")).scope(); 
+            scope.ik.kanbanTareaIdFocus = $(hideMe).attr("id"); 
+        } 
     }); 
     
     // Al finalizar el "drag"
@@ -314,6 +329,7 @@ function kanbanBoardInitWebKit() {
         // Obtener el "scope" desde angular 
         var scope = angular.element(document.getElementById("kanbanBoard")).scope(); 
         var column = parseInt(oldCell.parent().attr("data-column-index")); 
+        scope.ik.kanbanTareaIdFocus = tareaId; 
     
         // Verificar si el destino es una celda o una nueva columna 
         if(sectionTask) { 

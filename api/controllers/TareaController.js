@@ -29,6 +29,13 @@ module.exports = {
 			usuario: req.param("usuario") 
 		}; 
 
+		if(req.param("tipoId")) { 
+			obj.tipo = req.param("tipo");  
+			obj.tipoId = req.param("tipoId");  
+			obj.tipoName = req.param("tipoName");  
+			obj.tipoNameMarca = req.param("tipoNameMarca"); 
+		} 
+
 		//Con todos los parámetros, crear una nueva tarea
 		Tarea.create(obj).then(function(tarea) {
 			// Verificar si existe un error

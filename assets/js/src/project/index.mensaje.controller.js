@@ -82,11 +82,11 @@
             }); 
         }; 
 
-        /**
-        * @method :: iniciarLineaDialogo  
-        * @description :: Ilumina la línea del diálogo  
-        * @param :: {nodoId} name, nombre de la variable 
-        **/
+        /** 
+        * @method :: iniciarLineaDialogo 
+        * @description :: Ilumina la línea del diálogo. 
+        * @param :: {integer} nodoId, identificador de un nodo en el mapa. 
+        **/ 
         function iniciarLineaDialogo(nodoId) { 
             var n = $("[data-line-nodo-id=" + nodoId + "]"); 
             n.attr("stroke", "#18ffff"); 
@@ -107,16 +107,16 @@
                 vm.iniciarLineaDialogo(nodoId); 
         }; 
 
-        /**
+        /** 
         * @method :: iniciarMensajeAnclado 
-        * @description :: Iniciar el 'nodo anclado'  
-        **/
+        * @description :: Iniciar el 'nodo anclado'. 
+        **/ 
         function iniciarMensajeAnclado() { 
             if(!$anclar || !vm.miMensajeAnclado.nodoId) { 
                 var m = $("#main > .svg-mapa"); 
                 m.find("svg").attr("height", 600); 
-                $("#main").css("height", "600px");
-                m.css("height", "600px");
+                $("#main").css("height", "600px"); 
+                m.css("height", "600px"); 
                 $(".resizable-panel-container").attr("style", ""); 
                 return; 
             } 
@@ -124,7 +124,7 @@
             var c = $("[data-nodo-id=" + vm.miMensajeAnclado.nodoId + "]"); 
             c.attr("stroke", "#000"); 
             c.attr("stroke-width", "5"); 
-        };
+        }; 
 
         /**
         * @method :: iniciarMensajeNavegar 
@@ -283,6 +283,7 @@
             vm.iniciarMensajeAnclado(); 
             vm.mensajeResponder = true; 
             $timeout(function () { $('#mensajeRespuesta').focus(); }); 
+            $("#x").css("opacity", "0.5"); 
         }; 
 
         /** 
@@ -299,6 +300,122 @@
             vm.mensajeRespuestaTipoName = $sce.trustAsHtml(""); 
             vm.mensajeRespuestaTipoNameMarca = ""; 
             $("#x").css("opacity", "1"); 
+        }; 
+
+        /** 
+        * @method :: onBtnMensajeEnviarClick 
+        * @description :: Función para mandar POST que crea un nuevo mensaje. 
+        **/ 
+        function onBtnMensajeEnviarClick() { 
+            // Si se está procesando retornar 
+            if(vm.procesando) 
+                return; 
+            
+            // Si es un compromiso individual crear la tarea 
+            if(vm.mensajeRespuestaTipoId === "ci") { 
+                vm.onMensajeEnviar(true); 
+            } else if(vm.mensajeRespuestaTipoId === "ac" || 
+                vm.mensajeRespuestaTipoId === "nc" || 
+                vm.mensajeRespuestaTipoId === "db" || 
+                vm.mensajeRespuestaTipoId === "ta" || 
+                vm.mensajeRespuestaTipoId === "da") { 
+                // Preguntar si se asocia a una tarea 
+                swal({ 
+                    title: "¡Atención!", 
+                    text: "¿Deseas asociar este mensaje a una tarea?", 
+                    type: "warning", 
+                    showCancelButton: true, 
+                    confirmButtonClass: "btn-success", 
+                    confirmButtonText: "Sí, crear tarea", 
+                    cancelButtonText: "No, cerrar", 
+                    closeOnConfirm: true, 
+                    closeOnCancel: true 
+                }, function(isConfirm) { 
+                    vm.onMensajeEnviar(isConfirm); 
+                }); 
+            } else 
+                vm.onMensajeEnviar(false); 
+        }; 
+
+        /**
+        * @method :: onBtnMensajeResponderClick 
+        * @description :: Responder a un mensaje. 
+        **/
+        function onBtnMensajeResponderClick() { 
+            vm.mensajeResponder = true; 
+            $timeout(function() { 
+                $('#mensajeRespuesta').focus(); 
+            }); 
+            $("#x").css("opacity", "0.5"); 
+        }; 
+
+        /**
+        * @method :: onMensajeAnclarClick 
+        * @description :: Establece en el panel izquierdo el mensaje 'anclado'. 
+        * @param :: {integer} nodoId, identificador del nodo del mensaje. 
+        **/
+        function onMensajeAnclarClick(nodoId) { 
+            // Iniciar el mensaje navegar 
+            vm.miMensajeAncladoNavegar = { }; 
+            vm.onBtnMensajeCancelarClick(); 
+
+            // Si se debe anclar, Buscar en la lista de mensajes el mensaje anclado 
+            // a través del id del nodo que identifica al mensaje, caso contrario 
+            // iniciar el mensaje anclado 
+            if($anclar) { 
+
+                $.each(vm.miMensajeLista, function(key, value) { 
+                    if(parseInt(value.nodoId) === nodoId) { 
+                        vm.miMensajeAnclado = value; 
+                        vm.miMensajeAncladoTipoName = $sce.trustAsHtml(vm.miMensajeAnclado.tipoName ? vm.miMensajeAnclado.tipoName : ""); 
+                        return false; 
+                    } 
+                }); 
+                
+                // Verificar si el mensaje anclado tiene hijos
+                if(vm.miMensajeAnclado.nodoId >= 1 && $("[data-nodo-parent-id=" + vm.miMensajeAnclado.nodoId + "]").length > 0) {
+                    vm.iniciarMensajeNavegar(true, false, "Derecha"); 
+                }
+            } else 
+                vm.miMensajeAnclado = { };
+
+            // En el caso de anclar el mensaje, dibujar el ancla 
+            //mapaDialogoDibujarAncla($anclar, vm.miMensajeAnclado); 
+        };
+
+        /**
+        * @method :: onMensajeAnclarNavegar 
+        * @description :: Establece en el panel derecho el mensaje 'navegar'  
+        * @param :: {integer} nodoId, identificador del nodo del mensaje. 
+        **/
+        function onMensajeAnclarNavegar(nodoId) { 
+            if(!vm.miMensajeAnclado.nodoId)
+                return; 
+            if(vm.miMensajeAnclado.nodoId === nodoId)
+                return; 
+
+            $.each(vm.miMensajeLista, function(key, value) { 
+                if(value.nodoId !== nodoId) 
+                    return true; 
+
+                vm.miMensajeAncladoNavegar = value; 
+                vm.miMensajeAncladoNavegarTipoName = $sce.trustAsHtml(vm.miMensajeAncladoNavegar.tipoName ? vm.miMensajeAncladoNavegar.tipoName : ""); 
+                return false; 
+            }); 
+
+            var n = $("[data-circle-navigate=ok]"); 
+            n.attr("stroke", ""); 
+            n.attr("stroke-width", ""); 
+            n.attr("data-circle-navigate", ""); 
+            n = $("[data-line-navigate=ok]"); 
+            n.attr("stroke", "#797979"); 
+            n.attr("stroke-width", "1"); 
+            n.attr("data-line-navigate", ""); 
+            n = $("[data-nodo-id=" + vm.miMensajeAncladoNavegar.nodoId + "]"); 
+            n.attr("stroke", "#18ffff"); 
+            n.attr("stroke-width", "5"); 
+            n.attr("data-circle-navigate", "ok"); 
+            vm.iniciarLineaDialogo(vm.miMensajeAncladoNavegar.nodoId); 
         }; 
 
         function onMensajeEnviar(crearTarea) { 
@@ -370,117 +487,6 @@
                 vm.procesando = false; 
                 vm.setMessage(false, "¡Se produjo un error en el procedimiento '/mensaje/create'!", null, err); 
             }); 
-        }; 
-
-        /** 
-        * @method :: onBtnMensajeEnviarClick 
-        * @description :: Función para mandar POST que crea un nuevo mensaje. 
-        **/ 
-        function onBtnMensajeEnviarClick() { 
-            // Si se está procesando retornar 
-            if(vm.procesando) 
-                return; 
-            
-            // Si es un compromiso individual crear la tarea 
-            if(vm.mensajeRespuestaTipoId === "ci") { 
-                vm.onMensajeEnviar(true); 
-            } else if(vm.mensajeRespuestaTipoId === "ac" || 
-                vm.mensajeRespuestaTipoId === "nc" || 
-                vm.mensajeRespuestaTipoId === "db" || 
-                vm.mensajeRespuestaTipoId === "ta" || 
-                vm.mensajeRespuestaTipoId === "da") { 
-                // Preguntar si se asocia a una tarea 
-                swal({ 
-                    title: "¡Atención!", 
-                    text: "¿Deseas asociar este mensaje a una tarea?", 
-                    type: "warning", 
-                    showCancelButton: true, 
-                    confirmButtonClass: "btn-success", 
-                    confirmButtonText: "Sí, crear tarea", 
-                    cancelButtonText: "No, cerrar", 
-                    closeOnConfirm: true, 
-                    closeOnCancel: true 
-                }, function(isConfirm) { 
-                    vm.onMensajeEnviar(isConfirm); 
-                }); 
-            } else 
-                vm.onMensajeEnviar(false); 
-        }; 
-
-        /**
-        * @method :: onBtnMensajeResponderClick 
-        * @description :: Responder a un mensaje. 
-        **/
-        function onBtnMensajeResponderClick() { 
-            vm.mensajeResponder = true; 
-            $timeout(function() { 
-                $('#mensajeRespuesta').focus(); 
-            }); 
-            $("#x").css("opacity", "0.5"); 
-        }; 
-
-        /**
-        * @method :: onMensajeAnclarClick 
-        * @description :: Establecer el 'nodo anclado' 
-        * @param :: {integer} nodoId, identificador del nodo 
-        **/
-        function onMensajeAnclarClick(nodoId) { 
-            // Iniciar el mensaje navegar 
-            vm.miMensajeAncladoNavegar = { }; 
-            vm.onBtnMensajeCancelarClick(); 
-
-            // Si se debe anclar, Buscar en la lista de mensajes el mensaje anclado 
-            // a través del id del nodo que identifica al mensaje, caso contrario 
-            // iniciar el mensaje anclado 
-            if($anclar) { 
-
-                $.each(vm.miMensajeLista, function(key, value) { 
-                    if(parseInt(value.nodoId) === nodoId) { 
-                        vm.miMensajeAnclado = value; 
-                        vm.miMensajeAncladoTipoName = $sce.trustAsHtml(vm.miMensajeAnclado.tipoName ? vm.miMensajeAnclado.tipoName : ""); 
-                        return false; 
-                    } 
-                }); 
-                
-                // Verificar si el mensaje anclado tiene hijos
-                if(vm.miMensajeAnclado.nodoId >= 1 && $("[data-nodo-parent-id=" + vm.miMensajeAnclado.nodoId + "]").length > 0) {
-                    vm.iniciarMensajeNavegar(true, false, "Derecha"); 
-                }
-            } else 
-                vm.miMensajeAnclado = { };
-
-            // En el caso de anclar el mensaje, dibujar el ancla 
-            //mapaDialogoDibujarAncla($anclar, vm.miMensajeAnclado); 
-        };
-
-        function onMensajeAnclarNavegar(nodoId) { 
-            if(!vm.miMensajeAnclado.nodoId)
-                return; 
-            if(vm.miMensajeAnclado.nodoId === nodoId)
-                return; 
-
-            $.each(vm.miMensajeLista, function(key, value) { 
-                if(value.nodoId !== nodoId) 
-                    return true; 
-
-                vm.miMensajeAncladoNavegar = value; 
-                vm.miMensajeAncladoNavegarTipoName = $sce.trustAsHtml(vm.miMensajeAncladoNavegar.tipoName ? vm.miMensajeAncladoNavegar.tipoName : ""); 
-                return false; 
-            }); 
-
-            var n = $("[data-circle-navigate=ok]"); 
-            n.attr("stroke", ""); 
-            n.attr("stroke-width", ""); 
-            n.attr("data-circle-navigate", ""); 
-            n = $("[data-line-navigate=ok]"); 
-            n.attr("stroke", "#797979"); 
-            n.attr("stroke-width", "1"); 
-            n.attr("data-line-navigate", ""); 
-            n = $("[data-nodo-id=" + vm.miMensajeAncladoNavegar.nodoId + "]"); 
-            n.attr("stroke", "#18ffff"); 
-            n.attr("stroke-width", "5"); 
-            n.attr("data-circle-navigate", "ok"); 
-            vm.iniciarLineaDialogo(vm.miMensajeAncladoNavegar.nodoId); 
         }; 
 
         /**

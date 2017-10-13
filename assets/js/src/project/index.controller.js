@@ -101,9 +101,16 @@
             console.log(diffDays); 
             console.log(diffDays);*/
         }; 
-        
+
+        /** 
+        * @method :: onActiveTabChanged 
+        * @description :: Activa una pestaña. 
+        * @param :: {integer} tabId, identificador de la pestaña. 
+        * @param :: {integer} nodoId, identificador del nodo del mapa. 
+        **/ 
         function onActiveTabChanged(tabId, nodoId) { 
             vm.scopeTarea.ik.kanbanTareaIdFocus = ""; 
+            $("[data-border='ok']").attr("style", "border: none;"); 
             $("#tab1, #dialogo-main, #tab4").attr("style", "display: none;"); 
             
             var active = "";
@@ -112,8 +119,8 @@
                 active = "tab1"; 
             else if(tabId === 2)
                 active = "dialogo-main"; 
-            else if(tabId === 4)
-                active = "tab4";
+            else if(tabId === 4) 
+                active = "tab4"; 
 
             if(!nodoId) { 
                 vm.activeTab = tabId; 
@@ -122,28 +129,12 @@
             } 
 
             if(tabId === 2) { 
-                if(nodoId !== vm.scopeMensaje.im.miMensajeAnclado.nodoId) { 
-                    $anclar = true; 
-                    $("[data-circle=dialogo]").attr("stroke", ""); 
-                    $("[data-circle=dialogo]").attr("stroke-width", ""); 
-                    var n = $("[data-circle-navigate=ok]"); 
-                    n.attr("stroke", ""); 
-                    n.attr("stroke-width", ""); 
-                    n.attr("data-circle-navigate", ""); 
-                    n = $("[data-line-navigate=ok]"); 
-                    n.attr("stroke", "#797979"); 
-                    n.attr("stroke-width", "1"); 
-                    n.attr("data-line-navigate", ""); 
-
-                    vm.scopeMensaje.im.onMensajeAnclarClick(nodoId); 
-                    vm.scopeMensaje.im.iniciarMensajeAnclado(); 
+                if(nodoId !== vm.scopeMensaje.im.miMensajeAncladoNavegar.nodoId) { 
+                    vm.scopeMensaje.im.onMensajeAnclarNavegar(nodoId); 
                     vm.scopeMensaje.im.mensajeResponder = false; 
                     vm.miMapaSvgFocus = true; 
                     $(".svg-mapa").focus(); 
-                }  
-
-                var x = $("[data-nodo-id=" + nodoId + "]").attr("cx"); 
-                var y = $("[data-nodo-id=" + nodoId + "]").attr("cx"); 
+                } 
 
                 $("#" + active).show(0, function() { 
                     $('#dialogo-svg').animate({
@@ -159,6 +150,8 @@
                     vm.scopeTarea.ik.kanbanTareaIdFocus = value.tareaId; 
                     return false; 
                 }); 
+
+                console.log(vm.scopeTarea.ik.kanbanTareaIdFocus); 
 
                 var cell = $("#" + vm.scopeTarea.ik.kanbanTareaIdFocus).parent(); 
 
