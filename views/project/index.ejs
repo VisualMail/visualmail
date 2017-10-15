@@ -331,81 +331,82 @@
             <!-- Inicio controller -->
             <div id="kanbanBoard" ng-controller="IndexKanbanController as ik">
 
-                <!-- Inicio Lista NUEVA -->
                 <form name="ik.formKanban" novalidate="novalidate">
-                  <div class="form-group">
-                      <div class="row">
-                          <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 text-center">
+                    <div class="form-group"> 
+                        <div class="row"> 
 
-                              <!-- Inicio Título y búsqueda -->
-                              <div class="kanbanBoardColumnHeader">
-                                  <h6>POR HACER</h6>
-                                  <div class="input-group">
-                                      <span class="input-group-addon">
-                                          <span class="glyphicon glyphicon-search"></span>
-                                      </span>
-                                      <input class="form-control" placeholder="Buscar..." type="text" ng-model="ik.miKanbanColumnSearch1" />
-                                      <div class="input-group-btn">
-                                          <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#modalTarea"
-                                              ng-click="ik.onBtnTareaCrearEditarClick(true)"><span class="glyphicon glyphicon-plus-sign"></span></button>
-                                      </div>
-                                  </div>
-                              </div>
-                              <!-- Fin Título y búsqueda -->
-
-                              <!-- Inicio Columna -->
-                              <div class="kanbanBoardColumn" id="kanbanBoardColumn1" data-column-index="1">
-
-                                  <!-- Inicio Celda -->
-                                  <div class="kanbanBoardCell" id="kanbanBoardColumn1Cell{{ item.index }}"
-                                      data-cell-index="{{ item.index }}"
-                                      ng-repeat="item in ik.miKanbanColumn1 | filter: ik.miKanbanColumnSearch1">
-
-                                      <!-- Inicio Tarea -->
-                                      <div class="kanbanBoardTask" draggable="true" id="{{ item.id }}" 
-                                        data-border="ok"
-                                        ng-click="ik.kanbanTareaIdFocus = item.id;" 
-                                        ng-style="{ 'border': ik.kanbanTareaIdFocus === item.id ? '5px solid #28a745' : '' }">
-                                          <div class="form-group">
-                                              <div class="row" style="margin-left: 0; margin-right: 0;">
-                                                  <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                                                      <div style="padding: 25px 0 0 0;">
-                                                          <img alt="profile" class="rounded-circle" style="height: 40px; width: 40px;"
-                                                              ng-src="{{ item.usuario.imgurl ? item.usuario.imgurl : ik.tareaProfileNone }}">
-                                                          <p><strong>{{ item.usuario ? item.usuario.initials : '' }}</strong></p>
-                                                      </div>
-                                                  </div>
-                                                  <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-                                                      <div style="padding: 25px 0 0 0;">
-                                                          <h6 ng-if="item.associated === true && item.tipoId">{{ item.tipo }}</h6>
-                                                          <p class="text-left">{{ item.title }}</p>
-                                                      </div>
-                                                  </div>
-                                              </div>
-                                              <div class="row" style="margin: 0 0 10px 0;">
-                                                  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-right">
-                                                      <button class="btn btn-info btn-sm" type="button"
-                                                          ng-click="ik.onBtnTareaCrearEditarClick(false, item)"><span class="glyphicon glyphicon-eye-open"></span> Editar</button>
-                                                      <span class="verMensaje">
-                                                          <button type="button"
-                                                              ng-class="{ 'btn btn-primary btn-sm': item.mensaje.id, 'btn btn-default btn-sm': !item.mensaje.id }"
-                                                              ng-click="ik.onBtnVerMensajeClick(item.mensaje.nodoId)"
-                                                              ng-disabled="!item.mensaje.id"><span class="glyphicon glyphicon-eye-open"></span> Ver mensaje</button>
-                                                      </span>
-                                                  </div>
-                                              </div>
-                                          </div>
-                                      </div>
-                                      <!-- Fin Tarea -->
-
-                                  </div>
-                                  <!-- Fin Celda -->
-
-                              </div>
-                              <!-- Fin Columna -->
-
-                          </div>
-                          <!-- Fin Lista NUEVA -->
+                            <!-- Inicio Lista NUEVA --> 
+                            <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 text-center"> 
+                                
+                                <!-- Inicio Título y búsqueda --> 
+                                <div class="kanbanBoardColumnHeader"> 
+                                    <h6>POR HACER</h6> 
+                                    <div class="input-group"> 
+                                        <span class="input-group-addon"> 
+                                            <span class="glyphicon glyphicon-search"></span> 
+                                        </span> 
+                                        <input class="form-control" placeholder="Buscar..." type="text" ng-model="ik.miKanbanColumnSearch1" /> 
+                                        <div class="input-group-btn"> 
+                                            <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#modalTarea" 
+                                                ng-click="ik.onBtnTareaCrearEditarClick(true)"><span class="glyphicon glyphicon-plus-sign"></span></button> 
+                                        </div> 
+                                    </div>
+                                </div> 
+                                <!-- Fin Título y búsqueda -->
+                                
+                                <!-- Inicio Columna --> 
+                                <div class="kanbanBoardColumn" id="kanbanBoardColumn1" data-column-index="1"> 
+                                    
+                                    <!-- Inicio Celda --> 
+                                    <div class="kanbanBoardCell" id="kanbanBoardColumn1Cell{{ item.index }}" 
+                                        data-cell-index="{{ item.index }}" 
+                                        ng-repeat="item in ik.miKanbanColumn1 | filter: ik.miKanbanColumnSearch1"> 
+                                        
+                                        <!-- Inicio Tarea --> 
+                                        <div class="kanbanBoardTask" draggable="true" id="{{ item.id }}" 
+                                            data-border="ok" 
+                                            ng-click="ik.kanbanTareaIdFocus = item.id;" 
+                                            ng-style="{ 'border': ik.kanbanTareaIdFocus === item.id ? '5px solid #28a745' : '' }"> 
+                                            <div class="form-group"> 
+                                                <div class="row" style="margin-left: 0; margin-right: 0;"> 
+                                                    <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"> 
+                                                        <div style="padding: 25px 0 0 0;"> 
+                                                            <img alt="profile" class="rounded-circle" style="height: 40px; width: 40px;" 
+                                                                ng-src="{{ item.usuario.imgurl ? item.usuario.imgurl : ik.tareaProfileNone }}"> 
+                                                            <p><strong>{{ item.usuario ? item.usuario.initials : '' }}</strong></p> 
+                                                        </div> 
+                                                    </div>
+                                                    <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9"> 
+                                                        <div style="padding: 25px 0 0 0;"> 
+                                                            <h6 ng-if="item.associated === true && item.tipoId">{{ item.tipo }}</h6> 
+                                                            <p class="text-left">{{ item.title }}</p> 
+                                                        </div> 
+                                                    </div> 
+                                                </div> 
+                                                <div class="row" style="margin: 0 0 10px 0;"> 
+                                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-right"> 
+                                                        <button class="btn btn-info btn-sm" type="button" 
+                                                            ng-click="ik.onBtnTareaCrearEditarClick(false, item)"><span class="glyphicon glyphicon-eye-open"></span> Editar</button> 
+                                                        <span class="verMensaje"> 
+                                                            <button type="button" 
+                                                                ng-class="{ 'btn btn-primary btn-sm': item.mensaje.id, 'btn btn-default btn-sm': !item.mensaje.id }" 
+                                                                ng-click="ik.onBtnVerMensajeClick(item.mensaje.nodoId)" 
+                                                                ng-disabled="!item.mensaje.id"><span class="glyphicon glyphicon-eye-open"></span> Ver mensaje</button> 
+                                                        </span> 
+                                                    </div> 
+                                                </div> 
+                                            </div> 
+                                        </div> 
+                                        <!-- Fin Tarea --> 
+                                    
+                                    </div> 
+                                    <!-- Fin Celda --> 
+                                
+                                </div> 
+                                <!-- Fin Columna --> 
+                            
+                            </div> 
+                            <!-- Fin Lista NUEVA -->
 
                           <!-- Inicio Lista HACIENDO -->
                           <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 text-center">
@@ -556,6 +557,10 @@
                                           <span class="glyphicon glyphicon-search"></span>
                                       </span>
                                       <input class="form-control" placeholder="Buscar..." type="text" ng-model="ik.miKanbanColumnSearch4" />
+                                      <div class="input-group-btn"> 
+                                            <button class="btn btn-info" type="button" data-toggle="modal" 
+                                                ng-click="ik.onBtnTareaVerDescartadosClick()"><span class="glyphicon glyphicon-hdd"></span></button> 
+                                        </div> 
                                   </div>
                               </div>
                               <!-- Fin Título y búsqueda -->
@@ -704,6 +709,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button class="btn btn-primary" type="button" data-dismiss="modal"><span class="glyphicon glyphicon-remove-circle"></span> Cerrar</button>
+                                    <button class="btn btn-danger" type="button" ng-click="ik.onBtnTareaDescartarClick()"><span class="glyphicon glyphicon-remove-circle"></span> Descartar</button>
                                     <button type="button"
                                         ng-class="{
                                             'btn btn-success': ik.formTarea.$valid && ik.tareaDescription && ik.tareaDeliveryDate,
@@ -720,18 +726,88 @@
                 <!-- Fin modal Tarea -->
 
                 <!-- Inicio modal Tarea Descartados -->
-                <div class="modal fade" id="modalTarea" tabindex="-1" role="dialog" aria-labelledby="modalTareaTitle" aria-hidden="true">
+                <div class="modal fade" id="modalDescartados" tabindex="-1" role="dialog" aria-labelledby="modalDescartadosTitle" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
-                            <form name="ik.formTarea" novalidate="novalidate">
+                            <form name="ik.formDescartar" novalidate="novalidate">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="modalTareaTitle">Nueva tarea</h5>
+                                    <h5 class="modal-title" id="modalDescartadosTitle">Tareas descartadas</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
                                 <div class="modal-body">
+                                    <div class="form-group">
+                                        <div class="row">
 
+                                            <!-- Inicio Lista DESCARTADOS --> 
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center"> 
+                                                    
+                                                 <!-- Inicio Título y búsqueda --> 
+                                                <div class="kanbanBoardColumnHeader"> 
+                                                    <div class="input-group"> 
+                                                        <span class="input-group-addon"> 
+                                                            <span class="glyphicon glyphicon-search"></span> 
+                                                        </span> 
+                                                        <input class="form-control" placeholder="Buscar..." type="text" ng-model="ik.miKanbanColumnSearch5" /> 
+                                                    </div>
+                                                </div> 
+                                                <!-- Fin Título y búsqueda -->
+                                                    
+                                                <!-- Inicio Columna --> 
+                                                <div class="kanbanBoardColumn" id="kanbanBoardColumn5" data-column-index="5"> 
+                                                        
+                                                    <!-- Inicio Celda --> 
+                                                    <div class="kanbanBoardCell" id="kanbanBoardColumn5Cell{{ item.index }}" 
+                                                        data-cell-index="{{ item.index }}" 
+                                                        ng-repeat="item in ik.miKanbanColumn5 | filter: ik.miKanbanColumnSearch5"> 
+                                                            
+                                                        <!-- Inicio Tarea --> 
+                                                        <div class="kanbanBoardTask" draggable="true" id="{{ item.id }}" 
+                                                            ng-style="{ 'border': ik.kanbanTareaIdFocus === item.id ? '5px solid #28a745' : '' }"> 
+                                                            <div class="form-group"> 
+                                                                <div class="row" style="margin-left: 0; margin-right: 0;"> 
+                                                                    <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"> 
+                                                                        <div style="padding: 25px 0 0 0;"> 
+                                                                            <img alt="profile" class="rounded-circle" style="height: 40px; width: 40px;" 
+                                                                                ng-src="{{ item.usuario.imgurl ? item.usuario.imgurl : ik.tareaProfileNone }}"> 
+                                                                            <p><strong>{{ item.usuario ? item.usuario.initials : '' }}</strong></p> 
+                                                                        </div> 
+                                                                    </div>
+                                                                    <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9"> 
+                                                                        <div style="padding: 25px 0 0 0;"> 
+                                                                            <h6 ng-if="item.associated === true && item.tipoId">{{ item.tipo }}</h6> 
+                                                                            <p class="text-left">{{ item.title }}</p> 
+                                                                        </div> 
+                                                                    </div> 
+                                                                </div> 
+                                                                <div class="row" style="margin: 0 0 10px 0;"> 
+                                                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-right"> 
+                                                                        <button class="btn btn-info btn-sm" type="button" 
+                                                                            ng-click="ik.onBtnTareaCrearEditarClick(false, item, true)"><span class="glyphicon glyphicon-eye-open"></span> Editar</button> 
+                                                                        <span class="verMensaje"> 
+                                                                            <button type="button" 
+                                                                                ng-class="{ 'btn btn-primary btn-sm': item.mensaje.id, 'btn btn-default btn-sm': !item.mensaje.id }" 
+                                                                                ng-click="ik.onBtnVerMensajeClick(item.mensaje.nodoId)" 
+                                                                                ng-disabled="!item.mensaje.id"><span class="glyphicon glyphicon-eye-open"></span> Ver mensaje</button> 
+                                                                        </span> 
+                                                                    </div> 
+                                                                </div> 
+                                                            </div> 
+                                                        </div> 
+                                                        <!-- Fin Tarea --> 
+                                                        
+                                                    </div> 
+                                                    <!-- Fin Celda --> 
+                                                    
+                                                </div> 
+                                                <!-- Fin Columna --> 
+                                                
+                                            </div> 
+                                            <!-- Fin Lista DESCARTADOS -->
+
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button class="btn btn-primary" type="button" data-dismiss="modal"><span class="glyphicon glyphicon-remove-circle"></span> Cerrar</button>

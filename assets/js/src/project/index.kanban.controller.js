@@ -33,7 +33,9 @@
 
         vm.onActualizarTareaIndice = onActualizarTareaIndice;
         vm.onBtnTareaCrearEditarClick = onBtnTareaCrearEditarClick;
+        vm.onBtnTareaDescartarClick = onBtnTareaDescartarClick; 
         vm.onBtnTareaGuardarClick = onBtnTareaGuardarClick;
+        vm.onBtnTareaVerDescartadosClick = onBtnTareaVerDescartadosClick; 
         vm.onBtnVerMensajeClick = onBtnVerMensajeClick;
         vm.onKanbanBoardUpdateColumn = onKanbanBoardUpdateColumn;
         vm.onSocketTareaActualizar = onSocketTareaActualizar;
@@ -135,7 +137,10 @@
         * @param :: {boolean} nueva, es una tarea nueva. 
         * @param :: {Object} item, objeto con los datos de la tarea. 
         **/ 
-        function onBtnTareaCrearEditarClick(nueva, item) {
+        function onBtnTareaCrearEditarClick(nueva, item, esconder) {
+            if(esconder)
+                $('#modalDescartados').modal('hide'); 
+
           vm.tareaInsert = nueva;
           if(nueva) {
               vm.tareaDeliveryDate = "";
@@ -163,6 +168,42 @@
 
           $("#modalTarea").modal("show");
         };
+
+        function onBtnTareaDescartarClick() { 
+            if(vm.procesando)
+                return; 
+            
+            vm.procesando = true; 
+
+            // Actualizar el indice da la tarea
+            $http({
+                method: "POST",
+                url: "/tarea/updateTipo",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": parent.vm.csrfToken
+                },
+                data: {
+                    id: vm.tareaId,
+                    newCell: true,
+                    newIndex: 0,
+                    nuevoEstado: vm.miKanbanTipoTarea[4],
+                    usuarioId: parent.vm.miUser.id
+                }
+            }).then(function(res) {
+                vm.procesando = false; 
+
+                // Verificar si la respuesta desde el servidor es error
+                if(!res.data.proc)
+                    vm.setMessageToast(res.data.msg);
+                else 
+                    $("#modalTarea").modal("hide");
+            }).catch(function(err) {
+                vm.procesando = false; 
+                vm.setMessage(false, "¡Se produjo un error en el procedimiento '/tarea/updateTipo'!", null, err);
+            });
+
+        }; 
 
         /**
         * @method :: onBtnTareaGuardarClick
@@ -240,7 +281,11 @@
                 vm.setMessage(false, "¡Se produjo un error!", undefined, err);
                 vm.procesando = false;
             });
-        };
+        }; 
+
+        function onBtnTareaVerDescartadosClick() { 
+            $("#modalDescartados").modal("show"); 
+        }; 
 
         /** 
         * @method :: onBtnVerMensajeClick 
@@ -452,7 +497,7 @@
                             vm.miKanbanColumn3.push(value);
                         else if(value.estado === vm.miKanbanTipoTarea[3]) // Terminada
                             vm.miKanbanColumn4.push(value);
-                        else if(value.estado === vm.miKanbanTipoTarea[4]) // Terminada
+                        else if(value.estado === vm.miKanbanTipoTarea[4]) // Descartada
                             vm.miKanbanColumn5.push(value);
                     });
 
