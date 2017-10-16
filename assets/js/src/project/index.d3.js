@@ -17,10 +17,12 @@ var $anclar = false;
 **/
 function mapaDialogoDibujar(nodoMensaje) { 
 	// Iniciar el 'div' que contiene el mapa del diálogo 
-	$("#dialogo-svg > .svg-session, #dialogo-svg > .svg-mapa").html(""); 
+	//$("#dialogo-svg > .svg-session, #dialogo-svg > .svg-mapa").html(""); 
+	$("#dialogo-svg > .svg-session, .svg-mapa").html(""); 
 
 	// Añadir al 'div' el objeto 'svg' que contiene el mapa del diálogo 
-	var svgSession = d3.select("#dialogo-svg > .svg-session").append("svg").attr("style", "background-color: #fff;"); 
+	//var svgSession = d3.select("#dialogo-svg > .svg-session").append("svg").attr("style", "background-color: #fff;"); 
+	var svgSession = d3.select(".svg-session").append("svg").attr("style", "background-color: #fff;"); 
 	var svgMapa = d3.select("#dialogo-svg > .svg-mapa").append("svg").attr("style", "background-color: #fff;"); 
 
 	// Establecer una variable auxiliar para verificar si la sesión del mensaje cambia 
@@ -103,9 +105,12 @@ function mapaDialogoDibujar(nodoMensaje) {
 	}); 
 
 	// Actualizar el alto y el ancho del mapa 
-	d3.select("#dialogo-svg > .svg-session").select("svg")
+	/*d3.select("#dialogo-svg > .svg-session").select("svg")
 		.attr("height", totalHeightSession)
-		.attr("width", totalWidth); 
+		.attr("width", totalWidth); */
+	d3.select(".svg-session").select("svg")
+		.attr("height", totalHeightSession)
+		.attr("width", totalWidth + 48); 
 	var m = $("#dialogo-svg > .svg-mapa"); 
 	m.find("svg")
 		.attr("height", totalHeight)
@@ -129,7 +134,8 @@ function mapaDialogoDibujar(nodoMensaje) {
 **/
 function mapaDialogoAgregarNodo(mensaje) {
 	// Seleccionar el objeto SVG 
-	var svgSession = d3.select("#dialogo-svg > .svg-session svg"); 
+	//var svgSession = d3.select("#dialogo-svg > .svg-session svg"); 
+	var svgSession = d3.select("#.svg-session svg"); 
 	var svgMapa = d3.select("#dialogo-svg > .svg-mapa svg"); 
 
 	// Verificar si existe la línea que representa a la sesión en la que se encuentra el mensaje 

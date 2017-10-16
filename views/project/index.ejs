@@ -152,10 +152,12 @@
             <div id="IndexMensajeControllerMain" ng-controller="IndexMensajeController as im">
 
                 <!-- Inicio Mapa -->
+                <div class="svg-session"></div>
+                <div id="panel-move">
+                    
                 <div id="dialogo-svg" class="dialogo-panel-top">
 
                     <!-- Inicio del mapa del diálogo -->
-                    <div class="svg-session"></div>
                     <div class="svg-mapa" style="opacity: 0.5"></div>
                     <!-- Fin del mapa del diálogo -->
 
@@ -317,6 +319,7 @@
                         <!-- Fin Panel Derecho -->
 
                     </div>
+                </div>
                 </div>
                 <!-- Fin Paneles -->
 
@@ -725,7 +728,13 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button class="btn btn-primary" type="button" data-dismiss="modal"><span class="glyphicon glyphicon-remove-circle"></span> Cerrar</button>
-                                    <button class="btn btn-danger" type="button" ng-click="ik.onBtnTareaDescartarClick()"><span class="glyphicon glyphicon-remove-circle"></span> Descartar</button>
+                                    <button type="button" 
+                                        ng-class="{ 
+                                            'btn btn-danger': ik.tareaEstado !== 'discard', 
+                                            'btn btn-default': ik.tareaEstado === 'discard' 
+                                        }" 
+                                        ng-disabled="ik.tareaEstado === 'discard'" 
+                                        ng-click="ik.onBtnTareaDescartarClick()"><span class="glyphicon glyphicon-remove-circle"></span> Descartar</button>
                                     <button type="button"
                                         ng-class="{
                                             'btn btn-success': ik.formTarea.$valid && ik.tareaDescription && ik.tareaDeliveryDate,

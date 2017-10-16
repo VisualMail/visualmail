@@ -26,6 +26,7 @@
         vm.tareaDeliveryDate = "";
         vm.tareaDeliveryDateTime = "";
         vm.tareaDescription = "";
+        vm.tareaEstado = ""; 
         vm.tareaId = "";
         vm.tareaInsert = true;
         vm.tareaProfileNone = "/images/profile_none.jpeg";
@@ -147,43 +148,46 @@
         * @param :: {boolean} nueva, es una tarea nueva. 
         * @param :: {Object} item, objeto con los datos de la tarea. 
         **/ 
-        function onBtnTareaCrearEditarClick(nueva, item, esconder) {
-            if(esconder)
-                $('#modalDescartados').modal('hide'); 
-
-          vm.tareaInsert = nueva;
-          if(nueva) {
-              vm.tareaDeliveryDate = "";
-              vm.formTarea.tareaDeliveryDate.$pristine = true;
-              var d = new Date();
-              var h = d.getHours();
-              var m = d.getMinutes();
-              h = (h < 10 ? "0" : "") + h; 
-              m = (m < 10 ? "0" : "") + m; 
-              vm.tareaDeliveryDateTime = h + ":" + m; 
-              vm.tareaDescription = "";
-              vm.formTarea.tareaDescription.$pristine = true;
-              vm.tareaTitle = "";
-              vm.formTarea.tareaTitle.$pristine = true;
-              vm.tareaUser = "";
-              vm.tareaId = "";
-              $("#tareaUser").val("").trigger("change");
-          } else {
-            vm.formTarea.tareaDeliveryDate.$pristine = true;
-            vm.tareaDeliveryDate = item.deliveryDate ? item.deliveryDate : "";
-            vm.tareaDeliveryDateTime = item.deliveryDateTime ? item.deliveryDateTime : "";
-            vm.tareaDescription = item.description ? item.description : "";
-            vm.tareaId = item.id;
-            vm.tareaTitle = item.title ? item.title : "";
-
-            if(item.usuario) {
-                vm.tareaUser = item.usuario.id;
-                $("#tareaUser").val(vm.tareaUser).trigger("change");
-            } else
-                $("#tareaUser").val("").trigger("change");
-          }
-
-          $("#modalTarea").modal("show");
+        function onBtnTareaCrearEditarClick(nueva, item, esconder) { 
+            if(esconder) 
+                $('#modalDescartados').modal('hide');  
+                
+            vm.tareaInsert = nueva; 
+            
+            if(nueva) { 
+                vm.tareaDeliveryDate = ""; 
+                vm.formTarea.tareaDeliveryDate.$pristine = true; 
+                var d = new Date(); 
+                var h = d.getHours(); 
+                var m = d.getMinutes(); 
+                h = (h < 10 ? "0" : "") + h; 
+                m = (m < 10 ? "0" : "") + m; 
+                vm.tareaDeliveryDateTime = h + ":" + m; 
+                vm.tareaDescription = ""; 
+                vm.formTarea.tareaDescription.$pristine = true; 
+                vm.tareaTitle = ""; 
+                vm.formTarea.tareaTitle.$pristine = true; 
+                vm.tareaUser = ""; 
+                vm.tareaId = ""; 
+                vm.tareaEstado = ""; 
+                $("#tareaUser").val("").trigger("change"); 
+            } else { 
+                vm.formTarea.tareaDeliveryDate.$pristine = true; 
+                vm.tareaDeliveryDate = item.deliveryDate ? item.deliveryDate : ""; 
+                vm.tareaDeliveryDateTime = item.deliveryDateTime ? item.deliveryDateTime : ""; 
+                vm.tareaDescription = item.description ? item.description : ""; 
+                vm.tareaId = item.id; 
+                vm.tareaTitle = item.title ? item.title : ""; 
+                vm.tareaEstado = item.estado; 
+                
+                if(item.usuario) { 
+                    vm.tareaUser = item.usuario.id; 
+                    $("#tareaUser").val(vm.tareaUser).trigger("change"); 
+                } else 
+                    $("#tareaUser").val("").trigger("change"); 
+            } 
+            
+            $("#modalTarea").modal("show");
         };
 
         function onBtnTareaDescartarClick() { 
