@@ -19,6 +19,11 @@ module.exports = {
             type: "string" 
         }, 
 
+        // Hora de entrega 
+        deliveryDateTime: { 
+            type: "string" 
+        }, 
+
         // Descripción/Alcance de la tarea 
         description: { 
             type: "string" 

@@ -24,12 +24,14 @@
         vm.miKanbanListaTareas = [];
         vm.miKanbanTipoTarea = ["new", "doing", "testing", "done", "discard"];
         vm.tareaDeliveryDate = "";
+        vm.tareaDeliveryDateTime = "";
         vm.tareaDescription = "";
         vm.tareaId = "";
         vm.tareaInsert = true;
         vm.tareaProfileNone = "/images/profile_none.jpeg";
         vm.tareaTitle = "";
         vm.tareaUser = "";
+        vm.timePattern = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/; 
 
         vm.onActualizarTareaIndice = onActualizarTareaIndice;
         vm.onBtnTareaCrearEditarClick = onBtnTareaCrearEditarClick;
@@ -96,6 +98,14 @@
             }).catch(function(err) {
                 vm.setMessage(false, "¡Se produjo un error en el procedimiento '/tarea/getAllProjectId/'!", null, err);
             });
+
+            var d = new Date();
+            var h = d.getHours();
+            var m = d.getMinutes();
+            h = (h < 10 ? "0" : "") + h; 
+            m = (m < 10 ? "0" : "") + m; 
+            vm.tareaDeliveryDateTime = h + ":" + m; 
+
         };
 
         /**
@@ -145,6 +155,12 @@
           if(nueva) {
               vm.tareaDeliveryDate = "";
               vm.formTarea.tareaDeliveryDate.$pristine = true;
+              var d = new Date();
+              var h = d.getHours();
+              var m = d.getMinutes();
+              h = (h < 10 ? "0" : "") + h; 
+              m = (m < 10 ? "0" : "") + m; 
+              vm.tareaDeliveryDateTime = h + ":" + m; 
               vm.tareaDescription = "";
               vm.formTarea.tareaDescription.$pristine = true;
               vm.tareaTitle = "";
@@ -155,6 +171,7 @@
           } else {
             vm.formTarea.tareaDeliveryDate.$pristine = true;
             vm.tareaDeliveryDate = item.deliveryDate ? item.deliveryDate : "";
+            vm.tareaDeliveryDateTime = item.deliveryDateTime ? item.deliveryDateTime : "";
             vm.tareaDescription = item.description ? item.description : "";
             vm.tareaId = item.id;
             vm.tareaTitle = item.title ? item.title : "";
@@ -230,7 +247,8 @@
             // Almacenar los datos que se enviarán al servidor
             var tarea = {
                 associated: false,
-                deliveryDate: vm.tareaDeliveryDate,
+                deliveryDate: vm.tareaDeliveryDate, 
+                deliveryDateTime: vm.tareaDeliveryDateTime, 
                 description: vm.tareaDescription,
                 drag: true,
                 element: "",
@@ -270,6 +288,7 @@
                 $("#modalTarea").modal("hide");
                 vm.tareaDeliveryDate = "";
                 vm.formTarea.tareaDeliveryDate.$pristine = true;
+                vm.tareaDeliveryDateTime = ""; 
                 vm.tareaDescription = "";
                 vm.formTarea.tareaDescription.$pristine = true;
                 vm.tareaTitle = "";

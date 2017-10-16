@@ -17,6 +17,7 @@ module.exports = {
 		var obj = { 
 			associated: req.param("associated"), 
 			deliveryDate: req.param("deliveryDate"), 
+			deliveryDateTime: req.param("deliveryDateTime"), 
 			description: req.param("description"), 
 			drag: req.param("drag"), 
 			element: req.param("element"), 
@@ -185,6 +186,7 @@ module.exports = {
 
 			var usuarioOriginal = tarea.usuario; 
 			tarea.deliveryDate = req.param("deliveryDate"); 
+			tarea.deliveryDateTime = req.param("deliveryDateTime"); 
 			tarea.description = req.param("description"); 
 			tarea.title = req.param("title"); 
 			tarea.usuario = req.param("usuario"); 

@@ -365,11 +365,43 @@
             if($anclar) { 
 
                 $.each(vm.miMensajeLista, function(key, value) { 
-                    if(parseInt(value.nodoId) === nodoId) { 
-                        vm.miMensajeAnclado = value; 
-                        vm.miMensajeAncladoTipoName = $sce.trustAsHtml(vm.miMensajeAnclado.tipoName ? vm.miMensajeAnclado.tipoName : ""); 
-                        return false; 
-                    } 
+                    if(parseInt(value.nodoId) !== nodoId) 
+                        return true; 
+                        
+                    vm.miMensajeAnclado = value; 
+                    vm.miMensajeAncladoTipoName = $sce.trustAsHtml(vm.miMensajeAnclado.tipoName ? vm.miMensajeAnclado.tipoName : ""); 
+
+                    if(vm.miMensajeAnclado.tareaId) { 
+
+                        $.each(parent.vm.scopeTarea.ik.miKanbanListaTareas, function(k, v) { 
+                            if(v.id !== vm.miMensajeAnclado.tareaId) 
+                                return true; 
+                            
+                            var estado = "Tarea en estado '"; 
+
+                            if(v.estado === "new") 
+                                estado += "Por Hacer"; 
+                            else if(v.estado === "doing") 
+                                estado += "Haciendo"; 
+                            else if(v.estado === "testing")
+                                estado += "En Pruebas"; 
+                            else if(v.estado === "done") 
+                                estado += "Compleada"; 
+                            else if(v.estado === "discard") 
+                                estado += "Descartada"; 
+
+                            estado += "'"; 
+
+                            vm.miMensajeAnclado.tarea = {
+                                estadoTitle: estado
+                            }; 
+
+                            return false; 
+                        }); 
+
+                    }
+
+                    return false; 
                 }); 
                 
                 // Verificar si el mensaje anclado tiene hijos
