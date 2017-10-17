@@ -292,13 +292,13 @@
                 $("#modalTarea").modal("hide");
                 vm.tareaDeliveryDate = "";
                 vm.formTarea.tareaDeliveryDate.$pristine = true;
-                vm.tareaDeliveryDateTime = ""; 
                 vm.tareaDescription = "";
                 vm.formTarea.tareaDescription.$pristine = true;
                 vm.tareaTitle = "";
                 vm.formTarea.tareaTitle.$pristine = true;
                 vm.tareaUser = "";
                 vm.tareaId = "";
+                vm.tareaDeliveryDateTime = ""; 
                 $("#tareaUser").val("").trigger("change");
             }).catch(function(err) {
                 vm.setMessage(false, "¡Se produjo un error!", undefined, err);
@@ -343,6 +343,8 @@
                 listaAuxOrigen = vm.miKanbanColumn3;
             else if(column === 4)
                 listaAuxOrigen = vm.miKanbanColumn4;
+            else if(column === 5)
+                listaAuxOrigen = vm.miKanbanColumn5;
 
             // Modificar los índices de todas las tareas en la columna original
             $.each(listaAuxOrigen, function(key, value) {
@@ -361,6 +363,8 @@
                 vm.miKanbanColumn3 = listaAuxDestino;
             else if(column === 4)
                 vm.miKanbanColumn4 = listaAuxDestino;
+            else if(column === 5)
+                vm.miKanbanColumn5 = listaAuxDestino;
 
             // Iniciar las variables auxiliares
             listaAuxOrigen = [];
@@ -376,6 +380,8 @@
                 listaAuxOrigen = vm.miKanbanColumn3;
             else if(newColumn === 4)
                 listaAuxOrigen = vm.miKanbanColumn4;
+            else if(newColumn === 5)
+                listaAuxOrigen = vm.miKanbanColumn5;
 
             // Modificar los índices de todas las tareas en la columna destino (incluida la nueva tarea)
             $.each(listaAuxOrigen, function(key, value) {
@@ -402,6 +408,8 @@
                 vm.miKanbanColumn3 = listaAuxDestino;
             else if(newColumn === 4)
                 vm.miKanbanColumn4 = listaAuxDestino;
+            else if(newColumn === 5)
+                vm.miKanbanColumn5 = listaAuxDestino;
 
             vm.setMessageToast("Tarea actualizada");
         };
@@ -415,16 +423,16 @@
             var titulo = "";
             var usuarioOriginalId = "";
 
-            for(var i = 0; i < vm.miKanbanListaTareas.length; i++) {
-              if(vm.miKanbanListaTareas[i].id !== data.obj.id)
-                continue;
-
-              titulo = vm.miKanbanListaTareas[i].title;
-              usuarioOriginalId = vm.miKanbanListaTareas[i].usuario.id ? vm.miKanbanListaTareas[i].usuario.id : "";
-              data.obj.mensaje = vm.miKanbanListaTareas[i].mensaje;
-              data.obj.usuario = data.selectedUsuarioTask;
-              vm.miKanbanListaTareas[i] = data.obj;
-              break;
+            for(var i = 0; i < vm.miKanbanListaTareas.length; i++) { 
+                if(vm.miKanbanListaTareas[i].id !== data.obj.id) 
+                    continue; 
+                    
+                titulo = vm.miKanbanListaTareas[i].title; 
+                usuarioOriginalId = vm.miKanbanListaTareas[i].usuario ? vm.miKanbanListaTareas[i].usuario.id : ""; 
+                data.obj.mensaje = vm.miKanbanListaTareas[i].mensaje; 
+                data.obj.usuario = data.selectedUsuarioTask; 
+                vm.miKanbanListaTareas[i] = data.obj; 
+                break;
             }
 
             if(data.obj.estado === "new") {
@@ -486,7 +494,7 @@
         function onSocketTareaActualizarTipo(data) {
             // Obtener las tareas del tablero Kanban
             $http({
-                url: "/tarea/getTareas/",
+                url: "/tarea/getAllProjectId/",
                 method: "GET",
                 params: { id: data.obj.project_id }
             }).then(function(res) {
@@ -496,10 +504,10 @@
                 if(!d.proc) {
                     vm.setMessage(d.proc, d.msg, "warning");
                     return;
-                }
+                } 
 
                 // Almacenar la lista de tareas
-                vm.miKanbanListaTareas = d.lista;
+                vm.miKanbanListaTareas = d.tarea;
 
                 // Si es usuario es distinto al que modificó la tarea
                 if(parent.vm.miUser.id !== data.usuarioId) {

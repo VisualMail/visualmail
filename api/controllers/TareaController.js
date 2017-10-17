@@ -116,7 +116,7 @@ module.exports = {
 	getAllProjectId: function(req, res, next) {
 		// De acuerdo al id de un proyecto, se buscan todas las tareas asociadas a ese proyecto
 		// y se hace un populate para obtener el mensaje asociado y el usuario
-		Tarea.find({ project_id: req.param("id") }).populate("usuario").populate("mensaje").sort("createdAt ASC").then(function(result) {
+		Tarea.find({ project_id: req.param("id") }).populate("usuario").populate("mensaje").sort("index ASC").then(function(result) {
 			// Verificar si no existen resultados
 			if(!result) {
 				return res.json({
