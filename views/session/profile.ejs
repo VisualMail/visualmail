@@ -1,5 +1,5 @@
 <div class="container" ng-controller="ProfileController as vm">
-    <h3>Editar perfil</h3>
+    <h3><span class="glyphicon glyphicon-user"></span> Editar perfil</h3>
     <hr />
 
     <!-- Inicio editar perfil -->
@@ -45,13 +45,24 @@
                 </div>
             </div>
         </div>
-                
+
         <div class="form-group"> 
             <div class="row"> 
                 <div class="col-xs-12 col-sm-12 co-md-6 col-lg-4"> 
-                    <label for="userImgUrl">URL imagen</label>
-                    <input class="form-control" id="userImgUrl" name="userImgUrl" placeholder="https://..." type="text" 
-                        ng-model="vm.userImgUrl" /> 
+                    <label ng-class="{ 'text-danger': !vm.formUser.userEmail.$pristine && !vm.formUser.userEmail.$valid }" for="userEmail">Email (Requerido)</label>
+                    <input id="userEmail" name="userEmail" type="email"
+                        ng-class="{ 
+                        'form-control': vm.formUser.userEmail.$pristine || vm.formUser.userEmail.$valid, 
+                        'form-control is-invalid': !vm.formUser.userEmail.$pristine && !vm.formUser.userEmail.$valid }" 
+                        data-toggle="tooltip" data-placement="bottom" title="hola@visualmail.com"
+                        ng-model="vm.userEmail" 
+                        ng-pattern="/^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i" 
+                        ng-required="true" />
+                    <p class="text-danger" role="alert" ng-messages="!vm.formUser.userEmail.$pristine && vm.formUser.userEmail.$error"> 
+                        <strong ng-message="email">Formato no válido</strong>
+                        <strong ng-message="pattern">Formato no válido</strong>
+                        <strong ng-message="required">Requerido</strong> 
+                    </p>
                 </div>
                 <div class="col-xs-12 col-sm-12 co-md-6 col-lg-2"> 
                     <label ng-class="{ 'text-danger': !vm.formUser.userInitials.$pristine && !vm.formUser.userInitials.$valid }" for="userInitials">Iniciales</label> 
@@ -71,8 +82,8 @@
                         <strong ng-message="pattern">Formato no válido</strong>
                         <strong ng-message="required">Requerido</strong> 
                     </p>
-                </div> 
-                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-2"> 
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-2"> 
                     <label ng-class="{ 'text-danger': !vm.formUser.userColor.$pristine && !vm.formUser.userColor.$valid }" for="userColor">Color de interacción</label>
                     <input class="jscolor" id="userColor" name="userColor" placeholder="#FFFFFF" type="text" 
                         ng-class="{ 
@@ -84,6 +95,16 @@
                     <p class="text-danger" role="alert" ng-messages="!vm.formUser.userColor.$pristine && vm.formUser.userColor.$error"> 
                         <strong ng-message="required">Requerido</strong>
                     </p>
+                </div> 
+            </div>
+        </div>
+
+        <div class="form-group"> 
+            <div class="row"> 
+                <div class="col-xs-12 col-sm-12 co-md-12 col-lg-12"> 
+                    <label for="userImgUrl">URL imagen</label>
+                    <input class="form-control" id="userImgUrl" name="userImgUrl" placeholder="https://..." type="text" 
+                        ng-model="vm.userImgUrl" /> 
                 </div> 
             </div>
         </div> 

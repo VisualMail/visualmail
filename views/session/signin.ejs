@@ -9,6 +9,16 @@
                 </div>
             </div>
 
+            <div ng-if="!vm.email">
+                <% if(session.signInErrorMessage) { %> 
+                <div class="row container card red lighten-1 col s8 offset-s2">
+                    <div class="card-content white-text center">
+                        <strong><%= session.signInErrorMessage %></strong>
+                    </div> 
+                </div> 
+                <% delete session.signInErrorMessage;} %>
+            </div>
+
             <div class="input-field col s7 offset-s1">
                 <input id="firstname" name="firstname" type="text"
                     ng-maxlength="15"

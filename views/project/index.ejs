@@ -1,14 +1,17 @@
-<div style="height: 100%; position: absolute; top: 60px; width: 100%;">
+<div style=" height: 100%; position: absolute; top: 60px; width: 100%;">
     <div class="card">
 
         <!-- Inicio Tab -->
-        <div class="card-header">
+        <div class="card-header" id="projectNavBar" style="display: none;">
             <ul class="nav nav-pills card-header-pills">
                 <li class="nav-item">
                     <a ng-class="{ 'nav-link active': vm.activeTab === 1, 'nav-link': vm.activeTab !== 1 }" ng-click="vm.onActiveTabChanged(1);" href="#">Proyecto</a>
                 </li>
                 <li class="nav-item">
                     <a ng-class="{ 'nav-link active': vm.activeTab === 2, 'nav-link': vm.activeTab !== 2 }" ng-click="vm.onActiveTabChanged(2);" href="#">Diálogo</a>
+                </li>
+                <li class="nav-item">
+                        <a ng-class="{ 'nav-link active': vm.activeTab === 3, 'nav-link': vm.activeTab !== 3 }" ng-click="vm.onActiveTabChanged(3);" href="#">Mensaje</a>
                 </li>
                 <li class="nav-item">
                     <a ng-class="{ 'nav-link active': vm.activeTab === 4, 'nav-link': vm.activeTab !== 4 }" ng-click="vm.onActiveTabChanged(4);" href="#">Kanban</a>
@@ -172,33 +175,46 @@
                         <div class="dialogo-panel-card" id="x">
                             <div style="padding: 0.5em;">
 
-                                <div class="input-group" style="padding: 0 0 5px 0 !important;">
-                                    <img alt="profile" class="rounded-circle" style="width: 40px; height: 40px;" ng-src="{{ im.miMensajeAnclado.usuario.imgurl ? im.miMensajeAnclado.usuario.imgurl : '/images/profile.jpg' }}" />
-                                    <h4 style="padding: 5px 0 0 15px;">{{ im.miMensajeAnclado.usuario.initials }}</h4>
-                                    <svg height="40" width="40">
-                                        <circle cx="25" cy="20" r="10" ng-attr-fill="#{{ im.miMensajeAnclado.usuario.color }}" />
-                                    </svg>
-                                    <label style="padding-left: 200px;"><strong>{{ im.miMensajeAnclado.tareaId ? im.miMensajeAnclado.tarea.estadoTitle : "" }}</strong></label>
-                                </div>
+                                <div ng-show="im.miMensajeAnclado.nodoId">
 
-                                <div class="card bg-light mb-3" style="position: absolute; height: 79%; width: 98%">
-                                    <div class="card-header text-left">
-                                        {{ im.miMensajeAnclado.createdAt | date: "dd-MMM-yyyy HH:mm:ss" }} <strong>{{ im.miMensajeAnclado.nodoId + '/' + im.miMensajeLista.length }}</strong>
+                                    <div class="input-group" style="padding: 0 0 5px 0 !important;">
+                                        <img alt="profile" class="rounded-circle" style="width: 40px; height: 40px;" ng-src="{{ im.miMensajeAnclado.usuario.imgurl ? im.miMensajeAnclado.usuario.imgurl : '/images/profile.jpg' }}" />
+                                        <h4 style="padding: 5px 0 0 15px;">{{ im.miMensajeAnclado.usuario.initials }}</h4>
+                                        <svg height="40" width="40">
+                                            <circle cx="25" cy="20" r="10" ng-attr-fill="#{{ im.miMensajeAnclado.usuario.color }}" />
+                                        </svg>
+                                        <label style="padding-left: 200px;"><strong>{{ im.miMensajeAnclado.tareaId ? im.miMensajeAnclado.tarea.estadoTitle : "" }}</strong></label>
                                     </div>
-                                    <div class="card-body" style="margin: 0; padding: 0;">
-                                        <div style="text-align: left; position: relative; width: 100%; height: 159px; overflow-y: auto;">
-                                            <div class="card" style="margin: 5px 0 0 15px; width: 95%;" ng-show="im.miMensajeAnclado.tipoId">
-                                                <ul class="list-group list-group-flush text-left">
-                                                    <li class="list-group-item border border-secondary" style="padding: 0 15px 0 15px;" ng-bind-html="im.miMensajeAncladoTipoName"></li>
-                                                    <li class="list-group-item border border-secondary" style="padding: 0 15px 0 15px;"><span class="{{ im.miMensajeAnclado.tipoId ? 'icon-display icon-' + im.miMensajeAnclado.tipoId + '-sm' : '' }}"></span> <strong>{{ im.miMensajeAnclado.tipo }}</strong></li>
-                                                </ul>
-                                            </div>
-                                            <div class="context-menu-mensaje-anclado" style="margin: 10px 0 0 15px; width: 95%;" ng-bind="im.miMensajeAnclado.name">
+
+                                    <div class="card bg-light mb-3" style="position: absolute; height: 79%; width: 98%">
+                                        <div class="card-header text-left">
+                                            {{ im.miMensajeAnclado.createdAt | date: "dd-MMM-yyyy HH:mm:ss" }} <strong>{{ im.miMensajeAnclado.nodoId + '/' + im.miMensajeLista.length }}</strong>
+                                        </div>
+                                        <div class="card-body" style="margin: 0; padding: 0;">
+                                            <div style="text-align: left; position: relative; width: 100%; height: 159px; overflow-y: auto;">
+                                                <div class="card" style="margin: 5px 0 0 15px; width: 95%;" ng-show="im.miMensajeAnclado.tipoId">
+                                                    <ul class="list-group list-group-flush text-left">
+                                                        <li class="list-group-item border border-secondary" style="padding: 0 15px 0 15px;" ng-bind-html="im.miMensajeAncladoTipoName"></li>
+                                                        <li class="list-group-item border border-secondary" style="padding: 0 15px 0 15px;"><span class="{{ im.miMensajeAnclado.tipoId ? 'icon-display icon-' + im.miMensajeAnclado.tipoId + '-sm' : '' }}"></span> <strong>{{ im.miMensajeAnclado.tipo }}</strong></li>
+                                                    </ul>
+                                                </div>
+                                                <div class="context-menu-mensaje-anclado" style="margin: 10px 0 0 15px; width: 95%;" ng-bind="im.miMensajeAnclado.name">
+                                                </div>
                                             </div>
                                         </div>
+                                        <div class="card-footer">
+                                            <button class="btn btn-primary btn-block" type="button" ng-click="im.onBtnMensajeResponderClick()"><span class="glyphicon glyphicon-share-alt"></span> Responder todo</button>
+                                        </div>
                                     </div>
-                                    <div class="card-footer">
-                                        <button class="btn btn-primary btn-block" type="button" ng-click="im.onBtnMensajeResponderClick()"><span class="glyphicon glyphicon-share-alt"></span> Responder todo</button>
+
+                                </div>
+
+                                <div ng-show="!im.miMensajeAnclado.nodoId">
+                                    <div class="card bg-light mb-3" style="margin-top: 45px; position: absolute; height: 79%; width: 98%">
+                                        <div class="card-body" style="margin: 0; padding: 25px;">
+                                            <h4>No has seleccionado un mensaje Ancla.</h4>
+                                            <p>Has clic en un mensaje en el mapa del diálogo.</p>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -328,6 +344,68 @@
 
         </div>
         <!-- Fin Diálogo -->
+
+        <!-- Inicio Chat -->
+        <div class="card-body" id="tab3" style="display: none;">
+
+            <div id="IndexChatController" ng-controller="IndexChatController as ic">
+
+                <div class="container">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12"> 
+                                <div class="input-group"> 
+                                    <span class="input-group-addon"> 
+                                        <span class="glyphicon glyphicon-search"></span> 
+                                    </span> 
+                                    <input class="form-control" placeholder="Buscar..." type="text" ng-model="ic.mensajeBuscar" /> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" ng-repeat="item in ic.miMensajeLista | filter: ic.mensajeBuscar">
+
+                    <div ng-class="{ 'bubbleMe': item.usuario.id === ic.miUser.id, 'bubbleOther': item.usuario.id !== ic.miUser.id }"> 
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                                <div class="input-group" style="padding: 5px;">
+                                    <img alt="profile" class="rounded-circle" style="width: 40px; height: 40px;" ng-src="{{ item.usuario.imgurl ? item.usuario.imgurl : '/images/profile.jpg' }}" /> 
+                                    <h4 style="padding: 5px 0 0 15px;">{{ item.usuario.initials }}</h4> 
+                                    <svg height="40" width="40"> 
+                                        <circle cx="25" cy="20" r="10" ng-attr-fill="#{{ item.usuario.color }}" /> 
+                                    </svg> 
+                                    <span class="verMensaje">
+                                        <button class="btn btn-primary btn-sm" type="button" 
+                                            ng-click="ic.onBtnVerMensajeClick(item.nodoId)"><span class="glyphicon glyphicon-eye-open"></span> Ver mensaje</button> 
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"> 
+                                {{ item.createdAt | date: "dd-MMM-yyyy HH:mm:ss" }} <strong>{{ item.nodoId + '/' + ic.miMensajeLista.length }}</strong> 
+                            </div>
+                        </div> 
+                        
+                        <div class="card bg-light mb-3"> 
+                            <div class="card-body"> 
+                                <div style="text-align: left; position: relative; width: 100%; height: auto; overflow-y: auto;"> 
+                                    <div class="card" style="margin: 5px 0 0 15px; width: 95%;" ng-show="item.tipoId"> 
+                                        <ul class="list-group list-group-flush text-left"> 
+                                            <li class="list-group-item border border-secondary" style="padding: 0 15px 0 15px;" id="miMensajeRespuestaTipoName"><strong>{{ im.miMensajeAnclado.usuario.initials }} dijo:</strong>&nbsp;<span ng-bind-html="ic.trustAsHtml(item.tipoName)"></span></li> 
+                                            <li class="list-group-item border border-secondary" style="padding: 0 15px 0 15px;"><span class="{{ item.tipoId ? 'icon-display icon-' + item.tipoId + '-sm' : '' }}"></span> <strong>{{ item.tipo }}</strong></li> 
+                                        </ul> 
+                                    </div> 
+                                    <div style="margin: 10px 0 0 15px; width: 95%;" ng-bind="item.name"></div> 
+                                </div> 
+                            </div> 
+                        </div> 
+                    </div> 
+                </div> 
+            </div> 
+        
+        </div>
+        <!-- Fin Chat -->
 
         <!-- Inicio Kanban -->
         <div class="card-body" id="tab4" style="display: none;">

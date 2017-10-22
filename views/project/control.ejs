@@ -1,0 +1,413 @@
+<div style=" height: 100%; position: absolute; top: 60px; width: 100%;">
+    <div class="card">
+
+        <!-- Inicio Tab -->
+        <div class="card-header" id="projectNavBar" style="display: none;">
+            <ul class="nav nav-pills card-header-pills">
+                <li class="nav-item">
+                    <a ng-class="{ 'nav-link active': vm.activeTab === 1, 'nav-link': vm.activeTab !== 1 }" ng-click="vm.onActiveTabChanged(1);" href="#">Proyecto</a>
+                </li>
+                <li class="nav-item">
+                    <a ng-class="{ 'nav-link active': vm.activeTab === 2, 'nav-link': vm.activeTab !== 2 }" ng-click="vm.onActiveTabChanged(2);" href="#">Diálogo</a>
+                </li>
+                <li class="nav-item">
+                        <a ng-class="{ 'nav-link active': vm.activeTab === 3, 'nav-link': vm.activeTab !== 3 }" ng-click="vm.onActiveTabChanged(3);" href="#">Mensaje</a>
+                </li>
+            </ul>
+        </div>
+        <!-- Fin Tab -->
+
+        <!-- Inicio Project -->
+        <div class="text-left" id="tab1" style="display: none;">
+
+            <!-- Inicio controller -->
+            <div ng-controller="IndexProjectController as ip">
+
+                <!-- Inicio Project View -->
+                <div class="container">
+                    <h4 class="card-title text-left">Información del proyecto</h4>
+                    <hr />
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <label for="projectUser">Usuarios registrados</label>
+                                <div class="input-group">
+                                    <div style="width: 100%;">
+                                        <select id="projectUser" multiple="multiple" name="projectUser" style="width: 100%"></select>
+                                    </div>
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-success" type="button"
+                                            ng-click="ip.onBtnProjectAddUserClick()">
+                                            <span class="glyphicon glyphicon-plus-sign"></span> Agregar participante
+                                        </button>
+                                        <button class="btn btn-primary" type="button"
+                                            ng-click="ip.onBtnProjectModalClick()">
+                                            <span class="glyphicon glyphicon-edit"></span> Editar proyecto
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <table class="table table-bordered table-hover table-ng" ng-table="ip.tableParams">
+                                    <tr ng-repeat="row in $data track by row.id">
+                                        <td data-title="'Nombre'" filter="{firstname: 'text'}" sortable="'firstname'">{{row.firstname}}</td>
+                                        <td data-title="'Apellido'" filter="{lastname: 'text'}" sortable="'lastname'">{{row.lastname}}</td>
+                                        <td data-title="'Correo electrónico'" filter="{email: 'text'}" sortable="'email'">{{row.email}}</td>
+                                        <td data-title="'Color'" sortable="'color'">
+                                            <button class="btn btn-default" ng-style="{'background-color': '#' + row.color}" type="button">
+                                                <span class="glyphicon glyphicon-tag"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Fin Project View -->
+
+                <!-- Inicio modal Project -->
+                <div class="modal fade" id="modalProject" tabindex="-1" role="dialog" aria-labelledby="modalProjectTitle" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <form name="ip.formProject" novalidate="novalidate">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modalProjectTitle">Modificar proyecto</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-12">
+                                                <label for="projectName"
+                                                    ng-class="{
+                                                        'col-form-label': ip.formProject.projectName.$pristine || ip.formProject.projectName.$valid,
+                                                        'col-form-label text-danger': !ip.formProject.projectName.$pristine && !ip.formProject.projectName.$valid }">Nombre (requerido)</label>
+                                                <input id="projectName" name="projectName" placeholder="Mínimo 3 caracteres" type="text"
+                                                    ng-class="{
+                                                        'form-control': ip.formProject.projectName.$pristine || ip.formProject.projectName.$valid,
+                                                        'form-control is-invalid': !ip.formProject.projectName.$pristine && !ip.formProject.projectName.$valid }"
+                                                    ng-maxlength="23"
+                                                    ng-minlength="3"
+                                                    ng-model="ip.projectName"
+                                                    ng-required="true" />
+                                                <p class="text-danger" role="alert" ng-messages="!ip.formProject.projectName.$pristine && ip.formProject.projectName.$error">
+                                                    <strong ng-message="minlength">Mínimo 3 caracteres</strong>
+                                                    <strong ng-message="maxlength">Nombre muy largo</strong>
+                                                    <strong ng-message="required">Requerido</strong>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                                <label class="col-form-label" for="projectDateEnd">Termina el</label>
+                                                <div class="input-group date">
+                                                    <input class="form-control" id="projectDateEnd" maxlength="10" name="projectDateEnd" placeholder="Año-Mes-Día" type="text"
+                                                        ng-model="ip.projectDateEnd" />
+                                                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-primary" type="button" data-dismiss="modal"><span class="glyphicon glyphicon-remove-circle"></span> Cerrar</button>
+                                    <button type="button"
+                                        ng-class="{
+                                            'btn btn-success': ip.formProject.$valid,
+                                            'btn btn-default': !ip.formProject.$valid }"
+                                        ng-click="ip.onBtnProjectGuardarClick()"
+                                        ng-disabled="!ip.formProject.$valid">
+                                        <span class="glyphicon glyphicon-save"></span> Guardar
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- Fin modal Project -->
+
+            </div>
+            <!-- Fin controller -->
+
+        </div>
+        <!-- Fin Project -->
+
+        <!-- Inicio Diálogo -->
+        <div class="text-left" id="dialogo-main">
+
+            <!-- Fin Mensaje Controller -->
+            <div id="IndexMensajeControllerMain" ng-controller="IndexMensajeController as im">
+
+                <!-- Inicio Mapa -->
+                <div class="svg-session"></div>
+                <div id="panel-move">
+                    
+                <div id="dialogo-svg" class="dialogo-panel-top">
+
+                    <!-- Inicio del mapa del diálogo -->
+                    <div class="svg-mapa" style="opacity: 0.5"></div>
+                    <!-- Fin del mapa del diálogo -->
+
+                </div>
+                <!-- Fin Mapa -->
+
+                <!-- Inicio Paneles -->
+                <div class="dialogo-panel-bottom">
+                    <div id="dialogo-panel">
+
+                        <!-- Inicio Panel Izquierdo -->
+                        <div class="dialogo-panel-card" id="x">
+                            <div style="padding: 0.5em;">
+
+                                <div ng-show="im.miMensajeAnclado.nodoId">
+
+                                    <div class="input-group" style="padding: 0 0 5px 0 !important;">
+                                        <img alt="profile" class="rounded-circle" style="width: 40px; height: 40px;" ng-src="{{ im.miMensajeAnclado.usuario.imgurl ? im.miMensajeAnclado.usuario.imgurl : '/images/profile.jpg' }}" />
+                                        <h4 style="padding: 5px 0 0 15px;">{{ im.miMensajeAnclado.usuario.initials }}</h4>
+                                        <svg height="40" width="40">
+                                            <circle cx="25" cy="20" r="10" ng-attr-fill="#{{ im.miMensajeAnclado.usuario.color }}" />
+                                        </svg>
+                                        <label style="padding-left: 200px;"><strong>{{ im.miMensajeAnclado.tareaId ? im.miMensajeAnclado.tarea.estadoTitle : "" }}</strong></label>
+                                    </div>
+
+                                    <div class="card bg-light mb-3" style="position: absolute; height: 79%; width: 98%">
+                                        <div class="card-header text-left">
+                                            {{ im.miMensajeAnclado.createdAt | date: "dd-MMM-yyyy HH:mm:ss" }} <strong>{{ im.miMensajeAnclado.nodoId + '/' + im.miMensajeLista.length }}</strong>
+                                        </div>
+                                        <div class="card-body" style="margin: 0; padding: 0;">
+                                            <div style="text-align: left; position: relative; width: 100%; height: 159px; overflow-y: auto;">
+                                                <div class="card" style="margin: 5px 0 0 15px; width: 95%;" ng-show="im.miMensajeAnclado.tipoId">
+                                                    <ul class="list-group list-group-flush text-left">
+                                                        <li class="list-group-item border border-secondary" style="padding: 0 15px 0 15px;" ng-bind-html="im.miMensajeAncladoTipoName"></li>
+                                                        <li class="list-group-item border border-secondary" style="padding: 0 15px 0 15px;"><span class="{{ im.miMensajeAnclado.tipoId ? 'icon-display icon-' + im.miMensajeAnclado.tipoId + '-sm' : '' }}"></span> <strong>{{ im.miMensajeAnclado.tipo }}</strong></li>
+                                                    </ul>
+                                                </div>
+                                                <div class="context-menu-mensaje-anclado" style="margin: 10px 0 0 15px; width: 95%;" ng-bind="im.miMensajeAnclado.name">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            <button class="btn btn-primary btn-block" type="button" ng-click="im.onBtnMensajeResponderClick()"><span class="glyphicon glyphicon-share-alt"></span> Responder todo</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div ng-show="!im.miMensajeAnclado.nodoId">
+                                    <div class="card bg-light mb-3" style="margin-top: 45px; position: absolute; height: 79%; width: 98%">
+                                        <div class="card-body" style="margin: 0; padding: 25px;">
+                                            <h4>No has seleccionado un mensaje Ancla.</h4>
+                                            <p>Has clic en un mensaje en el mapa del diálogo.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <!-- Fin Panel Izquierdo -->
+
+                        <!-- Inicio Panel Derecho -->
+                        <div class="dialogo-panel-card" id="y">
+                            <div style="padding: 0.5em;">
+
+                                <!-- Inicio ver mensaje -->
+                                <div ng-show="!im.mensajeResponder">
+
+                                    <div ng-show="im.miMensajeAncladoNavegar.nodoId">
+                                        <div class="input-group" style="padding: 0 0 5px 0 !important;">
+                                            <img alt="profile" class="rounded-circle" style="width: 40px; height: 40px;" ng-src="{{ im.miMensajeAncladoNavegar.usuario.imgurl ? im.miMensajeAncladoNavegar.usuario.imgurl : '/images/profile.jpg' }}" />
+                                            <h4 style="padding: 5px 0 0 15px;">{{ im.miMensajeAncladoNavegar.usuario.initials }}</h4>
+                                            <svg height="40" width="40">
+                                                <circle cx="25" cy="20" r="10" ng-attr-fill="#{{ im.miMensajeAncladoNavegar.usuario.color }}" />
+                                            </svg>
+                                        </div>
+
+                                        <div class="card bg-light mb-3" style="position: absolute; height: 79%; width: 98%">
+                                            <div class="card-header text-left">
+                                                {{ im.miMensajeAncladoNavegar.createdAt | date: "dd-MMM-yyyy HH:mm:ss" }} <strong>{{ im.miMensajeAncladoNavegar.nodoId + '/' + im.miMensajeLista.length }}</strong>
+                                            </div>
+                                            <div class="card-body" style="margin: 0; padding: 0;">
+                                                <div style="text-align: left; position: relative; width: 100%; height: 159px; overflow-y: auto;">
+                                                    <div class="card" style="margin: 5px 0 0 15px; width: 95%;" ng-show="im.miMensajeAncladoNavegar.tipoId">
+                                                        <ul class="list-group list-group-flush text-left">
+                                                            <li class="list-group-item border border-secondary" style="padding: 0 15px 0 15px;" ng-bind-html="im.miMensajeAncladoNavegarTipoName"></li>
+                                                            <li class="list-group-item border border-secondary" style="padding: 0 15px 0 15px;"><span class="{{ im.miMensajeAncladoNavegar.tipoId ? 'icon-display icon-' + im.miMensajeAncladoNavegar.tipoId + '-sm' : '' }}"></span> <strong>{{ im.miMensajeAncladoNavegar.tipo }}</strong></li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="context-menu-mensaje-navegar" style="margin: 10px 0 0 15px; width: 95%;" ng-bind="im.miMensajeAncladoNavegar.name">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card-footer">
+                                                <button class="btn btn-primary btn-block" type="button" ng-click="im.onBtnMensajeAncladoNavegarResponderClick();"><span class="glyphicon glyphicon-share-alt"></span> Responder todo</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div ng-show="!im.miMensajeAncladoNavegar.nodoId">
+                                        <div class="card bg-light mb-3" style="margin-top: 45px; position: absolute; height: 79%; width: 98%">
+                                            <div class="card-body" style="margin: 0; padding: 25px;">
+                                                <h4>Este mensaje no tiene respuestas.</h4>
+                                                <p>Has clic en <strong>&quot;<span class="glyphicon glyphicon-share-alt"></span> Responder todo&quot;</strong> para agregar una respuesta a este mensaje.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <!-- Fin ver mensaje -->
+
+                                <!-- Inicio responder mensaje -->
+                                <div ng-show="im.mensajeResponder">
+                                    <h4 style="padding: 5px 0 5px 15px;">Responder mensaje</h4>
+
+                                    <div class="card bg-light mb-3" style="position: absolute; height: 81%; width: 98%">
+                                        <form name="im.formMensaje">
+
+                                            <div class="card-header text-left">
+                                                <span class="glyphicon glyphicon-pencil"></span> Ahora puedes responder al mensaje
+                                            </div>
+                                            <div class="card-body" style="margin: 0; padding: 0;">
+                                                <div style="text-align: left; position: relative; width: 100%; height: 159px; overflow-y: auto;">
+                                                    <div class="card" style="margin: 5px 0 0 15px; width: 95%;" ng-show="im.mensajeRespuestaTipoId">
+                                                        <ul class="list-group list-group-flush text-left">
+                                                            <li class="list-group-item border border-secondary" style="padding: 0 15px 0 15px;" id="miMensajeRespuestaTipoName"><strong>{{ im.miMensajeAnclado.usuario.initials }} dijo:</strong>&nbsp;<span ng-bind-html="im.mensajeRespuestaTipoName"></span></li>
+                                                            <li class="list-group-item border border-secondary" style="padding: 0 15px 0 15px;"><span class="{{ im.mensajeRespuestaTipoId ? 'icon-display icon-' + im.mensajeRespuestaTipoId + '-sm' : '' }}"></span> <strong>{{ im.mensajeRespuestaTipo }}</strong></li>
+                                                        </ul>
+                                                    </div>
+                                                    <div style="margin: 15px; height: 80%;">
+                                                        <textarea id="mensajeRespuesta" name="mensajeRespuesta" placeholder="Ingresar respuesta" rows="4" style="height: 100%"
+                                                            ng-class="{
+                                                                'form-control': im.formMensaje.mensajeRespuesta.$pristine || im.formMensaje.mensajeRespuesta.$valid,
+                                                                'form-control is-invalid': !im.formMensaje.mensajeRespuesta.$pristine && !im.formMensaje.mensajeRespuesta.$valid }"
+                                                            ng-focus="im.mensajeResponder"
+                                                            ng-model="im.mensajeRespuesta"
+                                                            ng-maxlength="500"
+                                                            ng-minlength="5"
+                                                            ng-required="true"></textarea>
+                                                        <p class="text-danger" role="alert" ng-messages="!im.formMensaje.mensajeRespuesta.$pristine && im.formMensaje.mensajeRespuesta.$error">
+                                                            <strong ng-message="minlength">3 caracteres</strong>
+                                                            <strong ng-message="maxlength">No puede ser más de 500 carácteres</strong>
+                                                            <strong ng-message="required">Ingresar el contenido del mensaje</strong>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card-footer">
+                                                <div class="row">
+                                                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                                        <button type="button"
+                                                            ng-class="{
+                                                                'btn btn-success btn-block': im.formMensaje.$valid,
+                                                                'btn btn-default btn-block': !im.formMensaje.$valid }"
+                                                            ng-click="im.onBtnMensajeEnviarClick()"
+                                                            ng-disabled="!im.formMensaje.$valid">
+                                                            <span class="glyphicon glyphicon-send"></span> Enviar mensaje
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                                        <button class="btn btn-info btn-block" type="button" ng-click="im.onBtnMensajeCancelarClick()"><span class="glyphicon glyphicon-remove-sign"></span> Cancelar</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <!-- Fin responder mensaje -->
+
+                            </div>
+                        </div>
+                        <!-- Fin Panel Derecho -->
+
+                    </div>
+                </div>
+                </div>
+                <!-- Fin Paneles -->
+
+            </div>
+            <!-- Fin Mensaje Controller -->
+
+        </div>
+        <!-- Fin Diálogo -->
+
+        <!-- Inicio Chat -->
+        <div class="card-body" id="tab3" style="display: none;">
+
+            <div id="IndexChatController" ng-controller="IndexChatController as ic">
+
+                
+                <div class="container">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12"> 
+                                <div class="input-group"> 
+                                    <span class="input-group-addon"> 
+                                        <span class="glyphicon glyphicon-search"></span> 
+                                    </span> 
+                                    <input class="form-control" placeholder="Buscar..." type="text" ng-model="ic.mensajeBuscar" /> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" ng-repeat="item in ic.miMensajeLista | filter: ic.mensajeBuscar">
+
+                    <div ng-class="{ 'bubbleMe': item.usuario.id === ic.miUser.id, 'bubbleOther': item.usuario.id !== ic.miUser.id }"> 
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                                <div class="input-group" style="padding: 5px;">
+                                    <img alt="profile" class="rounded-circle" style="width: 40px; height: 40px;" ng-src="{{ item.usuario.imgurl ? item.usuario.imgurl : '/images/profile.jpg' }}" /> 
+                                    <h4 style="padding: 5px 0 0 15px;">{{ item.usuario.initials }}</h4> 
+                                    <svg height="40" width="40"> 
+                                        <circle cx="25" cy="20" r="10" ng-attr-fill="#{{ item.usuario.color }}" /> 
+                                    </svg> 
+                                    <span class="verMensaje">
+                                        <button class="btn btn-primary btn-sm" type="button" 
+                                            ng-click="ic.onBtnVerMensajeClick(item.nodoId)"><span class="glyphicon glyphicon-eye-open"></span> Ver mensaje</button> 
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"> 
+                                {{ item.createdAt | date: "dd-MMM-yyyy HH:mm:ss" }} <strong>{{ item.nodoId + '/' + ic.miMensajeLista.length }}</strong> 
+                            </div>
+                        </div> 
+                        
+                        <div class="card bg-light mb-3"> 
+                            <div class="card-body"> 
+                                <div style="text-align: left; position: relative; width: 100%; height: auto; overflow-y: auto;"> 
+                                    <div class="card" style="margin: 5px 0 0 15px; width: 95%;" ng-show="item.tipoId"> 
+                                        <ul class="list-group list-group-flush text-left"> 
+                                            <li class="list-group-item border border-secondary" style="padding: 0 15px 0 15px;" id="miMensajeRespuestaTipoName"><strong>{{ im.miMensajeAnclado.usuario.initials }} dijo:</strong>&nbsp;<span ng-bind-html="ic.trustAsHtml(item.tipoName)"></span></li> 
+                                            <li class="list-group-item border border-secondary" style="padding: 0 15px 0 15px;"><span class="{{ item.tipoId ? 'icon-display icon-' + item.tipoId + '-sm' : '' }}"></span> <strong>{{ item.tipo }}</strong></li> 
+                                        </ul> 
+                                    </div> 
+                                    <div style="margin: 10px 0 0 15px; width: 95%;" ng-bind="item.name"></div> 
+                                </div> 
+                            </div> 
+                        </div> 
+                    </div> 
+                </div> 
+            </div> 
+        
+        </div>
+        <!-- Fin Chat --> 
+        
+    </div>
+</div>
+
+<!-- Inicio mensaje Toast -->
+<div id="snackbar">{{ vm.messageToast }}</div>
+<!-- Fin mensaje Toast -->

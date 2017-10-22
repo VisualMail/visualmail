@@ -1,4 +1,4 @@
-<div class="container" ng-controller="IndexController as vm">
+<div class="container" style="display: none;" ng-controller="IndexController as vm">
     <h3>Bienvenido <%= session.User.firstname %></h3>
     <hr />
     
@@ -6,7 +6,7 @@
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                 <div class="card"> 
-                    <h6 class="card-header">Mis proyectos</h6> 
+                    <h6 class="card-header"><span class="glyphicon glyphicon-folder-open"></span> Mis proyectos</h6> 
                     <div class="card-body">
 
                         <div class="form-group">
@@ -43,7 +43,7 @@
             </div>
             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                 <div class="card"> 
-                    <h6 class="card-header">Proyectos en los que participo</h6> 
+                    <h6 class="card-header"><span class="glyphicon glyphicon-tasks"></span> Proyectos en los que participo</h6> 
                     <div class="card-body">
         
                         <div class="form-group">

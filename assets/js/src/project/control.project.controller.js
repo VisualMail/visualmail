@@ -160,8 +160,6 @@
 
                 $("#projectUser").val("").trigger("change"); 
                 vm.projectUserId = []; 
-                $("#tareaUser").val("").trigger("change"); 
-                //vm.tareaUser = ""; 
                 vm.onProjectUserInit(); 
                 vm.onProjectUserParticipanteInit(); 
                 vm.tableParams = new NgTableParams({}, { dataset: parent.vm.miUserListaParticipantes });
@@ -279,11 +277,10 @@
         * @description :: Inicia la lista de usuarios en un proyecto 
         **/ 
         function onProjectUserParticipanteInit() { 
-            var s = $("#tareaUser"); 
+            var s = $("#selectFiltrarUsuario"); 
             s.select2("data", null); 
             s.html(""); 
             var list = []; 
-            var listTarea = []; 
             
             $.each(parent.vm.miUserListaParticipantes, function(key, value) { 
                 list.push({ 
@@ -291,28 +288,10 @@
                     text: value.firstname + ", " + value.email, 
                     imgurl: value.imgurl 
                 }); 
-
-                listTarea.push({ 
-                    id: value.id, 
-                    text: value.firstname + ", " + value.email, 
-                    imgurl: value.imgurl 
-                }); 
             }); 
 
             list.unshift({ id: "", text: "", imgurl: ""}); 
-            listTarea.unshift({ id: "-1", text: "Nadie", imgurl: ""}); 
 
-            s.select2({ 
-                cache: false, 
-                data: listTarea, 
-                placeholder: "Seleccionar un responsable", 
-                allowClear: true, 
-                multiple: false, 
-            }); 
-
-            s = $("#selectFiltrarUsuario"); 
-            s.select2("data", null); 
-            s.html(""); 
             s.select2({
                 cache: false, 
                 data: list, 

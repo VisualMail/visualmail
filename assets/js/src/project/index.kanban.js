@@ -293,17 +293,25 @@ function kanbanBoardInitWebKit() {
             // el "relatedTarget" no se lo ubica en WebKit: https://bugs.webkit.org/show_bug.cgi?id=66547 
             var sectionTask = closestWithClass(e.target, "kanbanBoardCell"); 
             var sectionColumn = closestWithClass(e.target, "kanbanBoardColumn"); 
+
+            console.log("e.target", e.target); 
+            console.log("hideMe", hideMe); 
+
     
-            if(sectionTask) 
+            /*if(sectionTask)
+                console.log("SectionTask"); 
+            if(sectionColumn)
+                console.log("sectionColumn"); */
+            /*if(sectionTask) 
                 sectionTask.classList.remove("droppable"); 
         
             if(sectionColumn) 
-                sectionColumn.classList.remove("droppable"); 
+                sectionColumn.classList.remove("droppable"); */
 
-            /*if (sectionTask && !sectionTask.contains(lastEntered)) 
+            if (sectionTask && !sectionTask.contains(lastEntered)) 
                 sectionTask.classList.remove("droppable"); 
             else if (sectionColumn && !sectionColumn.contains(lastEntered))  
-                sectionColumn.classList.remove("droppable"); */
+                sectionColumn.classList.remove("droppable"); 
 
             hideMe.style.visibility = "visible"; 
         } 

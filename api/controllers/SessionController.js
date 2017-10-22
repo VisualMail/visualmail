@@ -173,90 +173,124 @@ module.exports = {
 	* @param :: {Object} res, de la vista ejs del servidor
 	* @param :: {Object} next, para continuar en caso de error
 	**/
-	profileUpdate: function(req, res, next){
-		// Guardar en variables temporales los vales de cambio
-		var nombre = req.param("firstname"); 
-		var apellido = req.param("lastname");
-		var imagenurl = req.param("imgurl");
-		var iniciales = req.param("initials");
-		var id = req.session.User.id; 
+	profileUpdate: function(req, res, next) { 
+		// Verificar si el correo electrónico existe 
+		User.find({
+			email: req.param("email"), 
+			id: { "!": req.session.User.id } 
+		}).then(function(resultCheck) { 
 
-		// Iniciarlizar un nuevo objeto
-		var object = { }; 
-		var count = 0;
+			// Ya existe el correo electrónico 
+			if(resultCheck.length > 0) { 
+				req.session.flash = { }; 
+				return res.json({ 
+					proc: false, 
+					msg: "¡El correo electrónico ya está registrado!" 
+				}); 
+			} 
 		
-		// Por cada elemento a cambiar, revisar si este está vacío o no 
-		// guardar en object, además aumentar el contador
-		if(nombre !== "") {
-			object["firstname"]	= nombre;
-			count++;
-		}
-		
-		if(apellido !== "") {
-			object["lastname"] = apellido;
-			count++;
-		}
-		
-		if(imagenurl !== "") {
-			object["imgurl"] = imagenurl;
-			count++;
-		}
-		
-		if(iniciales !== "") {
-			object["initials"] = iniciales;
-			count++;
-		}
+			// Guardar en variables temporales los vales de cambio
+			var nombre = req.param("firstname"); 
+			var apellido = req.param("lastname"); 
+			var email = req.param("email"); 
+			var imagenurl = req.param("imgurl"); 
+			var iniciales = req.param("initials"); 
+			var color = req.param("color");
+			var id = req.session.User.id; 
 
-		// Crear el objeto array
-		jsonObj = [];
-
-		// El object queda en formato json
-		jsonObj.push(object); 
+			// Iniciarlizar un nuevo objeto
+			var object = { }; 
+			var count = 0;
 		
-		// Verificar si hubo un cambio
-		if(count >= 1) { 
+			// Por cada elemento a cambiar, revisar si este está vacío o no 
+			// guardar en object, además aumentar el contador
+			if(nombre !== "") {
+				object["firstname"]	= nombre;
+				count++;
+			}
 			
-			// Actualizar el usuario de acuerdo al 'id' y se entrega como entrada la variable jsonObj
-			User.update({ id: id }, jsonObj[0]).exec(function userupdate(err) { 
+			if(apellido !== "") {
+				object["lastname"] = apellido;
+				count++;
+			}
 
-				// Verificar si existe un error
-				if(err) { 
-					req.session.flash = { };
-					return res.json({ 
-						proc: false, 
-						msg: "Se produjo un error al conectarse con el objeto 'user'"
-					}); 
-				}
-				
-				// Si no hay error, actualizar los valores de la variable de sesion User, 
-				// si algún parámetro es distinto de nulo 
-				req.session.flash = {}; 
-				
-				if(nombre !== "") 
-					req.session.User.firstname = nombre;
-				
-				if(apellido !== "") 
-					req.session.User.lastname = apellido;
-					
-				if(imagenurl !== "") 
-					req.session.User.imgurl = imagenurl; 
-					
-				if(iniciales !== "") 
-					req.session.User.initials = iniciales; 
-					
-				// Actualizar el mensaje del servidor y retornar un json con el valor de operacion correcta 
-				//req.session.flash = { err: "Se han actualizado los cambios" };
-				return res.json({ proc: true, msg: "¡Se han actualizado los cambios!" });
-			}); 
-		} else {
+			if(email !== "") {
+				object["email"] = email;
+				count++;
+			}
+			
+			if(imagenurl !== "") {
+				object["imgurl"] = imagenurl;
+				count++;
+			}
+			
+			if(iniciales !== "") { 
+				object["initials"] = iniciales;
+				count++;
+			}
 
-			// Caso contrario retornar si no hubieron cambios
-			req.session.flash = { };
+			if(color !== "") {
+				object["color"] = color;
+				count++;
+			}
+
+			// Crear el objeto array
+			jsonObj = [];
+
+			// El object queda en formato json
+			jsonObj.push(object); 
+		
+			// Verificar si hubo un cambio
+			if(count >= 1) { 
+				
+				// Actualizar el usuario de acuerdo al 'id' y se entrega como entrada la variable jsonObj
+				User.update({ id: id }, jsonObj[0]).exec(function userupdate(err) { 
+
+					// Verificar si existe un error
+					if(err) { 
+						req.session.flash = { };
+						return res.json({ 
+							proc: false, 
+							msg: "Se produjo un error al conectarse con el objeto 'user'"
+						}); 
+					}
+					
+					// Si no hay error, actualizar los valores de la variable de sesion User, 
+					// si algún parámetro es distinto de nulo 
+					req.session.flash = {}; 
+					
+					if(nombre !== "") 
+						req.session.User.firstname = nombre;
+					
+					if(apellido !== "") 
+						req.session.User.lastname = apellido;
+						
+					if(imagenurl !== "") 
+						req.session.User.imgurl = imagenurl; 
+						
+					if(iniciales !== "") 
+						req.session.User.initials = iniciales; 
+						
+					// Actualizar el mensaje del servidor y retornar un json con el valor de operacion correcta 
+					//req.session.flash = { err: "Se han actualizado los cambios" };
+					return res.json({ proc: true, msg: "¡Se han actualizado los cambios!" });
+				}); 
+			} else {
+
+				// Caso contrario retornar si no hubieron cambios
+				req.session.flash = { };
+				return res.json({ 
+					proc: false, 
+					msg: "¡No se produjo ningún cambio!" 
+				});
+			}
+		}).catch(function(err) { 
+			sails.log(err); 
 			return res.json({ 
 				proc: false, 
-				msg: "¡No se produjo ningún cambio!" 
+				msg: "¡Se produjo un error en la Base de Datos!" 
 			});
-		}
+		}); 
 	}, 
 
 	/**
@@ -514,30 +548,46 @@ module.exports = {
 	* @param :: {Object} next, para continuar en caso de error. 
 	**/ 
 	signup: function(req, res, next) { 
-		// Crear un usuario dado los parametros de entrada 
-		User.create(req.allParams(), function userCreated(err, user) { 
-			// Verificar si existe un error
-			if(err) { 
-				
-				// req.session dura el tiempo de la sesion hasta que el browser cierra
-				req.session.flash = { err: err };
-				
-				// Redirigir al usuario a la vista de signup
-				return res.redirect("/session/signin");
-			}
-			
-			// En caso de no haber error, se reinicializa la variable flash
-			req.session.flash = { };
+		// Verificar si el correo electrónico existe 
+		User.find({
+			email: req.param("email") 
+		}).then(function(resultCheck) { 
 
-			// Autenticar al usuario
-			req.session.authenticated = true; 
+			// Ya existe el correo electrónico 
+			if(resultCheck.length > 0) { 
+				req.session.signInErrorMessage = "¡El correo electrónico ya está registrado!"; 
+				res.redirect("/session/signin"); 
+				return; 
+			} 
 
-			// Guardar la variable User con los datos de usuario (global)
-			delete user.password;
-			req.session.User = user; 
+			// Crear un usuario dado los parametros de entrada 
+			User.create(req.allParams()).then(function(usuarioNuevo) { 
+				// Si existe error retornar 
+				if(!usuarioNuevo) { 
+					req.session.signInErrorMessage = "¡Se produjo un error con el objeto 'usuario'!"; 
+					res.redirect("/session/signin"); 
+					return; 
+				}
 
-			// Redirigir al usuario a la vista 'view'
-			res.redirect("/session/index/" + user.id); 
-		});
+				// Autenticar al usuario
+				req.session.authenticated = true; 
+
+				// Guardar la variable User con los datos de usuario (global)
+				delete usuarioNuevo.password; 
+				delete req.session.signInErrorMessage; 
+				req.session.User = usuarioNuevo; 
+
+				// Redirigir al usuario a la vista inicial 
+				res.redirect("/session/index/" + usuarioNuevo.id); 
+			}).catch(function(err) { 
+				sails.log(err); 
+				req.session.signInErrorMessage = "¡Error en la Base de Datos 'User.create'!"; 
+				return res.redirect("/session/signin"); 
+			}); 
+		}).catch(function(err) { 
+			sails.log(err); 
+			req.session.signInErrorMessage = "¡Error en la Base de Datos!"; 
+			return res.redirect("/session/signin"); 
+		}); 
 	}, 
 }

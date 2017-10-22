@@ -1,5 +1,5 @@
 <div class="container" ng-controller="UserController as vm">
-    <h3>Administrar usuarios</h3>
+    <h3><span class="glyphicon glyphicon-edit"></span> Administrar usuarios</h3>
     <hr />
 
     <div class="form-group" id="viewMain" style="display: none;"> 
@@ -110,6 +110,7 @@
                                         ng-model="vm.userRol">
                                         <option value="-1">Seleccionar</option>
                                         <option value="2">Usuario</option>
+                                        <option value="3">Usuario Control</option>
                                         <option value="1">Administrador</option>
                                     </select>
                                     <p class="text-danger" role="alert" ng-if="!vm.formUser.userRol.$pristine && vm.userRol === '-1'">

@@ -20,12 +20,10 @@
         vm.miUserListaParticipantes = []; 
         vm.scopeChat = {}; 
         vm.scopeMensaje = {}; 
-        vm.scopeTarea = {}; 
     
         vm.getQueryString = getQueryString; 
         vm.iniciarTiempoDialogo = iniciarTiempoDialogo; 
         vm.onActiveTabChanged = onActiveTabChanged; 
-        vm.onScopeMensajeActualizarTarea = onScopeMensajeActualizarTarea; 
         vm.setMessage = setMessage; 
         vm.setMessageToast = setMessageToast; 
         
@@ -61,6 +59,8 @@
             }).catch(function(err) { 
                 setMessage(false, "¡Se produjo un error en el procedimiento '/session/getUser'!", null, err); 
             }); 
+
+            $("#projectNavBar").fadeIn(200);
 
             // Expresión regular para el E-mail
             //var REGEX_EMAIL = 
@@ -111,9 +111,8 @@
         * @param :: {integer} nodoId, identificador del nodo del mapa. 
         **/ 
         function onActiveTabChanged(tabId, nodoId) { 
-            vm.scopeTarea.ik.kanbanTareaIdFocus = ""; 
             $("[data-border='ok']").attr("style", "border: none;"); 
-            $("#tab1, #dialogo-main, #tab3, #tab4").attr("style", "display: none;"); 
+            $("#tab1, #dialogo-main, #tab3").attr("style", "display: none;"); 
             
             var active = "";
 
@@ -122,9 +121,7 @@
             else if(tabId === 2)
                 active = "dialogo-main"; 
             else if(tabId === 3)
-                active = "tab3";
-            else if(tabId === 4) 
-                active = "tab4"; 
+                active = "tab3"; 
 
             if(!nodoId) { 
                 vm.activeTab = tabId; 
@@ -150,43 +147,9 @@
 
                     $("#main-content").scrollTop(0); 
                 }); 
-            } else if(tabId === 4) { 
-                $.each(vm.scopeMensaje.im.miMensajeLista, function(key, value) { 
-                    if(value.nodoId !== nodoId)
-                        return true; 
-                    
-                    vm.scopeTarea.ik.kanbanTareaIdFocus = value.tareaId; 
-                    return false; 
-                }); 
-
-                console.log(vm.scopeTarea.ik.kanbanTareaIdFocus); 
-
-                var cell = $("#" + vm.scopeTarea.ik.kanbanTareaIdFocus).parent(); 
-
-                $("#" + active).show(0, function() { 
-                    cell.parent().animate({
-                        scrollTop: cell.offset().top 
-                    }, 0);
-                });
-            }
+            } 
 
             vm.activeTab = tabId; 
-        }; 
-
-        /** 
-        * @method :: onScopeMensajeActualizarTarea 
-        * @description :: Actualizar el mensaje con el id de la tarea. 
-        * @param :: {string} mensajeId, el 'id' del mensaje. 
-        * @param :: {string} tareaId, el 'id' de la tarea. 
-        **/
-        function onScopeMensajeActualizarTarea(mensajeId, tareaId) { 
-            $.each(vm.scopeMensaje.im.miMensajeLista, function(key, value) { 
-                if(value.id !== mensajeId) 
-                    return true; 
-
-                value.tareaId = tareaId; 
-                return false; 
-            }); 
         }; 
 
         /**

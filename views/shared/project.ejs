@@ -31,21 +31,21 @@
             <!-- Main Start --> 
             <div id="main"> 
                 
-                <!-- Main Menu Start --> 
-                <div id="main-menu"> 
+            <!-- Main Menu Start --> 
+            <div id="main-menu"> 
                     <div class="card"> 
                         <div class="card-header" role="tab" id="headingOne"> 
-                            <a href="/user/index"><strong>Menú principal</strong></a> 
+                            <a href="#" id="btnMainMenuCerrar" onclick="return false;"><strong><span class="glyphicon glyphicon-th-list"></span> Menú principal</strong></a> 
                         </div> 
                     </div> 
                     <ul class="list-group"> 
                         <% if(session.User.rol === 1) { %>
-                        <li class="list-group-item"><a href="/admin/user">Administrar usuarios</a></li> 
+                        <li class="list-group-item"><a href="/admin/user"><span class="glyphicon glyphicon-edit"></span> Administrar usuarios</a></li> 
                         <% } %> 
-                        <li class="list-group-item"><a href="/session/index">Mis Proyectos</a></li> 
-                        <li class="list-group-item"><a href="/session/profile">Mi perfil</a></li> 
-                        <li class="list-group-item"><a href="/session/password">Modificar contraseña</a></li> 
-                        <li class="list-group-item"><a href="/session/logout">Cerrar sesión</a></li> 
+                        <li class="list-group-item"><a href="/session/index"><span class="glyphicon glyphicon-file"></span> Mis Proyectos</a></li> 
+                        <li class="list-group-item"><a href="/session/profile"><span class="glyphicon glyphicon-user"></span> Mi perfil</a></li> 
+                        <li class="list-group-item"><a href="/session/password"><span class="glyphicon glyphicon-lock"></span> Modificar contraseña</a></li> 
+                        <li class="list-group-item"><a href="/session/logout"><span class="glyphicon glyphicon-off"></span> Cerrar sesión</a></li> 
                     </ul> 
                 </div>
                 <!-- Main Menu End -->
@@ -55,12 +55,13 @@
                     <!-- Logo Start -->
                     <nav class="navbar navbar-expand-md navbar-light bg-success fixed-top"> 
                         <div class="navbar-brand"> 
-                            <a href="/user/index"> 
+                            <a href="/session/index"> 
                                 <img alt="Logo" class="main-logo-hover" src="/images/logo_hover.png" /> 
                                 <img alt="Logo" class="main-logo" src="/images/logo.png" /> 
                             </a> 
-                            <select id="selectFiltrarUsuario"> 
-                            </select> 
+                            <span id="filtrarUsuario" style="display: none; position: relative;">
+                                <select id="selectFiltrarUsuario" style="width: 320px"></select> 
+                            </span>
                         </div>
                         <button type="button" class="main-menu-btn"> 
                             <span class="icon-bar"></span> 

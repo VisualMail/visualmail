@@ -990,3 +990,24 @@ However, delay the fade out process for 2.5 seconds */
   padding: 5px;
   cursor: pointer;
 }
+
+
+.bubbleMe { background: #61F969; border: #61F969 solid 2px;; border-radius: 10px; position: relative; -moz-border-radius: 10px; -webkit-border-radius: 10px; } 
+.bubbleMe:after { border-color: transparent #61F969; border-style: solid; border-width: 8px 0 8px 16px; content: ""; display: block; position: absolute; right: -16px; top: 29px; width: 0; z-index: 1; } 
+.bubbleMe:before { border-color: transparent #61F969; border-style: solid; border-width: 9px 0 9px 17px; content: ""; display: block; position: absolute; right: -19px; top: 28px; width: 0; z-index: 0; } 
+
+.bubbleOther { background: #80D1FF; border: #80D1FF solid 2px;; border-radius: 10px; position: relative; -moz-border-radius: 10px; -webkit-border-radius: 10px; } 
+.bubbleOther:after { border-color: transparent #80D1FF; border-style: solid; border-width: 8px 16px 8px 0; content: ""; display: block; position: absolute; left: -16px; top: 29px; width: 0; z-index: 1; } 
+.bubbleOther:before { border-color: transparent #80D1FF; border-style: solid; border-width: 9px 17px 9px 0; content: ""; display: block; position: absolute; left: -19px; top: 28px; width: 0; z-index: 0; } 
+
+
+
+
+
+.boxer { height: 100%; left: 0; padding-bottom: 150px; top: 0; } 
+.bubble { background: #4CAF50; border: #388E3C solid 2px; border-radius: 10px; position: relative; -moz-border-radius: 10px; -webkit-border-radius: 10px; } 
+.bubble:after { border-color: transparent #4CAF50; border-style: solid; border-width: 8px 16px 8px 0; content: ""; display: block; left: -16px; position: absolute; top: 29px; width: 0; z-index: 1; } 
+.bubble:before { border-color: transparent #388E3C; border-style: solid; border-width: 9px 17px 9px 0; content: ""; display: block; left: -19px; position: absolute; top: 28px; width: 0; z-index: 0; } 
+
+.bubble2:after { border-color: transparent #4CAF50; border-style: solid; border-width: 8px 0 8px 16px; content: ""; display: block; position: absolute; right: -16px; top: 29px; width: 0; z-index: 1; } 
+.bubble2:before { border-color: transparent #388E3C; border-style: solid; border-width: 9px 0 9px 17px; content: ""; display: block; position: absolute; right: -19px; top: 28px; width: 0; z-index: 0; } 

@@ -1,4 +1,4 @@
-$(".main-menu-btn").on("click", function() {
+$(".main-menu-btn, #btnMainMenuCerrar").on("click", function() {
     var v = $(window).width(), 
         a = $("#main-content"),
         b = $("#main-menu"),
@@ -23,4 +23,10 @@ $(".main-menu-btn").on("click", function() {
     c.animate({ "right": ax }, "fast");
     d.animate({ "left": (ok ? "0px" : "-600px") }, "fast"); 
     e.animate({ "left": (ok ? "16px" : "-600px") }, "fast"); 
+
+    var x = $("#filtrarUsuario"); 
+
+    if(x.length > 0)
+        x.animate({ "left": (ok ? "0px" : "-600px") }, "fast"); 
+
 }); 

@@ -10,6 +10,7 @@
     function ProfileController($http, $scope) { 
         var vm = this; 
         vm.miUsuario = {}; 
+        vm.userEmail = ""; 
         vm.userFirstName = ""; 
         vm.userImgUrl = ""; 
         vm.userInitials = ""; 
@@ -65,6 +66,7 @@
         }; 
 
         function onBtnCancelarClick() { 
+            vm.userEmail = vm.miUsuario.email; 
             vm.userFirstName = vm.miUsuario.firstname; 
             vm.userImgUrl = vm.miUsuario.imgurl; 
             vm.userInitials = vm.miUsuario.initials; 
@@ -89,6 +91,7 @@
                 }, 
                 data: { 
                     id: vm.miUsuario.id, 
+                    email: vm.userEmail, 
                     firstname: vm.userFirstName, 
                     lastname: vm.userLastName, 
                     imgurl: vm.userImgUrl, 

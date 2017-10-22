@@ -39,6 +39,8 @@
                 todayBtn: "linked", 
                 todayHighlight: true
             }); 
+
+            $(".container").fadeIn(200); 
         }; 
 
         function getUserProjects() { 

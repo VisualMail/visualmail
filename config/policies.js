@@ -40,7 +40,8 @@ module.exports.policies = {
     passwordUpdate: "sessionAuth", 
   }, 
   project:{ 
-    '*': "sessionAuth" 
+    '*': "sessionAuth", 
+    index: "expAuth", 
   }, 
 
 

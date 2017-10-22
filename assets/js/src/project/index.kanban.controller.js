@@ -96,6 +96,7 @@
                     todayHighlight: true
                 });
                 parent.vm.scopeTarea = $scope;
+                $("#projectNavBar").fadeIn(200);
             }).catch(function(err) {
                 vm.setMessage(false, "¡Se produjo un error en el procedimiento '/tarea/getAllProjectId/'!", null, err);
             });

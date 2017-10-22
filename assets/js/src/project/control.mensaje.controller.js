@@ -34,9 +34,7 @@
         vm.onBtnMensajeResponderClick = onBtnMensajeResponderClick; 
         vm.onMensajeAnclarClick = onMensajeAnclarClick; 
         vm.onMensajeAnclarNavegar = onMensajeAnclarNavegar; 
-        vm.onMensajeEnviar = onMensajeEnviar; 
         vm.onMensajeMarcar = onMensajeMarcar; 
-        vm.onMensajeTareaCrear = onMensajeTareaCrear; 
         vm.onSocketMensajeNuevo = onSocketMensajeNuevo; 
         vm.setMessage = parent.vm.setMessage; 
         vm.setMessageToast = parent.vm.setMessageToast; 
@@ -311,31 +309,55 @@
             // Si se está procesando retornar 
             if(vm.procesando) 
                 return; 
+
+            vm.procesando = true; 
             
-            // Si es un compromiso individual crear la tarea 
-            if(vm.mensajeRespuestaTipoId === "ci") { 
-                vm.onMensajeEnviar(true); 
-            } else if(vm.mensajeRespuestaTipoId === "ac" || 
-                vm.mensajeRespuestaTipoId === "nc" || 
-                vm.mensajeRespuestaTipoId === "db" || 
-                vm.mensajeRespuestaTipoId === "ta" || 
-                vm.mensajeRespuestaTipoId === "da") { 
-                // Preguntar si se asocia a una tarea 
-                swal({ 
-                    title: "¡Atención!", 
-                    text: "¿Deseas asociar este mensaje a una tarea?", 
-                    type: "warning", 
-                    showCancelButton: true, 
-                    confirmButtonClass: "btn-success", 
-                    confirmButtonText: "Sí, crear tarea", 
-                    cancelButtonText: "No, cerrar", 
-                    closeOnConfirm: true, 
-                    closeOnCancel: true 
-                }, function(isConfirm) { 
-                    vm.onMensajeEnviar(isConfirm); 
-                }); 
-            } else 
-                vm.onMensajeEnviar(false); 
+            // Si el mensaje no tiene sesión, actualizar mi sesión 
+            if(vm.miMensajeAnclado.sessionId === parent.vm.miSessionId) 
+                parent.vm.miSessionId++; 
+                
+            // Para realizar el post con csrf 
+            $http.defaults.withCredentials = true; 
+            $http({ 
+                method: "POST", 
+                url: "/mensaje/create", 
+                headers: { 
+                    "Content-Type": "application/json", 
+                    "X-CSRF-TOKEN": parent.vm.csrfToken 
+                }, data: { 
+                    crearTarea: false, 
+                    name: vm.mensajeRespuesta, 
+                    nodoNivel: vm.miMensajeAnclado.numero_hijos + vm.miMensajeAnclado.nodoNivel, 
+                    nodoPadreId: vm.miMensajeAnclado.nodoId, 
+                    nodoPadreNivel: vm.miMensajeAnclado.nodoNivel, 
+                    nodoPadreSessionId: vm.miMensajeAnclado.sessionId, 
+                    numero_hijos: 0, 
+                    parent: vm.miMensajeAnclado.id, 
+                    project_id: parent.vm.miProjectId, 
+                    root: false, 
+                    sessionId: parent.vm.miSessionId, 
+                    tipo: vm.mensajeRespuestaTipo, 
+                    tipoId: vm.mensajeRespuestaTipoId, 
+                    tipoName: $("#miMensajeRespuestaTipoName").html(), 
+                    tipoNameMarca: vm.mensajeRespuestaTipoNameMarca 
+                } 
+            }).then(function(res) { 
+                var d = res.data; 
+                
+                // Si existe error 
+                if(!d.proc) { 
+                    vm.setMessage(d.proc, d.msg, "warning"); 
+                    vm.procesando = false; 
+                    return; 
+                } 
+                
+                // Iniciar controles 
+                vm.onBtnMensajeCancelarClick(); 
+                vm.procesando = false; 
+            }).catch(function(err) { 
+                vm.procesando = false; 
+                vm.setMessage(false, "¡Se produjo un error en el procedimiento '/mensaje/create'!", null, err); 
+            }); 
         }; 
 
         /**
@@ -455,77 +477,6 @@
             vm.iniciarLineaDialogo(vm.miMensajeAncladoNavegar.nodoId); 
         }; 
 
-        function onMensajeEnviar(crearTarea) { 
-            vm.procesando = true; 
-
-            // Si el mensaje no tiene sesión, actualizar mi sesión 
-            if(vm.miMensajeAnclado.sessionId === parent.vm.miSessionId) 
-                parent.vm.miSessionId++; 
-            
-            // Para realizar el post con csrf 
-            $http.defaults.withCredentials = true; 
-            $http({ 
-                method: "POST", 
-                url: "/mensaje/create", 
-                headers: { 
-                    "Content-Type": "application/json", 
-                    "X-CSRF-TOKEN": parent.vm.csrfToken 
-                }, 
-                data: { 
-                    crearTarea: crearTarea, 
-                    name: vm.mensajeRespuesta, 
-                    nodoNivel: vm.miMensajeAnclado.numero_hijos + vm.miMensajeAnclado.nodoNivel, 
-                    nodoPadreId: vm.miMensajeAnclado.nodoId, 
-                    nodoPadreNivel: vm.miMensajeAnclado.nodoNivel, 
-                    nodoPadreSessionId: vm.miMensajeAnclado.sessionId, 
-                    numero_hijos: 0, 
-                    parent: vm.miMensajeAnclado.id, 
-                    project_id: parent.vm.miProjectId, 
-                    root: false, 
-                    sessionId: parent.vm.miSessionId, 
-                    tipo: vm.mensajeRespuestaTipo, 
-                    tipoId: vm.mensajeRespuestaTipoId, 
-                    tipoName: $("#miMensajeRespuestaTipoName").html(), 
-                    tipoNameMarca: vm.mensajeRespuestaTipoNameMarca 
-                } 
-            }).then(function(res) { 
-                var d = res.data;
-
-                // Si existe error 
-                if(!d.proc) { 
-                    vm.setMessage(d.proc, d.msg, "warning"); 
-                    vm.procesando = false; 
-                    return; 
-                } 
-
-                // Si se debe crear la tarea 
-                if(crearTarea) {
-                    // Preparar el objeto tarea 
-                    var obj = { 
-                        description: vm.mensajeRespuesta, 
-                        element: vm.mensajeRespuestaTipo === "Mensaje Inicial" || vm.mensajeRespuestaTipo === "Citar" || vm.mensajeRespuestaTipo === "" ? "" : vm.mensajeRespuestaTipo, 
-                        mensajeId: d.mensaje.id, 
-                        nodoId: d.mensaje.nodoId, 
-                        tipo: vm.mensajeRespuestaTipo, 
-                        tipoId: vm.mensajeRespuestaTipoId, 
-                        tipoName: $("#miMensajeRespuestaTipoName").html(), 
-                        tipoNameMarca: vm.mensajeRespuestaTipoNameMarca, 
-                        title: vm.mensajeRespuesta, 
-                        usuario: parent.vm.miUser 
-                    }; 
-
-                    vm.onMensajeTareaCrear(obj); 
-                } 
-
-                // Iniciar controles 
-                vm.onBtnMensajeCancelarClick(); 
-                vm.procesando = false; 
-            }).catch(function(err) { 
-                vm.procesando = false; 
-                vm.setMessage(false, "¡Se produjo un error en el procedimiento '/mensaje/create'!", null, err); 
-            }); 
-        }; 
-
         /**
         * @method :: onMensajeMarcar
         * @description :: Inicia la respuesta del mensaje con la opción del sub-menú del mensaje cuando el usuario hace clic derecho.
@@ -576,9 +527,6 @@
                 case "db": 
                     vm.mensajeRespuestaTipo = "Desacuerdo o brecha"; 
                     break; 
-                case "ta": 
-                    vm.mensajeRespuestaTipo = "Tarea"; 
-                    break; 
                 case "da": 
                     vm.mensajeRespuestaTipo = "Duda o alternativa"; 
                     break; 
@@ -588,13 +536,6 @@
             }
 
             vm.mensajeRespuestaTipoId = key; 
-
-            // Si es una tarea, retornar 
-            if(key === "ta") { 
-                //vm.onBtnTareaMostrarClick(vm.miMensajeAnclado.id)
-                return; 
-            } 
-
             vm.mensajeResponder = true; 
             $timeout(function() { 
                 $('#mensajeRespuesta').focus(); 
@@ -633,56 +574,6 @@
             vm.mensajeRespuestaTipoName = mensaje !== "navegar" ? $sce.trustAsHtml($(".context-menu-mensaje-anclado").html().trim()) : $sce.trustAsHtml($(".context-menu-mensaje-navegar").html().trim()); 
             $(".context-menu-mensaje-anclado").html(vm.miMensajeAnclado.name); 
             $("#x").css("opacity", "0.5"); 
-        }; 
-
-        /**
-        * @method :: onMensajeTareaCrear 
-        * @description :: Crea una tarea a partir de un mensaje 
-        * @param :: {Object} obj, datos del mensaje que se asocian a la tarea 
-        **/
-        function onMensajeTareaCrear(obj) { 
-            // Almacenar los datos que se enviarán al servidor 
-            var tarea = { 
-                associated: true, 
-                description: obj.description, 
-                drag: true, 
-                element: obj.element, 
-                estado: "new", 
-                kanban: parent.vm.miProject.kanban[0].id, 
-                mensaje: obj.mensajeId, 
-                nodoId: obj.nodoId, 
-                project_id: parent.vm.miProject.id, 
-                selectedUsuarioTask: obj.usuario, 
-                tipo: obj.tipo, 
-                tipoId: obj.tipoId, 
-                tipoName: obj.tipoName, 
-                tipoNameMarca: obj.tipoNameMarca, 
-                title: obj.title, 
-                usuario: obj.usuario.id, 
-            }; 
-
-            $http({ 
-                method: "POST", 
-                url: "/tarea/create", 
-                headers: { 
-                    "Content-Type": "application/json", 
-                    "X-CSRF-TOKEN": parent.vm.csrfToken 
-                }, 
-                data: tarea 
-            }).then(function(res) { 
-                // Se obtiene el resultado 'res' 
-                var d = res.data; 
-                vm.procesando = false; 
-
-                // Si existe un error retornar 
-                if(!d.proc) { 
-                    vm.setMessage(d.proc, d.msg, "warning"); 
-                    return; 
-                } 
-            }).catch(function(err) { 
-                vm.setMessage(false, "¡Se produjo un error!", null, err); 
-                vm.procesando = false; 
-            }); 
         }; 
 
         /**
@@ -735,7 +626,6 @@
             //nuevoMensaje["cssvalue"] = !vm.miMensajeIntercalar; 
             //vm.miMensajeIntercalar = !vm.miMensajeIntercalar; 
             vm.miMensajeLista.push(nuevoMensaje); 
-            nuevoMensaje.tareaId = data.crearTarea; 
             mapaDialogoAgregarNodo(nuevoMensaje); 
             vm.iniciarMensajeAnclado(); 
 
