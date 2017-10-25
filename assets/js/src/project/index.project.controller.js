@@ -1,6 +1,7 @@
 (function() { 
     "use strict"; 
     
+    angular.module("VisualMailApp").requires.push("ngFileUpload");
     angular.module("VisualMailApp").requires.push("ngTable"); 
 
     angular
@@ -12,11 +13,14 @@
     function IndexProjectController($http, $scope, NgTableParams) { 
         var vm = this; 
         var parent = $scope.$parent; 
+        vm.projectArchivo = [];
         vm.projectUserId = []; 
         vm.projectName = ""; 
         vm.projectDateEnd = ""; 
 
         vm.onBtnProjectAddUserClick = onBtnProjectAddUserClick; 
+        vm.onBtnProjectArchivoClick = onBtnProjectArchivoClick; 
+        vm.onBtnProjectArchivoGuardarClick = onBtnProjectArchivoGuardarClick; 
         vm.onBtnProjectGuardarClick = onBtnProjectGuardarClick; 
         vm.onBtnProjectModalClick = onBtnProjectModalClick; 
         vm.onProjectUserInit = onProjectUserInit; 
@@ -172,6 +176,13 @@
 
         }; 
     
+        function onBtnProjectArchivoClick() { 
+            $("#modalProjectArchivo").modal("show"); 
+        }; 
+
+        function onBtnProjectArchivoGuardarClick() { 
+        }; 
+
         /**
         * @method :: onBtnProjectGuardarClick 
         * @description :: Función para mandar POST que actualiza los datos del proyecto
