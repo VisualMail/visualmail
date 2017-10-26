@@ -8,12 +8,14 @@
         .module("VisualMailApp")
         .controller("IndexProjectController", IndexProjectController); 
     
-    IndexProjectController.$inject = ["$http", "$scope", "NgTableParams"]; 
+    IndexProjectController.$inject = ["$http", "$scope", "NgTableParams", "Upload"]; 
 
-    function IndexProjectController($http, $scope, NgTableParams) { 
+    function IndexProjectController($http, $scope, NgTableParams, Upload) { 
         var vm = this; 
         var parent = $scope.$parent; 
         vm.projectArchivo = [];
+        vm.projectArchivoLista = []; 
+        vm.projectArchivoNombre = ""; 
         vm.projectUserId = []; 
         vm.projectName = ""; 
         vm.projectDateEnd = ""; 
@@ -26,6 +28,7 @@
         vm.onProjectUserInit = onProjectUserInit; 
         vm.onProjectUserParticipanteFormatState = onProjectUserParticipanteFormatState; 
         vm.onProjectUserParticipanteInit = onProjectUserParticipanteInit; 
+        vm.onSocketArchivoNuevo = onSocketArchivoNuevo; 
         vm.setMessage = parent.vm.setMessage; 
 
         init(); 
@@ -88,14 +91,22 @@
                     // Iniciar lista de usuarios participantes y potenciales participantes 
                     onProjectUserInit(); 
                     onProjectUserParticipanteInit(); 
-                    //vm.child.vm.tableParams = new NgTableParams({}, { dataset: vm.miUserListaParticipantes });
                     vm.tableParams = new NgTableParams({}, { dataset: parent.vm.miUserListaParticipantes });
-                    $("#filtrarUsuario").fadeIn(200);
+                    $("#filtrarUsuario").fadeIn(200); 
                 }).catch(function(err) { 
                     vm.setMessage(false, "¡Se produjo un error en el procedimiento '/project/getOne'!", null, err); 
                 }); 
             }).catch(function(err) { 
                 vm.setMessage(false, "¡Se produjo un error en el procedimiento '/user/getAllEmail'!", null, err); 
+            }); 
+
+            // Obtener los archivos del proyecto 
+            $http.get("/archivo/getAllProjectId", { 
+                project_id: parent.vm.miProjectId 
+            }).then(function(res) { 
+                vm.projectArchivoLista = res.data.archivoLista; 
+            }).catch(function(err) { 
+                vm.setMessage(false, "¡Se produjo un error en el procedimiento '/archivo/getAllProjectId'!", null, err); 
             }); 
         }; 
 
@@ -181,6 +192,34 @@
         }; 
 
         function onBtnProjectArchivoGuardarClick() { 
+            if(vm.procesando) 
+                return; 
+
+            vm.procesando = true; 
+            var fileExt = vm.projectArchivo.name.split('.'); 
+            fileExt = fileExt[fileExt.length - 1]; 
+
+            Upload.upload({
+                method: "POST", 
+                url: "/archivo/create",
+                headers: { 
+                    "Content-Type": "application/json", 
+                    "X-CSRF-TOKEN": parent.vm.csrfToken 
+                }, 
+                data: { 
+                    fileExt: "." + fileExt, 
+                    nombre: vm.projectArchivoNombre, 
+                    project_id: parent.vm.miProjectId, 
+                    file: vm.projectArchivo 
+                }
+            }).then(function(res) {
+                var d = res.data;
+                vm.procesando = false; 
+                vm.setMessage(d.proc, d.msg, d.proc ? "success" : "warning"); 
+            }).catch(function(err) { 
+                vm.procesando = false; 
+                vm.setMessage(false, "¡Se produjo un error en el procedimiento '/archivo/create'!")
+            }); 
         }; 
 
         /**
@@ -333,6 +372,10 @@
                 templateResult: onProjectUserParticipanteFormatState, 
                 templateSelection: onProjectUserParticipanteFormatState 
             });
+        }; 
+
+        function onSocketArchivoNuevo(data) { 
+            vm.projectArchivoLista.push(data.archivoNuevo); 
         }; 
     }; 
 

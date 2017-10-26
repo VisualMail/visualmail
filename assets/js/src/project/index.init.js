@@ -27,6 +27,7 @@ $(document).ready(function() {
 
     var scopeMain = angular.element(document.getElementById("IndexControllerMain")).scope();
     var scopeMensaje = angular.element(document.getElementById("IndexMensajeControllerMain")).scope();
+    var scopeProject = angular.element(document.getElementById("IndexProjectController")).scope();
     var scopeTarea = angular.element(document.getElementById("kanbanBoard")).scope();
 
     /**
@@ -49,6 +50,9 @@ $(document).ready(function() {
             case "MensajeNuevo":
                 scopeMensaje.im.onSocketMensajeNuevo(data);
                 break;
+            case "ProjectArchivoNuevo": 
+                scopeProject.ip.onSocketArchivoNuevo(data); 
+                break; 
             case "TareaNueva":
                 scopeTarea.ik.onSocketTareaNueva(data);
                 break;

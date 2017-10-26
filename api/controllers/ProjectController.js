@@ -64,7 +64,7 @@ module.exports = {
 	    	return res.badRequest();
 
 	    // Establecer el socket que realizó el request join hacia un nuevo room
-      sails.sockets.join(req, req.param("project_id"));
+      	sails.sockets.join(req, req.param("project_id"));
 
 	    // Realizar un broadcast al 'room'
 	    sails.sockets.broadcast(req.param("project_id"), "conectar_socket", {message: "conectado a VisualMail Socket"}, req);

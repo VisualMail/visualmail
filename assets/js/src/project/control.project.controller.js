@@ -7,9 +7,9 @@
         .module("VisualMailApp")
         .controller("IndexProjectController", IndexProjectController); 
     
-    IndexProjectController.$inject = ["$http", "$scope", "NgTableParams"]; 
+    IndexProjectController.$inject = ["$http", "$scope", "NgTableParams", "Upload"]; 
 
-    function IndexProjectController($http, $scope, NgTableParams) { 
+    function IndexProjectController($http, $scope, NgTableParams, Upload) { 
         var vm = this; 
         var parent = $scope.$parent; 
         vm.projectUserId = []; 
@@ -17,6 +17,7 @@
         vm.projectDateEnd = ""; 
 
         vm.onBtnProjectAddUserClick = onBtnProjectAddUserClick; 
+        vm.onBtnProjectArchivoGuardarClick = onBtnProjectArchivoGuardarClick; 
         vm.onBtnProjectGuardarClick = onBtnProjectGuardarClick; 
         vm.onBtnProjectModalClick = onBtnProjectModalClick; 
         vm.onProjectUserInit = onProjectUserInit; 
@@ -168,6 +169,32 @@
                 vm.setMessage(false, "¡Se produjo un error en el procedimiento '/project/addUser'!", null, err); 
             }); 
 
+        }; 
+
+        function onBtnProjectArchivoGuardarClick() { 
+            if(vm.procesando) 
+                return; 
+
+            vm.procesando = true; 
+
+            Upload.upload({
+                method: "POST", 
+                url: "/archivo/create",
+                headers: { 
+                    "Content-Type": "application/json", 
+                    "X-CSRF-TOKEN": parent.vm.csrfToken 
+                }, 
+                data: { 
+                    files: vm.projectArchivo 
+                }
+            }).then(function(res) {
+                var d = res.data;
+                console.log(d); 
+                vm.procesando = false; 
+            }).catch(function(err) { 
+                vm.procesando = false; 
+                vm.setMessage(false, "¡Se produjo un error en el procedimiento '/archivo/create'!")
+            }); 
         }; 
     
         /**
