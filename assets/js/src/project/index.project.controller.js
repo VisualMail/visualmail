@@ -22,6 +22,7 @@
 
         vm.onBtnProjectAddUserClick = onBtnProjectAddUserClick; 
         vm.onBtnProjectArchivoClick = onBtnProjectArchivoClick; 
+        vm.onBtnProjectArchivoEliminarClick = onBtnProjectArchivoEliminarClick; 
         vm.onBtnProjectArchivoGuardarClick = onBtnProjectArchivoGuardarClick; 
         vm.onBtnProjectGuardarClick = onBtnProjectGuardarClick; 
         vm.onBtnProjectModalClick = onBtnProjectModalClick; 
@@ -189,6 +190,22 @@
     
         function onBtnProjectArchivoClick() { 
             $("#modalProjectArchivo").modal("show"); 
+        }; 
+
+        function onBtnProjectArchivoEliminarClick() { 
+            if(vm.procesando) 
+                return; 
+
+            vm.procesando = true; 
+
+            http.post({ 
+
+            }).then(function(res) { 
+
+            }).catch(function(err) { 
+                vm.procesando = false; 
+                vm.setMessage(false, "¡Se produjo un error en el procedimiento '/archivo/updateEstado'!", null, err); 
+            }); 
         }; 
 
         function onBtnProjectArchivoGuardarClick() { 
