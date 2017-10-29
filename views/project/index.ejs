@@ -162,20 +162,32 @@
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                                                <label for="projectArchivo">Nombre</label>
+                                                <label for="projectArchivo"
+                                                    ng-class="{ 'text-danger': !ip.formProjectArchivo.projectArchivoNombre.$pristine && !ip.formProjectArchivo.projectArchivoNombre.$valid }">Nombre</label>
                                                 <div class="input-group-btn"> 
-                                                    <input class="form-control" required="required" type="text" value="{{ ip.projectArchivo.name }}" 
-                                                        ng-model="ip.projectArchivoNombre" />
+                                                    <input id="projectArchivoNombre" name="projectArchivoNombre" placeholder="Máximo 100 caracteres" type="text" 
+                                                        ng-class="{ 
+                                                            'form-control': ip.formProjectArchivo.projectArchivoNombre.$pristine || ip.formProjectArchivo.projectArchivoNombre.$valid, 
+                                                            'form-control is-invalid': !ip.formProjectArchivo.projectArchivoNombre.$pristine && !ip.formProjectArchivo.projectArchivoNombre.$valid }" 
+                                                        ng-maxlength="100" 
+                                                        ng-minlength="3" 
+                                                        ng-model="ip.projectArchivoNombre" 
+                                                        ng-required="true" />
                                                     <button class="btn btn-primary"  
                                                         id="projectArchivo" 
                                                         name="projectArchivo" 
                                                         ng-model="ip.projectArchivo" 
-                                                        ngf-select="" 
+                                                        ngf-select="ip.projectArchivoNombre = ip.projectArchivo.name" 
                                                         accept="*/*"> 
                                                         <span class="glyphicon glyphicon-search"></span> 
                                                         Buscar archivos 
                                                     </button> 
                                                 </div>
+                                                <p class="text-danger" role="alert" ng-messages="!ip.formProjectArchivo.projectArchivoNombre.$pristine && ip.formProjectArchivo.projectArchivoNombre.$error">
+                                                    <strong ng-message="minlength">Mínimo 3 caracteres</strong>
+                                                    <strong ng-message="maxlength">Nombre muy largo</strong> 
+                                                    <strong ng-message="required">Requerido</strong> 
+                                                </p>
                                             </div>
                                         </div>
                                     </div>
@@ -192,7 +204,11 @@
                                                     </thead> 
                                                     <tbody>
                                                         <tr ng-repeat="item in ip.projectArchivoLista">
-                                                            <td></td>
+                                                            <td>
+                                                                <button class="btn btn-danger btn-sm" type="button">
+                                                                    <span class="glyphicon glyphicon-remove"></span> Eliminar
+                                                                </button>
+                                                            </td>
                                                             <td>{{ item.name }}</td>
                                                         </tr>
                                                     </tbody>
