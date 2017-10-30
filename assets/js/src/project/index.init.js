@@ -50,6 +50,9 @@ $(document).ready(function() {
             case "MensajeNuevo":
                 scopeMensaje.im.onSocketMensajeNuevo(data);
                 break;
+            case "ProjectArchivoActualizar": 
+                scopeProject.ip.onSocketArchivoActualizar(data); 
+                break; 
             case "ProjectArchivoNuevo": 
                 scopeProject.ip.onSocketArchivoNuevo(data); 
                 break; 

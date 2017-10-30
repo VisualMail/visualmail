@@ -22,7 +22,7 @@ module.exports = {
 
         // Contiene el tipo del archivo 
         fileType: { 
-            type: "string "
+            type: "string"
         }, 
 
         // Contiene el nombre del archivo en la base 

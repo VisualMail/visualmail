@@ -81,8 +81,16 @@ module.exports = {
         }); 
     }, 
 
+    /** 
+	* @method :: getAllProjectId (POST) 
+	* @description :: Obtiene todos los archivos del proyecto. 
+	* @param :: {Object} req, request element de sails. 
+	* @param :: {Objetct} res, de la vista ejs del servidor. 
+	* @param :: {Objetct} next, para continuar en caso de error. 
+    **/ 
     getAllProjectId: function(req, res, next) { 
-        Archivo.find({ project_id: req.param("project_id") }).then(function(archivoLista) { 
+        var estado = 1; 
+        Archivo.find({ project_id: req.param("project_id"), estado: estado }).then(function(archivoLista) { 
             return res.json({ 
                 proc: true, 
                 msg: "", 
@@ -95,6 +103,42 @@ module.exports = {
                 msg: "¡Se produjo un error en la base de datos!" 
             }); 
         }); 
+    }, 
 
-    }
+    /** 
+	* @method :: updateEstado (POST) 
+	* @description :: Actualiza el estado del archivo. 
+	* @param :: {Object} req, request element de sails. 
+	* @param :: {Objetct} res, de la vista ejs del servidor. 
+	* @param :: {Objetct} next, para continuar en caso de error. 
+    **/ 
+    updateEstado: function(req, res, next) { 
+        Archivo.update({ id: req.param("archivoId") }, { estado: req.param("estado") }).then(function(archivo) { 
+            if(!archivo) { 
+                return res.json({ 
+                    proc: false, 
+                    msg: "¡Se produjo un error con el objeto 'archivo'!" 
+                }); 
+            } 
+
+            sails.sockets.broadcast( 
+                archivo.project_id, 
+                "socket_project_response", { 
+                    message: "Mensaje desde el servidor.", 
+                    type: "ProjectArchivoActualizar", 
+                    archivo: archivo 
+                }, req);
+
+            return res.json({ 
+                proc: true, 
+                msg: "¡Datos modificados!" 
+            }); 
+        }).catch(function(err) { 
+            sails.log("Se produjo un error: ", err); 
+            return res.json({ 
+                proc: false, 
+                msg: "¡Se produjo un error en la base de datos!" 
+            }); 
+        }); 
+    }, 
 }
