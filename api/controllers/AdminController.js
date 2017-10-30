@@ -172,10 +172,7 @@ module.exports = {
 			} 
 
 			// Actualizar el usuario 
-			User.update({ 
-				id: id
-			}, 
-			{
+			User.update({ id: id }, { 
 				firstname: firstname, 
 				lastname: lastname, 
 				email: email, 

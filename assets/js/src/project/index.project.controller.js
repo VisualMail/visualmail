@@ -13,7 +13,7 @@
     function IndexProjectController($http, $scope, NgTableParams, Upload) { 
         var vm = this; 
         var parent = $scope.$parent; 
-        vm.projectArchivo = [];
+        vm.projectArchivo = {};
         vm.projectArchivoLista = []; 
         vm.projectArchivoNombre = ""; 
         vm.projectUserId = []; 
@@ -21,14 +21,17 @@
         vm.projectDateEnd = ""; 
 
         vm.onBtnProjectAddUserClick = onBtnProjectAddUserClick; 
+        vm.onBtnProjectArchivoCerrarClick = onBtnProjectArchivoCerrarClick; 
         vm.onBtnProjectArchivoClick = onBtnProjectArchivoClick; 
         vm.onBtnProjectArchivoEliminarClick = onBtnProjectArchivoEliminarClick; 
         vm.onBtnProjectArchivoGuardarClick = onBtnProjectArchivoGuardarClick; 
+        vm.onBtnProjectArchivoEliminarClick = onBtnProjectArchivoEliminarClick; 
         vm.onBtnProjectGuardarClick = onBtnProjectGuardarClick; 
         vm.onBtnProjectModalClick = onBtnProjectModalClick; 
         vm.onProjectUserInit = onProjectUserInit; 
         vm.onProjectUserParticipanteFormatState = onProjectUserParticipanteFormatState; 
         vm.onProjectUserParticipanteInit = onProjectUserParticipanteInit; 
+        vm.onSocketArchivoActualizar = onSocketArchivoActualizar; 
         vm.onSocketArchivoNuevo = onSocketArchivoNuevo; 
         vm.setMessage = parent.vm.setMessage; 
 
@@ -102,8 +105,10 @@
             }); 
 
             // Obtener los archivos del proyecto 
-            $http.get("/archivo/getAllProjectId", { 
-                project_id: parent.vm.miProjectId 
+            $http({ 
+                url: "/archivo/getAllProjectId", 
+                method: "GET", 
+                params: { project_id: parent.vm.miProjectId } 
             }).then(function(res) { 
                 vm.projectArchivoLista = res.data.archivoLista; 
             }).catch(function(err) { 
@@ -187,6 +192,13 @@
             }); 
 
         }; 
+
+        function onBtnProjectArchivoCerrarClick() { 
+            vm.projectArchivo = {}; 
+            vm.projectArchivoNombre = ""; 
+            vm.formProjectArchivo.projectArchivoNombre.$pristine = true; 
+            $("#modalProjectArchivo").modal("hide"); 
+        }; 
     
         function onBtnProjectArchivoClick() { 
             $("#modalProjectArchivo").modal("show"); 
@@ -233,9 +245,44 @@
                 var d = res.data;
                 vm.procesando = false; 
                 vm.setMessage(d.proc, d.msg, d.proc ? "success" : "warning"); 
+                vm.projectArchivo = {}; 
+                vm.projectArchivoNombre = ""; 
+                vm.formProjectArchivo.projectArchivoNombre.$pristine = true; 
             }).catch(function(err) { 
                 vm.procesando = false; 
                 vm.setMessage(false, "¡Se produjo un error en el procedimiento '/archivo/create'!")
+            }); 
+        }; 
+        
+        /**
+        * @method :: onBtnProjectArchivoEliminarClick 
+        * @description :: Elimina un archivo de la lista que presenta el proyecto. 
+        * 
+        **/
+        function onBtnProjectArchivoEliminarClick(archivo) { 
+            if(vm.procesando) 
+                return; 
+
+            vm.procesando = true; 
+
+            $http({
+                method: "POST", 
+                url: "/archivo/updateEstado",
+                headers: { 
+                    "Content-Type": "application/json", 
+                    "X-CSRF-TOKEN": parent.vm.csrfToken 
+                }, 
+                data: { 
+                    archivoId: archivo.id, 
+                    estado: 2 
+                }
+            }).then(function(res) { 
+                var d = res.data; 
+                vm.procesando = false; 
+                vm.setMessage(d.proc, d.msg, d.proc ? "success" : "warning"); 
+            }).catch(function(err) { 
+                vm.procesando = false; 
+                vm.setMessage(false, "¡Se produjo un error en el procedimiento '/archivo/updateEstado'!")
             }); 
         }; 
 
@@ -389,6 +436,21 @@
                 templateResult: onProjectUserParticipanteFormatState, 
                 templateSelection: onProjectUserParticipanteFormatState 
             });
+        }; 
+
+        function onSocketArchivoActualizar(data) { 
+            var a = data.archivo; 
+            var i = 0; 
+
+            $.each(vm.projectArchivoLista, function(key, value) { 
+                if(value.id !== a.id) { 
+                    i++; 
+                    return true; 
+                } 
+                
+                vm.projectArchivoLista.splice(i, 1); 
+                return false; 
+            }); 
         }; 
 
         function onSocketArchivoNuevo(data) { 

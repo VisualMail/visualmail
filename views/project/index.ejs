@@ -216,17 +216,23 @@
                                                 </table>
                                             </div> 
                                         </div>
+<<<<<<< HEAD
                                     </div>
+=======
+                                    </div> 
+>>>>>>> d476a8b7aa3ef2f3c4abfd823b3aba8d4ce5a969
 
                                 </div>
                                 <div class="modal-footer">
-                                    <button class="btn btn-primary" type="button" data-dismiss="modal"><span class="glyphicon glyphicon-remove-circle"></span> Cerrar</button>
+                                    <button class="btn btn-primary" type="button" 
+                                        ng-click="ip.onBtnProjectArchivoCerrarClick()">
+                                        <span class="glyphicon glyphicon-remove-circle"></span> Cerrar</button>
                                     <button type="button"
                                         ng-class="{
-                                            'btn btn-success': ip.formProjectArchivo.$valid,
-                                            'btn btn-default': !ip.formProjectArchivo.$valid }"
+                                            'btn btn-success': ip.formProjectArchivo.$valid && ip.projectArchivo.name,
+                                            'btn btn-default': !ip.formProjectArchivo.$valid || !ip.projectArchivo.name }"
                                         ng-click="ip.onBtnProjectArchivoGuardarClick()"
-                                        ng-disabled="!ip.formProjectArchivo.$valid">
+                                        ng-disabled="!ip.formProjectArchivo.$valid || !ip.projectArchivo.name">
                                         <span class="glyphicon glyphicon-save"></span> Guardar
                                     </button>
                                 </div>

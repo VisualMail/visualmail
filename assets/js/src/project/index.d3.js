@@ -249,7 +249,8 @@ function mapaDialogoDibujarLinea(svgMapa, data) {
 			.attr("stroke-width", "1");
 	} else { 
 		// Dibujar un camino 
-		var d = "M " + x1 + " " + y1 + " L " + parseInt(x1 + 50) + " " + y2 + " L " + x2 + " " + y2; 
+		var d = "M " + x1 + " " + y1 + " L " + parseInt(x1 + 50) + " " + y2 + " L " + x2 + " " + y2 + " L " + parseInt(x1 + 50) + " " + y2 + " z"; 
+
 		svgMapa.append("path").attr("d", d)
 			.attr("data-line-navigate", "")
 			.attr("data-line-nodo-id", data.nodoId)
