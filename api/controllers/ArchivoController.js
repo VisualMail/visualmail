@@ -122,11 +122,11 @@ module.exports = {
             } 
 
             sails.sockets.broadcast( 
-                archivo.project_id, 
+                archivo[0].project_id, 
                 "socket_project_response", { 
                     message: "Mensaje desde el servidor.", 
                     type: "ProjectArchivoActualizar", 
-                    archivo: archivo 
+                    archivo: archivo[0] 
                 }, req);
 
             return res.json({ 
