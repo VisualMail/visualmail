@@ -1,6 +1,7 @@
 (function() { 
     "use strict"; 
     
+    angular.module("VisualMailApp").requires.push("ngFileUpload");
     angular.module("VisualMailApp").requires.push("ngTable"); 
 
     angular
@@ -12,17 +13,25 @@
     function IndexProjectController($http, $scope, NgTableParams, Upload) { 
         var vm = this; 
         var parent = $scope.$parent; 
+        vm.projectArchivo = {};
+        vm.projectArchivoLista = []; 
+        vm.projectArchivoNombre = ""; 
         vm.projectUserId = []; 
         vm.projectName = ""; 
         vm.projectDateEnd = ""; 
 
         vm.onBtnProjectAddUserClick = onBtnProjectAddUserClick; 
+        vm.onBtnProjectArchivoCerrarClick = onBtnProjectArchivoCerrarClick; 
+        vm.onBtnProjectArchivoClick = onBtnProjectArchivoClick; 
         vm.onBtnProjectArchivoGuardarClick = onBtnProjectArchivoGuardarClick; 
+        vm.onBtnProjectArchivoEliminarClick = onBtnProjectArchivoEliminarClick; 
         vm.onBtnProjectGuardarClick = onBtnProjectGuardarClick; 
         vm.onBtnProjectModalClick = onBtnProjectModalClick; 
         vm.onProjectUserInit = onProjectUserInit; 
         vm.onProjectUserParticipanteFormatState = onProjectUserParticipanteFormatState; 
         vm.onProjectUserParticipanteInit = onProjectUserParticipanteInit; 
+        vm.onSocketArchivoActualizar = onSocketArchivoActualizar; 
+        vm.onSocketArchivoNuevo = onSocketArchivoNuevo; 
         vm.setMessage = parent.vm.setMessage; 
 
         init(); 
@@ -85,14 +94,24 @@
                     // Iniciar lista de usuarios participantes y potenciales participantes 
                     onProjectUserInit(); 
                     onProjectUserParticipanteInit(); 
-                    //vm.child.vm.tableParams = new NgTableParams({}, { dataset: vm.miUserListaParticipantes });
                     vm.tableParams = new NgTableParams({}, { dataset: parent.vm.miUserListaParticipantes });
-                    $("#filtrarUsuario").fadeIn(200);
+                    $("#filtrarUsuario").fadeIn(200); 
                 }).catch(function(err) { 
                     vm.setMessage(false, "¡Se produjo un error en el procedimiento '/project/getOne'!", null, err); 
                 }); 
             }).catch(function(err) { 
                 vm.setMessage(false, "¡Se produjo un error en el procedimiento '/user/getAllEmail'!", null, err); 
+            }); 
+
+            // Obtener los archivos del proyecto 
+            $http({ 
+                url: "/archivo/getAllProjectId", 
+                method: "GET", 
+                params: { project_id: parent.vm.miProjectId } 
+            }).then(function(res) { 
+                vm.projectArchivoLista = res.data.archivoLista; 
+            }).catch(function(err) { 
+                vm.setMessage(false, "¡Se produjo un error en el procedimiento '/archivo/getAllProjectId'!", null, err); 
             }); 
         }; 
 
@@ -161,6 +180,8 @@
 
                 $("#projectUser").val("").trigger("change"); 
                 vm.projectUserId = []; 
+                $("#tareaUser").val("").trigger("change"); 
+                //vm.tareaUser = ""; 
                 vm.onProjectUserInit(); 
                 vm.onProjectUserParticipanteInit(); 
                 vm.tableParams = new NgTableParams({}, { dataset: parent.vm.miUserListaParticipantes });
@@ -171,11 +192,24 @@
 
         }; 
 
+        function onBtnProjectArchivoCerrarClick() { 
+            vm.projectArchivo = {}; 
+            vm.projectArchivoNombre = ""; 
+            vm.formProjectArchivo.projectArchivoNombre.$pristine = true; 
+            $("#modalProjectArchivo").modal("hide"); 
+        }; 
+    
+        function onBtnProjectArchivoClick() { 
+            $("#modalProjectArchivo").modal("show"); 
+        }; 
+
         function onBtnProjectArchivoGuardarClick() { 
             if(vm.procesando) 
                 return; 
 
             vm.procesando = true; 
+            var fileExt = vm.projectArchivo.name.split('.'); 
+            fileExt = fileExt[fileExt.length - 1]; 
 
             Upload.upload({
                 method: "POST", 
@@ -185,18 +219,56 @@
                     "X-CSRF-TOKEN": parent.vm.csrfToken 
                 }, 
                 data: { 
-                    files: vm.projectArchivo 
+                    fileExt: "." + fileExt, 
+                    nombre: vm.projectArchivoNombre, 
+                    project_id: parent.vm.miProjectId, 
+                    file: vm.projectArchivo 
                 }
             }).then(function(res) {
                 var d = res.data;
-                console.log(d); 
                 vm.procesando = false; 
+                vm.setMessage(d.proc, d.msg, d.proc ? "success" : "warning"); 
+                vm.projectArchivo = {}; 
+                vm.projectArchivoNombre = ""; 
+                vm.formProjectArchivo.projectArchivoNombre.$pristine = true; 
             }).catch(function(err) { 
                 vm.procesando = false; 
                 vm.setMessage(false, "¡Se produjo un error en el procedimiento '/archivo/create'!")
             }); 
         }; 
-    
+        
+        /**
+        * @method :: onBtnProjectArchivoEliminarClick 
+        * @description :: Elimina un archivo de la lista que presenta el proyecto. 
+        * 
+        **/
+        function onBtnProjectArchivoEliminarClick(archivo) { 
+            if(vm.procesando) 
+                return; 
+
+            vm.procesando = true; 
+
+            $http({
+                method: "POST", 
+                url: "/archivo/updateEstado",
+                headers: { 
+                    "Content-Type": "application/json", 
+                    "X-CSRF-TOKEN": parent.vm.csrfToken 
+                }, 
+                data: { 
+                    archivoId: archivo.id, 
+                    estado: 2 
+                }
+            }).then(function(res) { 
+                var d = res.data; 
+                vm.procesando = false; 
+                vm.setMessage(d.proc, d.msg, d.proc ? "success" : "warning"); 
+            }).catch(function(err) { 
+                vm.procesando = false; 
+                vm.setMessage(false, "¡Se produjo un error en el procedimiento '/archivo/updateEstado'!")
+            }); 
+        }; 
+
         /**
         * @method :: onBtnProjectGuardarClick 
         * @description :: Función para mandar POST que actualiza los datos del proyecto
@@ -304,10 +376,11 @@
         * @description :: Inicia la lista de usuarios en un proyecto 
         **/ 
         function onProjectUserParticipanteInit() { 
-            var s = $("#selectFiltrarUsuario"); 
+            var s = $("#tareaUser"); 
             s.select2("data", null); 
             s.html(""); 
             var list = []; 
+            var listTarea = []; 
             
             $.each(parent.vm.miUserListaParticipantes, function(key, value) { 
                 list.push({ 
@@ -315,10 +388,28 @@
                     text: value.firstname + ", " + value.email, 
                     imgurl: value.imgurl 
                 }); 
+
+                listTarea.push({ 
+                    id: value.id, 
+                    text: value.firstname + ", " + value.email, 
+                    imgurl: value.imgurl 
+                }); 
             }); 
 
             list.unshift({ id: "", text: "", imgurl: ""}); 
+            listTarea.unshift({ id: "-1", text: "Nadie", imgurl: ""}); 
 
+            s.select2({ 
+                cache: false, 
+                data: listTarea, 
+                placeholder: "Seleccionar un responsable", 
+                allowClear: true, 
+                multiple: false, 
+            }); 
+
+            s = $("#selectFiltrarUsuario"); 
+            s.select2("data", null); 
+            s.html(""); 
             s.select2({
                 cache: false, 
                 data: list, 
@@ -328,6 +419,25 @@
                 templateResult: onProjectUserParticipanteFormatState, 
                 templateSelection: onProjectUserParticipanteFormatState 
             });
+        }; 
+
+        function onSocketArchivoActualizar(data) { 
+            var a = data.archivo; 
+            var i = 0; 
+
+            $.each(vm.projectArchivoLista, function(key, value) { 
+                if(value.id !== a.id) { 
+                    i++; 
+                    return true; 
+                } 
+                
+                vm.projectArchivoLista.splice(i, 1); 
+                return false; 
+            }); 
+        }; 
+
+        function onSocketArchivoNuevo(data) { 
+            vm.projectArchivoLista.push(data.archivoNuevo); 
         }; 
     }; 
 

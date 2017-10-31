@@ -45,6 +45,10 @@
                                             ng-click="ip.onBtnProjectModalClick()">
                                             <span class="glyphicon glyphicon-edit"></span> Editar proyecto
                                         </button>
+                                        <button class="btn btn-primary" type="button" 
+                                            ng-click="ip.onBtnProjectArchivoClick()">
+                                            <span class="glyphicon glyphicon-upload"></span> Subir archivo
+                                        </button>
                                     </span>
                                 </div>
                             </div>
@@ -138,6 +142,98 @@
                     </div>
                 </div>
                 <!-- Fin modal Project -->
+
+                <!-- Inicio modal archivo -->
+                <div class="modal fade" id="modalProjectArchivo" tabindex="-1" role="dialog" aria-labelledby="modalProjectArchivoTitle" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <form name="ip.formProjectArchivo" novalidate="novalidate">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modalProjectArchivoTitle">Archivos</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                                <label for="projectArchivo"
+                                                    ng-class="{ 'text-danger': !ip.formProjectArchivo.projectArchivoNombre.$pristine && !ip.formProjectArchivo.projectArchivoNombre.$valid }">Nombre</label>
+                                                <div class="input-group-btn"> 
+                                                    <input id="projectArchivoNombre" name="projectArchivoNombre" placeholder="Máximo 100 caracteres" type="text" 
+                                                        ng-class="{ 
+                                                            'form-control': ip.formProjectArchivo.projectArchivoNombre.$pristine || ip.formProjectArchivo.projectArchivoNombre.$valid, 
+                                                            'form-control is-invalid': !ip.formProjectArchivo.projectArchivoNombre.$pristine && !ip.formProjectArchivo.projectArchivoNombre.$valid }" 
+                                                        ng-maxlength="100" 
+                                                        ng-minlength="3" 
+                                                        ng-model="ip.projectArchivoNombre" 
+                                                        ng-required="true" />
+                                                    <button class="btn btn-primary"  
+                                                        id="projectArchivo" 
+                                                        name="projectArchivo" 
+                                                        ng-model="ip.projectArchivo" 
+                                                        ngf-select="ip.projectArchivoNombre = ip.projectArchivo.name" 
+                                                        accept="*/*"> 
+                                                        <span class="glyphicon glyphicon-search"></span> 
+                                                        Buscar archivos 
+                                                    </button> 
+                                                </div>
+                                                <p class="text-danger" role="alert" ng-messages="!ip.formProjectArchivo.projectArchivoNombre.$pristine && ip.formProjectArchivo.projectArchivoNombre.$error">
+                                                    <strong ng-message="minlength">Mínimo 3 caracteres</strong>
+                                                    <strong ng-message="maxlength">Nombre muy largo</strong> 
+                                                    <strong ng-message="required">Requerido</strong> 
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group" ng-if="ip.projectArchivoLista.length > 0"> 
+                                        <div class="row">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12"> 
+                                                <table class="table table-hover"> 
+                                                    <thead> 
+                                                        <tr> 
+                                                            <th></th>
+                                                            <th class="col-sm-8">Archivo</th> 
+                                                        </tr> 
+                                                    </thead> 
+                                                    <tbody>
+                                                        <tr ng-repeat="item in ip.projectArchivoLista">
+                                                            <td>
+                                                                <button class="btn btn-danger btn-sm" type="button" 
+                                                                    ng-click="ip.onBtnProjectArchivoEliminarClick(item)">
+                                                                    <span class="glyphicon glyphicon-remove"></span> Eliminar
+                                                                </button>
+                                                            </td>
+                                                            <td>{{ item.name }}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div> 
+                                        </div>
+                                    </div> 
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-primary" type="button" 
+                                        ng-click="ip.onBtnProjectArchivoCerrarClick()">
+                                        <span class="glyphicon glyphicon-remove-circle"></span> Cerrar</button>
+                                    <button type="button"
+                                        ng-class="{
+                                            'btn btn-success': ip.formProjectArchivo.$valid && ip.projectArchivo.name,
+                                            'btn btn-default': !ip.formProjectArchivo.$valid || !ip.projectArchivo.name }"
+                                        ng-click="ip.onBtnProjectArchivoGuardarClick()"
+                                        ng-disabled="!ip.formProjectArchivo.$valid || !ip.projectArchivo.name">
+                                        <span class="glyphicon glyphicon-save"></span> Guardar
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- Fin modal archivo -->
 
             </div>
             <!-- Fin controller -->
