@@ -44,16 +44,12 @@ module.exports.policies = {
     index: "expAuth", 
   }, 
 
-
-
-  user:{ 
+  /*user:{ 
     password: "sessionAuth",
     create: "flash", 
     edit: ['flash','sessionAuth'], 
     '*': "sessionAuth" 
-  }, 
-
-
+  }, */
 
   /***************************************************************************
   *                                                                          *
