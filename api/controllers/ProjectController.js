@@ -29,6 +29,13 @@ module.exports = {
 				});
 			}
 
+			if(result.owner_email !== req.session.User.email) {
+				return res.json({
+					proc: false,
+					msg: "¡No tienes los permisos suficientes!"
+				});
+			}
+
 			// Para cada valor de 'ids' de los usuarios (variable emails)
 			for(var i = 0; i < usuarioId.length; i++) {
 				// Por cada 'id', añadir al proyecto,
@@ -94,7 +101,20 @@ module.exports = {
 			// Verificar si no existe el proyecto 
 			if(!project) 
 				return next(); 
-				
+
+			// Verificar si es un participante del proyecto 
+			var notMine = true; 
+			
+			_.each(project.participants, function(item) { 
+				if(item.id === req.session.User.id) 
+					notMine = false; 
+			}); 
+			
+			if(notMine) { 
+				res.redirect("/session/index"); 
+				return; 
+			}
+
 			// Retornar la vista con los valores del proyecto 
 			return res.view({ 
 				title: "Proyecto: " + project.name, 
@@ -110,15 +130,17 @@ module.exports = {
 					"<script type='text/javascript' src='/js/dependencies/d3/4.8.0/js/d3.min.js'></script>" + 
 					"<script type='text/javascript' src='/js/dependencies/jquery-contextmenu/2.4.1/jquery.contextMenu.js'></script>" + 
 					"<script type='text/javascript' src='/js/dependencies/jquery-splitter/0.24.0/js/jquery.splitter.js'></script>" + 
+					"<script type='text/javascript' src='/js/dependencies/ng-file-upload/12.2.13/js/ng-file-upload-all.min.js'></script>" +
+					"<script type='text/javascript' src='/js/dependencies/ng-file-upload/12.2.13/js/ng-file-upload-shim.min.js'></script>" +
 					"<script type='text/javascript' src='/js/dependencies/ng-table/2.0.2/js/ng-table.min.js'></script>" + 
 					"<script type='text/javascript' src='/js/src/project/control.d3.js'></script>" + 
-					"<script type='text/javascript' src='/js/src/project/control.init.js'></script>" + 
 					"<script type='text/javascript' src='/js/src/project/control.controller.js'></script>" + 
 					"<script type='text/javascript' src='/js/src/project/control.chat.controller.js'></script>" + 
 					"<script type='text/javascript' src='/js/src/project/control.mensaje.controller.js'></script>" + 
 					"<script type='text/javascript' src='/js/src/project/control.project.controller.js'></script>" + 
+					"<script type='text/javascript' src='/js/src/project/control.init.js'></script>" + 
 					"<script src='/js/dependencies/sails.io.js'></script>", 
-					project: project 
+				project: project 
 			}); 
 		}); 
 	},
@@ -265,6 +287,19 @@ module.exports = {
 			if(!project)
 				return next();
 
+			// Verificar si es un participante del proyecto 
+			var notMine = true; 
+
+			_.each(project.participants, function(item) { 
+				if(item.id === req.session.User.id) 
+					notMine = false; 
+			}); 
+
+			if(notMine) {
+				res.redirect("/session/index");
+				return; 
+			}
+
 			// Retornar la vista con los valores del proyecto
 			return res.view({
 				title: "Proyecto: " + project.name,
@@ -285,12 +320,12 @@ module.exports = {
 					"<script type='text/javascript' src='/js/dependencies/ng-table/2.0.2/js/ng-table.min.js'></script>" +
 					"<script type='text/javascript' src='/js/src/project/index.d3.js'></script>" +
 					"<script type='text/javascript' src='/js/src/project/index.kanban.js'></script>" +
-					"<script type='text/javascript' src='/js/src/project/index.init.js'></script>" +
 					"<script type='text/javascript' src='/js/src/project/index.controller.js'></script>" +
 					"<script type='text/javascript' src='/js/src/project/index.chat.controller.js'></script>" +
 					"<script type='text/javascript' src='/js/src/project/index.kanban.controller.js'></script>" +
 					"<script type='text/javascript' src='/js/src/project/index.mensaje.controller.js'></script>" +
 					"<script type='text/javascript' src='/js/src/project/index.project.controller.js'></script>" +
+					"<script type='text/javascript' src='/js/src/project/index.init.js'></script>" +
 					"<script src='/js/dependencies/sails.io.js'></script>",
 				project: project
 			});
@@ -306,14 +341,14 @@ module.exports = {
 	**/
 	update: function(req, res, next) {
 		// Llamar a la función de sails para buscar un proyecto y llenar con los participantes
-		Project.findOne(req.param("id")).populate("participants").then(function(result) {
+		Project.findOne({ id: req.param("id"), owner_email: req.session.User.email }).populate("participants").then(function(result) {
 			// Verificar si existe un error
 			if(!result) {
 				return res.json({
 					proc: false,
 					msg: "¡Se produjo un error con el objeto 'project'!"
 				});
-			}
+			} 
 
 			// Actualizar los parámetros del proyecto
 			var name = req.param("name");

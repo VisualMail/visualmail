@@ -39,7 +39,7 @@ button { cursor: pointer; }
 .kanbanBoardColumn.droppable, .kanbanBoardCell.droppable { border: 2px dashed #666; }
 .kanbanBoardColumnHeader { background: #C8E6C9; color:#4CAF50; padding: 25px 10px 5px 10px; }
 .kanbanBoardCell { border: 0px solid #666; display: block; margin: 15px 5px 15px 0; padding: 0; width: 100%; }
-.kanbanBoardTask { background: #FFEB3B; border-radius: 6px; cursor: move; margin: 0px;  padding: 0px; position: relative; height: 100%; width: 100%; word-wrap: break-word; -moz-border-radius: 6px; -webkit-border-radius: 6px; }
+.kanbanBoardTask { background: #FFEB3B; border-color: #FFEB3B; border-style: solid; border-width: 1px; border-radius: 6px; cursor: move; margin: 0px;  padding: 0px; position: relative; height: auto; width: 100%; word-wrap: break-word; -moz-border-radius: 6px; -webkit-border-radius: 6px; }
 .kanbanBoardTask:after { border-color: #FFEB3B transparent; border-style: solid; border-width: 0px 0px 0; bottom: -0px; content: ''; cursor: move; display: block; left: 8px; position: absolute; width: 0; z-index: 1; }
 
 #main { height: 100%; margin: 0; min-height: 100%; overflow: hidden; padding: 0; position: absolute; top: 0; width: 100%; }
@@ -60,6 +60,8 @@ button { cursor: pointer; }
 
 .marcar { background-color: #93B7DC; }
 
+.filtrarUsuario { display: inline; position: relative; } 
+.tiempoDialogo { display: inline; position: absolute; color: #FFF; font-size: 13px; font-weight: bold; margin-left: 455px; padding-top: 17px; }
 
 /* select2 */
 

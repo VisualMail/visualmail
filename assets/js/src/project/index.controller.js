@@ -15,6 +15,7 @@
         vm.miProject = { }; 
         vm.miProjectId = ""; 
         vm.miSessionId = 0; 
+        vm.miTiempoDialogo = ""; 
         vm.miUser = ""; 
         vm.miUserLista = []; 
         vm.miUserListaParticipantes = []; 
@@ -25,6 +26,7 @@
         vm.getQueryString = getQueryString; 
         vm.iniciarTiempoDialogo = iniciarTiempoDialogo; 
         vm.onActiveTabChanged = onActiveTabChanged; 
+        vm.onBtnVerMensajeClick = onBtnVerMensajeClick; 
         vm.onScopeMensajeActualizarTarea = onScopeMensajeActualizarTarea; 
         vm.setMessage = setMessage; 
         vm.setMessageToast = setMessageToast; 
@@ -112,7 +114,7 @@
         **/ 
         function onActiveTabChanged(tabId, nodoId) { 
             vm.scopeTarea.ik.kanbanTareaIdFocus = ""; 
-            $("[data-border='ok']").attr("style", "border: none;"); 
+            $("[data-border='ok']").attr("style", "border-color: #FFEB3B;"); 
             $("#tab1, #dialogo-main, #tab3, #tab4").attr("style", "display: none;"); 
             
             var active = "";
@@ -171,6 +173,10 @@
             }
 
             vm.activeTab = tabId; 
+        }; 
+
+        function onBtnVerMensajeClick(nodoId) { 
+            vm.onActiveTabChanged(2, nodoId); 
         }; 
 
         /** 

@@ -28,6 +28,7 @@
         vm.iniciarLineaDialogo = iniciarLineaDialogo; 
         vm.iniciarMensajeAnclado = iniciarMensajeAnclado; 
         vm.iniciarMensajeNavegar = iniciarMensajeNavegar; 
+        vm.iniciarTiempoDialogo = iniciarTiempoDialogo; 
         vm.onBtnMensajeAncladoNavegarResponderClick = onBtnMensajeAncladoNavegarResponderClick; 
         vm.onBtnMensajeCancelarClick = onBtnMensajeCancelarClick; 
         vm.onBtnMensajeEnviarClick = onBtnMensajeEnviarClick; 
@@ -77,6 +78,8 @@
                 $anclar = true; 
                 vm.onMensajeAnclarClick(vm.miMensajeLista[0].nodoId); 
                 vm.iniciarMensajeAnclado(); 
+                vm.iniciarTiempoDialogo(); 
+                $(".tiempoDialogo").fadeIn(200); 
                 parent.vm.scopeMensaje = $scope; 
             }).catch(function(err) { 
                 vm.setMessage(false, "¡Se produjo un error en el procedimiento '/mensaje/getAllProjectId'!", null, err); 
@@ -260,6 +263,33 @@
 
             if(actualizar) 
                 $scope.$apply(); 
+        }; 
+
+        function iniciarTiempoDialogo() { 
+            var date1 = new Date(vm.miMensajeLista[0].createdAt);
+            var date2 = new Date(vm.miMensajeLista[vm.miMensajeLista.length - 1].createdAt);
+            var timeDiff = Math.abs(date2.getTime() - date1.getTime());
+            var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
+            
+            if(diffDays > 1) { 
+                parent.vm.miTiempoDialogo = "Tiempo transcurrido en el diálogo: " + diffDays + " días"; 
+                return; 
+            }
+
+            //var dateFuture = new Date(new Date().getFullYear() +1, 0, 1);
+            //var dateNow = new Date();
+            var seconds = Math.floor((date2 - (date1))/1000);
+            var minutes = Math.floor(seconds/60);
+            var hours = Math.floor(minutes/60);
+            var days = Math.floor(hours/24);
+            
+            hours = hours-(days*24);
+            minutes = minutes-(days*24*60)-(hours*60);
+            seconds = seconds-(days*24*60*60)-(hours*60*60)-(minutes*60);
+
+            parent.vm.miTiempoDialogo = "Tiempo transcurrido en el diálogo: " + 
+                (hours < 10 ? "0" : "") + hours + " hora(s) " + 
+                (minutes < 10 ? "0" : "") + minutes + " minuto(s)"; 
         }; 
 
         /** 
@@ -760,7 +790,7 @@
                 } 
             }
 
-            //vm.iniciarTiempoDialogo(); 
+            vm.iniciarTiempoDialogo(); 
 
             // Actualizar el controlador
             vm.setMessageToast("Nuevo mensaje en el diálogo"); 

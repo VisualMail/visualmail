@@ -107,7 +107,6 @@
             h = (h < 10 ? "0" : "") + h; 
             m = (m < 10 ? "0" : "") + m; 
             vm.tareaDeliveryDateTime = h + ":" + m; 
-
         };
 
         /**
@@ -569,7 +568,6 @@
             // Actualizar el mensaje con la tarea
             if(nuevaTarea.mensaje)
                 parent.vm.onScopeMensajeActualizarTarea(nuevaTarea.mensaje.id, nuevaTarea.id);
-                //$("[data-nodo-id=" + data.nodoId + "]").attr("class", "tooltipped context-menu-one-kanban");
                 $(".input-group.date").datepicker({
                     autoclose: true,
                     format: "yyyy-mm-dd",

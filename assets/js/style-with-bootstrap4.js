@@ -24,9 +24,12 @@ $(".main-menu-btn, #btnMainMenuCerrar").on("click", function() {
     d.animate({ "left": (ok ? "0px" : "-600px") }, "fast"); 
     e.animate({ "left": (ok ? "16px" : "-600px") }, "fast"); 
 
-    var x = $("#filtrarUsuario"); 
+    var x = $(".filtrarUsuario"), 
+        y = $(".tiempoDialogo"); 
 
     if(x.length > 0)
         x.animate({ "left": (ok ? "0px" : "-600px") }, "fast"); 
 
+    if(y.length > 0)
+        y.animate({ "left": (ok ? "0px" : "-600px") }, "fast"); 
 }); 

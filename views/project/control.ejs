@@ -21,14 +21,14 @@
         <div class="text-left" id="tab1" style="display: none;">
 
             <!-- Inicio controller -->
-            <div ng-controller="IndexProjectController as ip">
+            <div id="IndexProjectController" ng-controller="IndexProjectController as ip">
 
                 <!-- Inicio Project View -->
                 <div class="container">
                     <h4 class="card-title text-left">Información del proyecto</h4>
                     <hr />
 
-                    <div class="form-group">
+                    <div class="form-group" ng-show="vm.miProject.owner_email === vm.miUser.email">
                         <div class="row">
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <label for="projectUser">Usuarios registrados</label>
@@ -54,9 +54,20 @@
                             </div>
                         </div>
                     </div>
+                    <div class="form-group" ng-show="vm.miProject.owner_email !== vm.miUser.email">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <button class="btn btn-primary" type="button" 
+                                ng-click="ip.onBtnProjectArchivoClick()">
+                                <span class="glyphicon glyphicon-upload"></span> Subir archivo
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <div class="row">
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <p class="text-center"><strong>Lista de participantes</strong></p>
                                 <table class="table table-bordered table-hover table-ng" ng-table="ip.tableParams">
                                     <tr ng-repeat="row in $data track by row.id">
                                         <td data-title="'Nombre'" filter="{firstname: 'text'}" sortable="'firstname'">{{row.firstname}}</td>

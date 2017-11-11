@@ -3,13 +3,20 @@
     
     angular.module("VisualMailApp").requires.push("ngFileUpload");
     angular.module("VisualMailApp").requires.push("ngTable"); 
+    angular
+        .module('VisualMailApp') 
+        .run(['$templateCache', function($templateCache) { 
+            $templateCache.put(
+                'ng-table/filters/text.html', 
+                '<input class="form-control" placeholder="Buscar por" type="text" name="{{name}}" ng-disabled="$filterRow.disabled" ng-model="params.filter()[name]" ng-if="filter == \'text\'" />'); 
+            }]);
 
     angular
         .module("VisualMailApp")
         .controller("IndexProjectController", IndexProjectController); 
     
     IndexProjectController.$inject = ["$http", "$scope", "NgTableParams", "Upload"]; 
-
+        
     function IndexProjectController($http, $scope, NgTableParams, Upload) { 
         var vm = this; 
         var parent = $scope.$parent; 
@@ -33,6 +40,7 @@
         vm.onSocketArchivoActualizar = onSocketArchivoActualizar; 
         vm.onSocketArchivoNuevo = onSocketArchivoNuevo; 
         vm.setMessage = parent.vm.setMessage; 
+        vm.ownerEmail = parent.vm.miProject.owner_email; 
 
         init(); 
 
@@ -95,7 +103,7 @@
                     onProjectUserInit(); 
                     onProjectUserParticipanteInit(); 
                     vm.tableParams = new NgTableParams({}, { dataset: parent.vm.miUserListaParticipantes });
-                    $("#filtrarUsuario").fadeIn(200); 
+                    $(".filtrarUsuario").fadeIn(200); 
                 }).catch(function(err) { 
                     vm.setMessage(false, "¡Se produjo un error en el procedimiento '/project/getOne'!", null, err); 
                 }); 

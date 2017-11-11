@@ -21,6 +21,7 @@ $(document).ready(function() {
 
     var scopeMain = angular.element(document.getElementById("IndexControllerMain")).scope();
     var scopeMensaje = angular.element(document.getElementById("IndexMensajeControllerMain")).scope();
+    var scopeProject = angular.element(document.getElementById("IndexProjectController")).scope();
 
     /**
     * @method :: io.socket.get
@@ -41,6 +42,12 @@ $(document).ready(function() {
         switch(data.type) { 
             case "MensajeNuevo": 
                 scopeMensaje.im.onSocketMensajeNuevo(data); 
+                break; 
+            case "ProjectArchivoActualizar": 
+                scopeProject.ip.onSocketArchivoActualizar(data); 
+                break; 
+            case "ProjectArchivoNuevo": 
+                scopeProject.ip.onSocketArchivoNuevo(data); 
                 break; 
             default: 
                 break; 
@@ -141,11 +148,6 @@ function contextMenuMensajeInit(key, options, mensaje) {
 function contextMenuMensajePanelInit() {
     var items = {
         "citar": { name: "Citar mensaje", icon: "citar" },
-        "ci": { name: "Compromiso individual", icon: "ci" },
-        "ac": { name: "Acuerdo de coordinación", icon: "ac" },
-        "nc": { name: "Norma común", icon: "nc" },
-        "db": { name: "Desacuerdo o brecha", icon: "db" },
-        "da": { name: "Duda o alternativa", icon: "da" },
         "sep1": "---------",
         "quit": { name: "Cancelar", icon: function() { return "context-menu-icon context-menu-icon-quit"; } }
     };

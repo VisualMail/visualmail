@@ -118,7 +118,8 @@ function mapaDialogoDibujar(nodoMensaje) {
 	m.attr("style", "heigth: " + totalHeight + "px; width: " + (totalWidth > window.screen.availWidth ? totalWidth : window.screen.availWidth) + "px;"); 
 
 	// Iniciar los tooltips de los nodos del mapa 
-	//$(".tooltipped").tooltip({ delay: 50 }); 
+	$('[rel="popover"]').popover();
+	$('[rel="popover"]').popover({ trigger: "hover" });
 
 	// Almacenar la última sesión 
 	angular.element(document.getElementById("IndexControllerMain")).scope().vm.miSessionId = sessionIdMax + 1; 
@@ -192,7 +193,8 @@ function mapaDialogoAgregarNodo(mensaje) {
 	m.attr("style", "heigth: " + svgHeight + "px; width: " + (svgWidth > window.screen.availWidth ? svgWidth : window.screen.availWidth) + "px;"); 
 
 	// Iniciar los tooltips de los nodos del mapa 
-	$(".tooltipped").tooltip({ delay: 50 }); 
+	$('[rel="popover"]').popover();
+	$('[rel="popover"]').popover({ trigger: "hover" });
 
 	// Verificar la altura de la linea de sesión
 	var sessionH = parseInt($("[data-line-type='session']").first().attr("y2"));
@@ -280,12 +282,13 @@ function mapaDialogoDibujarNodo(svgMapa, data) {
 		.attr("cx", data.cx)
 		.attr("cy", data.cy)
 		.attr("r", circleRadio)
-		.attr("class", data.tareaId ? "tooltipped context-menu-one-kanban" : "tooltipped context-menu-one")
-		.attr("data-position", "bottom")
-		.attr("data-delay", "50")
-		.attr("data-tooltip", 
-			(data.tipo ? '"' + data.tipo +  '". ' : "") + 
-			(data.name.length > 50 ? data.name.substring(0, 50) + "..." : data.name));
+		.attr("class", data.tareaId ? "context-menu-one-kanban" : "context-menu-one")
+		.attr("data-content", data.name) 
+		.attr("rel", "popover") 
+		.attr("data-placement", "bottom")
+		.attr("data-original-title", data.tipoId ? data.tipo : "") 
+		.attr("data-trigger", "hover"); 
+		//.attr("data-content", (data.name.length > 50 ? data.name.substring(0, 50) + "..." : data.name))
 
 	// Verificar el tipo de mensaje 
 	if(data.tipo !== "") { 
@@ -377,7 +380,11 @@ function mapaDialogoDibujarSesion(usuarioId, imageI, imgurl, initials, sessionId
 		.attr("class", "tooltipped")
 		.attr("data-position", "left")
 		.attr("data-delay", "50")
-		.attr("data-tooltip", initials);
+		.attr("data-content", initials) 
+		.attr("rel", "popover") 
+		.attr("data-placement", "bottom")
+		.attr("data-original-title", "") 
+		.attr("data-trigger", "hover"); 
 } 
 
 /**

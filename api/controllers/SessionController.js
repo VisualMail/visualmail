@@ -242,6 +242,25 @@ module.exports = {
 		
 			// Verificar si hubo un cambio
 			if(count >= 1) { 
+				User.findOne({ id: id }).then(function(checkEmail) { 
+					if(checkEmail.email !== email) {
+						Project.update({ owner_email: checkEmail.email }, { owner_email: email }).then(function(projectOk) { 
+
+						}).catch(function(err) { 
+							sails.log(err); 
+							return res.json({ 
+								proc: false, 
+								msg: "¡Se produjo un error en la Base de Datos (Project.update)!" 
+							});
+						}); 
+					}
+				}).catch(function(err) { 
+					sails.log(err); 
+					return res.json({ 
+						proc: false, 
+						msg: "¡Se produjo un error en la Base de Datos (User.findOne)!" 
+					});
+				}); 
 				
 				// Actualizar el usuario de acuerdo al 'id' y se entrega como entrada la variable jsonObj
 				User.update({ id: id }, jsonObj[0]).exec(function userupdate(err) { 
@@ -270,6 +289,9 @@ module.exports = {
 						
 					if(iniciales !== "") 
 						req.session.User.initials = iniciales; 
+
+					if(email !== "") 
+						req.session.User.email = email; 
 						
 					// Actualizar el mensaje del servidor y retornar un json con el valor de operacion correcta 
 					//req.session.flash = { err: "Se han actualizado los cambios" };

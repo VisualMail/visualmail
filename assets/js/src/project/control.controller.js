@@ -15,6 +15,7 @@
         vm.miProject = { }; 
         vm.miProjectId = ""; 
         vm.miSessionId = 0; 
+        vm.miTiempoDialogo = ""; 
         vm.miUser = ""; 
         vm.miUserLista = []; 
         vm.miUserListaParticipantes = []; 
@@ -22,7 +23,6 @@
         vm.scopeMensaje = {}; 
     
         vm.getQueryString = getQueryString; 
-        vm.iniciarTiempoDialogo = iniciarTiempoDialogo; 
         vm.onActiveTabChanged = onActiveTabChanged; 
         vm.setMessage = setMessage; 
         vm.setMessageToast = setMessageToast; 
@@ -88,20 +88,6 @@
                 return "";
 
             return decodeURIComponent(results[2].replace(/\+/g, " "));
-        }; 
-        
-        /** 
-        * @method :: iniciarTiempoDialogo 
-        * @description :: Presenta el tiempo del diálogo 
-        **/
-        function iniciarTiempoDialogo() { 
-            var date2 = new Date(vm.miMensajeLista[vm.miMensajeLista.length - 1].createdAt); 
-            var date1 = new Date(vm.miMensajeLista[0].createdAt); 
-            var timeDiff = Math.abs(date2.getTime() - date1.getTime()); 
-            vm.tiempoDialogo = Math.ceil(timeDiff / (1000 * 60)); 
-            /*var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
-            console.log(diffDays); 
-            console.log(diffDays);*/
         }; 
 
         /** 
