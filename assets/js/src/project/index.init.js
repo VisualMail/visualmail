@@ -308,7 +308,7 @@ function onNodoClick(nodoId) {
 **/
 function onSelectFiltrarUsuario(control) {
     var s = $(control);
-    var svg = $("#dialogo-svg > .svg-mapa, #dialogo-svg > .svg-session");
+    var svg = $("#dialogo-svg > .svg-mapa, .svg-session");
 
     if(s.val() !== "") {
         svg.find("circle").css("fill-opacity", "0.3");
