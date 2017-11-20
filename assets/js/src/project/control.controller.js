@@ -24,6 +24,7 @@
     
         vm.getQueryString = getQueryString; 
         vm.onActiveTabChanged = onActiveTabChanged; 
+        vm.onBtnVerMensajeClick = onBtnVerMensajeClick; 
         vm.setMessage = setMessage; 
         vm.setMessageToast = setMessageToast; 
         
@@ -136,6 +137,10 @@
             } 
 
             vm.activeTab = tabId; 
+        }; 
+
+        function onBtnVerMensajeClick(nodoId) { 
+            vm.onActiveTabChanged(2, nodoId); 
         }; 
 
         /**
