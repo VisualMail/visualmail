@@ -56,10 +56,10 @@ module.exports.connections = {
   * Run: npm install sails-mongo                                             *
   *                                                                          *
   ***************************************************************************/
-//url: "mongodb://visualmail:visualmail2017@ds053216.mlab.com:53216/visualmaildb", 
+
   someMongodbServer: { 
     adapter: "sails-mongo", 
-    url: "mongodb://visualmaildb:visualmail2017@ds117116-a0.mlab.com:17116,ds117116-a1.mlab.com:17116/visualmaildb?replicaSet=rs-ds117116"
+    url: "mongodb://visualmail:visualmail2017@ds053216.mlab.com:53216/visualmaildb" 
   },
   
   /*someMongodbServer: { 
