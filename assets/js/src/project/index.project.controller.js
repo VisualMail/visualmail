@@ -32,6 +32,7 @@
         vm.onBtnProjectArchivoClick = onBtnProjectArchivoClick; 
         vm.onBtnProjectArchivoGuardarClick = onBtnProjectArchivoGuardarClick; 
         vm.onBtnProjectArchivoEliminarClick = onBtnProjectArchivoEliminarClick; 
+        vm.onBtnProjectEliminarUserClick = onBtnProjectEliminarUserClick; 
         vm.onBtnProjectGuardarClick = onBtnProjectGuardarClick; 
         vm.onBtnProjectModalClick = onBtnProjectModalClick; 
         vm.onProjectUserInit = onProjectUserInit; 
@@ -273,6 +274,36 @@
             }).catch(function(err) { 
                 vm.procesando = false; 
                 vm.setMessage(false, "¡Se produjo un error en el procedimiento '/archivo/updateEstado'!")
+            }); 
+        }; 
+
+        function onBtnProjectEliminarUserClick(user) { 
+            // Verificar si está procesando 
+            if(vm.procesando) 
+                return; 
+            
+            vm.procesando = true; 
+
+            // Actualizar proyecto 
+            $http.defaults.withCredentials = true; 
+            $http({ 
+                method: "POST", 
+                url: "/project/deleteUser", 
+                headers: { 
+                    "Content-Type": "application/json", 
+                    "X-CSRF-TOKEN": parent.vm.csrfToken 
+                }, 
+                data: { 
+                    userId: user.id, 
+                    projectId: parent.vm.miProject.id 
+                } 
+            }).then(function(res) { 
+                // Se obtiene el resultado 'res' 
+                var d = res.data; 
+                vm.setMessage(d.proc, d.msg, d.proc ? "success" : "warning"); 
+            }).catch(function(err) { 
+                vm.procesando = false; 
+                vm.setMessage(false, "¡Se produjo un error en el procedimiento '/project/update'!", "error", err); 
             }); 
         }; 
 

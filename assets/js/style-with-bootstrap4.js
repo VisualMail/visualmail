@@ -25,7 +25,7 @@ $(".main-menu-btn, #btnMainMenuCerrar").on("click", function() {
     e.animate({ "left": (ok ? "16px" : "-600px") }, "fast"); 
 
     var x = $(".filtrarUsuario"), 
-        y = $(".tiempoDialogo"); 
+        y = $(".tiempoDialogo, .colorUsuario"); 
 
     if(x.length > 0)
         x.animate({ "left": (ok ? "0px" : "-600px") }, "fast"); 

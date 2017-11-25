@@ -11,7 +11,7 @@
                     <a ng-class="{ 'nav-link active': vm.activeTab === 2, 'nav-link': vm.activeTab !== 2 }" ng-click="vm.onActiveTabChanged(2);" href="#">Diálogo</a>
                 </li>
                 <li class="nav-item">
-                        <a ng-class="{ 'nav-link active': vm.activeTab === 3, 'nav-link': vm.activeTab !== 3 }" ng-click="vm.onActiveTabChanged(3);" href="#">Mensaje</a>
+                    <a ng-class="{ 'nav-link active': vm.activeTab === 3, 'nav-link': vm.activeTab !== 3 }" ng-click="vm.onActiveTabChanged(3);" href="#">Mensaje</a>
                 </li>
                 <li class="nav-item">
                     <a ng-class="{ 'nav-link active': vm.activeTab === 4, 'nav-link': vm.activeTab !== 4 }" ng-click="vm.onActiveTabChanged(4);" href="#">Kanban</a>
@@ -79,6 +79,11 @@
                                         <td data-title="'Color'" sortable="'color'">
                                             <button class="btn btn-default" ng-style="{'background-color': '#' + row.color}" type="button">
                                                 <span class="glyphicon glyphicon-tag"></span>
+                                            </button>
+                                        </td>
+                                        <td ng-if="vm.miProject.owner_email === vm.miUser.email">
+                                            <button class="btn btn-danger" type="button" ng-click="ip.onBtnProjectEliminarUserClick(row)">
+                                                <span class="glyphicon glyphicon-remove"></span>
                                             </button>
                                         </td>
                                     </tr>

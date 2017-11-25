@@ -94,6 +94,11 @@ module.exports = {
 		// Llamar a Sails para ir a la vista de edición del proyecto 
 		Project.findOne(req.param("id")).populate("participants").exec(function(err, project) { 
 			
+			if(project.bloqueado) {
+				res.redirect("/session/index"); 
+				return;
+			}
+
 			// Verificar si existe un error 
 			if(err) 
 				return next(err); 
@@ -195,6 +200,43 @@ module.exports = {
 		});
 	},
 
+	deleteUser: function(req, res, next) {
+		Project.findOne(req.param("projectId")).populate("participants").then(function(result) {
+
+			// Verificar si no existe el proyecto
+			if(!result) {
+				return res.json({
+					proc: false,
+					msg: "¡Se produjo un error con el objeto 'project'!"
+				});
+			}
+
+			var userId = req.param("userId"); 
+
+			for(var i = 0; i < result.participants.length; i++) { 
+				if(result.participants[i].id !== userId) 
+					continue; 
+				
+				result.participants.remove(userId); 
+				result.save();
+				break;
+			}
+
+			// Caso contrario, de no haber error, retornar el proyecto como json
+			return res.json({
+				proc: true,
+				msg: "¡Usuario eliminado!",
+				project: result
+			});
+		}).catch(function(err) {
+			sails.log(err);
+			return res.json({
+				proc: true,
+				msg: "¡Se produjo un error en la base de datos!",
+			});
+		});
+	}, 
+
 	/**
 	* @method :: getOne (POST)
 	* @description :: Consigue el json del proyecto más los participantes y kanban.
@@ -213,21 +255,21 @@ module.exports = {
 			if(!result) {
 				return res.json({
 					proc: false,
-					msj: "¡Se produjo un error con el objeto 'project'!"
+					msg: "¡Se produjo un error con el objeto 'project'!"
 				});
 			}
 
 			// Caso contrario, de no haber error, retornar el proyecto como json
 			return res.json({
 				proc: true,
-				msj: "",
+				msg: "",
 				project: result
 			});
 		}).catch(function(err) {
 			sails.log(err);
 			return res.json({
 				proc: true,
-				msj: "¡Se produjo un error en la base de datos!",
+				msg: "¡Se produjo un error en la base de datos!",
 			});
 		});
 	},
@@ -278,7 +320,10 @@ module.exports = {
 
 		// Llamar a Sails para ir a la vista de edición del proyecto
 		Project.findOne(req.param("id")).populate("participants").exec(function(err, project) {
-
+			if(project.bloqueado) {
+				res.redirect("/session/index"); 
+				return;
+			}
 			// Verificar si existe un error
 			if(err)
 				return next(err);

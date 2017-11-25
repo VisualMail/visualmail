@@ -35,7 +35,7 @@ module.exports = {
 					result[i].firstname = result[i].firstname +' ' + result[i].lastname; 
 					
 					// Guardar los datos en el arreglo 
-					arr.push(_.pick(key, "id", "email", "firstname", "imgurl", "pmo", "initials", "color")); 
+					arr.push(_.pick(key, "id", "email", "firstname", "lastname", "imgurl", "pmo", "initials", "color")); 
 				} 
 				
 				i = i + 1; 
