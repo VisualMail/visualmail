@@ -12,6 +12,47 @@ module.exports = {
 	* @param :: {Objetct} res, de la vista ejs del servidor
 	* @param :: {Objetct} next, para continuar en caso de error
 	**/
+	data: function(req, res, next) { 
+		// Redirigir a la vista 'user/admin'
+		return res.view({ 
+			title: "Data", 
+			layout: "shared/admin", 
+			sectionScripts: 
+				"<script src='/js/src/admin/data.controller.js' type='text/javascript'></script>" 
+		});
+	}, 
+	
+	dataGetProjectList: function(req, res, next) { 
+		Project.find().then(function(result) { 
+			// Si hay error se actualiza la variable flash y se entrega el json con formato de manejo del error
+			if(!result) { 
+				return res.json({ 
+                    proc: false, 
+                    msg: "¡Se produjo un error con el objeto 'project'!" 
+                }); 
+            } 
+            
+            return res.json({ 
+                proc: true, 
+                msg: "", 
+                list: result 
+            }); 
+		}).catch(function(err) { 
+            sails.log("Se produjo un error en '/admin/dataGetProjectList: ", err); 
+			return res.json({ 
+				proc: false, 
+				msg: "¡Se produjo un error en la conexión con la base de datos!" 
+            }); 
+        }); 
+	}, 
+
+    /**
+	* @method :: user (POST)
+	* @description :: Administra la información de los usuarios (solo pueden acceder los administradores)
+	* @param :: {Object} req, request element de sails
+	* @param :: {Objetct} res, de la vista ejs del servidor
+	* @param :: {Objetct} next, para continuar en caso de error
+	**/
 	user: function(req, res, next) { 
 		// Redirigir a la vista 'user/admin'
 		return res.view({ 
