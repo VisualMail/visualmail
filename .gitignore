@@ -117,4 +117,8 @@ nbproject
 .idea
 .node_history
 assets/images/projectArchivo
-.vscode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
