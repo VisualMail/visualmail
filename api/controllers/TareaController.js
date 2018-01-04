@@ -1,81 +1,337 @@
 /**
- * TareaController
- *
- * @description :: Logica del lado del servidor para manejar las tareas
- * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
- */
-
+* TareaController
+*
+* @description :: Lógica del lado del servidor para manejar las tareas
+* @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
+**/
 module.exports = {
-/**
-* @method :: create (POST)
-* @description :: Crea una nueva tarea
-* @param :: {Object} req, request element de sails
-* @param  :: {Objetct} res, de la vista ejs del servidor
-* @param :: {Objetct} next, para continuar en caso de error
-*/
-	create: function(req,res,next){
-		//Con todos los parametros crea una nueva tarea
-		Tarea.create(req.allParams(), function tareaCreated(err,tarea){
-			if(err) {//Si hay error, se actualiza la variable flash y se entrega json
-				req.session.flash = { err:err}
-				return res.json({tarea:'false'});
-			}
-			if(!tarea)//si existe otro tipo de error
-				return res.json({tarea:'false'});
-			//en caso de no haber error, se reinicializa la variable flash y se crea el objeto, retornando un post con la tarea
-			req.session.flash={};
-			return res.json({tarea:tarea});
-		});
+	/**
+	* @method :: create (POST)
+	* @description :: Crea una nueva tarea.
+	* @param :: {Object} req, request element de sails.
+	* @param :: {Objetct} res, de la vista ejs del servidor.
+	* @param :: {Objetct} next, para continuar en caso de error.
+	**/
+	create: function(req, res, next) {
+		// Obtener los parámetros 
+		var obj = { 
+			associated: req.param("associated"), 
+			deliveryDate: req.param("deliveryDate"), 
+			deliveryDateTime: req.param("deliveryDateTime"), 
+			description: req.param("description"), 
+			drag: req.param("drag"), 
+			element: req.param("element"), 
+			estado: req.param("estado"), 
+			kanban: req.param("kanban"), 
+			mensaje: req.param("mensaje"), 
+			project_id: req.param("project_id"), 
+			selectedUsuarioTask: req.param("selectedUsuarioTask"), 
+			title: req.param("title"), 
+			usuario: req.param("usuario") 
+		}; 
 
-	},
-/**
-* @method :: updateTipo (POST)
-* @description :: Le da un nuevo tipo a una tarea del Kanban, ejemplo , de new a doing
-* @param :: {Object} req, request element de sails
-* @param  :: {Objetct} res, de la vista ejs del servidor
-* @param :: {Objetct} next, para continuar en caso de error
-*/
-	updateTipo: function(req,res,next){
-		//encuentra una tarea por el ID
-		Tarea.findOne(req.param('id')).exec( function(err, tarea){
-			if(err){//si hay un error
-				req.session.flash = { err:err}
-				return res.json({tarea:'false'});
+		if(req.param("tipoId")) { 
+			obj.tipo = req.param("tipo");  
+			obj.tipoId = req.param("tipoId");  
+			obj.tipoName = req.param("tipoName");  
+			obj.tipoNameMarca = req.param("tipoNameMarca"); 
+		} 
+
+		//Con todos los parámetros, crear una nueva tarea
+		Tarea.create(obj).then(function(tarea) {
+			// Verificar si existe un error
+			if(!tarea) {
+				return res.json({
+					proc: false,
+					msg: "¡Se produjo un error con el objeto 'tarea'!"
+				});
 			}
-			if(!tarea){//si no existe la tarea (id)
-				return res.json({tarea:'false'});
+
+			// Buscar el mensaje padre para unir la tarea
+			if(tarea.mensaje) {
+				Mensaje.findOne(tarea.mensaje).populate("tareas").then(function(mensaje) {
+					// Si hay error retornar
+					if(!mensaje) {
+						return res.json({
+							proc: false,
+							msg: "¡Se produjo un error en el objeto 'mensaje' (Mensaje.findOne)!"
+						});
+					}
+
+					// Se actualiza el mensaje
+					mensaje.tareaId = tarea.id;
+					mensaje.save();
+					tarea.mensaje = mensaje; 
+
+					// Enviar un broadcast a los usuarios en línea que pertecen al proyecto
+					sails.sockets.broadcast(
+						req.param("project_id"),
+						"socket_project_response", {
+							message: "Mensaje desde el servidor.",
+							obj: tarea,
+							type: "TareaNueva",
+							selectedUsuarioTask: req.param("selectedUsuarioTask")
+						}, req);
+				}).catch(function(err) {
+					sails.log("Se produjo un error en 'tarea/create/Mensaje.findOne': ", err);
+					return res.json({
+						proc: false,
+						msg: "¡Se produjo un error en la conexión con la base de datos!"
+					});
+				});
+			} else { 
+				// Enviar un broadcast a los usuarios en línea que pertecen al proyecto
+				sails.sockets.broadcast(
+					req.param("project_id"),
+					"socket_project_response", {
+						message: "Mensaje desde el servidor.",
+						obj: tarea,
+						type: "TareaNueva",
+						selectedUsuarioTask: req.param("selectedUsuarioTask")
+					}, req);
 			}
-			else{//en caso de existir
-				tarea.tipo = req.param('nuevotipo'); //se pide como entrada del metodo nuevotipo y se le da el nuevo tipo a la tarea
-				tarea.save(function(err) {});//se modifica el valor
-				return res.json({tarea:tarea}); //se retorna el json con el nuevo estado de la tarea
-			}
-		
+
+			// Retornar tarea
+			return res.json({
+				proc: true,
+				msg: "¡Tarea registrada!",
+				tarea: tarea
+			});
+		}).catch(function(err) {
+			sails.log(err);
+			return res.json({
+				proc: false,
+				msg: "¡Se produjo un error con la conexión a la base de datos!"
+			});
 		});
 	},
 
-/**
-* @method :: getTareas (GET)
-* @description :: Busca todas las tareas
-* @param :: {Object} req, request element de sails
-* @param  :: {Objetct} res, de la vista ejs del servidor
-* @param :: {Objetct} next, para continuar en caso de error
-*/
-	getTareas: function(req,res,next){
-			//De acuerdo al id de un poryecto se buscan todas las tareas asociadas a ese proyecto y se hace un populate para ver el mensaje asociado y el usuario
-			Tarea.find({project_id:req.param('id')}).populate('usuario').populate('mensaje').exec( function(err, tarea){
-			if(err){ // si hay un error de cualquier tipo
-				req.session.flash = { err:err}
-				return res.json({tarea:'false'});
+	/**
+	* @method :: getAllProjectId (GET)
+	* @description :: Busca todas las tareas.
+	* @param :: {Object} req, request element de sails.
+	* @param  :: {Objetct} res, de la vista ejs del servidor.
+	* @param :: {Objetct} next, para continuar en caso de error.
+	**/
+	getAllProjectId: function(req, res, next) {
+		// De acuerdo al id de un proyecto, se buscan todas las tareas asociadas a ese proyecto
+		// y se hace un populate para obtener el mensaje asociado y el usuario
+		Tarea.find({ project_id: req.param("id") }).populate("usuario").populate("mensaje").sort("index ASC").then(function(result) {
+			// Verificar si no existen resultados
+			if(!result) {
+				return res.json({
+					proc: false,
+					msg: "¡Se produjo un error en el objeto 'tarea'!"
+				});
 			}
-			if(!tarea){//si no se encontraron tareas
-				return res.json({tarea:'false'});
-			}
-			else{//en caso de no existir error se devuelve el json con la lista de tareas
-				return res.json({tarea:tarea});
-			}
-		
+
+			// En caso de no existir error se devuelve el json con la lista de tareas
+			return res.json({
+				proc: true,
+				msg: "",
+				tarea: result
+			});
+		}).catch(function(err) {
+			sails.log("Se produjo un error en 'tarea/getAllProjectId': ", err);
+			return res.json({
+				proc: false,
+				msg: "Se produjo un error en la conexión con la base de datos"
+			});
 		});
-	}
+	},
+
+	/**
+	* @method :: getTareas (GET)
+	* @description :: Busca todas las tareas.
+	* @param :: {Object} req, request element de sails.
+	* @param  :: {Objetct} res, de la vista ejs del servidor.
+	* @param :: {Objetct} next, para continuar en caso de error.
+	**/
+	getTareas: function(req, res, next) {
+		// De acuerdo al id de un proyecto, se buscan todas las tareas asociadas a ese proyecto
+		// y se hace un populate para obtener el mensaje asociado y el usuario
+		Tarea.find({ project_id: req.param("id") }).populate("usuario").populate("mensaje").sort("index ASC").then(function(result) {
+			// Verificar si no existen resultados
+			if(!result) {
+				return res.json({
+					proc: false,
+					msg: "¡Se produjo un error en el objeto 'tarea'!"
+				});
+			}
+
+			// En caso de no existir error se devuelve el json con la lista de tareas
+			return res.json({
+				proc: true,
+				msg: "",
+				lista: result
+			});
+		}).catch(function(err) {
+			sails.log("Se produjo un error en 'tarea/getTareas': ", err);
+			return res.json({
+				proc: false,
+				msg: "¡Se produjo un error en la conexión con la base de datos!"
+			});
+		});
+	},
+
+	update: function(req, res, next) { 
+		// Buscar la tarea 
+		Tarea.findOne(req.param("id")).then(function(tarea) { 
+			if(!tarea) { 
+				return res.json({ 
+					proc: false, 
+					msg: "¡Se produjo un error con el objeto 'tarea'!"
+				}); 
+			}
+
+			var usuarioOriginal = tarea.usuario; 
+			tarea.deliveryDate = req.param("deliveryDate"); 
+			tarea.deliveryDateTime = req.param("deliveryDateTime"); 
+			tarea.description = req.param("description"); 
+			tarea.title = req.param("title"); 
+			tarea.usuario = req.param("usuario"); 
+			tarea.save(); 
+			
+			// Enviar un broadcast a los usuarios en línea que pertecen al proyecto 
+			sails.sockets.broadcast(
+				req.param("project_id"),
+				"socket_project_response", {
+					message: "Mensaje desde el servidor.",
+					obj: tarea,
+					type: "TareaActualizar",
+					selectedUsuarioTask: req.param("selectedUsuarioTask"), 
+					usuarioProcedimiento: req.session.User.id, 
+					usuarioOriginal: usuarioOriginal 
+				}, req);
+
+			// Retornar tarea
+			return res.json({
+				proc: true,
+				msg: "¡Tarea registrada!",
+				tarea: tarea
+			});
+
+		}).catch(function(err) { 
+			sails.log(err); 
+			return res.json({ 
+				proc: false, 
+				msg: "¡Se produjo un error en la Base de Datos!"
+			}); 
+		}); 
+	}, 
+
+	/**
+	* @method :: updateTipo (POST)
+	* @description :: Le da un nuevo tipo a una tarea del Kanban, ejemplo , de new a doing
+	* @param :: {Object} req, request element de sails
+	* @param :: {Objetct} res, de la vista ejs del servidor
+	* @param :: {Objetct} next, para continuar en caso de error
+	**/
+	updateTipo: function(req, res, next) {
+
+		// Encontrar una tarea por el 'id'
+		Tarea.findOne(req.param("id")).populate("usuario").populate("mensaje").then(function(tarea) {
+			// Verificar si no existe la tarea
+			if(!tarea)
+				return res.json({
+					proc: false,
+					msg: "¡Se produjo un error con el objeto 'tarea' (findOne)!"
+				});
+
+			// Almacenar el estado original de la tarea y asignar el nuevo estado
+			var estadoOriginal = tarea.estado;
+			tarea.estado = req.param("nuevoEstado");
+
+			// Si el nuevo estado de la tarea es distinto del original
+			// buscar todas las tareas del estado original ordenadas por el índice
+			if(tarea.estado !== estadoOriginal) {
+				Tarea.find({
+					project_id: tarea.project_id,
+					id: { "!": tarea.id },
+					estado: estadoOriginal
+				}).sort("index ASC").then(function(tareasEstado) {
+					// Iterar en cada tarea y actualizar su índice
+					for(var i = 0; i < tareasEstado.length; i++) {
+						tareasEstado[i].index = i + 1;
+						tareasEstado[i].save();
+					}
+				}).catch(function(err) {
+					sails.log("Se produjo un error en '/tarea/updateTipo' (Tarea.find(tareasEstado)): ", err);
+					return res.json({
+						proc: false,
+						msg: "¡Se produjo un error en la conexión con la base de datos (Tarea.find(tareasEstado))!"
+					});
+				});
+			}
+
+			// Buscar todas las tareas del nuevo estado ordenadas por su índice
+			Tarea.find({
+				project_id: tarea.project_id,
+				id: { "!": tarea.id },
+				estado: tarea.estado
+			}).sort("index ASC").then(function(tareasActualizar) {
+				// La variable "newCell" permite verificar si la tarea se cambió
+				// hacia una nueva columna (en el tablero Kanban) y el usuario
+				// no especificó el índice de la tarea
+				var newCell = req.param("newCell");
+
+				// Se adquiere el nuevo indice que el usuario seleccionó
+				tarea.index = req.param("newIndex");
+
+				// Si el nuevo tipo de la tarea es distinto al original y
+				// el usuario no especificó en que índice colocar la tarea
+				// establecer el último índice de la tarea
+				if(tarea.estado !== estadoOriginal && newCell)
+					tarea.index = tareasActualizar.length + 1;
+
+				// Almacenar los cambios de la tarea
+				tarea.save();
+				var k = 1;
+
+				// Para cada tarea del nuevo estado, actualizar el nuevo índice
+				for(var j = 0; j < tareasActualizar.length; j++) {
+					tareasActualizar[j].index = k++;
+
+					if(tareasActualizar[j].index === tarea.index)
+						tareasActualizar[j].index = k++;
+
+					tareasActualizar[j].save();
+				}
+
+				// Enviar un broadcast a los usuarios en línea que pertecen al proyecto
+				// con la información de la tarea modificada
+				sails.sockets.broadcast(
+					tarea.project_id,
+					"socket_project_response", {
+						message: "Mensaje desde el servidor.",
+						obj: tarea,
+						usuarioId: req.param("usuarioId"),
+						newCell: newCell,
+						newIndex: tarea.index,
+						estadoOriginal: estadoOriginal,
+						nuevoEstado: tarea.estado,
+						type: "TareaActualizarTipo"
+					}, req);
+				}).catch(function(err) {
+					sails.log("Se produjo un error en '/tarea/updateTipo' (Tarea.find(tareasActualizar)): ", err);
+					return res.json({
+						proc: false,
+						msg: "¡Se produjo un error en la conexión con la base de datos (Tarea.find(tareasActualizar))!"
+					});
+				});
+
+			// Retornar el json con el nuevo estado de la tarea
+			return res.json({
+				proc: true,
+				msg: "¡Tarea actualizada!",
+				tarea: tarea
+			});
+		}).catch(function(err) {
+			sails.log("Se produjo un error en '/tarea/updateTipo' (Tarea.findOne): ", err);
+			return res.json({
+				proc: false,
+				msg: "¡Se produjo un error en la conexión con la base de datos (Tarea.findOne)!"
+			});
+		});
+  },
 };
-

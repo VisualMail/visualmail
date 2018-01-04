@@ -1,0 +1,74 @@
+<div class="container" ng-controller="DataController as vm">
+    <h3>Raw data</h3>
+    <hr />
+    <div class="form-group">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                <label for="projectList">Lista de proyectos</label>
+                <select class="form-control" ng-click="vm.onProjectClick()" ng-model="vm.project" ng-options="item.name for item in vm.projectList">
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div style="overflow-x: auto">
+                <table class="table table-responsive table-hover">
+                    <thead>
+                        <tr>
+                            <td>id</td>
+                            <td>name</td>
+                            <td>nodoNivel</td>
+                            <td>nodoPadreId</td>
+                            <td>nodoPadreNivel</td>
+                            <td>nodoPadreSessionId</td>
+                            <td>numero_hijos</td>
+                            <td>parent</td>
+                            <td>project_id</td>
+                            <td>root</td>
+                            <td>sessionId</td>
+                            <td>tipo</td>
+                            <td>tipoId</td>
+                            <td>tipoName</td>
+                            <td>tipoNameMarca</td>
+                            <td>usuario</td>
+                            <td>email</td>
+                            <td>rol</td>
+                            <td>nodoId</td>
+                            <td>createdAt</td>
+                            <td>updatedAt</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="item in vm.mensajeList">
+                            <td>{{ item.id }}</td>
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.nodoNivel }}</td>
+                            <td>{{ item.nodoPadreId }}</td>
+                            <td>{{ item.nodoPadreNivel }}</td>
+                            <td>{{ item.nodoPadreSessionId }}</td>
+                            <td>{{ item.numero_hijos }}</td>
+                            <td>{{ item.parent }}</td>
+                            <td>{{ item.project_id }}</td>
+                            <td>{{ item.root }}</td>
+                            <td>{{ item.sessionId }}</td>
+                            <td>{{ item.tipo }}</td>
+                            <td>{{ item.tipoId }}</td>
+                            <td>{{ item.tipoName }}</td>
+                            <td>{{ item.tipoNameMarca }}</td>
+                            <td>{{ item.usuario.firstname + " " + item.usuario.lastname }}</td>
+                            <td>{{ item.email }}</td>
+                            <td>{{ item.rol }}</td>
+                            <td>{{ item.nodoId }}</td>
+                            <td>{{ item.createdAt }}</td>
+                            <td>{{ item.updatedAt }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>

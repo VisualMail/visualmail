@@ -1,0 +1,159 @@
+<div class="container" style="display: none;" ng-controller="IndexController as vm">
+    <h3>Bienvenid@ <%= session.User.firstname %></h3>
+    <hr />
+    
+    <div class="form-group">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                <div class="card"> 
+                    <h6 class="card-header"><span class="glyphicon glyphicon-folder-open"></span> Mis proyectos</h6> 
+                    <div class="card-body">
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-search"></span>
+                                        </span>
+                                        <input class="form-control" placeholder="Buscar por nombre del proyecto" type="text" 
+                                            ng-model="vm.buscarProjectsUser">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#modalProject">
+                                                <span class="glyphicon glyphicon-plus-sign"></span> Nuevo
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
+
+                        <div ng-repeat="item in vm.miProjectLista.slice().reverse() | filter: vm.buscarProjectsUser | orderBy:'-createdAt'">
+                            <div class="card text-white bg-success mb-3" ng-if="item.owner_email === vm.miUser.email" style="cursor: pointer;" 
+                                ng-click="vm.onProjectClick(item.id)">
+                                <div class="card-header"><strong>{{ item.name }}</strong></div>
+                                <div class="card-body">
+                                    <p class="card-text">{{ item.description }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                <div class="card"> 
+                    <h6 class="card-header"><span class="glyphicon glyphicon-tasks"></span> Proyectos en los que participo</h6> 
+                    <div class="card-body">
+        
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-search"></span>
+                                        </span>
+                                        <input class="form-control" placeholder="Buscar por nombre del proyecto" type="text" 
+                                            ng-model="vm.buscarProjectsOthers">
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
+
+                        <div ng-repeat="item in vm.miProjectLista.slice().reverse() | filter: vm.buscarProjectsOthers">
+                            <div class="card text-white bg-info mb-3" ng-if="item.owner_email !== vm.miUser.email" style="cursor: pointer;" 
+                                ng-click="vm.onProjectClick(item.id)">
+                                <div class="card-header">{{ item.name }}</div>
+                                <div class="card-body">
+                                    <p class="card-text">{{ item.description }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalProject" tabindex="-1" role="dialog" aria-labelledby="modalProjectTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form name="vm.formProject" novalidate="novalidate">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalProjectTitle">Nuevo proyecto</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-12">
+                                    <label for="projectName"
+                                        ng-class="{ 
+                                            'col-form-label': vm.formProject.projectName.$pristine || vm.formProject.projectName.$valid, 
+                                            'col-form-label text-danger': !vm.formProject.projectName.$pristine && !vm.formProject.projectName.$valid }">Nombre (requerido)</label> 
+                                    <input id="projectName" name="projectName" placeholder="Mínimo 3 caracteres" type="text" 
+                                        ng-class="{ 
+                                        'form-control': vm.formProject.projectName.$pristine || vm.formProject.projectName.$valid, 
+                                        'form-control is-invalid': !vm.formProject.projectName.$pristine && !vm.formProject.projectName.$valid }" 
+                                        ng-maxlength="23" 
+                                        ng-minlength="3" 
+                                        ng-model="vm.projectName" 
+                                        ng-required="true" /> 
+                                    <p class="text-danger" role="alert" ng-messages="!vm.formProject.projectName.$pristine && vm.formProject.projectName.$error"> 
+                                        <strong ng-message="minlength">Mínimo 3 caracteres</strong> 
+                                        <strong ng-message="maxlength">Nombre muy largo</strong> 
+                                        <strong ng-message="required">Requerido</strong> 
+                                    </p> 
+                                </div> 
+                            </div> 
+                        </div> 
+                        
+                        <div class="form-group"> 
+                            <div class="row"> 
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"> 
+                                    <label class="col-form-label" for="projectDateEnd">Termina el</label> 
+                                    <div class="input-group date"> 
+                                        <input class="form-control" id="projectDateEnd" maxlength="10" name="projectDateEnd" placeholder="Año-Mes-Día" type="text" 
+                                            ng-model="vm.projectDateEnd" /> 
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span> 
+                                    </div> 
+                                </div> 
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-12">
+                                    <label for="projectDescription" 
+                                        ng-class="{ 
+                                            'col-form-label': vm.formProject.projectDescription.$pristine || vm.projectDescription, 
+                                            'col-form-label text-danger': !vm.formProject.projectDescription.$pristine && !vm.projectDescription }">Descripción breve (requerido)</label> 
+                                    <textarea class="form-control" id="projectDescription" name="projectDescription" placeholder="Información del evento" rows="3" ng-model="vm.projectDescription"></textarea>
+                                    <p class="text-danger" role="alert" ng-if="!vm.formProject.projectDescription.$pristine && !vm.projectDescription"> 
+                                        <strong>Debes ingresar una descripción breve del proyecto</strong>
+                                    </p> 
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" type="button" data-dismiss="modal"><span class="glyphicon glyphicon-remove-circle"></span> Cerrar</button>
+                        <button type="button"
+                            ng-class="{ 
+                                'btn btn-success': vm.formProject.$valid && vm.projectDescription, 
+                                'btn btn-default': !vm.formProject.$valid || !vm.projectDescription }" 
+                            ng-click="vm.onBtnGuardarProjectClick()"
+                            ng-disabled="!vm.formProject.$valid || !vm.projectDescription">
+                            <span class="glyphicon glyphicon-save"></span> Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+</div>

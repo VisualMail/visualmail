@@ -1,0 +1,129 @@
+<div class="container" ng-controller="ProfileController as vm">
+    <h3><span class="glyphicon glyphicon-user"></span> Editar perfil</h3>
+    <hr />
+
+    <!-- Inicio editar perfil -->
+    <form id="formUser" name="vm.formUser" novalidate="novalidate" style="display: none;"> 
+        
+        <div class="form-group"> 
+            <div class="row"> 
+                <div class="col-xs-12 col-sm-12 co-md-6 col-lg-4"> 
+                    <label ng-class="{ 'text-danger': !vm.formUser.userFirstName.$pristine && !vm.formUser.userFirstName.$valid }" for="userFirstName">Nombre</label> 
+                    <input id="userFirstName" name="userFirstName" placeholder="Máximo 15 caracteres" type="text" 
+                        ng-class="{ 
+                        'form-control': vm.formUser.userFirstName.$pristine || vm.formUser.userFirstName.$valid, 
+                        'form-control is-invalid': !vm.formUser.userFirstName.$pristine && !vm.formUser.userFirstName.$valid }" 
+                        ng-maxlength="15" 
+                        ng-minlength="3" 
+                        ng-model="vm.userFirstName" 
+                        ng-pattern="/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u" 
+                        ng-required="true" /> 
+                    <p class="text-danger" role="alert" ng-messages="vm.formUser.userFirstName.$error">
+                        <strong ng-message="minlength">Mínimo 3 caracteres</strong>
+                        <strong ng-message="maxlength">Nombre muy largo</strong>
+                        <strong ng-message="pattern">Formato no válido</strong>
+                        <strong ng-message="required">Requerido</strong> 
+                    </p>
+                </div> 
+                <div class="col-xs-12 col-sm-12 co-md-6 col-lg-4"> 
+                    <label ng-class="{ 'text-danger': !vm.formUser.userLastName.$pristine && !vm.formUser.userLastName.$valid }" for="userLastName">Apellidos</label> 
+                    <input id="userLastName" name="userLastName" placeholder="Máximo 15 caracteres" type="text" 
+                        ng-class="{ 
+                        'form-control': vm.formUser.userLastName.$pristine || vm.formUser.userLastName.$valid, 
+                        'form-control is-invalid': !vm.formUser.userLastName.$pristine && !vm.formUser.userLastName.$valid }" 
+                        ng-maxlength="30" 
+                        ng-minlength="3" 
+                        ng-model="vm.userLastName" 
+                        ng-pattern="/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u" 
+                        ng-required="true" />
+                    <p class="text-danger" role="alert" ng-messages="vm.formUser.userLastName.$error">
+                        <strong ng-message="minlength">Mínimo 3 caracteres</strong>
+                        <strong ng-message="maxlength">Nombre muy largo</strong>
+                        <strong ng-message="pattern">Formato no válido</strong>
+                        <strong ng-message="required">Requerido</strong> 
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group"> 
+            <div class="row"> 
+                <div class="col-xs-12 col-sm-12 co-md-6 col-lg-4"> 
+                    <label ng-class="{ 'text-danger': !vm.formUser.userEmail.$pristine && !vm.formUser.userEmail.$valid }" for="userEmail">Email (Requerido)</label>
+                    <input id="userEmail" name="userEmail" type="email"
+                        ng-class="{ 
+                        'form-control': vm.formUser.userEmail.$pristine || vm.formUser.userEmail.$valid, 
+                        'form-control is-invalid': !vm.formUser.userEmail.$pristine && !vm.formUser.userEmail.$valid }" 
+                        data-toggle="tooltip" data-placement="bottom" title="hola@visualmail.com"
+                        ng-model="vm.userEmail" 
+                        ng-pattern="/^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i" 
+                        ng-required="true" />
+                    <p class="text-danger" role="alert" ng-messages="!vm.formUser.userEmail.$pristine && vm.formUser.userEmail.$error"> 
+                        <strong ng-message="email">Formato no válido</strong>
+                        <strong ng-message="pattern">Formato no válido</strong>
+                        <strong ng-message="required">Requerido</strong> 
+                    </p>
+                </div>
+                <div class="col-xs-12 col-sm-12 co-md-6 col-lg-2"> 
+                    <label ng-class="{ 'text-danger': !vm.formUser.userInitials.$pristine && !vm.formUser.userInitials.$valid }" for="userInitials">Iniciales</label> 
+                    <input capitalize id="userInitials" name="userInitials" placeholder="Máximo 3 caracteres" type="text" 
+                        ng-class="{ 
+                        'form-control': vm.formUser.userInitials.$pristine || vm.formUser.userInitials.$valid, 
+                        'form-control is-invalid': !vm.formUser.userInitials.$pristine && !vm.formUser.userInitials.$valid }" 
+                        data-toggle="tooltip" data-placement="bottom" title="Ingresa 3 caracteres con las iniciales del nombre/apellido"
+                        ng-maxlength="3" 
+                        ng-minlength="3" 
+                        ng-model="vm.userInitials" 
+                        ng-pattern="/^[a-zA-Z]+$/" 
+                        ng-required="true" />
+                    <p class="text-danger" role="alert" ng-messages="vm.formUser.userInitials.$error">
+                        <strong ng-message="minlength">3 caracteres</strong>
+                        <strong ng-message="maxlength">No pueden ser más de 3 carácteres</strong>
+                        <strong ng-message="pattern">Formato no válido</strong>
+                        <strong ng-message="required">Requerido</strong> 
+                    </p>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-2"> 
+                    <label ng-class="{ 'text-danger': !vm.formUser.userColor.$pristine && !vm.formUser.userColor.$valid }" for="userColor">Color de interacción</label>
+                    <input class="jscolor" id="userColor" name="userColor" placeholder="#FFFFFF" type="text" 
+                        ng-class="{ 
+                        'form-control jscolor': vm.formUser.userColor.$pristine || vm.formUser.userColor.$valid, 
+                        'form-control jscolor is-invalid': !vm.formUser.userColor.$pristine && !vm.formUser.userColor.$valid }" 
+                        ng-style="{ 'background-color': vm.userColor ? '#' + vm.userColor : 'none' }"
+                        ng-model="vm.userColor" 
+                        ng-required="true" /> 
+                    <p class="text-danger" role="alert" ng-messages="!vm.formUser.userColor.$pristine && vm.formUser.userColor.$error"> 
+                        <strong ng-message="required">Requerido</strong>
+                    </p>
+                </div> 
+            </div>
+        </div>
+
+        <div class="form-group"> 
+            <div class="row"> 
+                <div class="col-xs-12 col-sm-12 co-md-12 col-lg-12"> 
+                    <label for="userImgUrl">URL imagen</label>
+                    <input class="form-control" id="userImgUrl" name="userImgUrl" placeholder="https://..." type="text" 
+                        ng-model="vm.userImgUrl" /> 
+                </div> 
+            </div>
+        </div> 
+
+        <div class="form-group"> 
+            <div class="row"> 
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
+                    <button type="button" 
+                        ng-class="{ 'btn btn-success': vm.formUser.$valid, 'btn btn-default': !vm.formUser.$valid }"
+                        ng-click="vm.onBtnGuardarClick()" 
+                        ng-disabled="!vm.formUser.$valid"><span class="glyphicon glyphicon-save"></span> Guardar cambios</button> 
+                    <button class="btn btn-primary" type="button" 
+                        ng-click="vm.onBtnCancelarClick()"><span class="glyphicon glyphicon-remove-circle"></span> Cancelar</button> 
+                    <input type="hidden" name="_csrf" value="<%= _csrf%>" /> 
+                </div>
+            </div>
+        </div>
+
+    </form>
+    <!-- Fin editar perfil -->
+    
+</div>
