@@ -59,7 +59,7 @@ module.exports.connections = {
 
   someMongodbServer: { 
     adapter: "sails-mongo", 
-    url: "mongodb://visualmail:visualmail2017@ds053216.mlab.com:53216/visualmaildb"
+    url: "mongodb://<user>:<dbpassword>@ds053216.mlab.com:53216/visualmaildb"
   },
   
   /*someMongodbServer: { 
